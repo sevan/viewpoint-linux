@@ -1,0 +1,28 @@
+# List of source files containing translatable strings.
+# Copyright (C) 2000-2021 Free Software Foundation, Inc.
+
+# Copying and distribution of this file, with or without
+# modification, are permitted provided the copyright notice
+# and this notice are preserved.
+
+#Package source files
+find/exec.c
+find/fstype.c
+find/ftsfind.c
+find/oldfind.c
+find/parser.c
+find/pred.c
+find/print.c
+find/tree.c
+find/util.c
+lib/bugreports.c
+lib/buildcmd.c
+lib/fdleak.c
+lib/findutils-version.c
+lib/listfile.c
+lib/regextype.c
+lib/safe-atoi.c
+locate/frcode.c
+locate/locate.c
+locate/word_io.c
+xargs/xargs.c

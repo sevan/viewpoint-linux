@@ -1,0 +1,8 @@
+exec rm -rf tmp
+exec mkdir tmp
+exec touch tmp/file
+exec chmod 600 tmp/file
+exec touch -d 1990-06-22T12:00Z tmp/file
+set env(TZ) "UTC"
+find_start p {tmp -type f -printf "a %d\n" -printf "b %f\n" -printf "c %h\n" -printf "d %H\n" -printf "e %l\n" -printf "f %m\n" -printf "g %n\n" -printf "h %p\n" -printf "i %P\n" -printf "j %y\n" -printf "k %Y\n" -printf "percent it%%works%%\n" -printf "string-right !%10p!\n" -printf "string-left !%-10p!\n" -printf "trunc-R !%10.6p!\n" -printf "trunc-L !%-10.6p!\n" -printf "a5 !%5d!\n" -printf "a05 !%05d!\n" -printf "a+ %+d\n" -printf "l1 %T+ %T@ TH=%TH TI=%TI TM=%TM TT=%TT Td=%Td TD=%TD Tj=%Tj Tm=%Tm TU=%TU Tw=%Tw TW=%TW Ty=%Ty TY=%TY\n"  -printf "l2 M=%M\n" -printf "l3 t=%t\n" -printf "l4 y=%y Y=%Y\n" }
+exec rm -rf tmp

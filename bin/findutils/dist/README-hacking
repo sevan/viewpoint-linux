@@ -1,0 +1,258 @@
+These notes intend to help people working on the checked-out sources.
+They don't apply when you are building from a distribution tarball.
+
+If you want to submit a patch, please start from checked-out sources
+rather than the source tarball.
+
+
+Prerequisites
+=============
+
+ * git (to check out both findutils and gnulib).
+ * A C compiler, linker and software development libraries (the standard
+   C library).  Any compiler compliant with the 1990 ISO C standard running
+   on a POSIX system should work.
+ * GNU Autoconf
+ * GNU Automake
+ * GNU m4
+ * GNU gettext
+ * GNU Dejagnu
+
+Dejagnu is in fact optional, but it's strongly recommended, since it is
+needed to run findutils' test suite (which is how you know that find
+works once it is built on your system).
+
+The configure program should tell you if you try to use a version of
+one of these tools which is not of a recent enough version.  The file
+tool-versions.txt indicates which version of each tool the current
+release was built and tested with.  This is included in the tar-file
+releases, but it's not checked in to git.
+
+
+Use the latest upstream sources
+===============================
+
+1. Check out the findutils code
+
+  git clone git://git.sv.gnu.org/findutils
+
+This will download the whole repository, it's about 16MB once fetched.
+If you already have a copy you can refresh it with:
+
+  git checkout master  (to switch to your copy of the master branch)
+  git pull (to collect and merge changes)
+
+2. Generate a gnulib installation within the findutils source tree
+
+ Change your working directory to the findutils source directory (that
+ is, the directory containing this file).   Then run the following
+ command:-
+
+    ./bootstrap
+
+ This command will use git to check out the version of gnulib which is
+ intended to work with the findutils source you already have (gnulib
+ is used as a git submodule).  The gnulib code itself is left in the
+ directory "gnulib".  The "gl" directory contains just the gnulib
+ files that findutils needs during the build process.
+
+ This will also run Autoconf and Automake to generate the "configure"
+ script and "Makefile.in" files.
+
+3. Run "./configure" and "make" in the normal way.
+
+ If you have GNU libintl installed, you can just run "./configure".
+ Otherwise, run "./configure --disable-nls".
+
+You are now at the point where your local directory looks just like it
+would after building a source release, except that your copy is more
+up-to-date.
+
+*Before* you commit changes
+===========================
+
+In this project, we much prefer patches that automatically record
+authorship.  That is important not just to give credit where due, but
+also from a legal standpoint (see below).  To create author-annotated
+patches with git, you must first tell git who you are.  That information
+is best recorded in your ~/.gitconfig file.  Edit that file, creating
+it if needed, and put your name and email address in place of these
+example values:
+
+[user]
+  name = Joe X. User
+  email = joe.user@example.com
+
+
+Required format for check-in messages
+=====================================
+
+We use a specific style for check-in messages.  See "git log" for
+examples.  The format corresponds to the standard GNU ChangeLog
+format, but without date & author headers (since git provides this
+data) and without a left margin (since there are no headers).
+
+--- example begins ---
+Don't overflow sig_atomic_t for --max-procs.
+
+* xargs/xargs.c (__STDC_LIMIT_MACROS): Define __STDC_LIMIT_MACROS
+in order to ensure that <stdint.h> defines the SIG_ATOMIC_MAX
+macro, which we need.
+(MAX_PROC_MAX): Define this as the maximum allowed value of
+proc_max.
+(main): Show the value of MAX_PROC_MAX for --show-limits.
+(increment_proc_max): Don't increment proc_max beyond
+MAX_PROC_MAX.
+--- example ends ---
+
+There are several things to notice about this checkin message.  Most
+importantly, it begins with a single line summary of the whole change.
+This needs to be short.  It would be used as the subject line of
+patches mailed by "git send-email".  Some people begin that line with
+a one-word tag indicating what is affected (for example find: for
+changes to find, doc: to changes to the documentation, maint: for
+changes to the maintainer automation and so forth).
+
+All changes to a file are grouped together in an entry which begins with
+an asterisk (*) and the file name.  The name of the modified function
+(if any) follows immediately in parentheses followed by a colon.  If
+you're modifying a file for which "function" isn't the logical unit of
+organisation, use whatever seems most useful.  For example when
+modifying the Texinfo source, use the section name.
+
+After the colon, describe the change you made to that function.  If
+you made a related change mention the places you made that change,
+too.  If you made many individually small changes, you can summarise
+these if they're not individually interesting.  For example you could
+just say "Update all callers to remove this function argument".  If
+that change spans several files, mention the other files modified.
+
+Note for maintainers:
+Prior to pushing a commit in the name of someone else to the public
+Git repository, please check if that person has undergone the
+"Copyright assignment" process for GNU findutils described below, or -
+in case of a trivial change (<10 lines, cumulatively with all their
+previous contributions) - document that such paperwork is not required
+by adding this line to the commit message:
+
+  Copyright-paperwork-exempt: Yes
+
+
+Making commits locally
+======================
+
+You will normally find it much easier to work on a branch.  This
+allows you to maintain your changes and test them without being
+affected by changes on the trunk.
+
+To Make a "topic" branch for your change, do this:
+
+  git branch my-topic
+  git checkout my-topic
+
+You can then work on your branch as normal.
+
+To update your local repository, do this:
+
+  git checkout master
+  git pull
+
+Then, rebase your topic branch to take into account the upstream
+changes you just pulled:
+
+  git checkout my-topic
+  git rebase master
+
+There are some useful checks that git commit hooks will do for you,
+it's a good idea to enable these:
+
+  mv .git/hooks/pre-commit.sample .git/hooks/pre-commit
+
+
+Submitting patches
+==================
+
+If you plan to submit changes to findutils, please make sure you have
+read the GNU coding standard (https://www.gnu.org/prep/standards/).
+Some common things you might have forgotten to do are:
+
+ - document your change in both the manual pages and the Texinfo file
+ - re-run the test suite (with Dejagnu installed!)
+ - add a test case for the bug you're fixing or feature you're adding
+ - mention your fix or change (if it's significant) in the NEWS file
+ - commit using a descriptive commit message
+
+If you have patches, please generate them with "git format-patch" and
+mail them to these addresses:
+
+  bug-findutils@gnu.org, findutils-patches@gnu.org
+
+Here is a complete session
+
+  # set up your topic branch
+  git checkout master
+  git pull
+  git branch my-topic
+  git checkout my-topic
+
+  # update the code, documentation, test suite and change log, run tests
+  emacs xargs/xargs.c
+  emacs doc/find.texi xargs/xargs.1
+  emacs xargs/testsuite/Makefile.am  xargs/testsuite/xargs.gnu/blah.exp
+  make check
+  emacs NEWS
+
+  # make sure you didn't break anything
+  make syntax-check
+  make distcheck
+
+  # commit the change and send the patches.
+  git add -u
+  git commit
+  git rebase master
+  mkdir /tmp/patches
+  git format-patch -o /tmp/patches master..HEAD
+  git send-email --compose \
+      --to bug-findutils@gnu.org \
+      --cc findutils-patches@gnu.org /tmp/patches
+
+
+Copyright assignment
+====================
+
+If your change is significant (i.e., if it adds more than ~10 lines),
+then you'll have to have a copyright assignment on file with the FSF.
+Since that involves first an email exchange between you and the FSF,
+and then the exchange (FSF to you, then back) of an actual sheet of
+paper with your signature on it, and finally, some administrative
+processing in Boston, the process can take a few weeks (for
+contributors in some geographies, this can all be done electronically,
+saving a lot of time).
+
+The forms to choose from are in gnulib's doc/Copyright/ directory.
+If you want to assign a single change, you should use the file,
+doc/Copyright/request-assign.changes:
+
+    https://git.sv.gnu.org/gitweb/?p=gnulib.git;a=blob;f=doc/Copyright/request-assign.changes;hb=HEAD
+
+If you would like to assign past and future contributions to a project,
+you'd use doc/Copyright/request-assign.future:
+
+    https://git.sv.gnu.org/gitweb/?p=gnulib.git;a=blob;f=doc/Copyright/request-assign.future;hb=HEAD
+
+You may make assignments for up to four projects at a time.
+
+In case you're wondering why we bother with all of this, read this:
+
+    https://www.gnu.org/licenses/why-assign.html
+
+
+========================================================================
+Copyright (C) 2009-2021 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
+A copy of the license is included in the ``GNU Free Documentation
+License'' file as part of this distribution.

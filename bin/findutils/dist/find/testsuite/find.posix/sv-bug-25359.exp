@@ -1,0 +1,10 @@
+# Test for Savannah bug 25359
+# (ftsfind -H thinks that non-argument symlinks are files)
+# Affecting findutils
+# from acb82fe44369c108b43ec3e805aa94bf28352d0a
+# to   0b1acd3358466b02f32baf9423665113dc933492
+exec rm -rf  tmp
+exec mkdir tmp
+exec ln -s / tmp/symlink
+find_start p {-H tmp -type l -print}
+exec rm -rf tmp

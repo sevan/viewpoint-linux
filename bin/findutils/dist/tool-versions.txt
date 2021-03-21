@@ -1,0 +1,49 @@
+automake (GNU automake) 1.16.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv2+: GNU GPL version 2 or later <https://gnu.org/licenses/gpl-2.0.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Written by Tom Tromey <tromey@redhat.com>
+       and Alexandre Duret-Lutz <adl@gnu.org>.
+
+autoconf (GNU Autoconf) 2.69
+Copyright (C) 2012 Free Software Foundation, Inc.
+License GPLv3+/Autoconf: GNU GPL version 3 or later
+<http://gnu.org/licenses/gpl.html>, <http://gnu.org/licenses/exceptions.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Written by David J. MacKenzie and Akim Demaille.
+
+gcc (SUSE Linux) 10.2.1 20201202 [revision e563687cf9d3d1278f45aaebd03e0f66531076c9]
+Copyright (C) 2020 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+
+m4 (GNU M4) 1.4.18
+Copyright (C) 2016 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Written by Rene' Seindal.
+
+gettext (GNU gettext-runtime) 0.21
+Copyright (C) 1995-2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Written by Ulrich Drepper.
+
+DejaGnu version	1.6.2
+Expect version	5.45.4
+Tcl version	8.6
+
+texi2any (GNU texinfo) 6.7
+
+Copyright (C) 2017 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.

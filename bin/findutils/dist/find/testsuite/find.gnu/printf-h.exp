@@ -1,0 +1,91 @@
+# Test case for Savannah bug ID #12085.
+exec rm -rf foo
+exec mkdir foo foo/bar
+exec ln -s foo foolink
+#
+# Create the combinations with:
+# $ printf '%s \\\n' {,./,.//}{/,.,foo,foolink,foo/bar}{,/,//,/.,//.} | sort -u
+#
+# Manual check against installed version:
+# $ for opt in '' -H -L -P ; do
+#     printf "\n=== Differences for option: '%s' ===\n" "$opt"
+#     diff -u0 \
+#       <( /usr/bin/find $opt {,./,.//}{/,.,foo,foolink,foo/bar}{,/,//,/.,//.} \
+#                     -maxdepth 1 -printf "%h/%f,%%p=%p,%%h='%h',%%f='%f'\n" ) \
+#       <(        ./find $opt {,./,.//}{/,.,foo,foolink,foo/bar}{,/,//,/.,//.} \
+#                     -maxdepth 1 -printf "%h/%f,%%p=%p,%%h='%h',%%f='%f'\n" )
+#     done | column -t -s,
+
+find_start p {\
+/ \
+// \
+/// \
+///. \
+//. \
+. \
+./ \
+.// \
+./// \
+.//// \
+.///// \
+./////. \
+.////. \
+.///. \
+.//. \
+.//./ \
+.//.// \
+.//.//. \
+.//./. \
+./. \
+././ \
+./.// \
+././/. \
+././. \
+.//foo \
+.//foo/ \
+.//foo// \
+.//foo//. \
+.//foo/. \
+./foo \
+./foo/ \
+./foo// \
+./foo//. \
+./foo/. \
+foo \
+foo/ \
+foo// \
+foo//. \
+foo/. \
+.//foo/bar \
+.//foo/bar/ \
+.//foo/bar// \
+.//foo/bar//. \
+.//foo/bar/. \
+./foo/bar \
+./foo/bar/ \
+./foo/bar// \
+./foo/bar//. \
+./foo/bar/. \
+foo/bar \
+foo/bar/ \
+foo/bar// \
+foo/bar//. \
+foo/bar/. \
+.//foolink \
+.//foolink/ \
+.//foolink// \
+.//foolink//. \
+.//foolink/. \
+./foolink \
+./foolink/ \
+./foolink// \
+./foolink//. \
+./foolink/. \
+foolink \
+foolink/ \
+foolink// \
+foolink//. \
+foolink/. \
+-maxdepth 0 -printf "%p,%h,%f\n" }
+
+exec rm -rf foo foolink
