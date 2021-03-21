@@ -1,0 +1,11 @@
+# test for find -P -samefile with a broken link
+exec rm -rf tmp
+exec mkdir tmp
+exec touch tmp/file1
+exec ln    tmp/file1 tmp/link
+exec ln -s file1 tmp/symlink
+exec ln -s tmp/file2 tmp/broken
+exec ln -P tmp/broken tmp/blink
+
+find_start p { -P tmp -samefile tmp/broken -print}
+exec rm -rf tmp

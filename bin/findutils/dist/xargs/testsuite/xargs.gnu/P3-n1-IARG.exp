@@ -1,0 +1,2 @@
+set env(LC_ALL) "C"
+xargs_start p {-P3 -n1 -IARG sh -c ARG} Pdata.xi

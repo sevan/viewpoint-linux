@@ -1,0 +1,23 @@
+a 1
+a+ +1
+a5 !    1!
+a05 !00001!
+b file
+c tmp
+d tmp
+e 
+f 600
+g 1
+h tmp/file
+i file
+j f
+k f
+l1 1990-06-22+12:00:00.0000000000 646056000.0000000000 TH=12 TI=12 TM=00 TT=12:00:00.0000000000 Td=22 TD=06/22/90 Tj=173 Tm=06 TU=24 Tw=5 TW=25 Ty=90 TY=1990
+l2 M=-rw-------
+l3 t=Fri Jun 22 12:00:00.0000000000 1990
+l4 y=f Y=f
+percent it%works%
+string-left !tmp/file  !
+string-right !  tmp/file!
+trunc-L !tmp/fi    !
+trunc-R !    tmp/fi!

@@ -1,0 +1,2 @@
+set env(LC_ALL) "C"
+xargs_start p {-L2 -n2} ldata.xi

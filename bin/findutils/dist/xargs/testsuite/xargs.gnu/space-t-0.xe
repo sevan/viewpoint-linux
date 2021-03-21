@@ -1,0 +1,1 @@
+echo this plus that ''$'\n'' '$'\f\r\t\v\n'
