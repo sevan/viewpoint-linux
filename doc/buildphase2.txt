@@ -1,0 +1,42 @@
+Phase #2, chapter 6 of LFS 10.1 guide
+
+M4
+configure --prefix=/osbt --host=$LFS_TGT --build=$(build-aux/config.guess)
+
+ncurses
+mkdir tmp
+cd tmp
+configure --prefix=/usr --mandir=/usr/share/man --with-manpage-format=normal --with-shared --without-ada --without-normal --enable-widec --without-debug --libdir=/usr/lib64
+make -C include
+make -C progs tic
+
+cd ..
+configure --prefix=/usr --host=$LFS_TGT --build=$(/viewpoint-linux/lib/ncurses/dist/config.guess) --mandir=/usr/share/man --with-manpage-format=normal --with-shared --without-ada --without-normal --enable-widec --without-debug --libdir=/usr/lib64
+make DESTDIR=$LFS TIC_PATH=$(pwd)/tmp/progs/tic install
+echo "INPUT(-lncursesw)" > $LFS/usr/lib64/libncurses.so
+mv $LFS/usr/lib/terminfo $LFS/usr/lib64/
+
+bash
+configure --prefix=/usr --build=$(/viewpoint-linux/bin/bash/dist/support/config.guess) --host=$LFS_TGT --without-bash-malloc --libdir=/usr/lib64
+
+mksh
+From builddir
+install -c -s -o root -g bin -m 555 mksh $LFS/bin/mksh
+From distdir
+install -c -o root -g bin -m 444 dot.mkshrc $LFS/usr/share/doc/mksh/examples/
+install -c -o root -g bin -m 444 FAQ.htm $LFS/usr/share/doc/mksh/
+install -c -o root -g bin -m 444 lksh.1 mksh.1 $LFS/usr/share/man/man1/
+
+coreutils
+configure --prefix=/usr --host=$LFS_TGT --build=$(/viewpoint-linux/bin/coreutils/dist/build-aux/config.guess) --enable-install-program=hostname --enable-no-install-program=kill,uptime
+
+diffutils
+configure --prefix=/usr --host=$LFS_TGT
+
+file
+Note another copy of file(1) need to be built if you're handling a version
+newer than avaible on build host.
+configure --prefix=/usr --host=$LFS_TGT --build=$(/viewpoint-linux/bin/file/dist/config.guess)
+
+findutils
+configure --prefix=/usr --host=$LFS_TGT  --build=$(/viewpoint-linux/bin/findutils/dist/build-aux/config.guess)

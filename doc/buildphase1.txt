@@ -1,0 +1,25 @@
+Phase #1, chapter 5 of LFS 10.1 guide
+
+1) When making directory structure, create /usr/lib otherwise GCC will not be able to
+   find the lib64 directory as its search path is relative to /usr/lib when you test
+   compile after install glibc.
+   See $LFS/tools/bin/x86_64-lfs-linux-gnu-gcc --print-search-dirs
+
+Binutils #1
+MAKEINFO=/usr/pkg/bin/makeinfo ./configure --prefix=$LFS/tools --with-sysroot=$LFS --target=$LFS_TGT --disable-nls --disable-werror
+
+GCC #1
+deps: makeinfo, aclocal from automake, autom4te from autoconf
+configure --target=$LFS_TGT --prefix=$LFS/tools --with-glibc-version=2.11 --with-sysroot=$LFS --with-newlib  --without-headers --enable-initfini-array --disable-nls --disable-shared  --disable-multilib --disable-decimal-float --disable-threads --disable-libatomic  --disable-libgomp  --disable-libquadmath  --disable-libssp  --disable-libvtv  --disable-libstdcxx  --enable-languages=c,c++
+
+Post install:
+cat gcc/limitx.h gcc/glimits.h gcc/limity.h > \
+  `dirname $($LFS_TGT-gcc -print-libgcc-file-name)`/install-tools/include/limits.h
+
+glibc
+skipped symlinks in /lib64 and lib
+configure --prefix=/usr --host=$LFS_TGT --build=$(../scripts/config.guess) --enable-kernel=3.2 --with-headers=$LFS/usr/include
+$LFS/tools/libexec/gcc/$LFS_TGT/10.2.0/install-tools/mkheaders
+
+libstdc++
+configure --host=$LFS_TGT --build=$(../config.guess) --prefix=/usr --disable-multilib --disable-nls --disable-libstdcxx-pch --with-gxx-include-dir=/tools/$LFS_TGT/include/c++/10.2.0
