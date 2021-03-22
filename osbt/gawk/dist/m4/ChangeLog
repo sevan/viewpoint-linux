@@ -1,0 +1,26 @@
+2020-04-14         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* 5.1.0: Release tar ball made.
+
+2020-03-06         Jannick               <thirdedition@gmx.net>
+
+	* triplet-transformation.m4: New file.
+
+2019-11-09         Alexey Pawlow        <alexey.pawlow@gmail.com>
+
+	* threadlib.m4: Add check for MSYS.
+
+2019-09-10  Florian Weimer  <fweimer@redhat.com>
+
+	* readline.m4 (GAWK_CHECK_READLINE): Include <fcntl.h>, <unistd.h>
+	for close, open, dup.
+
+2019-06-18         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* 5.0.1: Release tar ball made.
+
+2019-04-12         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* ChangeLog.1: Rotated ChangeLog into this file.
+	* ChangeLog: Created anew for gawk 5.0.0 and on.
+	* 5.0.0: Release tar ball made.

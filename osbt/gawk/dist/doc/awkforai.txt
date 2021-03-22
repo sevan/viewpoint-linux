@@ -1,0 +1,18 @@
+Sun Dec  9 11:58:23 IST 2012
+============================
+
+The original of this file was a draft of an article written in 1996 by
+Ronald P. Lui for an ACM Sigplan publication, explaining why he used
+gawk for teaching introductory Artificial Intelligence courses.
+
+Since it was not clear as to copying permissions and so on, it has been
+removed from the gawk distribution.
+
+A quick web search shows that this same draft is available at
+http://www.cs.wustl.edu/~loui/sigplan and the final article is available
+from the ACM: http://dl.acm.org/citation.cfm?id=242908
+
+The article itself is recommended reading.
+
+Arnold Robbins
+arnold@skeeve.com

@@ -1,0 +1,507 @@
+2020-04-14         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* 5.1.0: Release tar ball made.
+
+2020-04-10         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* field.c (save_FPAT): New global variable.
+	(get_field): Check if using FPAT or not in order to pass in
+	the right variables to parse_field function.  Fixes bug in
+	delayed field parsing when using FPAT.  Thanks to
+	luciole75w <luciole75w@gmail.com> for the bug report.
+	(set_FPAT): Use global save_FPAT instead of local save_fpat.
+
+	Unrelated:
+
+	* awkgram.c, command.c: Rebuild with Bison 3.5.4.
+	* NEWS: Updated.
+
+	Unrelated:
+
+	* awk.h (do_lint_extensions): Define to zero if NO_LINT.
+
+2020-04-02         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* field.c (re_parse_field): If default parsing and trailing
+	whitespace, don't set a null field at the end. Thanks to
+	Ed Morton <mortoneccc@comcast.net> for the report.
+
+2020-03-18         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* TODO: Add more stuff.
+
+2020-03-15         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* Makefile.am (zos-diffout): New target.
+	* awkgram.y, command.y: Upgrade to Bison 3.5.3.
+	* NEWS: Updated.
+
+2020-03-11         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* main.c: Further message update. Thanks again to
+	Roland Illig <roland.illig@gmx.de>.
+
+2020-03-09         Andrew J. Schorr      <aschorr@telemetry-investments.com>
+
+	* array.c (sort_up_value_string): If either arg is not a Node_val,
+	call out to sort_up_value_type instead. If cmp_strings returns zero,
+	fall back to sort_up_index_string as a tie-breaker.
+	(sort_up_value_number): If either arg is not a Node_val, call out to
+	sort_up_value_type instead. If cmp_strings returns zero, fall back
+	to sort_up_index_string as a tie-breaker.
+	(do_sort_up_value_type): Renamed from sort_up_value_type with one
+	change: if both arguments have type Node_var, we compare the
+	var_value NODEs instead.
+	(sort_up_value_type): New wrapper function around do_sort_up_value_type
+	to fall back to sort_up_index_string as a tie-breaker.
+
+2020-03-09         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* array.c, awk.h, awkgram.y, builtin.c, command.y, debug.c,
+	ext.c, int_array.c, io.c, main.c, symbol.c: Messages refined
+	based on suggestions from Roland Illig <roland.illig@gmx.de>.
+
+2020-03-06         Jannick               <thirdedition@gmx.net>
+
+	* Makefile.am: Replace AM_MAKEFLAGS with AM_CFLAGS and AM_LDFLAGS.
+	Put pc/Makefile.tst into BUILT_SOURCES, instead of in dist-hook.
+	Add $(srcdir) to rules for the yacc files. Use AM_LDFLAGS in
+	the efence rule.
+	* configure.ac: Use GAWK_CANONICAL_HOST instead of AC_CANONICAL_HOST;
+	this supplies MSYS2 support. Remove use of EXEEXT.
+
+2020-03-04         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* NEWS: Updated.
+
+2020-02-13         John E. Malmberg      <wb8tyw@qsl.net>
+
+	* custom.h: OpenVMS needs _REGEX_INCLUDE_LIMITS_H defined.
+
+2020-02-09         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* awkgram.y: Add lint check for assignment in condition to
+	if and for statements. Thanks to Jannick <thirdedition@gmx.net>
+	for the suggestion.
+	* debug.c (do_eval): Remove @eval from the symbol table if there
+	was a syntax error in the statement being evaluated. Thanks again
+	to Jannick, for the report.
+
+2020-02-04         John E. Malmberg      <wb8tyw@qsl.net>
+
+	* custom.h: Fix OpenVMS SIZE_MAX value.
+
+2020-02-01         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* awk.h, dfa.c: Move include of mbsupport.h to ...
+	* custom.h: ... here.
+	* configure.ac: Add check for isblank.
+
+2020-01-27         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* custom.h: Fix non-VMS compilation.
+
+2020-01-26         John E. Malmberg      <wb8tyw@qsl.net>
+
+	* custom.h: Additional OpenVMS typedefs needed.
+	* getext.h: Fix macro for implementations without gettext
+	to not force the result to be a const char *.
+
+2020-01-26         Andrew J. Schorr      <aschorr@telemetry-investments.com>
+
+	* array.c (sort_up_value_type): Small efficiency tweak. Only
+	run through the list of other types if both values are not scalars.
+
+2020-01-24         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* array.c, profile.c, cint_array.c, builtin.c, interpret.h,
+	main.c: Update copyright years.
+
+2020-01-23         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* array.c (sort_up_value_type): Handle other types of nodes,
+	in case someone applies PROCINFO["sorted_in"] to SYMTAB or
+	FUNCTAB. This threw an assertion error if assertions were
+	enabled. Thanks to John Namam <Gawer@703n.com> for the report.
+	(asort_actual): Disallow SYMTAB and FUNCTAB as first arguments.
+	* TODO: Note that we should should eventually allow SYMTAB/FUNCTAB
+	passed to asort/asaorti if a destination array is provided. (The
+	current code breaks right now.)
+
+2020-01-19         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* profile.c (pp_top): New macro.
+	(pprint): Be smarter for print[f] with redirection that was
+	parenthesized, to not print `printf(("hello\n")) > "..."'.
+
+	Unrelated:
+	* compile, config.guess, config.rpath, config.sub, depcomp: Updated
+	from GNULIB.
+
+2020-01-14         Andrew J. Schorr      <aschorr@telemetry-investments.com>
+
+	* cint_array.c (cint_array_init): Fix off-by-one error in array 
+	bounds overflow check for an NHAT value set in the environment.
+	Thanks to Michael Builov <mbuilov@gmail.com> for the report.
+
+2020-01-08         Arnold D. Robbins     <arnold@skeeve.com>
+
+	Fix a number of subtle memory leaks. Thanks to the
+	combination of MEMDEBUG and valgrind for finding them.
+
+	* builtin.c (do_print): Unref tmp if force_string_ofmt
+	returned something different.
+	(call_sub, call_match, call_split_func): Free any
+	created regexp.
+	* debug.c (do_eval): Free the node holding the @eval function
+	when done with it.
+	* field.c (init_fields): Create fields_arr[0] and Nnull_field
+	in a rational fashion.
+	* interpret.h (Op_assign_concat): Handle newly created node
+	better.
+
+	Unrelated:
+
+	* interpret.h (Op_subscript): When retrieving from SYMTAB, check
+	for Node_var_new; variables can exist but have not been assigned
+	a value. Thanks to Denis Shirokov <cosmogen@gmail.com> for the report.
+
+	Unrelated:
+
+	* builtin.c (do_typeof): Handle Node_array_ref also. Thanks to
+	Denis Shirokov <cosmogen@gmail.com> for the report.
+
+2019-12-22         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* config.guess: Updated from GNULIB.
+
+2019-12-22         Jannick               <thirdedition@gmx.net>
+
+	* configure.ac: Hardcode the shared object extension to dll
+	on Windows platforms, i.e.whenever EXEEXT is '.exe'.
+
+2019-12-22         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* gettext.h: Update from gettext 0.20.1.
+	* NEWS: Updated.
+
+2019-12-18  Paul Eggert  <eggert@Penguin.CS.UCLA.EDU>
+
+	Fix memcpy issue found by -fsanitize=undefined
+	* field.c (set_record): Don't memcpy (databuf, NULL, 0),
+	as the C standard says the resulting behavior is undefined.
+
+2019-12-16         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* awkgram.y, command.y: Upgrade to Bison 3.5.
+	* NEWS: Updated.
+
+2019-11-21         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* config.rpath: Update from GNULIB.
+
+2019-11-10         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* compile, config.rpath: Update from GNULIB. Adds msys support.
+
+2019-11-03         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* field.c (get_field): Remove special case code for fpat_parse_field.
+	Fixes a bug reported by Ed Morton <mortoneccc@comcast.net>.
+
+2019-10-19         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* compile, depcomp: Update from GNULIB.
+
+2019-10-13         Arnold D. Robbins     <arnold@skeeve.com>
+
+	Fix handling of assigning @/.../ to FS and RS. Thanks
+	to Stephane Chazelas <stephane.chazelas@gmail.com>
+	for the report.
+
+	* field.c (set_FS): Check for REGEX in the flags.
+	* io.c (set_RS): Ditto.
+
+2019-10-04         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* config.guess, config.sub, install-sh: Updated from GNULIB.
+
+2019-09-30         John E. Malmberg     <wb8tyw@qsl.net>
+
+	* custom.h: OpenVMS does not provide ULLONG_MAX
+
+2019-09-20  Florian Weimer  <fweimer@redhat.com>
+
+	* configure.ac (PRINTF_HAS_F_FORMAT): Include <string.h> for
+	strcmp.
+	(PRINTF_HAS_A_FORMAT): Likewise.
+	* configure: Regenerate.
+
+2019-09-17         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* awkgram.y, commands.y: Upgrade to Bison 3.4.2.
+	* NEWS: Updated.
+
+2019-09-10         Andrew J. Schorr      <aschorr@telemetry-investments.com>
+
+	* awk.h (block_header): Remove cnt field and replace it with
+	highwater. If MEMDEBUG is defined, add active counter.
+	* node.c (r_getblock): The cnt field was replaced by active. Update
+	highwater as appropriate.
+	(r_freeblock): Decrement the active counter (renamed from cnt).
+	(more_blocks): Bump the highwater counter (renamed from cnt).
+	* builtin.c (do_typeof): When providing PROCINFO debug memory stats,
+	replace count_<blah> with <blah>_active and <blah>_highwater. When
+	MEMDEBUG is not set, we calculate the active value by subtracting the
+	number of elements in the free list from the highwater value.
+
+2019-09-01         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* profile.c (pp_list, pp_concat): Fix use-after-free errors
+	in both routines. Thanks to valgrind and Andy's MEMDEBUG code.
+
+2019-09-01         Andrew J. Schorr      <aschorr@telemetry-investments.com>
+
+	* awk.h (block_header): Add cnt field even when MEMDEBUG is not
+	defined, and add a name field.
+	* node.c (nextfree): Initialize new name field.
+	(more_blocks): Bump nextfree[id].cnt by BLOCKCHUNK.
+	* builtin.c (do_typeof): When the 1st argument is PROCINFO and the
+	2nd arg is provided, return new "count_<blah>" fields containing
+	the memory allocation accounts of the various block types.
+
+2019-08-30         Andrew J. Schorr      <aschorr@telemetry-investments.com>
+
+	* configure.ac (.developing): Add -DMEMDEBUG to CFLAGS.
+	* awk.h (block_header): If MEMDEBUG is defined, add cnt field
+	to track the number of allocations.
+	(getblock, freeblock): When MEMDEBUG is defined, replace these
+	macros with calls to new functions r_getblock and r_freeblock.
+	* node.c (r_getblock, r_freeblock): New functions that simply
+	use malloc and free when MEMDEBUG is defined.
+
+2019-08-30         Andrew J. Schorr      <aschorr@telemetry-investments.com>
+
+	* interpret.h (r_interpret): For Op_match_rec, unref if a
+	dynamic regexp. Fixes another memory issue. See the thread starting
+	at https://lists.gnu.org/archive/html/bug-gawk/2019-08/msg00023.html.
+
+2019-08-29         Arnold D. Robbins     <arnold@skeeve.com>
+
+	Restore a modified version of the change of
+	2016-05-03, which used realloc to shrink the buffer.
+
+	* builtin.c (format_tree): Reduce INITIAL_OUT_SIZE to 64.
+	At the end, call realloc only if there is more
+	than (2 * INITIAL_OUT_SIZE) bytes to give back.
+
+2019-08-23         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* main.c (main): Fix whitespace issues.
+	* re.c (re_update): Small code cleanup in handling t->re_cnt.
+	Thanks to Andrew Schorr.
+
+2019-08-21         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* config.guess: Updated from GNULIB.
+
+2019-08-15         Arnold D. Robbins     <arnold@skeeve.com>
+
+	Revert a6df7afc605079df7d85318846a522ef64aaa44d, change of
+	2016-05-03, which used realloc to shrink the buffer, in an
+	attempt to save memory.  In actuality, it could cause increased
+	memory usage, even though there was no memory leak. See
+	https://lists.gnu.org/archive/html/bug-gawk/2019-08/msg00003.html
+	and the rest of thread for more detail.
+
+	* builtin.c (format_tree): Don't use realloc, just call
+	make_str_node with the original buffer. Remove `olen_final'
+	variable and its use.
+
+2019-08-15         Andrew J. Schorr      <aschorr@telemetry-investments.com>
+
+	Reduce memory usage by only compiling the IGNORECASE version of
+	regexp when it's actually needed.
+
+	* awkgram.y (make_regnode): Only compile the regular version.
+	* re.c (re_cache_get): New function.
+	(re_update): Use it as appropriate.
+
+2019-07-23         Koichi Murase         <myoga.murase@gmail.com>
+
+	* builtin.c (do_xor): Remove unneeded local variable `i'. Simplify
+	the loop's computation.
+	(do_and): Improve the initial value for the result.
+
+2019-07-23         Andrew J. Schorr      <aschorr@telemetry-investments.com>
+
+	Fix reporting of negative arguments for and(), or() and xor().
+	Thanks to Koichi Murase <myoga.murase@gmail.com> for the
+	report.
+
+	* builtin.c (do_and): Use nargs instead of i in the loop to
+	check for non-numeric and negative arguments.
+	(do_or): Ditto.
+	(do_xor): Ditto.
+
+2019-07-23         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* Checklist: Updated.
+
+2019-07-21         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* command.y, custom.h, eval.c, ext.c, field.c, io.c,
+	msg.c, node.c, nonposix.h, re.c: Update copyright year.
+	* NEWS: Updated.
+	* README: Updated.
+
+2019-07-16         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* TODO: Updated.
+	* awkgram.y [GRAMMAR]: Change some lint warnings to use lintwarn.
+	(yylex): Ditto.
+	* field.c (choose_fs_function): Ditto.
+	* main.c (main): Ditto.
+	* node.c (parse_escape): Ditto.
+
+2019-07-09         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* gawkapi.h: Update copyright year, fix some spelling errors.
+
+2019-07-08         Andrew J. Schorr      <aschorr@telemetry-investments.com>
+2019-07-08         Andrew J. Schorr      <aschorr@telemetry-investments.com>
+
+	* gawkapi.h (gawk_api_major_version): Bump from 2 to 3 because the
+	namespace changes altered the function signatures in gawk_api_t.
+	And add a comment at the top of the structure with a reminder that
+	the version number should be bumped whenever the struct is altered
+	in any way.
+
+2019-06-30         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* interpret.h (r_interpret): Fix two more cases of warning
+	about gawk extensions.
+	* awkgram.y [GRAMMAR]: And two more cases here. Thanks to
+	Mark Krauze <daburashka@ya.ru> for making me look for them.
+
+	Unrelated:
+
+	* config.sub: Updated from GNULIB.
+
+2019-06-26         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* symbol.c (install): Strip off any leading `awk::' before
+	installing a symbol. Thanks to Andrew Schorr for the
+	report.
+
+2019-06-21         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* config.guess, config.sub: Updated from GNULIB.
+	* awkgram.y (get_src_buf): Set buffers to zero to avoid
+	possible issues with accessing uninitialized memory.
+	Thanks to valgrind, as pointed out by Nadezhda Vyukova
+	<qniva@yandex.ru>.
+	* NEWS, README.git: Fix some typos.
+
+2019-06-19         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* re.c (make_regexp): If do_posix, have {} in ok_to_escape.
+	Thanks to Ed Morton <mortoneccc@comcast.net> for the report.
+
+2019-06-18         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* 5.0.1: Release tar ball made.
+
+2019-06-06         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* main.c (usage): Update comment for translators.
+
+2019-06-02         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* awkgram.c, command.c: Update to Bison 3.4.
+	* NEWS: Updated.
+
+2019-05-22         Arnold D. Robbins     <arnold@skeeve.com>
+
+	Add --lint=no-ext. Suggest by Mark Krauze <daburashka@ya.ru>.
+
+	* NEWS: Updated.
+	* awk.h (DO_LINT_EXTENSIONS): New enum.
+	(do_lint_extensions): New macro.
+	* awkgram.y (yylex, snode): Use do_lint_extensions instead of
+	do_lint where appropriate.
+	* builtin.c (do_length): Ditto.
+	* eval.c (set_IGNORECASE, set_BINMODE): Ditto.
+	(set_LINT): Revise logic.
+	* field.c (do_split, set_FIELDWIDTHS, chose_fs_function, set_FPAT):
+	Ditto.
+	* io.c (set_RS): Ditto.
+	* main.c (usage): Updated.
+	(parse_args): Revise the code to handle --lint=no-ext.
+
+2019-05-10         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* NEWS: Updated.
+
+2019-05-06         Arnold D. Robbins     <arnold@skeeve.com>
+
+	In sandbox mode, disallow assigning filenames that weren't
+	there initially. Thanks to Nolan Woods <nolan_w@sfu.ca> for
+	pointing out the gap.
+
+	* awk.h (init_argv_array): Add declaration.
+	* cint_array.c (argv_store): New vtable for ARGV.
+	(argv_shadow_array): New file static variable
+	(argv_store, init_argv_array): New functions.
+	* main.c (init_args): If in sandbox mode, build shadow array of
+	initial argv values. Call init_argv_array.
+
+2019-05-05         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* ext.c (load_ext): Fix the message in the version for when
+	extensions are not available.
+
+2019-04-24         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* msg.c (msg): Use %ld for the line number value. Thanks to
+	Michal Jaegermann for the report.
+
+2019-04-23         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* config.sub: Updated from GNULIB.
+
+2019-02-21         Andrew J. Schorr      <aschorr@telemetry-investments.com>
+
+	* interpert.h (Op_store_field): Move call to force_string to
+	here from unfield.  Speeds up work with fields that are numeric
+	only. Thanks to Tom Gray <tom_gray@keysight.com> for the report.
+
+2019-04-21         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* POSIX.STD: Updated.
+	* field.c (get_field): If NF == -1, check parse high water to
+	set in_middle correctly. Thanks to <oguzismailuysal@gmail.com>
+	for the report.
+
+2019-04-18         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* msg.c (msg): Add an undocumented feature. "Use the Source, Luke."
+	* Makefile.am (EXTRA_DIST): Add ChangeLog.1 to the list. Ooops.
+	* CheckList: Updated.
+
+	Fix core dump reported by Steve Kemp <steve@steve.org.uk>:
+
+	* awk.h (errcount): Declare.
+	* awkgram.y (errcount): No longer static.
+	* command.y (dbg_errcount): Renamed from errcount.
+	* main.c (catchsig, catchsegv): If errcount > 0, just exit,
+	don't abort.  
+
+2019-04-12         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* configure.ac: Update version to 5.0.0.
+	* configure: Regenerated.
+	* ChangeLog.1: Rotated ChangeLog into this file.
+	* ChangeLog: Created anew for gawk 5.0.0 and on.
+	* README: Bump version to 5.0.0.
+	* 5.0.0: Release tar ball made.

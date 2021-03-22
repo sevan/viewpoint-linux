@@ -1,0 +1,56 @@
+2020-04-14         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* 5.1.0: Release tar ball made.
+
+2020-03-20         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* it.po: Updated.
+	* nl.po: Updated.
+
+2020-03-18         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* sv.po: Updated.
+	* it.po: Updated.
+
+2020-03-16         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* de.po, fr.po, pt_BR.po, pt.po: Updated.
+
+2020-03-12         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* sv.po: Updated.
+
+2020-03-11         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* de.po, fr.po, pt_BR.po, pt.po: Updated.
+
+2020-03-07         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* de.po, fr.po, pt_BR.po, pt.po: Updated.
+
+2020-01-26         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* it.po: Updated.
+
+2019-12-22         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* Move to gettext 0.20.1.
+
+2019-07-23         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* it.po: Updated.
+
+2019-06-18         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* 5.0.1: Release tar ball made.
+
+2019-05-26         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* pt.po: New file.
+	* LINGUAS: Updated.
+
+2019-04-12         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* ChangeLog.1: Rotated ChangeLog into this file.
+	* ChangeLog: Created anew for gawk 5.0.0 and on.
+	* 5.0.0: Release tar ball made.

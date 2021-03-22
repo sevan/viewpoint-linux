@@ -1,0 +1,248 @@
+2020-04-14         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* 5.1.0: Release tar ball made.
+
+2020-04-12         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: Updated.
+
+2020-04-01         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawk.1: Updated.
+	* gawktexi.in: Updated.
+
+2020-03-20         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: Updated.
+
+2020-03-19         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: Updated.
+
+2020-03-16         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: Updated.
+	* texinfo.tex: Updated.
+
+2020-03-10         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: Updated.
+
+2020-03-04         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: Updated.
+
+2020-02-26         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: Updated.
+
+2020-01-24         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: Updated.
+
+2020-01-20         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: Updated.
+
+2019-12-21         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: Updated.
+
+2019-11-04         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: Updated.
+
+2019-10-17         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: Updated.
+
+2019-10-06         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* gawktexi.in: Updated.
+
+2019-10-05         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: Updated.
+	* texinfo.tex: Updated.
+
+2019-10-02         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: Updated.
+	* sidebar.awk: Updated.
+	* texinfo.tex: Updated.
+
+2019-09-24         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* texinfo.tex: Updated.
+
+2019-08-12         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: Updated.
+
+2019-08-07         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: Updated.
+
+2019-07-22         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: Updated.
+	* gawk.1: Updated.
+	* texinfo.tex: Updated.
+
+2019-07-08         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: Updated.
+
+2019-06-21         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: Updated.
+
+2019-06-18         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: Updated.
+
+2019-06-18         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* 5.0.1: Release tar ball made.
+
+2019-06-06         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: Updated.
+
+2019-05-12         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: Updated.
+
+2019-04-27         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: Updated.
+
+2019-04-18         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: Updated.
+
+2019-04-12         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* 5.0.0: Release tar ball made.
+
+2019-04-12         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: Updated.
+
+2018-12-18         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawk.1: Updated.
+	* gawktexi.in: Updated.
+
+2018-09-07         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* gawktexi.in, gawk.1, texinfo.tex: Remove execute permission.
+
+2018-07-29         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: Updates for NaN/Infinity and pty example
+
+2018-06-15         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: Updates.
+
+2018-06-06         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: Updates.
+
+2018-05-25         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: Updates.
+
+2018-05-14         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: Updates.
+	* texinfo.tex: Updated to current version.
+
+2018-05-12         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: Updates.
+
+2018-03-30         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: Updates.
+
+2018-03-11         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: Updates modified month.
+
+2018-02-25         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* 4.2.1: Release tar ball made.
+
+2018-02-17         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: More updates.
+
+2017-02-17         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawk.1: Synchronized with English version.
+
+2018-02-10         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: More updates.
+
+2018-01-26         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: More updates.
+
+2018-01-18         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: More updates.
+
+2017-12-07         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: Synchronize with English original.
+
+2018-01-12         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* gawktexi.in: Remove incorrect '*' on some declarations of
+	ext_id in sample extension code. Thanks to Panos Papadopoulos
+	<panos1962@gmail.com> for the report.
+	* texinfo.tex: Updated from GNULIB.
+
+2017-12-07         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawk.1: New file. (Italian translation of the man page.)
+
+2017-12-05         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: Italian translation updated.
+
+2017-10-19         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* 4.2.0: Release tar ball made.
+
+2017-10-17         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* gawktexi.in (EDITION): Update to 4.2. Also, remove all visible
+	references to http://awk.info; that site no longer exists.  
+
+2017-10-17         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: Italian translation updated.
+
+2017-10-12         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: Italian translation updated.
+
+2017-10-08         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: Italian translation updated.
+
+2017-10-01         Antonio Giovanni Colombo   <azc100@gmail.com>
+
+	* gawktexi.in: Italian translation updated.
+
+2017-04-12         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* ChangeLog: created.
+
+	Italian translation of "The Gawk Manual", contributed
+	by Antonio Giovanni Colombo <azc100@gmail.com>
+	and Marco Curreli <marcocurreli@tiscali.it>.
