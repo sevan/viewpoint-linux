@@ -1,0 +1,51 @@
+2020-04-14         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* 5.1.0: Release tar ball made.
+
+2020-03-11         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* filefuncs.c, ordchr.c, rwarray.c, rwarray0.c: Message updates.
+
+2020-03-06         Jannick               <thirdedition@gmx.net>
+
+	* Makefile.am: Remove trailing spaces.
+	* configure.ac: Use GAWK_CANONICAL_HOST instead of AC_CANONICAL_HOST.
+	Update call to LT_INIT.
+
+2019-11-21         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* time.3am: Document that this extension is now obsolete.
+
+2019-11-03         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* readdir.3am: Document that readdir extension can cause a
+	fatal error, which should be handled with BEGINFILE.
+
+2019-10-16         Andrew J. Schorr      <aschorr@telemetry-investments.com>
+
+	* filefuncs.3am: Enhance the stat() documentation to explain that
+	the returned "name" value equals the argument to the function.
+
+2019-08-21         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* filefuncs.c: Fix a typo in a comment. Update copyright year.
+	* filefuncs.3am: Document statvfs. Thanks to Andrew Schorr
+	for noticing it was missing. Update copyright year.
+
+2019-06-26         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* inplace.3am: Update to match current code's behavior.
+
+2019-06-18         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* 5.0.1: Release tar ball made.
+
+2019-04-18         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* Makefile.am (EXTRA_DIST): Add ChangeLog.1 to the list. Ooops.
+
+2019-04-12         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* ChangeLog.1: Rotated ChangeLog into this file.
+	* ChangeLog: Created anew for gawk 5.0.0 and on.
+	* 5.0.0: Release tar ball made.

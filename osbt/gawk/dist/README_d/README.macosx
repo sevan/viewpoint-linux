@@ -1,0 +1,44 @@
+Fri Feb 23 10:38:05 IST 2018
+============================
+
+On PowerPC Macintosh, things are just weird.
+
+* Using the stock compiler, you can't build gawk (c99 mode) against MPFR;
+there is an issue with duplicate inline functions from GMP.  By default,
+I have disabled this compilation.
+
+* If you build GCC 4.2.4 and use that version of GCC, you can compile gawk
+with MPFR and the C99 settings.  But then the two readfile tests fail.
+The call to read(2) simply returns zero. I have no idea why.
+
+Since nobody but me has one of these left, I'm not going to mess
+with it anymore right now.
+
+Thu Jan 25 20:07:56 IST 2018
+============================
+
+You may need to explicitly tell configure where to find the GNU gettext
+header file and library with --with-libintl-prefix=...'. Otherwise,
+the nlstringtest test will fail.
+
+Mon Apr 13 09:49:40 IDT 2015
+============================
+
+I have reports of success on this compiler:
+
+$ gcc --version
+Configured with: --prefix=/Applications/Xcode.app/Contents/Developer/usr 
+--with-gxx-include-dir=/usr/include/c++/4.2.1
+Apple LLVM version 6.0 (clang-600.0.54) (based on LLVM 3.5svn)
+Target: x86_64-apple-darwin14.1.0
+Thread model: posix
+
+Thu Apr  9 10:39:26 IDT 2015
+============================
+
+There are reports of compilation issues on Mac OS X 10.10 (Yosemite).
+The only compiler reported to have produced a complete pass of
+"make check" is the MacPorts compiler, /opt/local/bin/clang-mp-3.5.
+
+Arnold Robbins
+arnold@skeeve.com

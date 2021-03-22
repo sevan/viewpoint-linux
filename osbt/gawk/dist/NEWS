@@ -1,0 +1,91 @@
+   Copyright (C) 2019, 2020 Free Software Foundation, Inc.
+   
+   Copying and distribution of this file, with or without modification,
+   are permitted in any medium without royalty provided the copyright
+   notice and this notice are preserved.
+
+Changes from 5.0.1 to 5.1.0
+---------------------------
+
+1. The major version of the API is bumped to 3, something that should
+   have happened at the 5.0.0 release but didn't.
+
+2. A number of memory leak issues have been fixed.
+
+3. Infrastructure upgrades: Bison 3.5.4, Texinfo 6.7, Gettext 0.20.1,
+   Automake 1.16.2.
+
+4. The indexing in the manual has been thoroughly revised, in particular
+   making use of the facilities in Texinfo 6.7.  That version (or newer)
+   must be used to format the manual.
+
+5. MSYS2 is now supported out-of-the-box by configure.
+
+6. Several bugs have been fixed.  See the ChangeLog for details.
+
+Changes from 5.0.0 to 5.0.1
+---------------------------
+
+1. A number of ChangeLog.1 files that were left out of the distribution
+   have been restored.
+
+2. Multiple syntax errors should no longer be able to cause a core dump.
+
+3. Sandbox mode now disallows assigning new filename values in ARGV that
+   were not there when gawk was invoked.
+
+4. There are many small documentation improvements in the manual.
+
+5. The new argument "no-ext" to --lint disables ``XXX is a gawk extension''
+   lint warnings.
+
+6. Infrastructure upgrades: Bison 3.4.
+
+7. A number of bugs, some of them quite significant, have been fixed.
+   See the ChangeLog for details.
+
+Changes from 4.2.1 to 5.0.0
+---------------------------
+
+1. Support for the POSIX standard %a and %A printf formats has been added.
+
+2. The test infrastructure has been greatly improved, simplifying the
+   contents of test/Makefile.am and making it possible to generate
+   pc/Makefile.tst from test/Makefile.in.
+
+3. The regex routines have been replaced with those from GNULIB, allowing
+   me to stop carrying forward decades of changes against the original
+   ones from GLIBC.
+
+4. Infrastructure upgrades: Bison 3.3, Automake 1.16.1, Gettext 0.19.8.1,
+   makeinfo 6.5.
+
+5. The undocumented configure option and code that enabled the use of
+   non-English "letters" in identifiers is now gone.
+
+6. The `--with-whiny-user-strftime' configuration option is now gone.
+
+7. The code now makes some stronger assumptions about a C99 environment.
+
+8. PROCINFO["platform"] yields a string indicating the platform for
+   which gawk was compiled.
+
+9. Writing to elements of SYMTAB that are not variable names now
+   causes a fatal error. THIS CHANGES BEHAVIOR.
+
+10. Comment handling in the pretty-printer has been reworked almost completely
+    from scratch. As a result, comments in many corner cases that were
+    previously lost are now included in the formatted output.
+
+11. Namespaces have been implemented! See the manual.  One consequence of this
+    is that files included with -i, read with -f, and command line program
+    segments must all be self-contained syntactic units. E.g., you can no
+    longer do something like this:
+
+   	gawk -e 'BEGIN {' -e 'print "hello" }'
+
+12. Gawk now uses the locale settings for ignoring case in single byte
+    locales, instead of hardwiring in Latin-1.
+
+13. A number of bugs, some of them quite significant, have been fixed.
+    See the ChangeLog for details.

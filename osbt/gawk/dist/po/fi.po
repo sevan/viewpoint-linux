@@ -1,0 +1,4347 @@
+# Finnish messages for gawk.
+# Copyright © 2010, 2011, 2012, 2013, 2014, 2015, 2017 Free Software Foundation, Inc.
+# This file is distributed under the same license as the gawk package.
+# Jorma Karvonen <karvonen.jorma@gmail.com>, 2010-2015, 2017.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gawk 4.1.62\n"
+"Report-Msgid-Bugs-To: bug-gawk@gnu.org\n"
+"POT-Creation-Date: 2020-04-14 14:48+0300\n"
+"PO-Revision-Date: 2017-08-19 12:18+0300\n"
+"Last-Translator: Jorma Karvonen <karvonen.jorma@gmail.com>\n"
+"Language-Team: Finnish <translation-team-fi@lists.sourceforge.net>\n"
+"Language: fi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Bugs: Report translation errors to the Language-Team address.\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.0.1\n"
+
+#: array.c:248
+#, c-format
+msgid "from %s"
+msgstr "taulukosta %s"
+
+#: array.c:349
+msgid "attempt to use a scalar value as array"
+msgstr "yritettiin käyttää skalaariarvoa taulukkona"
+
+#: array.c:351
+#, c-format
+msgid "attempt to use scalar parameter `%s' as an array"
+msgstr "yritettiin käyttää skalaariparametria ”%s” taulukkona"
+
+#: array.c:354
+#, c-format
+msgid "attempt to use scalar `%s' as an array"
+msgstr "yritettiin käyttää skalaaria ”%s” taulukkona"
+
+#: array.c:401 array.c:568 builtin.c:89 builtin.c:1688 builtin.c:1734
+#: builtin.c:1747 builtin.c:2242 builtin.c:2269 eval.c:1151 eval.c:1155
+#: eval.c:1530
+#, c-format
+msgid "attempt to use array `%s' in a scalar context"
+msgstr "yritettiin käyttää taulukkoa ”%s” skalaarikontekstissa"
+
+#: array.c:575
+#, c-format
+msgid "delete: index `%.*s' not in array `%s'"
+msgstr "delete: indeksi ”%.*s” ei ole taulukossa ”%s”"
+
+#: array.c:589
+#, c-format
+msgid "attempt to use scalar `%s[\"%.*s\"]' as an array"
+msgstr "yritettiin käyttää skalaaria ”%s[\"%.*s\"]” taulukkona"
+
+#: array.c:783 array.c:831
+#, fuzzy, c-format
+msgid "%s: first argument is not an array"
+msgstr "asort: ensimmäinen argumentti ei ole taulukko"
+
+#: array.c:824
+#, fuzzy, c-format
+msgid "%s: second argument is not an array"
+msgstr "split: toinen argumentti ei ole taulukko"
+
+#: array.c:835
+#, fuzzy, c-format
+msgid "%s: first argument cannot be SYMTAB"
+msgstr "asort: ensimmäinen argumentti ei ole taulukko"
+
+#: array.c:838
+#, fuzzy, c-format
+msgid "%s: first argument cannot be FUNCTAB"
+msgstr "asort: ensimmäinen argumentti ei ole taulukko"
+
+#: array.c:844
+#, fuzzy, c-format
+msgid "%s: cannot use a subarray of first argument for second argument"
+msgstr ""
+"asort: ensimmäisen argumentin alitaulukon käyttö toiselle argumentille "
+"epäonnistui"
+
+#: array.c:849
+#, fuzzy, c-format
+msgid "%s: cannot use a subarray of second argument for first argument"
+msgstr ""
+"asort: toisen argumentin alitaulukon käyttö ensimmäiselle argumentille "
+"epäonnistui"
+
+#: array.c:1355
+#, c-format
+msgid "`%s' is invalid as a function name"
+msgstr "”%s” on virheellinen funktionimenä"
+
+#: array.c:1359
+#, c-format
+msgid "sort comparison function `%s' is not defined"
+msgstr "lajitteluvertailufunktiota ”%s” ei ole määritelty"
+
+#: awkgram.y:275
+#, c-format
+msgid "%s blocks must have an action part"
+msgstr "%s lohkoilla on oltava toiminto-osa"
+
+#: awkgram.y:278
+msgid "each rule must have a pattern or an action part"
+msgstr "jokaisella säännöllä on oltava malli tai toiminto-osa"
+
+#: awkgram.y:419 awkgram.y:431
+msgid "old awk does not support multiple `BEGIN' or `END' rules"
+msgstr "vanha awk ei tue useita ”BEGIN”- tai ”END”-sääntöjä"
+
+#: awkgram.y:484
+#, c-format
+msgid "`%s' is a built-in function, it cannot be redefined"
+msgstr "”%s” on sisäänrakennettu funktio. Sitä ei voi määritellä uudelleen"
+
+#: awkgram.y:548
+msgid "regexp constant `//' looks like a C++ comment, but is not"
+msgstr ""
+"säännöllisen lausekkeen vakio ”//” näyttää C++-kommentilta, mutta ei ole"
+
+#: awkgram.y:552
+#, c-format
+msgid "regexp constant `/%s/' looks like a C comment, but is not"
+msgstr ""
+"säännöllisen lausekkeen vakio ”/%s/” näyttää C-kommentilta, mutta ei ole"
+
+#: awkgram.y:679
+#, c-format
+msgid "duplicate case values in switch body: %s"
+msgstr "kaksi samanlaista case-arvoa switch-rakenteen rungossa: %s"
+
+#: awkgram.y:700
+msgid "duplicate `default' detected in switch body"
+msgstr "kaksoiskappale ”default” havaittu switch-rungossa"
+
+#: awkgram.y:1036 awkgram.y:4463
+msgid "`break' is not allowed outside a loop or switch"
+msgstr "”break” ei ole sallittu silmukan tai switch-lauseen ulkopuolella"
+
+#: awkgram.y:1046 awkgram.y:4455
+msgid "`continue' is not allowed outside a loop"
+msgstr "”continue” ei ole sallittu silmukan ulkopuolella"
+
+#: awkgram.y:1057
+#, c-format
+msgid "`next' used in %s action"
+msgstr "”next” käytetty %s-toiminnossa"
+
+#: awkgram.y:1068
+#, c-format
+msgid "`nextfile' used in %s action"
+msgstr "”nextfile” käytetty %s-toiminnossa"
+
+#: awkgram.y:1096
+msgid "`return' used outside function context"
+msgstr "”return” käytetty funktiokontekstin ulkopuolella"
+
+#: awkgram.y:1169
+msgid "plain `print' in BEGIN or END rule should probably be `print \"\"'"
+msgstr ""
+"pelkkä ”print” BEGIN- tai END-säännössä pitäisi luultavasti olla ”print \"\"”"
+
+#: awkgram.y:1239 awkgram.y:1288
+msgid "`delete' is not allowed with SYMTAB"
+msgstr "”delete” ei ole sallittu kohteessa SYMTAB"
+
+#: awkgram.y:1241 awkgram.y:1290
+msgid "`delete' is not allowed with FUNCTAB"
+msgstr "”delete” ei ole sallittu kohteessa FUNCTAB"
+
+#: awkgram.y:1275 awkgram.y:1279
+msgid "`delete(array)' is a non-portable tawk extension"
+msgstr "”delete(array)” ei ole siirrettävä tawk-laajennus"
+
+#: awkgram.y:1415
+msgid "multistage two-way pipelines don't work"
+msgstr "monivaiheiset kaksisuuntaiset putket eivät toimi"
+
+#: awkgram.y:1417
+msgid "concatenation as I/O `>' redirection target is ambiguous"
+msgstr ""
+
+#: awkgram.y:1623
+msgid "regular expression on right of assignment"
+msgstr "säännöllinen lauseke sijoituksen oikealla puolella"
+
+#: awkgram.y:1638 awkgram.y:1651
+msgid "regular expression on left of `~' or `!~' operator"
+msgstr "säännöllinen lauseke ”~”- tai ”!~”-operaattorin vasemmalla puolella"
+
+#: awkgram.y:1668 awkgram.y:1818
+msgid "old awk does not support the keyword `in' except after `for'"
+msgstr "vanha awk ei tue avainsanaa ”in” paitsi ”for”-sanan jälkeen"
+
+#: awkgram.y:1678
+msgid "regular expression on right of comparison"
+msgstr "säännöllinen lauseke vertailun oikealla puolella"
+
+#: awkgram.y:1797
+#, c-format
+msgid "non-redirected `getline' invalid inside `%s' rule"
+msgstr "edelleenohjaamaton ”getline” virheellinen ”%s”-säännön sisällä"
+
+#: awkgram.y:1800
+msgid "non-redirected `getline' undefined inside END action"
+msgstr "edelleenohjaamaton ”getline” määrittelemätön END-toiminnon sisällä"
+
+#: awkgram.y:1820
+msgid "old awk does not support multidimensional arrays"
+msgstr "vanha awk ei tue moniulotteisia taulukkoja"
+
+#: awkgram.y:1923
+msgid "call of `length' without parentheses is not portable"
+msgstr "”length”-kutsu ilman sulkumerkkejä ei ole siirrettävä"
+
+#: awkgram.y:1997
+msgid "indirect function calls are a gawk extension"
+msgstr "epäsuorat funktiokutsut ovat gawk-laajennus"
+
+#: awkgram.y:2010
+#, fuzzy, c-format
+msgid "cannot use special variable `%s' for indirect function call"
+msgstr "erikoismuuttujan ”%s” käyttö epäsuoralle funktiokutsulle epäonnistui"
+
+#: awkgram.y:2043
+#, c-format
+msgid "attempt to use non-function `%s' in function call"
+msgstr "yritys käyttää ei-funktio ”%s” funktiokutsussa"
+
+#: awkgram.y:2108
+msgid "invalid subscript expression"
+msgstr "virheellinen indeksointilauseke"
+
+#: awkgram.y:2481 awkgram.y:2501 gawkapi.c:273 gawkapi.c:290 msg.c:137
+msgid "warning: "
+msgstr "varoitus: "
+
+#: awkgram.y:2499 gawkapi.c:245 gawkapi.c:288 msg.c:169
+msgid "fatal: "
+msgstr "tuhoisa: "
+
+#: awkgram.y:2552
+msgid "unexpected newline or end of string"
+msgstr "odottamaton rivinvaihto tai merkkijonon loppu"
+
+#: awkgram.y:2573
+msgid ""
+"source files / command-line arguments must contain complete functions or "
+"rules"
+msgstr ""
+
+#: awkgram.y:2855 awkgram.y:2933 awkgram.y:3171 debug.c:536 debug.c:552
+#: debug.c:2829 debug.c:5195
+#, fuzzy, c-format
+msgid "cannot open source file `%s' for reading: %s"
+msgstr "lähdetiedoston ”%s” avaaminen lukemista varten (%s) epäonnistui"
+
+#: awkgram.y:2856 awkgram.y:2993
+#, fuzzy, c-format
+msgid "cannot open shared library `%s' for reading: %s"
+msgstr "jaetun kirjaston ”%s” avaaminen lukemista varten (%s) epäonnistui"
+
+#: awkgram.y:2858 awkgram.y:2934 awkgram.y:2994 builtin.c:150 debug.c:5346
+msgid "reason unknown"
+msgstr "syy tuntematon"
+
+#: awkgram.y:2867 awkgram.y:2891
+#, fuzzy, c-format
+msgid "cannot include `%s' and use it as a program file"
+msgstr "kohteen ”%s” sisällyttäminen ja käyttö ohjelmatiedostona epäonnistui"
+
+#: awkgram.y:2880
+#, c-format
+msgid "already included source file `%s'"
+msgstr "on jo sisällytetty lähdetiedostoon ”%s”"
+
+#: awkgram.y:2881
+#, c-format
+msgid "already loaded shared library `%s'"
+msgstr "jaettu kirjasto ”%s” on jo ladattu"
+
+#: awkgram.y:2918
+msgid "@include is a gawk extension"
+msgstr "@include on gawk-laajennus"
+
+#: awkgram.y:2924
+msgid "empty filename after @include"
+msgstr "tyhjä tiedostonimi @include:n jälkeen"
+
+#: awkgram.y:2973
+msgid "@load is a gawk extension"
+msgstr "@load on gawk-laajennus"
+
+#: awkgram.y:2980
+msgid "empty filename after @load"
+msgstr "tyhjä tiedostonimi @load:n jälkeen"
+
+#: awkgram.y:3123
+msgid "empty program text on command line"
+msgstr "tyhjä ohjelmateksti komentorivillä"
+
+#: awkgram.y:3239 debug.c:461 debug.c:619
+#, fuzzy, c-format
+msgid "cannot read source file `%s': %s"
+msgstr "lähdetiedoston ”%s” (%s) lukeminen epäonnistui"
+
+#: awkgram.y:3250
+#, c-format
+msgid "source file `%s' is empty"
+msgstr "lähdetiedosto ”%s” on tyhjä"
+
+#: awkgram.y:3310
+#, fuzzy, c-format
+msgid "error: invalid character '\\%03o' in source code"
+msgstr "PEBKAC-virhe: virheellinen merkki ’\\%03o’ lähdekoodissa"
+
+#: awkgram.y:3537
+msgid "source file does not end in newline"
+msgstr "lähdetiedoston lopussa ei ole rivinvaihtoa"
+
+#: awkgram.y:3658
+msgid "unterminated regexp ends with `\\' at end of file"
+msgstr ""
+"päättämätön säännöllinen lauseke loppuu ”\\”-merkkeihin tiedoston lopussa"
+
+#: awkgram.y:3685
+#, c-format
+msgid "%s: %d: tawk regex modifier `/.../%c' doesn't work in gawk"
+msgstr "%s: %d: tawk:n regex-määre ”/.../%c” ei toimi gawk:ssa"
+
+#: awkgram.y:3689
+#, c-format
+msgid "tawk regex modifier `/.../%c' doesn't work in gawk"
+msgstr "tawkin regex-määre ”/.../%c” ei toimi gawkissa"
+
+#: awkgram.y:3702
+msgid "unterminated regexp"
+msgstr "päättämätön säännöllinen lauseke"
+
+#: awkgram.y:3706
+msgid "unterminated regexp at end of file"
+msgstr "päättämätön säännöllinen lauseke tiedoston lopussa"
+
+#: awkgram.y:3795
+msgid "use of `\\ #...' line continuation is not portable"
+msgstr "”\\ #...”-rivijatkamisen käyttö ei ole siirrettävä"
+
+#: awkgram.y:3817
+msgid "backslash not last character on line"
+msgstr "kenoviiva ei ole rivin viimeinen merkki"
+
+#: awkgram.y:3864 awkgram.y:3866
+msgid "multidimensional arrays are a gawk extension"
+msgstr "moniulotteiset taulukot ovat gawk-laajennus"
+
+#: awkgram.y:3891 awkgram.y:3902
+#, fuzzy, c-format
+msgid "POSIX does not allow operator `%s'"
+msgstr "POSIX ei salli operaattoria ”**”"
+
+#: awkgram.y:3893 awkgram.y:3904 awkgram.y:3939 awkgram.y:3947
+#, fuzzy, c-format
+msgid "operator `%s' is not supported in old awk"
+msgstr "operaattoria ”^” ei tueta vanhassa awk:ssa"
+
+#: awkgram.y:4044 awkgram.y:4066 command.y:1187
+msgid "unterminated string"
+msgstr "päättämätön merkkijono"
+
+#: awkgram.y:4054 main.c:1218
+#, fuzzy
+msgid "POSIX does not allow physical newlines in string values"
+msgstr "POSIX ei salli ”\\x”-koodinvaihtoja"
+
+#: awkgram.y:4056 node.c:453
+#, fuzzy
+msgid "backslash string continuation is not portable"
+msgstr "”\\ #...”-rivijatkamisen käyttö ei ole siirrettävä"
+
+#: awkgram.y:4294
+#, c-format
+msgid "invalid char '%c' in expression"
+msgstr "virheellinen merkki ’%c’ lausekkeessa"
+
+#: awkgram.y:4389
+#, c-format
+msgid "`%s' is a gawk extension"
+msgstr "”%s” on gawk-laajennus"
+
+#: awkgram.y:4394
+#, c-format
+msgid "POSIX does not allow `%s'"
+msgstr "POSIX ei salli operaattoria ”%s”"
+
+#: awkgram.y:4402
+#, c-format
+msgid "`%s' is not supported in old awk"
+msgstr "”%s” ei ole tuettu vanhassa awk-ohjelmassa"
+
+#: awkgram.y:4500
+#, fuzzy
+msgid "`goto' considered harmful!"
+msgstr "”goto”-käskyä pidetään haitallisena!\n"
+
+#: awkgram.y:4569
+#, c-format
+msgid "%d is invalid as number of arguments for %s"
+msgstr "%d on virheellinen argumenttilukumäärä operaattorille %s"
+
+#: awkgram.y:4604
+#, fuzzy, c-format
+msgid "%s: string literal as last argument of substitute has no effect"
+msgstr ""
+"%s: merkkijonoliteraalilla ei ole vaikutusta korvauksen viimeisenä "
+"argumenttina"
+
+#: awkgram.y:4609
+#, c-format
+msgid "%s third parameter is not a changeable object"
+msgstr "%s kolmas parametri ei ole vaihdettava objekti"
+
+#: awkgram.y:4713 awkgram.y:4716
+msgid "match: third argument is a gawk extension"
+msgstr "match: kolmas argumentti on gawk-laajennus"
+
+#: awkgram.y:4770 awkgram.y:4773
+msgid "close: second argument is a gawk extension"
+msgstr "close: toinen argumentti on gawk-laajennus"
+
+#: awkgram.y:4785
+msgid "use of dcgettext(_\"...\") is incorrect: remove leading underscore"
+msgstr "dcgettext(_\"...\")-käyttö on virheellinen: poista alaviiva alusta"
+
+#: awkgram.y:4800
+msgid "use of dcngettext(_\"...\") is incorrect: remove leading underscore"
+msgstr "dcngettext(_\"...\")-käyttö on virheellinen: poista alaviiva alusta"
+
+#: awkgram.y:4819
+msgid "index: regexp constant as second argument is not allowed"
+msgstr "indeksi: regexp-vakio toisena argumenttina ei ole sallitttu"
+
+#: awkgram.y:4872
+#, c-format
+msgid "function `%s': parameter `%s' shadows global variable"
+msgstr "funktio ”%s”: parametri ”%s” varjostaa yleismuuttujaa"
+
+#: awkgram.y:4921 debug.c:4179 debug.c:4222 debug.c:5344 profile.c:110
+#, c-format
+msgid "could not open `%s' for writing: %s"
+msgstr "tiedoston ”%s” avaaminen kirjoittamista varten epäonnistui: %s"
+
+#: awkgram.y:4922
+msgid "sending variable list to standard error"
+msgstr "lähetetään muuttujaluettelo vakiovirheeseen"
+
+#: awkgram.y:4930
+#, fuzzy, c-format
+msgid "%s: close failed: %s"
+msgstr "%s: sulkeminen epäonnistui (%s)"
+
+#: awkgram.y:4955
+msgid "shadow_funcs() called twice!"
+msgstr "shadow_funcs() kutsuttu kahdesti!"
+
+#: awkgram.y:4963
+msgid "there were shadowed variables."
+msgstr "siellä oli varjostettuja muuttujia."
+
+#: awkgram.y:5040
+#, c-format
+msgid "function name `%s' previously defined"
+msgstr "funktionimi ”%s” on jo aikaisemmin määritelty"
+
+#: awkgram.y:5091
+#, fuzzy, c-format
+msgid "function `%s': cannot use function name as parameter name"
+msgstr "funktio ”%s”: funktionimen käyttö parametrinimenä epäonnistui"
+
+#: awkgram.y:5094
+#, fuzzy, c-format
+msgid "function `%s': cannot use special variable `%s' as a function parameter"
+msgstr ""
+"funktio ”%s”: erikoismuuttujan ”%s” käyttö funktioparametrina epäonnistui"
+
+#: awkgram.y:5098
+#, fuzzy, c-format
+msgid "function `%s': parameter `%s' cannot contain a namespace"
+msgstr "funktio ”%s”: parametri ”%s” varjostaa yleismuuttujaa"
+
+#: awkgram.y:5105
+#, c-format
+msgid "function `%s': parameter #%d, `%s', duplicates parameter #%d"
+msgstr "funktio ”%s”: parametri #%d, ”%s”, samanlainen parametri #%d"
+
+#: awkgram.y:5194
+#, c-format
+msgid "function `%s' called but never defined"
+msgstr "funktiota ”%s” kutsuttiin, mutta sitä ei ole koskaan määritelty"
+
+#: awkgram.y:5198
+#, c-format
+msgid "function `%s' defined but never called directly"
+msgstr "funktio ”%s” määriteltiin, mutta sitä ei ole koskaan kutsuttu suoraan"
+
+#: awkgram.y:5230
+#, c-format
+msgid "regexp constant for parameter #%d yields boolean value"
+msgstr "säännöllisen lausekkeen vakio parametrille #%d antaa boolean-arvon"
+
+#: awkgram.y:5245
+#, c-format
+msgid ""
+"function `%s' called with space between name and `(',\n"
+"or used as a variable or an array"
+msgstr ""
+"funktio ”%s” kutsuttu välilyönnillä nimen ja ”(”-merkin\n"
+"välillä, tai käytetty muuttujana tai taulukkona"
+
+#: awkgram.y:5454
+msgid "division by zero attempted"
+msgstr "nollalla jakoa yritettiin"
+
+#: awkgram.y:5463
+#, c-format
+msgid "division by zero attempted in `%%'"
+msgstr "jakoa nollalla yritettiin operaattorissa ”%%”"
+
+#: awkgram.y:5802
+msgid ""
+"cannot assign a value to the result of a field post-increment expression"
+msgstr ""
+"arvon sijoittaminen kenttäjälkikasvatuslausekkeen tulokseen epäonnistui"
+
+#: awkgram.y:5805
+#, c-format
+msgid "invalid target of assignment (opcode %s)"
+msgstr "virheellinen sijoituskohde (käskykoodi %s)"
+
+#: awkgram.y:6697
+#, c-format
+msgid "identifier %s: qualified names not allowed in traditional / POSIX mode"
+msgstr ""
+
+#: awkgram.y:6702
+#, c-format
+msgid "identifier %s: namespace separator is two colons, not one"
+msgstr ""
+
+#: awkgram.y:6708
+#, c-format
+msgid "qualified identifier `%s' is badly formed"
+msgstr ""
+
+#: awkgram.y:6715
+#, c-format
+msgid ""
+"identifier `%s': namespace separator can only appear once in a qualified name"
+msgstr ""
+
+#: awkgram.y:6764 awkgram.y:6815
+#, c-format
+msgid "using reserved identifier `%s' as a namespace is not allowed"
+msgstr ""
+
+#: awkgram.y:6771 awkgram.y:6781
+#, c-format
+msgid ""
+"using reserved identifier `%s' as second component of a qualified name is "
+"not allowed"
+msgstr ""
+
+#: awkgram.y:6799
+#, fuzzy
+msgid "@namespace is a gawk extension"
+msgstr "@include on gawk-laajennus"
+
+#: awkgram.y:6806
+#, c-format
+msgid "namespace name `%s' must meet identifier naming rules"
+msgstr ""
+
+#  kohteena voi olla vakiotuloste tai joku muu
+#: builtin.c:144
+#, fuzzy, c-format
+msgid "%s to \"%s\" failed: %s"
+msgstr "%s kohteeseen ”%s” epäonnistui (%s)"
+
+#: builtin.c:148
+msgid "standard output"
+msgstr "vakiotuloste"
+
+#: builtin.c:149
+msgid "standard error"
+msgstr "vakiovirhe"
+
+#: builtin.c:163 builtin.c:493 builtin.c:583 builtin.c:1797 builtin.c:2519
+#: builtin.c:2535 builtin.c:2649 builtin.c:3606 mpfr.c:707
+#, c-format
+msgid "%s: received non-numeric argument"
+msgstr "%s: vastaanotettu argumentti ei ole numeerinen"
+
+#: builtin.c:169
+#, c-format
+msgid "exp: argument %g is out of range"
+msgstr "exp: argumentti %g on lukualueen ulkopuolella"
+
+#: builtin.c:246
+#, c-format
+msgid "fflush: cannot flush: pipe `%.*s' opened for reading, not writing"
+msgstr ""
+"fflush: tyhjentäminen epäonnistui: putki ”%.*s” avattu lukemista varten, ei "
+"kirjoittamiseen"
+
+#: builtin.c:249
+#, c-format
+msgid "fflush: cannot flush: file `%.*s' opened for reading, not writing"
+msgstr ""
+"fflush: tyhjentäminen epäonnistui: tiedosto ”%.*s” avattu lukemista varten, "
+"ei kirjoittamiseen"
+
+#: builtin.c:260
+#, fuzzy, c-format
+msgid "fflush: cannot flush file `%.*s': %s"
+msgstr "fflush: tiedoston ”%.*s” tyhjentäminen epäonnistui"
+
+#: builtin.c:265
+#, c-format
+msgid "fflush: cannot flush: two-way pipe `%.*s' has closed write end"
+msgstr ""
+"fflush: tyhjentäminen epäonnistui: kaksisuuntainen putki ”%.*s” suljettu "
+"kirjoituspäässä"
+
+#: builtin.c:271
+#, c-format
+msgid "fflush: `%.*s' is not an open file, pipe or co-process"
+msgstr "fflush: ”%.*s” ei ole avoin tiedosto, putki tai apuprosessi"
+
+#: builtin.c:378 builtin.c:2034
+#, fuzzy, c-format
+msgid "%s: received non-string first argument"
+msgstr "index: ensimmäinen vastaanotettu argumentti ei ole merkkijono"
+
+#: builtin.c:380
+#, fuzzy, c-format
+msgid "%s: received non-string second argument"
+msgstr "index: toinen vastaanotettu argumentti ei ole merkkijono"
+
+#: builtin.c:532
+msgid "length: received array argument"
+msgstr "length: vastaanotettu taulukkoargumentti"
+
+#: builtin.c:535
+msgid "`length(array)' is a gawk extension"
+msgstr "”length(array)” on gawk-laajennus"
+
+#: builtin.c:554 builtin.c:2124 builtin.c:2182 builtin.c:2434 builtin.c:2465
+#, fuzzy, c-format
+msgid "%s: received non-string argument"
+msgstr "system: vastaanotettu argumentti ei ole merkkijono"
+
+#: builtin.c:586 builtin.c:1801
+#, fuzzy, c-format
+msgid "%s: received negative argument %g"
+msgstr "log: vastaanotettu negatiivinen argumentti %g"
+
+#: builtin.c:786 builtin.c:791 builtin.c:944
+msgid "fatal: must use `count$' on all formats or none"
+msgstr "kohtalokas: on käytettävä ”count$” kaikilla muodoilla tai ei missään"
+
+#: builtin.c:863
+#, c-format
+msgid "field width is ignored for `%%' specifier"
+msgstr "kenttäleveys ohitetaan ”%%%%”-määritteelle"
+
+#: builtin.c:865
+#, c-format
+msgid "precision is ignored for `%%' specifier"
+msgstr "tarkkuus ohitetaan ”%%%%”-määritteelle"
+
+#: builtin.c:867
+#, c-format
+msgid "field width and precision are ignored for `%%' specifier"
+msgstr "kenttäleveys ja tarkkuus ohitetaan ”%%%%”-määritteelle"
+
+#: builtin.c:918
+msgid "fatal: `$' is not permitted in awk formats"
+msgstr "kohtalokas: ”$”-argumentti ei ole sallittu awk-muodoissa"
+
+#: builtin.c:927
+#, fuzzy
+msgid "fatal: argument index with `$' must be > 0"
+msgstr "kohtalokas: argumenttilukumäärän argumentilla ”$” on oltava > 0"
+
+#: builtin.c:931
+#, fuzzy, c-format
+msgid ""
+"fatal: argument index %ld greater than total number of supplied arguments"
+msgstr ""
+"kohtalokas: argumenttilukumäärä %ld on suurempi kuin toimitettujen "
+"argumenttien lukumäärä"
+
+#: builtin.c:935
+msgid "fatal: `$' not permitted after period in format"
+msgstr "kohtalokas: ”$”-argumentti ei ole sallittu pisteen jälkeen muodossa"
+
+#: builtin.c:954
+msgid "fatal: no `$' supplied for positional field width or precision"
+msgstr ""
+"kohtalokas: ei ”$”-argumenttia tarjottu sijantikenttäleveydelle tai "
+"tarkkuudelle"
+
+#: builtin.c:1024
+msgid "`l' is meaningless in awk formats; ignored"
+msgstr "”l” on merkityksetön awk-muodoissa; ohitetaan"
+
+#: builtin.c:1028
+msgid "fatal: `l' is not permitted in POSIX awk formats"
+msgstr "kohtalokas: ”l” ei ole sallittu POSIX awk -muodoissa"
+
+#: builtin.c:1041
+msgid "`L' is meaningless in awk formats; ignored"
+msgstr "”L” on merkityksetön awk-muodoissa; ohitetaan"
+
+#: builtin.c:1045
+msgid "fatal: `L' is not permitted in POSIX awk formats"
+msgstr "kohtalokas: ”L” ei ole sallittu POSIX awk -muodoissa"
+
+#: builtin.c:1058
+msgid "`h' is meaningless in awk formats; ignored"
+msgstr "”h” on merkityksetön awk-muodoissa; ohitetaan"
+
+#: builtin.c:1062
+msgid "fatal: `h' is not permitted in POSIX awk formats"
+msgstr "kohtalokas: ”h” ei ole sallittu POSIX awk -muodoissa"
+
+#: builtin.c:1092
+#, c-format
+msgid "[s]printf: value %g is too big for %%c format"
+msgstr "[s]printf: arvo %g on liian suuri %%c-muodolle"
+
+#: builtin.c:1105
+#, c-format
+msgid "[s]printf: value %g is not a valid wide character"
+msgstr "[s]printf: arvo %g ei ole kelvollinen leveä merkki"
+
+#: builtin.c:1497
+#, c-format
+msgid "[s]printf: value %g is out of range for `%%%c' format"
+msgstr "[s]printf: arvo %g on lukualueen ulkopuolella ”%%%c”-muodolle"
+
+#: builtin.c:1505
+#, fuzzy, c-format
+msgid "[s]printf: value %s is out of range for `%%%c' format"
+msgstr "[s]printf: arvo %g on lukualueen ulkopuolella ”%%%c”-muodolle"
+
+#: builtin.c:1530
+#, c-format
+msgid "%%%c format is POSIX standard but not portable to other awks"
+msgstr ""
+
+#: builtin.c:1630
+#, c-format
+msgid "ignoring unknown format specifier character `%c': no argument converted"
+msgstr ""
+"ohitetaan tuntematon muotoargumenttimerkki ”%c”: ei muunnettu argumenttia"
+
+#: builtin.c:1635
+msgid "fatal: not enough arguments to satisfy format string"
+msgstr "kohtalokas: ei kylliksi argumentteja muotomerkkijonon tyydyttämiseksi"
+
+#: builtin.c:1637
+msgid "^ ran out for this one"
+msgstr "^ tällainen loppui kesken"
+
+#: builtin.c:1644
+msgid "[s]printf: format specifier does not have control letter"
+msgstr "[s]printf: muotoargumentilla ei ole ohjauskirjainta"
+
+#: builtin.c:1647
+msgid "too many arguments supplied for format string"
+msgstr "muotomerkkijonoon toimitettu liian monta argumenttia"
+
+#: builtin.c:1707
+msgid "sprintf: no arguments"
+msgstr "sprintf: ei argumentteja"
+
+#: builtin.c:1730 builtin.c:1741
+msgid "printf: no arguments"
+msgstr "printf: ei argumentteja"
+
+#: builtin.c:1756
+msgid "printf: attempt to write to closed write end of two-way pipe"
+msgstr ""
+"printf: yritettiin kirjoittaa kaksisuuntaisen putken suljettuun "
+"kirjoituspäähän"
+
+#: builtin.c:1832
+#, c-format
+msgid "substr: length %g is not >= 1"
+msgstr "substr: pituus %g ei ole >= 1"
+
+#: builtin.c:1834
+#, c-format
+msgid "substr: length %g is not >= 0"
+msgstr "substr: pituus %g ei ole >= 0"
+
+#: builtin.c:1848
+#, c-format
+msgid "substr: non-integer length %g will be truncated"
+msgstr "substr: typistetään pituus %g, joka ei ole kokonaisluku"
+
+#: builtin.c:1853
+#, c-format
+msgid "substr: length %g too big for string indexing, truncating to %g"
+msgstr ""
+"substr: pituus %g liian suuri merkkijononindeksointiin, typistetään arvoon %g"
+
+#: builtin.c:1865
+#, c-format
+msgid "substr: start index %g is invalid, using 1"
+msgstr "substr: aloitusindeksi %g on virheellinen, käytetään 1:tä"
+
+#: builtin.c:1870
+#, c-format
+msgid "substr: non-integer start index %g will be truncated"
+msgstr "substr: typistetään aloitusindeksi %g, joka ei ole kokonaisluku"
+
+#: builtin.c:1893
+msgid "substr: source string is zero length"
+msgstr "substr: lähdemerkkijono on nollapituinen"
+
+#: builtin.c:1907
+#, c-format
+msgid "substr: start index %g is past end of string"
+msgstr "substr: aloitusindeksi %g on merkkijonon lopun jälkeen"
+
+#: builtin.c:1915
+#, c-format
+msgid ""
+"substr: length %g at start index %g exceeds length of first argument (%lu)"
+msgstr ""
+"substr: pituus %g alkuindeksissä %g ylittää ensimmäisen argumentin pituuden "
+"(%lu)"
+
+#: builtin.c:1988
+msgid "strftime: format value in PROCINFO[\"strftime\"] has numeric type"
+msgstr ""
+"strftime: muotoarvolla kohteessa PROCINFO[\"strftime\"] on numerotyyppi"
+
+#: builtin.c:2008 builtin.c:2500 builtin.c:3438 builtin.c:3477 builtin.c:4032
+#, fuzzy, c-format
+msgid "%s: received non-numeric second argument"
+msgstr "or: toinen vastaanotettu argumentti ei ole numeerinen"
+
+#: builtin.c:2018
+msgid "strftime: second argument less than 0 or too big for time_t"
+msgstr ""
+"strftime: toinen argumentti on pienempi kuin 0 tai liian suuri time_t-"
+"rakenteeseen"
+
+#: builtin.c:2025
+msgid "strftime: second argument out of range for time_t"
+msgstr "strftime: kohteen time_t toinen argumentti lukualueen ulkopuolella"
+
+#: builtin.c:2041
+msgid "strftime: received empty format string"
+msgstr "strftime: vastaanotettu tyhjä muotomerkkijono"
+
+#: builtin.c:2141
+msgid "mktime: at least one of the values is out of the default range"
+msgstr "mktime: vähintään yksi arvoista on oletuslukualueen ulkopuolella"
+
+#: builtin.c:2177
+msgid "'system' function not allowed in sandbox mode"
+msgstr "’system’-funktio ei ole sallittu hiekkalaatikkotilassa"
+
+#: builtin.c:2251 builtin.c:2326
+msgid "print: attempt to write to closed write end of two-way pipe"
+msgstr ""
+"print: yritettiin kirjoittaa kaksisuuntaisen putken suljettuun "
+"kirjoituspäähän"
+
+#: builtin.c:2349
+#, c-format
+msgid "reference to uninitialized field `$%d'"
+msgstr "viite alustamattomaan kenttään ”$%d”"
+
+#: builtin.c:2498 builtin.c:3436 builtin.c:3475 builtin.c:4030
+#, fuzzy, c-format
+msgid "%s: received non-numeric first argument"
+msgstr "or: ensimmäinen vastaanotettu argumentti ei ole numeerinen"
+
+#: builtin.c:2680
+msgid "match: third argument is not an array"
+msgstr "match: kolmas argumentti ei ole taulukko"
+
+#: builtin.c:2923
+#, c-format
+msgid "gensub: third argument `%.*s' treated as 1"
+msgstr "gensub: kolmatta argumenttia  ”%.*s” käsiteltiin kuin 1:stä"
+
+#: builtin.c:3246
+#, c-format
+msgid "%s: can be called indirectly only with two arguments"
+msgstr "%s: voidaan kutsua epäsuorasti vain kahdella argumentilla"
+
+#: builtin.c:3369
+#, c-format
+msgid "indirect call to %s requires at least two arguments"
+msgstr "epäsuora kutsu kohteeseen %s vaatii vähintään kaksi argumenttia"
+
+#: builtin.c:3444
+#, c-format
+msgid "lshift(%f, %f): negative values are not allowed"
+msgstr "lshift(%f, %f): negatiiviset arvot eivät ole sallittuja"
+
+#: builtin.c:3448
+#, c-format
+msgid "lshift(%f, %f): fractional values will be truncated"
+msgstr "lshift(%f, %f): jaosarvot typistetään"
+
+#: builtin.c:3450
+#, c-format
+msgid "lshift(%f, %f): too large shift value will give strange results"
+msgstr "lshift(%f, %f): liian suuri siirrosarvo antaa outoja tuloksia"
+
+#: builtin.c:3483
+#, c-format
+msgid "rshift(%f, %f): negative values are not allowed"
+msgstr "rshift(%f, %f): negatiiviset arvot eivät ole sallittuja"
+
+#: builtin.c:3487
+#, c-format
+msgid "rshift(%f, %f): fractional values will be truncated"
+msgstr "rshift(%f, %f): jaosarvot typistetään"
+
+#: builtin.c:3489
+#, c-format
+msgid "rshift(%f, %f): too large shift value will give strange results"
+msgstr "rshift(%f, %f): liian suuri siirrosarvo antaa outoja tuloksia"
+
+#: builtin.c:3513 builtin.c:3544 builtin.c:3574
+#, fuzzy, c-format
+msgid "%s: called with less than two arguments"
+msgstr "or: kutsuttu vähemmällä kuin kahdella argumentilla"
+
+#: builtin.c:3518 builtin.c:3549 builtin.c:3580
+#, fuzzy, c-format
+msgid "%s: argument %d is non-numeric"
+msgstr "or: argumentti %d ei ole numeraaliargumentti"
+
+#: builtin.c:3522 builtin.c:3553 builtin.c:3584
+#, fuzzy, c-format
+msgid "%s: argument %d negative value %g is not allowed"
+msgstr "%s: argumentin #%d negatiivinen arvo %Rg ei ole sallittu"
+
+#: builtin.c:3611
+#, c-format
+msgid "compl(%f): negative value is not allowed"
+msgstr "compl(%f): negatiivinen arvo ei ole sallittu"
+
+#: builtin.c:3614
+#, c-format
+msgid "compl(%f): fractional value will be truncated"
+msgstr "compl(%f): jaosarvo typistetään"
+
+#: builtin.c:3798
+#, c-format
+msgid "dcgettext: `%s' is not a valid locale category"
+msgstr "dcgettext: ”%s” ei ole kelvollinen paikallinen kategoria"
+
+#: builtin.c:4022 mpfr.c:1203
+msgid "intdiv: third argument is not an array"
+msgstr "intdiv: kolmas argumentti ei ole taulukko"
+
+#: builtin.c:4041 mpfr.c:1252
+msgid "intdiv: division by zero attempted"
+msgstr "intdiv: nollalla jakoa yritettiin"
+
+#: builtin.c:4080
+#, fuzzy
+msgid "typeof: second argument is not an array"
+msgstr "split: toinen argumentti ei ole taulukko"
+
+#: builtin.c:4152
+#, c-format
+msgid ""
+"typeof detected invalid flags combination `%s'; please file a bug report."
+msgstr ""
+
+#: builtin.c:4172
+#, c-format
+msgid "typeof: invalid argument type `%s'"
+msgstr "typeof: virheellinen argumenttityyppi ”%s”"
+
+#: builtin.c:4176
+#, fuzzy, c-format
+msgid "typeof: unknown argument type `%s'"
+msgstr "typeof: virheellinen argumenttityyppi ”%s”"
+
+#: cint_array.c:1268 cint_array.c:1296
+#, c-format
+msgid "cannot add a new file (%.*s) to ARGV in sandbox mode"
+msgstr ""
+
+#: command.y:227
+#, fuzzy, c-format
+msgid "Type (g)awk statement(s). End with the command `end'\n"
+msgstr "Kirjoita (g)awk-lause(et). Lopeta komennolla \"end\"\n"
+
+#: command.y:291
+#, c-format
+msgid "invalid frame number: %d"
+msgstr "virheellinen kehysnumero: %d"
+
+#: command.y:297
+#, fuzzy, c-format
+msgid "info: invalid option - `%s'"
+msgstr "info: virheellinen valitsin -- ”%s”"
+
+#: command.y:323
+#, fuzzy, c-format
+msgid "source: `%s': already sourced."
+msgstr "source ”%s”: on jo merkitty lähteeksi."
+
+#: command.y:328
+#, fuzzy, c-format
+msgid "save: `%s': command not permitted."
+msgstr "save ”%s”: komento ei ole sallittu."
+
+#: command.y:341
+#, fuzzy
+msgid "cannot use command `commands' for breakpoint/watchpoint commands"
+msgstr ""
+"Komennon ”commands” käyttö breakpoint/watchpoint-komentoja varten epäonnistui"
+
+#: command.y:343
+msgid "no breakpoint/watchpoint has been set yet"
+msgstr "yhtään breakpoint/watchpoint -kohdetta ei ole vielä asetettu"
+
+#: command.y:345
+msgid "invalid breakpoint/watchpoint number"
+msgstr "virheellinen breakpoint/watchpoint-numero"
+
+#: command.y:350
+#, c-format
+msgid "Type commands for when %s %d is hit, one per line.\n"
+msgstr "Kirjoita komennot, kun %s %d osui, yksi per rivi.\n"
+
+#: command.y:352
+#, fuzzy, c-format
+msgid "End with the command `end'\n"
+msgstr "Lopeta komennolla ”end”\n"
+
+#: command.y:359
+msgid "`end' valid only in command `commands' or `eval'"
+msgstr "”end” on kelvollinen vain komennoissa ”commands” tai ”eval”"
+
+#: command.y:369
+msgid "`silent' valid only in command `commands'"
+msgstr "”silent” on kelvollinen vain komennossa ”commands”"
+
+#: command.y:375
+#, fuzzy, c-format
+msgid "trace: invalid option - `%s'"
+msgstr "trace: virheellinen valitsin -- ”%s”"
+
+#: command.y:389
+msgid "condition: invalid breakpoint/watchpoint number"
+msgstr "condition: virheellinen breakpoint/watchpoint-numero"
+
+#: command.y:451
+msgid "argument not a string"
+msgstr "argumentti ei ole merkkijono"
+
+#: command.y:461 command.y:466
+#, fuzzy, c-format
+msgid "option: invalid parameter - `%s'"
+msgstr "option: virheellinen parametri - ”%s”"
+
+#: command.y:476
+#, fuzzy, c-format
+msgid "no such function - `%s'"
+msgstr "tuntematon funktio - ”%s”"
+
+#: command.y:533
+#, fuzzy, c-format
+msgid "enable: invalid option - `%s'"
+msgstr "enable: virheellinen valitsin -- ”%s”"
+
+#: command.y:599
+#, c-format
+msgid "invalid range specification: %d - %d"
+msgstr "virheellinen lukualuemäärittely: %d - %d"
+
+#: command.y:661
+msgid "non-numeric value for field number"
+msgstr "ei-numeerinen arvo kenttänumerolle"
+
+#: command.y:682 command.y:689
+msgid "non-numeric value found, numeric expected"
+msgstr "löytyi ei-numeerinen arvo, odotettiin numeraalia"
+
+#: command.y:714 command.y:720
+msgid "non-zero integer value"
+msgstr "nollasta poikkeava kokonaislukuarvo"
+
+#: command.y:819
+msgid ""
+"backtrace [N] - print trace of all or N innermost (outermost if N < 0) "
+"frames."
+msgstr ""
+"backtrace [N] - tulosta kaikkien tai N:n sisimmäisen (ulommaisin, jos N < 0) "
+"kehyksen jäljet."
+
+#: command.y:821
+msgid ""
+"break [[filename:]N|function] - set breakpoint at the specified location."
+msgstr ""
+"break [[filename:]N|function] - aseta breakpoint määriteltyyn sijaintiin."
+
+#: command.y:823
+msgid "clear [[filename:]N|function] - delete breakpoints previously set."
+msgstr ""
+"clear [[filename:]N|function] - poista aiemmin asetetut breakpoint-kohdat."
+
+#: command.y:825
+msgid ""
+"commands [num] - starts a list of commands to be executed at a "
+"breakpoint(watchpoint) hit."
+msgstr ""
+"commands [num] - aloittaa komentojen luettelon, joka suoritetaan "
+"keskeytyskohta(watchpoint)osumassa."
+
+#: command.y:827
+msgid "condition num [expr] - set or clear breakpoint or watchpoint condition."
+msgstr ""
+"condition num [expr] - aseta tai nollaa keskeytyskohta- tai vahtikohtaehdot."
+
+#: command.y:829
+msgid "continue [COUNT] - continue program being debugged."
+msgstr "continue [COUNT] - continue program being debugged."
+
+#: command.y:831
+msgid "delete [breakpoints] [range] - delete specified breakpoints."
+msgstr ""
+"delete [keskeytyskohdat] [lukualue] - poista määritellyt keskeytyskohdat."
+
+#: command.y:833
+msgid "disable [breakpoints] [range] - disable specified breakpoints."
+msgstr ""
+"disable [keskeytyskohdat] [lukualue] - ota pois käytöstä määritellyt "
+"keskeytyskohdat."
+
+#: command.y:835
+msgid "display [var] - print value of variable each time the program stops."
+msgstr ""
+"display [muuttuja] - tulosta muuttujan arvo joka kerta kun ohjelma pysähtyy."
+
+#: command.y:837
+msgid "down [N] - move N frames down the stack."
+msgstr "down [N] - siirrä N kehystä alaspäin pinossa."
+
+#: command.y:839
+msgid "dump [filename] - dump instructions to file or stdout."
+msgstr "dump [tiedostonimi] - vedosta käskyt tiedostoon tai vakiotulosteeseen."
+
+#: command.y:841
+msgid "enable [once|del] [breakpoints] [range] - enable specified breakpoints."
+msgstr ""
+"enable [once|del] [keskeytyskohdat] [lukualue] - ota käyttöön määritellyt "
+"keskeytyskohdat."
+
+#: command.y:843
+msgid "end - end a list of commands or awk statements."
+msgstr "end - lopeta komentojen tai awk-lauseiden luottelo."
+
+#: command.y:845
+msgid "eval stmt|[p1, p2, ...] - evaluate awk statement(s)."
+msgstr "eval stmt|[p1, p2, ...] - evaloi awk-lauseet."
+
+#: command.y:847
+msgid "exit - (same as quit) exit debugger."
+msgstr "exit - (sama kuin quit) poistu vianjäljittäjästä."
+
+#: command.y:849
+msgid "finish - execute until selected stack frame returns."
+msgstr "finish - suorita kunnes palautetaan valittu pinokehys."
+
+#: command.y:851
+msgid "frame [N] - select and print stack frame number N."
+msgstr "frame [N] - valitse ja tulosta pinokehys numero N."
+
+#: command.y:853
+msgid "help [command] - print list of commands or explanation of command."
+msgstr "help [komento] - tulosta komentoluettelo tai komennon selitys."
+
+#: command.y:855
+msgid "ignore N COUNT - set ignore-count of breakpoint number N to COUNT."
+msgstr ""
+"ignore N COUNT - aseta keskeytyskohdan ignore-count numero N arvoon COUNT."
+
+#: command.y:857
+msgid ""
+"info topic - source|sources|variables|functions|break|frame|args|locals|"
+"display|watch."
+msgstr ""
+"info aihe - source|sources|variables|functions|break|frame|args|locals|"
+"display|watch."
+
+#: command.y:859
+msgid "list [-|+|[filename:]lineno|function|range] - list specified line(s)."
+msgstr ""
+"list [-|+|[tiedostonimi:]rivinumero|funktio|lukualue] - luettele määritellyt "
+"rivit."
+
+#: command.y:861
+msgid "next [COUNT] - step program, proceeding through subroutine calls."
+msgstr "next [COUNT] - askella ohjelmaa, etene alirutiinikutsujen kautta."
+
+#: command.y:863
+msgid ""
+"nexti [COUNT] - step one instruction, but proceed through subroutine calls."
+msgstr ""
+"nexti [COUNT] - askella yksi käsky, mutta etene alirutiinikutsujen kautta."
+
+#: command.y:865
+msgid "option [name[=value]] - set or display debugger option(s)."
+msgstr "option [nimi[=arvo]] - aseta tai näytä vianjäljittäjävalitsimet."
+
+#: command.y:867
+msgid "print var [var] - print value of a variable or array."
+msgstr "print var [muuttuja] - tulosta muutujan tai taulukon arvo."
+
+#: command.y:869
+msgid "printf format, [arg], ... - formatted output."
+msgstr "printf muoto, [argumentti], ... - muotoiltu tuloste."
+
+#: command.y:871
+msgid "quit - exit debugger."
+msgstr "quit - poistu vianjäljittäjästä."
+
+#: command.y:873
+msgid "return [value] - make selected stack frame return to its caller."
+msgstr "return [arvo] - tekee valitun pinokehyksen paluun sen kutsujalle."
+
+#: command.y:875
+msgid "run - start or restart executing program."
+msgstr "run - käynnistä tai uudelleenkäynnistä ohjelman suoritus."
+
+#: command.y:878
+msgid "save filename - save commands from the session to file."
+msgstr "save tiedostonimi - tallenna komennot istunnosta tiedostoon."
+
+#: command.y:881
+msgid "set var = value - assign value to a scalar variable."
+msgstr "set var = arvo - liitä arvo skalaarimuuttujaan."
+
+#: command.y:883
+msgid ""
+"silent - suspends usual message when stopped at a breakpoint/watchpoint."
+msgstr ""
+"silent - pysäyttää tavallisen viestin kun pysähdytään katkaisukohdassa/"
+"vahtipisteessä."
+
+#: command.y:885
+msgid "source file - execute commands from file."
+msgstr "source file - suorita komennot tiedostosta."
+
+#: command.y:887
+msgid "step [COUNT] - step program until it reaches a different source line."
+msgstr ""
+"step [COUNT] - askella ohjelmaa, kunnes se saavuttaa eri lähdekoodirivin."
+
+#: command.y:889
+msgid "stepi [COUNT] - step one instruction exactly."
+msgstr "stepi [COUNT] - askella tarkalleen yksi käsky."
+
+#: command.y:891
+msgid "tbreak [[filename:]N|function] - set a temporary breakpoint."
+msgstr "tbreak [[tiedostonimi:]N|funktio] - aseta tilapäinen keskeytyskohta."
+
+#: command.y:893
+msgid "trace on|off - print instruction before executing."
+msgstr "trace on|off - tulosta käsky ennen suoritusta."
+
+#: command.y:895
+msgid "undisplay [N] - remove variable(s) from automatic display list."
+msgstr "undisplay [N] - poista muuttuja(t) automaattisesta näyttöluettelosta."
+
+#: command.y:897
+msgid ""
+"until [[filename:]N|function] - execute until program reaches a different "
+"line or line N within current frame."
+msgstr ""
+"until [[tiedostonimi:]N|funktio] - suorita kunnes ohjelma tavoittaa eri "
+"rivin tai rivin N nykyisen kehyksen sisällä."
+
+#: command.y:899
+msgid "unwatch [N] - remove variable(s) from watch list."
+msgstr "unwatch [N] - poista muuttuja(t) vahtiluettelosta."
+
+#: command.y:901
+msgid "up [N] - move N frames up the stack."
+msgstr "up [N] - siirrä N kehystä ylöspäin pinossa."
+
+#: command.y:903
+msgid "watch var - set a watchpoint for a variable."
+msgstr "watch muuttuja - aseta vahtikohta muuttujalle."
+
+#: command.y:905
+msgid ""
+"where [N] - (same as backtrace) print trace of all or N innermost (outermost "
+"if N < 0) frames."
+msgstr ""
+"missä [N] - (sama kuin paluujälki) tulostaa kaikkien tai N-sisimmäisen "
+"(ulommaisen jos N < 0) kehyksen jäljen."
+
+#: command.y:1016 debug.c:414 gawkapi.c:259 msg.c:146
+#, c-format
+msgid "error: "
+msgstr "virhe: "
+
+#: command.y:1060
+#, fuzzy, c-format
+msgid "cannot read command: %s\n"
+msgstr "komennon (%s) lukeminen epäonnistui\n"
+
+#: command.y:1074
+#, fuzzy, c-format
+msgid "cannot read command: %s"
+msgstr "komennon (%s) lukeminen epäonnistui"
+
+#: command.y:1125
+msgid "invalid character in command"
+msgstr "virheellinen merkki komennossa"
+
+#: command.y:1161
+#, fuzzy, c-format
+msgid "unknown command - `%.*s', try help"
+msgstr "tuntematon komento - \"%.*s\", kokeile käskyä help"
+
+#: command.y:1231
+#, c-format
+msgid "%s"
+msgstr "%s"
+
+#: command.y:1293
+msgid "invalid character"
+msgstr "virheellinen merkki"
+
+#: command.y:1497
+#, c-format
+msgid "undefined command: %s\n"
+msgstr "määrittelemätön komento: %s\n"
+
+#: debug.c:257
+msgid "set or show the number of lines to keep in history file."
+msgstr "aseta tai näytä historiatiedostossa säilytettävien rivien lukumäärä."
+
+#: debug.c:259
+msgid "set or show the list command window size."
+msgstr "aseta tai näytä luettelokomentoikkunan koko."
+
+#: debug.c:261
+msgid "set or show gawk output file."
+msgstr "aseta tai näytä gawk-tulostetiedosto."
+
+#: debug.c:263
+msgid "set or show debugger prompt."
+msgstr "aseta tai näytä vianjäljittäjäkehote."
+
+#: debug.c:265
+msgid "(un)set or show saving of command history (value=on|off)."
+msgstr ""
+"aseta, poista asetus tai näytä komentohistoriatallennus (value=on|off)."
+
+#: debug.c:267
+msgid "(un)set or show saving of options (value=on|off)."
+msgstr "aseta, poista asetus tai näytä valitsintallennus (value=on|off)."
+
+#: debug.c:269
+msgid "(un)set or show instruction tracing (value=on|off)."
+msgstr "aseta, poista asetus tai näytä käskyjäljitys (value=on|off)."
+
+#: debug.c:358
+msgid "program not running."
+msgstr "ohjelma ei ole käynnissä."
+
+#: debug.c:466
+#, c-format
+msgid "source file `%s' is empty.\n"
+msgstr "lähdetiedosto ”%s” on tyhjä.\n"
+
+#: debug.c:493
+msgid "no current source file."
+msgstr "ei nykyistä lähdekooditiedostoa."
+
+#: debug.c:518
+#, fuzzy, c-format
+msgid "cannot find source file named `%s': %s"
+msgstr "lähdetiedostoa nimeltä ”%s” (%s) ei kyetä lukemaan"
+
+#: debug.c:542
+#, c-format
+msgid "WARNING: source file `%s' modified since program compilation.\n"
+msgstr ""
+"VAROITUS: lähdekooditiedostoa ”%s” on muokattu ohjelman kääntämisen "
+"jälkeen.\n"
+
+#: debug.c:564
+#, c-format
+msgid "line number %d out of range; `%s' has %d lines"
+msgstr "rivinumero %d lukualueen ulkopuolella; kohteessa ”%s” on %d riviä"
+
+#: debug.c:624
+#, c-format
+msgid "unexpected eof while reading file `%s', line %d"
+msgstr ""
+"odottamaton eof-tiedostonloppumerkki luettaessa tiedostoa ”%s”, rivi %d"
+
+#: debug.c:633
+#, c-format
+msgid "source file `%s' modified since start of program execution"
+msgstr ""
+"lähdekooditiedostoa ”%s” on muokattu ohjelman suorituksen aloituksen jälkeen"
+
+#: debug.c:745
+#, c-format
+msgid "Current source file: %s\n"
+msgstr "Nykyinen lähdetiedosto: %s\n"
+
+#: debug.c:746
+#, c-format
+msgid "Number of lines: %d\n"
+msgstr "Rivien lukumäärä: %d\n"
+
+#: debug.c:753
+#, c-format
+msgid "Source file (lines): %s (%d)\n"
+msgstr "Lähdetiedosto (riviä): %s (%d)\n"
+
+#: debug.c:767
+msgid ""
+"Number  Disp  Enabled  Location\n"
+"\n"
+msgstr ""
+"Numero  Disp  Käytössä  Sijainti\n"
+"\n"
+
+#: debug.c:778
+#, c-format
+msgid "\tno of hits = %ld\n"
+msgstr "\tosumien lukumäärä = %ld\n"
+
+#: debug.c:780
+#, c-format
+msgid "\tignore next %ld hit(s)\n"
+msgstr "\tohita seuraavat %ld osumaa\n"
+
+#: debug.c:782 debug.c:922
+#, c-format
+msgid "\tstop condition: %s\n"
+msgstr "\tpysähtymisehto: %s\n"
+
+#: debug.c:784 debug.c:924
+msgid "\tcommands:\n"
+msgstr "\tkomennot:\n"
+
+#: debug.c:806
+#, c-format
+msgid "Current frame: "
+msgstr "Nykyinen kehys: "
+
+#: debug.c:809
+#, c-format
+msgid "Called by frame: "
+msgstr "Kehyksen kutsuma: "
+
+#: debug.c:813
+#, c-format
+msgid "Caller of frame: "
+msgstr "Kehyksen kutsuja: "
+
+#: debug.c:831
+#, c-format
+msgid "None in main().\n"
+msgstr "Funktiossa main() ei ole mitään.\n"
+
+#: debug.c:861
+msgid "No arguments.\n"
+msgstr "Ei argumentteja.\n"
+
+#: debug.c:862
+msgid "No locals.\n"
+msgstr "Ei paikallisia muuttujia.\n"
+
+#: debug.c:870
+msgid ""
+"All defined variables:\n"
+"\n"
+msgstr ""
+"Kaikki määritellyt muuttujat:\n"
+"\n"
+
+#: debug.c:880
+msgid ""
+"All defined functions:\n"
+"\n"
+msgstr ""
+"Kaikki määritellyt funktiot.\n"
+"\n"
+
+#: debug.c:899
+msgid ""
+"Auto-display variables:\n"
+"\n"
+msgstr ""
+"Automaattisesti näytettävät muuttujat:\n"
+"\n"
+
+#: debug.c:902
+msgid ""
+"Watch variables:\n"
+"\n"
+msgstr ""
+"Vahtimuuttujia:\n"
+"\n"
+
+#: debug.c:1042
+#, c-format
+msgid "no symbol `%s' in current context\n"
+msgstr "symbolia ”%s” ei löydy nykyisestä asiayhteydestä\n"
+
+#: debug.c:1054 debug.c:1442
+#, c-format
+msgid "`%s' is not an array\n"
+msgstr "”%s” ei ole taulukko\n"
+
+#: debug.c:1068
+#, c-format
+msgid "$%ld = uninitialized field\n"
+msgstr "$%ld = alustamaton kenttä\n"
+
+#: debug.c:1089
+#, c-format
+msgid "array `%s' is empty\n"
+msgstr "taulukko ”%s” on tyhjä\n"
+
+#: debug.c:1132 debug.c:1184
+#, c-format
+msgid "[\"%.*s\"] not in array `%s'\n"
+msgstr "[\"%.*s\"] ei ole taulukossa ”%s”\n"
+
+#: debug.c:1188
+#, c-format
+msgid "`%s[\"%.*s\"]' is not an array\n"
+msgstr "”%s[\"%.*s\"]” ei ole taulukko\n"
+
+#: debug.c:1249 debug.c:5104
+#, c-format
+msgid "`%s' is not a scalar variable"
+msgstr "”%s” ei ole skalaarimuuttuja"
+
+#: debug.c:1272 debug.c:5134
+#, c-format
+msgid "attempt to use array `%s[\"%.*s\"]' in a scalar context"
+msgstr "yritettiin käyttää taulukkoa ”%s[\"%.*s\"]” skalaarikontekstissa"
+
+#: debug.c:1295 debug.c:5145
+#, c-format
+msgid "attempt to use scalar `%s[\"%.*s\"]' as array"
+msgstr "yritettiin käyttää skalaaria ”%s[\"%.*s\"]” taulukkona"
+
+#: debug.c:1438
+#, c-format
+msgid "`%s' is a function"
+msgstr "”%s” on funktio"
+
+#: debug.c:1480
+#, c-format
+msgid "watchpoint %d is unconditional\n"
+msgstr "watchpoint %d ei ole ehdollinen\n"
+
+#: debug.c:1514
+#, c-format
+msgid "No display item numbered %ld"
+msgstr "Yksikään näyttörivi ei ole numeroitu %ld"
+
+#: debug.c:1517
+#, c-format
+msgid "No watch item numbered %ld"
+msgstr "Yksikään vahtirivi ei ole numeroitu %ld"
+
+#: debug.c:1543
+#, c-format
+msgid "%d: [\"%.*s\"] not in array `%s'\n"
+msgstr "%d: [\"%.*s\"] ei ole taulukossa ”%s”\n"
+
+#: debug.c:1782
+msgid "attempt to use scalar value as array"
+msgstr "yritettiin käyttää skalaariarvoa taulukkona"
+
+#: debug.c:1873
+#, c-format
+msgid "Watchpoint %d deleted because parameter is out of scope.\n"
+msgstr ""
+"Watchpoint %d poistettiin, koska parametri on lukualueen ulkopuolella.\n"
+
+#: debug.c:1884
+#, c-format
+msgid "Display %d deleted because parameter is out of scope.\n"
+msgstr "Display %d poistettiin, koska parametri on lukualueen ulkopuolella.\n"
+
+#: debug.c:1917
+#, c-format
+msgid " in file `%s', line %d\n"
+msgstr " tiedostossa ”%s”, rivi %d\n"
+
+#: debug.c:1938
+#, c-format
+msgid " at `%s':%d"
+msgstr " osoitteessa ”%s”:%d"
+
+#: debug.c:1954 debug.c:2017
+#, c-format
+msgid "#%ld\tin "
+msgstr "#%ld\tkohteessa "
+
+#: debug.c:1991
+#, c-format
+msgid "More stack frames follow ...\n"
+msgstr "Lisää pinokehyksiä seuraa ...\n"
+
+#: debug.c:2034
+msgid "invalid frame number"
+msgstr "virheellinen kehysnumero"
+
+#: debug.c:2217
+#, c-format
+msgid "Note: breakpoint %d (enabled, ignore next %ld hits), also set at %s:%d"
+msgstr ""
+"Huomaa: keskeytyskohta %d (otettu käyttöön, ohita seuraavat %ld osumaa), "
+"asetettu myös osoitteessa %s:%d"
+
+#: debug.c:2224
+#, c-format
+msgid "Note: breakpoint %d (enabled), also set at %s:%d"
+msgstr ""
+"Huomaa: keskeytyskohta %d (otettu käyttöön), asetettu myös kohdassa %s:%d"
+
+#: debug.c:2231
+#, c-format
+msgid "Note: breakpoint %d (disabled, ignore next %ld hits), also set at %s:%d"
+msgstr ""
+"Huomaa: keskeytyskohta %d (otettu pois käytöstä, ohita seuraavat %ld "
+"osumaa), asetettu myös kohdassa %s:%d"
+
+#: debug.c:2238
+#, c-format
+msgid "Note: breakpoint %d (disabled), also set at %s:%d"
+msgstr ""
+"Huomaa: keskeytyskohta %d (otettu pois käytöstä), asetettu myös kohdassa %s:"
+"%d"
+
+#: debug.c:2255
+#, c-format
+msgid "Breakpoint %d set at file `%s', line %d\n"
+msgstr "Keskeytyskohta %d asetettu tiedostossa ”%s”, rivi %d\n"
+
+#: debug.c:2357
+#, fuzzy, c-format
+msgid "cannot set breakpoint in file `%s'\n"
+msgstr "Keskeytyskohdan asetaminen tiedostossa ”%s” epäonnistui\n"
+
+#: debug.c:2386 debug.c:2509 debug.c:3367
+#, c-format
+msgid "line number %d in file `%s' out of range"
+msgstr "rivinumero %d tiedostossa ”%s” on lukualueen ulkopuolella"
+
+#: debug.c:2390
+#, fuzzy, c-format
+msgid "internal error: cannot find rule\n"
+msgstr "sisäinen virhe: %s null vname-arvolla"
+
+#: debug.c:2392
+#, fuzzy, c-format
+msgid "cannot set breakpoint at `%s':%d\n"
+msgstr "Keskeytykohdan asettaminen kohdassa ”%s”:%d epäonnistui\n"
+
+#: debug.c:2404
+#, fuzzy, c-format
+msgid "cannot set breakpoint in function `%s'\n"
+msgstr "Keskeytyskohdan asettaminen funktiossa ”%s” epäonnistui\n"
+
+#: debug.c:2420
+#, c-format
+msgid "breakpoint %d set at file `%s', line %d is unconditional\n"
+msgstr "keskeytyskohta %d asetettu tiedostossa ”%s”, rivi %d on ehdoton\n"
+
+#: debug.c:2525 debug.c:2547
+#, c-format
+msgid "Deleted breakpoint %d"
+msgstr "Poistettu keskeytyskohta %d"
+
+#: debug.c:2531
+#, c-format
+msgid "No breakpoint(s) at entry to function `%s'\n"
+msgstr "Ei keskeytyskohtaa funktion ”%s” sisääntulossa\n"
+
+#: debug.c:2558
+#, c-format
+msgid "No breakpoint at file `%s', line #%d\n"
+msgstr "Tiedostossa ”%s” ei ole keskeytyskohtaa, rivi #%d\n"
+
+#: debug.c:2613 debug.c:2654 debug.c:2674 debug.c:2717
+msgid "invalid breakpoint number"
+msgstr "virheellinen keskeytyskohtanumero"
+
+#: debug.c:2629
+msgid "Delete all breakpoints? (y or n) "
+msgstr "Poistetaanko kaikki keskeytyskohdata? (y tai n) "
+
+#: debug.c:2630 debug.c:2940 debug.c:2993
+msgid "y"
+msgstr "k"
+
+#: debug.c:2679
+#, c-format
+msgid "Will ignore next %ld crossing(s) of breakpoint %d.\n"
+msgstr "Keskeytyskohta %2$d:n seuraavat %1$ld risteystä ohitetaan.\n"
+
+#: debug.c:2683
+#, c-format
+msgid "Will stop next time breakpoint %d is reached.\n"
+msgstr "Pysähtyy seuraavalla kerralla kun keskeytyskohta %d saavutetaan.\n"
+
+#: debug.c:2800
+#, c-format
+msgid "Can only debug programs provided with the `-f' option.\n"
+msgstr ""
+"Vain ohjelmia, jotka tarjoavat valitsimen ”-f”, voidaan vikajäljittää.\n"
+
+#: debug.c:2925
+#, c-format
+msgid "Failed to restart debugger"
+msgstr "Vianjäljittäjän uudelleenkäynnistys epäonnistui"
+
+#: debug.c:2939
+msgid "Program already running. Restart from beginning (y/n)? "
+msgstr "Ohjelma on jo käynnissä. Käynnistetäänkö uudelleen alusta (y/n)? "
+
+#: debug.c:2943
+#, c-format
+msgid "Program not restarted\n"
+msgstr "Ohjelma ei käynnistynyt uudelleen\n"
+
+#: debug.c:2953
+#, c-format
+msgid "error: cannot restart, operation not allowed\n"
+msgstr "virhe: uudelleenkäynnistys epäonnistui, toiminto ei ole sallittu\n"
+
+#: debug.c:2959
+#, c-format
+msgid "error (%s): cannot restart, ignoring rest of the commands\n"
+msgstr ""
+"virhe (%s): uudelleenkäynnistys epäonnistui, loput komennot ohitetaan\n"
+
+#: debug.c:2967
+#, c-format
+msgid "Starting program: \n"
+msgstr "Käynnistetään ohjelma: \n"
+
+#: debug.c:2977
+#, c-format
+msgid "Program exited abnormally with exit value: %d\n"
+msgstr "Ohjelma päättyi epänormaalisti päättymisarvolla: %d\n"
+
+#: debug.c:2978
+#, c-format
+msgid "Program exited normally with exit value: %d\n"
+msgstr "Ohjelma päättyi normaalisti päättymisarvolla: %d\n"
+
+#: debug.c:2992
+msgid "The program is running. Exit anyway (y/n)? "
+msgstr "Ohjelma on käynnissä. Poistutaanko silti (y/n)? "
+
+#: debug.c:3027
+#, c-format
+msgid "Not stopped at any breakpoint; argument ignored.\n"
+msgstr "Ei pysäytetty yhdessäkään keskeytyskohdassa; argumentti ohitetaan.\n"
+
+#: debug.c:3032
+#, c-format
+msgid "invalid breakpoint number %d."
+msgstr "virheellinen keskeytyskohtanumero %d."
+
+#: debug.c:3037
+#, c-format
+msgid "Will ignore next %ld crossings of breakpoint %d.\n"
+msgstr "Ohittaa seuraavat %ld keskeytyskohdan %d ylitystä.\n"
+
+#: debug.c:3224
+#, c-format
+msgid "'finish' not meaningful in the outermost frame main()\n"
+msgstr ""
+"’finish’ ei ole merkityksellinen ulommaisen kehyksen main()-funktiossa\n"
+
+#: debug.c:3229
+#, c-format
+msgid "Run till return from "
+msgstr "Suorita kunnes paluu kohteesta "
+
+#: debug.c:3272
+#, c-format
+msgid "'return' not meaningful in the outermost frame main()\n"
+msgstr ""
+"’return’ ei ole merkityksellinen ulommaisen kehyksen main()-funktiossa\n"
+
+#: debug.c:3386
+#, fuzzy, c-format
+msgid "cannot find specified location in function `%s'\n"
+msgstr "Määritellyn sijainnin löytyminen funktiossa ”%s” epäonnistui\n"
+
+#: debug.c:3394
+#, c-format
+msgid "invalid source line %d in file `%s'"
+msgstr "virheellinen lähdekoodirivi %d tiedostossa ”%s”"
+
+#: debug.c:3409
+#, fuzzy, c-format
+msgid "cannot find specified location %d in file `%s'\n"
+msgstr "Määritellyn sijainnin %d löytyminen tiedostossa ”%s” epäonnistui\n"
+
+#: debug.c:3441
+#, c-format
+msgid "element not in array\n"
+msgstr "elementti ei ole taulukossa\n"
+
+#: debug.c:3441
+#, c-format
+msgid "untyped variable\n"
+msgstr "tyypitön muuttuja\n"
+
+#: debug.c:3483
+#, c-format
+msgid "Stopping in %s ...\n"
+msgstr "Pysäytetään kohdassa %s ...\n"
+
+#: debug.c:3560
+#, c-format
+msgid "'finish' not meaningful with non-local jump '%s'\n"
+msgstr "’finish’ ei ole merkityksellinen ei-paikallisessa hypyssä ’%s’\n"
+
+#: debug.c:3567
+#, c-format
+msgid "'until' not meaningful with non-local jump '%s'\n"
+msgstr "’until’ ei ole merkityksellinen ei-paikallisessa hypyssä ’%s’\n"
+
+#. TRANSLATORS: don't translate the 'q' inside the brackets.
+#: debug.c:4324
+#, fuzzy
+msgid "\t------[Enter] to continue or [q] + [Enter] to quit------"
+msgstr "\t------Jatka painamalla [Enter] tai poistu painamalla q [Enter]------"
+
+#: debug.c:5141
+#, c-format
+msgid "[\"%.*s\"] not in array `%s'"
+msgstr "[\"%.*s\"] ei ole taulukossa ”%s”"
+
+#: debug.c:5347
+#, c-format
+msgid "sending output to stdout\n"
+msgstr "lähetetään tuloste vakiotulosteeseen\n"
+
+#: debug.c:5387
+msgid "invalid number"
+msgstr "virheellinen numero"
+
+#: debug.c:5521
+#, c-format
+msgid "`%s' not allowed in current context; statement ignored"
+msgstr "”%s” ei ole sallittu nykyisessä asiayhteydessä; lause ohitetaan"
+
+#: debug.c:5529
+msgid "`return' not allowed in current context; statement ignored"
+msgstr "”return” ei ole sallittu nykyisessä asiayhteydessä; lause ohitetaan"
+
+#: debug.c:5753
+#, c-format
+msgid "No symbol `%s' in current context"
+msgstr "Symbolia ”%s” ei ole nykyisesssä asiayhteydessä"
+
+#: eval.c:401
+#, c-format
+msgid "unknown nodetype %d"
+msgstr "tuntematon solmutyyppi %d"
+
+#: eval.c:412 eval.c:428
+#, c-format
+msgid "unknown opcode %d"
+msgstr "tuntematon käskykoodi %d"
+
+#: eval.c:425
+#, c-format
+msgid "opcode %s not an operator or keyword"
+msgstr "käskykoodi %s ei ole operaattori tai avainsana"
+
+#: eval.c:483
+msgid "buffer overflow in genflags2str"
+msgstr "puskurin ylivuoto funktiossa genflags2str"
+
+#: eval.c:685
+#, c-format
+msgid ""
+"\n"
+"\t# Function Call Stack:\n"
+"\n"
+msgstr ""
+"\n"
+"\t# Funktiokutsupino:\n"
+"\n"
+
+#: eval.c:711
+msgid "`IGNORECASE' is a gawk extension"
+msgstr "”IGNORECASE” on gawk-laajennus"
+
+#: eval.c:732
+msgid "`BINMODE' is a gawk extension"
+msgstr "”BINMODE” on gawk-laajennus"
+
+#: eval.c:789
+#, c-format
+msgid "BINMODE value `%s' is invalid, treated as 3"
+msgstr "BINMODE-arvo ”%s” on virheellinen, käsiteltiin arvona 3"
+
+#: eval.c:912
+#, c-format
+msgid "bad `%sFMT' specification `%s'"
+msgstr "väärä ”%sFMT”-määritys ”%s”"
+
+#: eval.c:982
+msgid "turning off `--lint' due to assignment to `LINT'"
+msgstr "käännetään pois ”--lint”-valitsin ”LINT”-sijoituksen vuoksi"
+
+#: eval.c:1176
+#, c-format
+msgid "reference to uninitialized argument `%s'"
+msgstr "viite alustamattomaan argumenttiin ”%s”"
+
+#: eval.c:1177
+#, c-format
+msgid "reference to uninitialized variable `%s'"
+msgstr "viite alustamattomaan muuttujaan ”%s”"
+
+#: eval.c:1195
+msgid "attempt to field reference from non-numeric value"
+msgstr "yritettiin kenttäviitettä arvosta, joka ei ole numeerinen"
+
+#: eval.c:1197
+msgid "attempt to field reference from null string"
+msgstr "yritettiin kenttäviitettä null-merkkijonosta"
+
+#: eval.c:1205
+#, c-format
+msgid "attempt to access field %ld"
+msgstr "yritettiin saantia kenttään %ld"
+
+#: eval.c:1214
+#, c-format
+msgid "reference to uninitialized field `$%ld'"
+msgstr "viite alustamattomaan kenttään ”$%ld”"
+
+#: eval.c:1278
+#, c-format
+msgid "function `%s' called with more arguments than declared"
+msgstr "funktio ”%s” kutsuttiin useammalla argumentilla kuin esiteltiin"
+
+#: eval.c:1475
+#, c-format
+msgid "unwind_stack: unexpected type `%s'"
+msgstr "unwind_stack: odottamaton tyyppi ”%s”"
+
+#: eval.c:1568
+msgid "division by zero attempted in `/='"
+msgstr "jakoa nollalla yritettiin operaatiossa ”/=”"
+
+#: eval.c:1575
+#, c-format
+msgid "division by zero attempted in `%%='"
+msgstr "jakoa nollalla yritettiin operaatiossa ”%%=”"
+
+#: ext.c:51
+msgid "extensions are not allowed in sandbox mode"
+msgstr "laajennuksia ei sallita hiekkalaatikkotilassa"
+
+#: ext.c:54
+msgid "-l / @load are gawk extensions"
+msgstr "-l / @load ovat gawk-laajennuksia"
+
+#: ext.c:57
+msgid "load_ext: received NULL lib_name"
+msgstr "load_ext: vastaanotettiin NULL lib_name"
+
+#: ext.c:60
+#, fuzzy, c-format
+msgid "load_ext: cannot open library `%s': %s"
+msgstr "load_ext: kirjaston ”%s” (%s) avaus epäonnistui\n"
+
+#: ext.c:66
+#, fuzzy, c-format
+msgid "load_ext: library `%s': does not define `plugin_is_GPL_compatible': %s"
+msgstr ""
+"load_ext: kirjasto ”%s”: ei määrittele ”plugin_is_GPL_compatible” (%s)\n"
+
+#: ext.c:72
+#, fuzzy, c-format
+msgid "load_ext: library `%s': cannot call function `%s': %s"
+msgstr "load_ext: kirjasto ”%s”: funktion ”%s” (%s) kutsu epäonnistui\n"
+
+#: ext.c:76
+#, fuzzy, c-format
+msgid "load_ext: library `%s' initialization routine `%s' failed"
+msgstr "load_ext: kirjaston ”%s” alustusrutiini ”%s” epäonnistui\n"
+
+#: ext.c:92
+msgid "make_builtin: missing function name"
+msgstr "make_builtin: puuttuva funktionimi"
+
+#: ext.c:100 ext.c:111
+#, fuzzy, c-format
+msgid "make_builtin: cannot use gawk built-in `%s' as function name"
+msgstr ""
+"make_builtin: gawk-ohjelman sisäisen muuttujanimen ”%s” käyttö funktionimenä "
+"epäonnistui"
+
+#: ext.c:109
+#, fuzzy, c-format
+msgid "make_builtin: cannot use gawk built-in `%s' as namespace name"
+msgstr ""
+"make_builtin: gawk-ohjelman sisäisen muuttujanimen ”%s” käyttö funktionimenä "
+"epäonnistui"
+
+#: ext.c:126
+#, fuzzy, c-format
+msgid "make_builtin: cannot redefine function `%s'"
+msgstr "make_builtin: funktion ”%s” uudelleenmäärittely epäonnistui"
+
+#: ext.c:130
+#, c-format
+msgid "make_builtin: function `%s' already defined"
+msgstr "make_builtin: funktio ”%s” on jo määritelty"
+
+#: ext.c:134
+#, c-format
+msgid "make_builtin: function name `%s' previously defined"
+msgstr "make_builtin: funktionimi ”%s” on määritelty jo aiemmin"
+
+#: ext.c:138
+#, c-format
+msgid "make_builtin: negative argument count for function `%s'"
+msgstr "make_builtin: negatiivinen argumenttilukumäärä funktiolle ”%s”"
+
+#: ext.c:214
+#, c-format
+msgid "function `%s': argument #%d: attempt to use scalar as an array"
+msgstr "funktio ”%s”: argumentti #%d: yritettiin käyttää skalaaria taulukkona"
+
+#: ext.c:218
+#, c-format
+msgid "function `%s': argument #%d: attempt to use array as a scalar"
+msgstr "funktio ”%s”: argumentti #%d: yritettiin käyttää taulukkoa skalaarina"
+
+#: ext.c:232
+#, fuzzy
+msgid "dynamic loading of libraries is not supported"
+msgstr "kirjaston dynaamista latausta ei tueta"
+
+#: extension/filefuncs.c:442
+#, c-format
+msgid "stat: unable to read symbolic link `%s'"
+msgstr "stat: symbolisen linkin ”%s” lukeminen epäonnistui"
+
+#: extension/filefuncs.c:475
+#, fuzzy
+msgid "stat: first argument is not a string"
+msgstr "do_writea: argumentti 0 ei ole merkkijono\n"
+
+#: extension/filefuncs.c:480
+#, fuzzy
+msgid "stat: second argument is not an array"
+msgstr "split: toinen argumentti ei ole taulukko"
+
+#: extension/filefuncs.c:524
+msgid "stat: bad parameters"
+msgstr "stat: väärät parametrit"
+
+#: extension/filefuncs.c:589
+#, c-format
+msgid "fts init: could not create variable %s"
+msgstr "fts init: muuttujan %s luominen epäonnistui"
+
+#: extension/filefuncs.c:610
+msgid "fts is not supported on this system"
+msgstr "fts ei ole tuettu tässä järjestelmässä"
+
+#: extension/filefuncs.c:629
+#, fuzzy
+msgid "fill_stat_element: could not create array, out of memory"
+msgstr "fill_stat_element: taulukon luominen epäonnistui"
+
+#: extension/filefuncs.c:638
+msgid "fill_stat_element: could not set element"
+msgstr "fill_stat_element: elementin asettaminen epäonnistui"
+
+#: extension/filefuncs.c:653
+msgid "fill_path_element: could not set element"
+msgstr "fill_path_element: elementin asettaminen epäonnistui"
+
+#: extension/filefuncs.c:669
+msgid "fill_error_element: could not set element"
+msgstr "fill_error_element: elementin asettaminen epäonnistui"
+
+#: extension/filefuncs.c:721 extension/filefuncs.c:768
+msgid "fts-process: could not create array"
+msgstr "fts-process: taulukon luominen epäonnistui"
+
+#: extension/filefuncs.c:731 extension/filefuncs.c:778
+#: extension/filefuncs.c:796
+msgid "fts-process: could not set element"
+msgstr "fts-process: elementin asettaminen epäonnistui"
+
+#: extension/filefuncs.c:845
+msgid "fts: called with incorrect number of arguments, expecting 3"
+msgstr "fts: kutsuttu argumenttien väärällä lukumäärällä, odotettiin 3"
+
+#: extension/filefuncs.c:848
+#, fuzzy
+msgid "fts: first argument is not an array"
+msgstr "asort: ensimmäinen argumentti ei ole taulukko"
+
+#: extension/filefuncs.c:854
+#, fuzzy
+msgid "fts: second argument is not a number"
+msgstr "split: toinen argumentti ei ole taulukko"
+
+#: extension/filefuncs.c:860
+#, fuzzy
+msgid "fts: third argument is not an array"
+msgstr "match: kolmas argumentti ei ole taulukko"
+
+#: extension/filefuncs.c:867
+msgid "fts: could not flatten array\n"
+msgstr "fts: taulukon litistäminen epäonnistui\n"
+
+#: extension/filefuncs.c:885
+msgid "fts: ignoring sneaky FTS_NOSTAT flag. nyah, nyah, nyah."
+msgstr "fts: ohitetaan petollinen FTS_NOSTAT-lippu. nyyh, nyyh, nyyh."
+
+#: extension/fnmatch.c:120
+msgid "fnmatch: could not get first argument"
+msgstr "fnmatch: ensimmäistä argumenttia ei saatu"
+
+#: extension/fnmatch.c:125
+msgid "fnmatch: could not get second argument"
+msgstr "fnmatch: toista argumenttia ei saatu"
+
+#: extension/fnmatch.c:130
+msgid "fnmatch: could not get third argument"
+msgstr "fnmatch: kolmatta argumenttia ei saatu"
+
+#: extension/fnmatch.c:143
+msgid "fnmatch is not implemented on this system\n"
+msgstr "fnmatch ei ole toteutettu tässä järjestelmässä\n"
+
+#: extension/fnmatch.c:175
+msgid "fnmatch init: could not add FNM_NOMATCH variable"
+msgstr "fnmatch init: muuttujan FNM_NOMATCH lisääminen epäonnistui"
+
+#: extension/fnmatch.c:185
+#, c-format
+msgid "fnmatch init: could not set array element %s"
+msgstr "fnmatch init: taulukkoelementin %s asettaminen epäonnistui"
+
+#: extension/fnmatch.c:195
+msgid "fnmatch init: could not install FNM array"
+msgstr "fnmatch init: FNM-taulukon lisääminen epäonnistui"
+
+#: extension/fork.c:92
+msgid "fork: PROCINFO is not an array!"
+msgstr "fork: PROCINFO ei ole taulukko!"
+
+#: extension/inplace.c:131
+#, fuzzy
+msgid "inplace::begin: in-place editing already active"
+msgstr "inplace_begin: kohdallaanmuokkaus on jo aktivoitu"
+
+#: extension/inplace.c:134
+#, fuzzy, c-format
+msgid "inplace::begin: expects 2 arguments but called with %d"
+msgstr ""
+"inplace_begin: odotetaan 2 argumenttia, mutta kutsussa oli %d argumenttia"
+
+#: extension/inplace.c:137
+#, fuzzy
+msgid "inplace::begin: cannot retrieve 1st argument as a string filename"
+msgstr ""
+"inplace_begin: ensimmäisen argumentin noutaminen merkkijonotiedostonimenä "
+"epäonnistui"
+
+#: extension/inplace.c:145
+#, fuzzy, c-format
+msgid "inplace::begin: disabling in-place editing for invalid FILENAME `%s'"
+msgstr ""
+"inplace_begin: ottaen pois käytöstä virheellisen TIEDOSTONIMI ”%s” "
+"muokkauksen"
+
+#: extension/inplace.c:152
+#, fuzzy, c-format
+msgid "inplace::begin: Cannot stat `%s' (%s)"
+msgstr "inplace_begin: stat ”%s” (%s) epäonnistui"
+
+#: extension/inplace.c:159
+#, fuzzy, c-format
+msgid "inplace::begin: `%s' is not a regular file"
+msgstr "inplace_begin: ”%s” ei ole tavallinen tiedosto"
+
+#: extension/inplace.c:170
+#, fuzzy, c-format
+msgid "inplace::begin: mkstemp(`%s') failed (%s)"
+msgstr "inplace_begin: mkstemp(”%s”) epäonnistui (%s)"
+
+#: extension/inplace.c:182
+#, fuzzy, c-format
+msgid "inplace::begin: chmod failed (%s)"
+msgstr "inplace_begin: chmod epäonnistui (%s)"
+
+#: extension/inplace.c:189
+#, fuzzy, c-format
+msgid "inplace::begin: dup(stdout) failed (%s)"
+msgstr "inplace_begin: dup(stdout) epäonnistui (%s)"
+
+#: extension/inplace.c:192
+#, fuzzy, c-format
+msgid "inplace::begin: dup2(%d, stdout) failed (%s)"
+msgstr "inplace_begin: dup2(%d, stdout) epäonnistui (%s)"
+
+#: extension/inplace.c:195
+#, fuzzy, c-format
+msgid "inplace::begin: close(%d) failed (%s)"
+msgstr "inplace_begin: close(%d) epäonnistui (%s)"
+
+#: extension/inplace.c:211
+#, fuzzy, c-format
+msgid "inplace::end: expects 2 arguments but called with %d"
+msgstr ""
+"inplace_end: odotetaan 2 argumenttia, mutta kutsussa oli %d argumenttia"
+
+#: extension/inplace.c:214
+#, fuzzy
+msgid "inplace::end: cannot retrieve 1st argument as a string filename"
+msgstr ""
+"inplace_end: ensimmäisen argumentin noutaminen merkkijonotiedostonimenä "
+"epäonnistui"
+
+#: extension/inplace.c:221
+#, fuzzy
+msgid "inplace::end: in-place editing not active"
+msgstr "inplace_end: kohdallaanmuokkaus ei ole aktiivinen"
+
+#: extension/inplace.c:227
+#, fuzzy, c-format
+msgid "inplace::end: dup2(%d, stdout) failed (%s)"
+msgstr "inplace_end: dup2(%d, stdout) epäonnistui (%s)"
+
+#: extension/inplace.c:230
+#, fuzzy, c-format
+msgid "inplace::end: close(%d) failed (%s)"
+msgstr "inplace_end: close(%d) epäonnistui (%s)"
+
+#: extension/inplace.c:234
+#, fuzzy, c-format
+msgid "inplace::end: fsetpos(stdout) failed (%s)"
+msgstr "inplace_end: fsetpos(stdout) epäonnistui (%s)"
+
+#: extension/inplace.c:247
+#, fuzzy, c-format
+msgid "inplace::end: link(`%s', `%s') failed (%s)"
+msgstr "inplace_end: link(”%s”, ”%s”) epäonnistui (%s)."
+
+#: extension/inplace.c:257
+#, fuzzy, c-format
+msgid "inplace::end: rename(`%s', `%s') failed (%s)"
+msgstr "inplace_end: rename(”%s”, ”%s”) epäonnistui (%s)"
+
+#: extension/ordchr.c:72
+#, fuzzy
+msgid "ord: first argument is not a string"
+msgstr "do_reada: argumentti 0 ei ole merkkijono\n"
+
+#: extension/ordchr.c:99
+#, fuzzy
+msgid "chr: first argument is not a number"
+msgstr "asort: ensimmäinen argumentti ei ole taulukko"
+
+#: extension/readdir.c:273
+#, c-format
+msgid "dir_take_control_of: opendir/fdopendir failed: %s"
+msgstr "dir_take_control_of: opendir/fdopendir epäonnistui: %s"
+
+#: extension/readfile.c:131
+msgid "readfile: called with wrong kind of argument"
+msgstr "readfile: kutsuttu vääränlaisella argumentilla"
+
+#: extension/revoutput.c:127
+msgid "revoutput: could not initialize REVOUT variable"
+msgstr "revoutput: REVOUT-muuttujan alustaminen epäonnistui"
+
+#: extension/rwarray.c:119
+#, fuzzy
+msgid "do_writea: first argument is not a string"
+msgstr "do_writea: argumentti 0 ei ole merkkijono\n"
+
+#: extension/rwarray.c:125
+#, fuzzy
+msgid "do_writea: second argument is not an array"
+msgstr "do_writea: argumentti 1 ei ole taulukko\n"
+
+#: extension/rwarray.c:172 extension/rwarray0.c:167
+#, fuzzy
+msgid "write_array: could not flatten array"
+msgstr "write_array: taulukon litistäminen epäonnistui\n"
+
+#: extension/rwarray.c:188 extension/rwarray0.c:181
+#, fuzzy
+msgid "write_array: could not release flattened array"
+msgstr "write_array: litistettyä taulukon vapauttaminen epäonnistui\n"
+
+#: extension/rwarray.c:255
+#, c-format
+msgid "array value has unknown type %d"
+msgstr "taulukkoarvo on tuntematonta tyyppiä %d"
+
+#: extension/rwarray.c:292
+#, fuzzy
+msgid "do_reada: first argument is not a string"
+msgstr "do_reada: argumentti 0 ei ole merkkijono\n"
+
+#: extension/rwarray.c:298
+#, fuzzy
+msgid "do_reada: second argument is not an array"
+msgstr "do_reada: argumentti 1 ei ole taulukko\n"
+
+#: extension/rwarray.c:342 extension/rwarray0.c:317
+#, fuzzy
+msgid "do_reada: clear_array failed"
+msgstr "do_reada: clear_array epäonnistui\n"
+
+#: extension/rwarray.c:379 extension/rwarray0.c:353
+#, fuzzy
+msgid "read_array: set_array_element failed"
+msgstr "read_array: set_array_element epäonnistui\n"
+
+#: extension/rwarray.c:489
+#, c-format
+msgid "treating recovered value with unknown type code %d as a string"
+msgstr ""
+
+#: extension/rwarray0.c:114
+#, fuzzy
+msgid "do_writea: argument 0 is not a string"
+msgstr "do_writea: argumentti 0 ei ole merkkijono\n"
+
+#: extension/rwarray0.c:120
+#, fuzzy
+msgid "do_writea: argument 1 is not an array"
+msgstr "do_writea: argumentti 1 ei ole taulukko\n"
+
+#: extension/rwarray0.c:267
+#, fuzzy
+msgid "do_reada: argument 0 is not a string"
+msgstr "do_reada: argumentti 0 ei ole merkkijono\n"
+
+#: extension/rwarray0.c:273
+#, fuzzy
+msgid "do_reada: argument 1 is not an array"
+msgstr "do_reada: argumentti 1 ei ole taulukko\n"
+
+#: extension/time.c:141
+msgid "gettimeofday: not supported on this platform"
+msgstr "gettimeofday: ei ole tuettu tällä alustalla"
+
+#: extension/time.c:162
+msgid "sleep: missing required numeric argument"
+msgstr "sleep: puuttuu vaadittu numeerinen argumentti"
+
+#: extension/time.c:168
+msgid "sleep: argument is negative"
+msgstr "sleep: argumentti on negatiivinen"
+
+#: extension/time.c:202
+msgid "sleep: not supported on this platform"
+msgstr "sleep: ei ole tuettu tällä alustalla"
+
+#: field.c:284
+msgid "input record too large"
+msgstr ""
+
+#: field.c:400
+msgid "NF set to negative value"
+msgstr "NF asetettu negatiiviseen arvoon"
+
+#: field.c:405
+msgid "decrementing NF is not portable to many awk versions"
+msgstr ""
+
+#: field.c:853
+msgid "accessing fields from an END rule may not be portable"
+msgstr ""
+
+#: field.c:978 field.c:985
+msgid "split: fourth argument is a gawk extension"
+msgstr "split: neljäs argumentti on gawk-laajennus"
+
+#: field.c:982
+msgid "split: fourth argument is not an array"
+msgstr "split: neljäs argumentti ei ole taulukko"
+
+#: field.c:992
+msgid "split: second argument is not an array"
+msgstr "split: toinen argumentti ei ole taulukko"
+
+#: field.c:996
+msgid "split: cannot use the same array for second and fourth args"
+msgstr ""
+"split: saman taulukon käyttö toiselle ja neljännelle argumentille epäonnistui"
+
+#: field.c:1001
+msgid "split: cannot use a subarray of second arg for fourth arg"
+msgstr ""
+"split: toisen argumentin käyttö alitaulukkoa neljännelle argumentille "
+"epäonnistui"
+
+#: field.c:1004
+msgid "split: cannot use a subarray of fourth arg for second arg"
+msgstr ""
+"split: neljännen argumentin käyttö alitaulukkoa toiselle argumentille "
+"epäonnistui"
+
+#: field.c:1038
+#, fuzzy
+msgid "split: null string for third arg is a non-standard extension"
+msgstr "split: null-merkkijono kolmantena argumenttina on gawk-laajennus"
+
+#: field.c:1075
+msgid "patsplit: fourth argument is not an array"
+msgstr "patsplit: neljäs argumentti ei ole taulukko"
+
+#: field.c:1080
+msgid "patsplit: second argument is not an array"
+msgstr "patsplit: toinen argumentti ei ole taulukko"
+
+#: field.c:1089
+msgid "patsplit: third argument must be non-null"
+msgstr "patsplit: kolmas argumentti ei ole taulukko"
+
+#: field.c:1093
+msgid "patsplit: cannot use the same array for second and fourth args"
+msgstr ""
+"patsplit: saman taulukon käyttö toiselle ja neljännelle argumentille "
+"epäonnistui"
+
+#: field.c:1098
+msgid "patsplit: cannot use a subarray of second arg for fourth arg"
+msgstr ""
+"patsplit: toisen argumentin käyttö alitaulukkkoa neljännelle argumentille "
+"epäonnistui"
+
+#: field.c:1101
+msgid "patsplit: cannot use a subarray of fourth arg for second arg"
+msgstr ""
+"patsplit: neljännen argumentin käyttö alitaulukkoa toiselle argumentille "
+"epäonnistui"
+
+#: field.c:1151
+msgid "`FIELDWIDTHS' is a gawk extension"
+msgstr "”FIELDWIDTHS” on gawk-laajennus"
+
+#: field.c:1220
+msgid "`*' must be the last designator in FIELDWIDTHS"
+msgstr ""
+
+#: field.c:1241
+#, c-format
+msgid "invalid FIELDWIDTHS value, for field %d, near `%s'"
+msgstr "virheellinen FIELDWIDTHS-arvo kentälle %d lähellä ”%s”"
+
+#: field.c:1314
+msgid "null string for `FS' is a gawk extension"
+msgstr "null-merkkijono ”FS”-kenttäerotinmuuttujalle on gawk-laajennus"
+
+#: field.c:1318
+msgid "old awk does not support regexps as value of `FS'"
+msgstr "vanha awk ei tue regexp-arvoja ”FS”-kenttäerotinmuuttujana"
+
+#: field.c:1444
+msgid "`FPAT' is a gawk extension"
+msgstr "”FPAT” on gawk-laajennus"
+
+#: gawkapi.c:161
+msgid "awk_value_to_node: received null retval"
+msgstr "awk_value_to_node: vastaanotti null retval-paluuarvon"
+
+#: gawkapi.c:178 gawkapi.c:189
+msgid "awk_value_to_node: not in MPFR mode"
+msgstr "awk_value_to_node: ei MPFR-tilassa"
+
+#: gawkapi.c:183 gawkapi.c:194
+msgid "awk_value_to_node: MPFR not supported"
+msgstr "awk_value_to_node: MPFR ei ole tuettu"
+
+#: gawkapi.c:198
+#, c-format
+msgid "awk_value_to_node: invalid number type `%d'"
+msgstr "awk_value_to_node: virheellinen numerotyyppi ”%d”"
+
+#: gawkapi.c:385
+#, fuzzy
+msgid "add_ext_func: received NULL name_space parameter"
+msgstr "load_ext: vastaanotettiin NULL lib_name"
+
+#: gawkapi.c:523
+#, c-format
+msgid ""
+"node_to_awk_value: detected invalid numeric flags combination `%s'; please "
+"file a bug report."
+msgstr ""
+
+#: gawkapi.c:551
+msgid "node_to_awk_value: received null node"
+msgstr "node_to_awk_value: vastaaotti null-solmun"
+
+#: gawkapi.c:554
+msgid "node_to_awk_value: received null val"
+msgstr "node_to_awk_value: vastaanotti null-arvon"
+
+#: gawkapi.c:610 gawkapi.c:644 gawkapi.c:671 gawkapi.c:704
+#, c-format
+msgid ""
+"node_to_awk_value detected invalid flags combination `%s'; please file a bug "
+"report."
+msgstr ""
+
+#: gawkapi.c:1082
+msgid "remove_element: received null array"
+msgstr "remove_element: vastaanotettu null-taulukko"
+
+#: gawkapi.c:1085
+msgid "remove_element: received null subscript"
+msgstr "remove_element: vastaanotti null-alaindeksin"
+
+#: gawkapi.c:1217
+#, fuzzy, c-format
+msgid "api_flatten_array_typed: could not convert index %d to %s"
+msgstr ""
+"api_flatten_array_typed: indeksin %d muuntaminen arvoksi %s epäonnistui\n"
+
+#: gawkapi.c:1222
+#, fuzzy, c-format
+msgid "api_flatten_array_typed: could not convert value %d to %s"
+msgstr "api_flatten_array_typed: arvon %d muuntaminen arvoksi %s epäonnistui\n"
+
+#: gawkapi.c:1318 gawkapi.c:1334
+#, fuzzy
+msgid "api_get_mpfr: MPFR not supported"
+msgstr "awk_value_to_node: MPFR ei ole tuettu"
+
+#: gawkapi.c:1365
+msgid "cannot find end of BEGINFILE rule"
+msgstr "BEGINFILE-säännön loppua ei löytynyt"
+
+#: gawkapi.c:1419
+#, c-format
+msgid "cannot open unrecognized file type `%s' for `%s'"
+msgstr ""
+"tunnistamattoman tiedostotyypin ”%s” avaaminen kohteessa ”%s” epäonnistui"
+
+#: io.c:426
+#, c-format
+msgid "command line argument `%s' is a directory: skipped"
+msgstr "komentoriviargumentti ”%s” on hakemisto: ohitettiin"
+
+#: io.c:429 io.c:546
+#, fuzzy, c-format
+msgid "cannot open file `%s' for reading: %s"
+msgstr "tiedoston ”%s” avaaminen lukemista varten (%s) epäonnistui"
+
+#: io.c:675
+#, fuzzy, c-format
+msgid "close of fd %d (`%s') failed: %s"
+msgstr "tiedostomäärittelijän %d (”%s”) sulkeminen epäonnistui (%s)"
+
+#: io.c:753
+msgid "redirection not allowed in sandbox mode"
+msgstr "edelleenohjaus ei ole sallittua hiekkalaatikkotilassa"
+
+#: io.c:787
+#, c-format
+msgid "expression in `%s' redirection is a number"
+msgstr "lauseke ”%s”-uudellenohjauksessa on numero"
+
+#: io.c:791
+#, c-format
+msgid "expression for `%s' redirection has null string value"
+msgstr "lausekkeella ”%s”-uudelleenohjauksessa on null-merkkijonoarvo"
+
+#: io.c:796
+#, c-format
+msgid ""
+"filename `%.*s' for `%s' redirection may be result of logical expression"
+msgstr ""
+"tiedostonimi ”%.*s” ”%s”-uudelleenohjaukselle saattaa olla loogisen "
+"lausekkeen tulos"
+
+#: io.c:844
+#, c-format
+msgid "unnecessary mixing of `>' and `>>' for file `%.*s'"
+msgstr "turha merkkien ”>” ja ”>>” sekoittaminen tiedostolle ”%.*s”"
+
+#: io.c:896 io.c:921
+#, fuzzy, c-format
+msgid "get_file cannot create pipe `%s' with fd %d"
+msgstr ""
+"get_file-vastakkeen luomista ei tueta tällä alustalla kohteelle ”%s” fd %d-"
+"arvolla"
+
+#: io.c:911
+#, fuzzy, c-format
+msgid "cannot open pipe `%s' for output: %s"
+msgstr "putken ”%s” avaaminen tulosteelle (%s) epäonnistui"
+
+#: io.c:926
+#, fuzzy, c-format
+msgid "cannot open pipe `%s' for input: %s"
+msgstr "putken ”%s” avaaminen syötteelle (%s) epäonnistui"
+
+#: io.c:950
+#, c-format
+msgid ""
+"get_file socket creation not supported on this platform for `%s' with fd %d"
+msgstr ""
+"get_file-vastakkeen luomista ei tueta tällä alustalla kohteelle ”%s” fd %d-"
+"arvolla"
+
+#: io.c:961
+#, fuzzy, c-format
+msgid "cannot open two way pipe `%s' for input/output: %s"
+msgstr ""
+"kaksisuuntaisen putken ”%s” avaaminen syötteelle/tulosteelle (%s) epäonnistui"
+
+#: io.c:1048
+#, fuzzy, c-format
+msgid "cannot redirect from `%s': %s"
+msgstr "uudelleenohjaus putkesta ”%s” (%s) epäonnistui"
+
+#: io.c:1051
+#, fuzzy, c-format
+msgid "cannot redirect to `%s': %s"
+msgstr "uudelleenohjaus putkeen ”%s” (%s) epäonnistui"
+
+#: io.c:1153
+msgid ""
+"reached system limit for open files: starting to multiplex file descriptors"
+msgstr ""
+"saavutettiin avoimien tiedostojen järjestelmäraja: aloitetaan "
+"tiedostomäärittelijöiden lomittaminen"
+
+#: io.c:1169
+#, fuzzy, c-format
+msgid "close of `%s' failed: %s."
+msgstr "uudelleenohjauksen ”%s” sulkeminen epäonnistui (%s)."
+
+#: io.c:1177
+msgid "too many pipes or input files open"
+msgstr "avoinna liian monta putkea tai syötetiedostoa"
+
+#: io.c:1203
+msgid "close: second argument must be `to' or `from'"
+msgstr "close: toisen argumentin on oltava ”to” tai ”from”"
+
+#: io.c:1221
+#, c-format
+msgid "close: `%.*s' is not an open file, pipe or co-process"
+msgstr "close: ”%.*s” ei ole avoin tiedosto, putki tai apuprosessi"
+
+#: io.c:1226
+msgid "close of redirection that was never opened"
+msgstr "suljettiin uudelleenohjaus, jota ei avattu koskaan"
+
+#: io.c:1325
+#, c-format
+msgid "close: redirection `%s' not opened with `|&', second argument ignored"
+msgstr ""
+"close: uudelleenohjaus ”%s” ei ole avattu operaattoreilla ”|&”, toinen "
+"argumentti ohitettu"
+
+#: io.c:1342
+#, fuzzy, c-format
+msgid "failure status (%d) on pipe close of `%s': %s"
+msgstr "virhetila (%d) putken ”%s” sulkemisessa (%s)"
+
+#: io.c:1345
+#, fuzzy, c-format
+msgid "failure status (%d) on file close of `%s': %s"
+msgstr "virhetila (%d) tiedoston ”%s” sulkemisessa (%s)"
+
+#: io.c:1365
+#, c-format
+msgid "no explicit close of socket `%s' provided"
+msgstr "pistokkeen ”%s” eksplisiittistä sulkemista ei tarjota"
+
+#: io.c:1368
+#, c-format
+msgid "no explicit close of co-process `%s' provided"
+msgstr "apuprosessin ”%s” eksplisiittistä sulkemista ei tarjota"
+
+#: io.c:1371
+#, c-format
+msgid "no explicit close of pipe `%s' provided"
+msgstr "putken ”%s” eksplisiittistä sulkemista ei tarjota"
+
+#: io.c:1374
+#, c-format
+msgid "no explicit close of file `%s' provided"
+msgstr "tiedoston ”%s” eksplisiittistä sulkemista ei tarjota"
+
+#: io.c:1411
+#, fuzzy, c-format
+msgid "fflush: cannot flush standard output: %s"
+msgstr "fflush: tiedoston ”%.*s” tyhjentäminen epäonnistui"
+
+#: io.c:1412
+#, fuzzy, c-format
+msgid "fflush: cannot flush standard error: %s"
+msgstr "fflush: tiedoston ”%.*s” tyhjentäminen epäonnistui"
+
+#: io.c:1417 io.c:1508 main.c:662 main.c:709
+#, fuzzy, c-format
+msgid "error writing standard output: %s"
+msgstr "virhe kirjoitettaessa vakiotulosteeseen (%s)"
+
+#: io.c:1418 io.c:1521 main.c:664
+#, fuzzy, c-format
+msgid "error writing standard error: %s"
+msgstr "virhe kirjoitettaessa vakiovirheeseen (%s)"
+
+#: io.c:1457
+#, fuzzy, c-format
+msgid "pipe flush of `%s' failed: %s."
+msgstr "uudelleenohjauksen ”%s” putken tyhjennys epäonnistui (%s)."
+
+#: io.c:1460
+#, fuzzy, c-format
+msgid "co-process flush of pipe to `%s' failed: %s."
+msgstr "putken apuprosessityhjennys uudelleenohjaukseen ”%s” epäonnistui (%s)."
+
+#: io.c:1463
+#, fuzzy, c-format
+msgid "file flush of `%s' failed: %s."
+msgstr "uudelleenohjauksen ”%s” tiedostontyhjennys epäonnistui (%s)."
+
+#: io.c:1610
+#, fuzzy, c-format
+msgid "local port %s invalid in `/inet': %s"
+msgstr "paikallinen portti %s virheellinen pistokkeessa ”/inet”"
+
+#: io.c:1613
+#, c-format
+msgid "local port %s invalid in `/inet'"
+msgstr "paikallinen portti %s virheellinen pistokkeessa ”/inet”"
+
+#: io.c:1636
+#, fuzzy, c-format
+msgid "remote host and port information (%s, %s) invalid: %s"
+msgstr "etäkone- ja porttitiedot (%s, %s) ovat virheellisiä"
+
+#: io.c:1639
+#, c-format
+msgid "remote host and port information (%s, %s) invalid"
+msgstr "etäkone- ja porttitiedot (%s, %s) ovat virheellisiä"
+
+#: io.c:1881
+msgid "TCP/IP communications are not supported"
+msgstr "TCP/IP-viestintää ei tueta"
+
+#: io.c:2009 io.c:2052
+#, c-format
+msgid "could not open `%s', mode `%s'"
+msgstr "laitteen ”%s” avaus epäonnistui, tila ”%s”"
+
+#: io.c:2017 io.c:2069
+#, fuzzy, c-format
+msgid "close of master pty failed: %s"
+msgstr "”master pty”-sulkeminen epäonnistui (%s)"
+
+#: io.c:2019 io.c:2071 io.c:2418 io.c:2662
+#, fuzzy, c-format
+msgid "close of stdout in child failed: %s"
+msgstr "vakiotulosteen sulkeminen lapsiprosessissa epäonnistui (%s)"
+
+#: io.c:2022 io.c:2074
+#, c-format
+msgid "moving slave pty to stdout in child failed (dup: %s)"
+msgstr ""
+"”slave pty”:n siirtäminen vakiotulosteeseen lapsiprosessissa epäonnistui "
+"(dup: %s)"
+
+#: io.c:2024 io.c:2076 io.c:2423
+#, fuzzy, c-format
+msgid "close of stdin in child failed: %s"
+msgstr "vakiosyötteen sulkeminen lapsiprosessissa epäonnistui (%s)"
+
+#: io.c:2027 io.c:2079
+#, c-format
+msgid "moving slave pty to stdin in child failed (dup: %s)"
+msgstr ""
+"”slave pty”:n siirtäminen vakiosyötteeseen lapsiprosessissa epäonnistui "
+"(dup: %s)"
+
+#: io.c:2029 io.c:2081 io.c:2103
+#, fuzzy, c-format
+msgid "close of slave pty failed: %s"
+msgstr "”slave pty”:n sulkeminen epäonnistui (%s)"
+
+#: io.c:2265
+#, fuzzy
+msgid "could not create child process or open pty"
+msgstr "lapsiprosessin luominen komennolle ”%s” (fork: %s) epäonnistui"
+
+#: io.c:2353 io.c:2421 io.c:2633 io.c:2665
+#, c-format
+msgid "moving pipe to stdout in child failed (dup: %s)"
+msgstr ""
+"putken siirtäminen vakiotulosteeseen lapsiprosessissa epäonnistui (dup: %s)"
+
+#: io.c:2360 io.c:2426
+#, c-format
+msgid "moving pipe to stdin in child failed (dup: %s)"
+msgstr ""
+"putken siirtäminen vakiosyötteeseen lapsiprosessissa epäonnistui (dup: %s)"
+
+#: io.c:2386 io.c:2655
+#, fuzzy
+msgid "restoring stdout in parent process failed"
+msgstr "vakiotulosteen palauttaminen äitiprosessissa epäonnistui\n"
+
+#: io.c:2394
+#, fuzzy
+msgid "restoring stdin in parent process failed"
+msgstr "vakiosyötön palauttaminen äitiprosessissa epäonnistui\n"
+
+#: io.c:2429 io.c:2667 io.c:2682
+#, fuzzy, c-format
+msgid "close of pipe failed: %s"
+msgstr "putken sulkeminen epäonnistui (%s)"
+
+#: io.c:2488
+msgid "`|&' not supported"
+msgstr "”|&” ei tueta"
+
+#: io.c:2618
+#, fuzzy, c-format
+msgid "cannot open pipe `%s': %s"
+msgstr "putken ”%s” (%s) avaaminen epäonnistui"
+
+#: io.c:2676
+#, c-format
+msgid "cannot create child process for `%s' (fork: %s)"
+msgstr "lapsiprosessin luominen komennolle ”%s” (fork: %s) epäonnistui"
+
+#: io.c:2814
+msgid "getline: attempt to read from closed read end of two-way pipe"
+msgstr "getline: yritys lukea kaksisuuntaisen putken suljetusta lukupäästä"
+
+#: io.c:3138
+msgid "register_input_parser: received NULL pointer"
+msgstr "register_input_parser: vastaanotettiin NULL-osoitin"
+
+#: io.c:3166
+#, c-format
+msgid "input parser `%s' conflicts with previously installed input parser `%s'"
+msgstr ""
+"syötejäsennin ”%s” on ristiriidassa aiemmin asennetun syötejäsentimen ”%s” "
+"kanssa"
+
+#: io.c:3173
+#, c-format
+msgid "input parser `%s' failed to open `%s'"
+msgstr "syötejäsentäjä ”%s” epäonnistui kohteen ”%s” avaamisessa"
+
+#: io.c:3193
+msgid "register_output_wrapper: received NULL pointer"
+msgstr "register_output_wrapper: vastaanotti NULL-osoittimen"
+
+#: io.c:3221
+#, c-format
+msgid ""
+"output wrapper `%s' conflicts with previously installed output wrapper `%s'"
+msgstr ""
+"tulostekäärin ”%s” on ristiriidassa aiemmin asennetun tulostekäärimen ”%s” "
+"kanssa"
+
+#: io.c:3228
+#, c-format
+msgid "output wrapper `%s' failed to open `%s'"
+msgstr "tulostekäärin ”%s” epäonnistui avaamaan ”%s”"
+
+#: io.c:3249
+msgid "register_output_processor: received NULL pointer"
+msgstr "register_output_processor: vastaanotti NULL-osoittimen"
+
+#: io.c:3278
+#, c-format
+msgid ""
+"two-way processor `%s' conflicts with previously installed two-way processor "
+"`%s'"
+msgstr ""
+"kaksisuuntainen prosessori ”%s” on ristiriidassa aiemmin asennetun "
+"kaksisuuntaisen prosessorin ”%s” kanssa"
+
+#: io.c:3287
+#, c-format
+msgid "two way processor `%s' failed to open `%s'"
+msgstr "kaksisuuntainen prosessori ”%s” epäonnistui avaamaan ”%s”"
+
+#: io.c:3411
+#, c-format
+msgid "data file `%s' is empty"
+msgstr "data-tiedosto ”%s” on tyhjä"
+
+#: io.c:3453 io.c:3461
+msgid "could not allocate more input memory"
+msgstr "lisäsyötemuistin varaus epäonnistui"
+
+#: io.c:4079
+msgid "multicharacter value of `RS' is a gawk extension"
+msgstr "”RS”-monimerkkiarvo on gawk-laajennus"
+
+#: io.c:4233
+msgid "IPv6 communication is not supported"
+msgstr "IPv6-viestintää ei tueta"
+
+#: main.c:336
+msgid "environment variable `POSIXLY_CORRECT' set: turning on `--posix'"
+msgstr ""
+"ympäristömuuttuja ”POSIXLY_CORRECT” asetettu: käännetään päälle valitsin ”--"
+"posix”"
+
+#: main.c:343
+msgid "`--posix' overrides `--traditional'"
+msgstr "valitsin ”--posix” korvaa valitsimen ”--traditional”"
+
+#: main.c:354
+msgid "`--posix'/`--traditional' overrides `--non-decimal-data'"
+msgstr ""
+"valitsin ”--posix” tai ”--traditional” korvaa valitsimen ”--non-decimal-data”"
+
+#: main.c:359
+msgid "`--posix' overrides `--characters-as-bytes'"
+msgstr "valitsin ”--posix” korvaa valitsimen ”--characters-as-bytes”"
+
+#: main.c:368
+#, c-format
+msgid "running %s setuid root may be a security problem"
+msgstr "suorittaminen ”%s setuid root”-käyttäjänä saattaa olla turvapulma"
+
+#: main.c:421
+#, fuzzy, c-format
+msgid "cannot set binary mode on stdin: %s"
+msgstr "binaaritilan asettaminen vakiosyötteessä (%s) epäonnistui"
+
+#: main.c:424
+#, fuzzy, c-format
+msgid "cannot set binary mode on stdout: %s"
+msgstr "binaaritilan asettaminen vakiotulosteessa (%s) epäonnistui"
+
+#: main.c:426
+#, fuzzy, c-format
+msgid "cannot set binary mode on stderr: %s"
+msgstr "binaaritilaa asettaminen vakiovirheessä (%s) epäonnistui"
+
+#: main.c:488
+msgid "no program text at all!"
+msgstr "ei ohjelmatekstiä ollenkaan!"
+
+#: main.c:582
+#, c-format
+msgid "Usage: %s [POSIX or GNU style options] -f progfile [--] file ...\n"
+msgstr ""
+"Käyttö: %s [POSIX- tai GNU-tyyliset valitsimet] -f ohjelmatiedosto [--] "
+"tiedosto ...\n"
+
+#: main.c:584
+#, c-format
+msgid "Usage: %s [POSIX or GNU style options] [--] %cprogram%c file ...\n"
+msgstr ""
+"Käyttö: %s [POSIX- tai GNU-tyyliset valitsimet] [--] %cohjelma%c "
+"tiedosto ...\n"
+
+#: main.c:589
+msgid "POSIX options:\t\tGNU long options: (standard)\n"
+msgstr "POSIX-valitsimet:\t\tGNU-pitkät valitsimet: (vakio)\n"
+
+#: main.c:590
+msgid "\t-f progfile\t\t--file=progfile\n"
+msgstr "\t-f ohjelmatiedosto\t\t--file=ohjelmatiedosto\n"
+
+#: main.c:591
+msgid "\t-F fs\t\t\t--field-separator=fs\n"
+msgstr "\t-F fs\t\t\t--field-separator=fs\n"
+
+#: main.c:592
+msgid "\t-v var=val\t\t--assign=var=val\n"
+msgstr "\t-v var=arvo\t\t--assign=muuttuja=arvo\n"
+
+#: main.c:593
+msgid "Short options:\t\tGNU long options: (extensions)\n"
+msgstr "Lyhyet valitsimet:\t\tGNU-pitkät valitsimet: (laajennukset)\n"
+
+#: main.c:594
+msgid "\t-b\t\t\t--characters-as-bytes\n"
+msgstr "\t-b\t\t\t--characters-as-bytes\n"
+
+#: main.c:595
+msgid "\t-c\t\t\t--traditional\n"
+msgstr "\t-c\t\t\t--traditional\n"
+
+#: main.c:596
+msgid "\t-C\t\t\t--copyright\n"
+msgstr "\t-C\t\t\t--copyright\n"
+
+#: main.c:597
+msgid "\t-d[file]\t\t--dump-variables[=file]\n"
+msgstr "\t-d[tiedosto]\t\t--dump-variables[=tiedosto]\n"
+
+#: main.c:598
+msgid "\t-D[file]\t\t--debug[=file]\n"
+msgstr "\t-D[tiedosto]\t\t--debug[=tiedosto]\n"
+
+#: main.c:599
+msgid "\t-e 'program-text'\t--source='program-text'\n"
+msgstr "\t-e 'program-text'\t--source='program-text'\n"
+
+#: main.c:600
+msgid "\t-E file\t\t\t--exec=file\n"
+msgstr "\t-E file\t\t\t--exec=tiedosto\n"
+
+#: main.c:601
+msgid "\t-g\t\t\t--gen-pot\n"
+msgstr "\t-g\t\t\t--gen-po\n"
+
+#: main.c:602
+msgid "\t-h\t\t\t--help\n"
+msgstr "\t-h\t\t\t--help\n"
+
+#: main.c:603
+msgid "\t-i includefile\t\t--include=includefile\n"
+msgstr "\t-i include-tiedosto\t\t--include=include-tiedosto\n"
+
+#: main.c:604
+msgid "\t-l library\t\t--load=library\n"
+msgstr "\t-l kirjasto\t\t--load=kirjasto\n"
+
+#. TRANSLATORS: the "fatal", "invalid" and "no-ext" here are literal
+#. values, they should not be translated. Thanks.
+#.
+#: main.c:609
+#, fuzzy
+msgid "\t-L[fatal|invalid|no-ext]\t--lint[=fatal|invalid|no-ext]\n"
+msgstr "\t-L[fatal|invalid]\t--lint[=fatal|invalid]\n"
+
+#: main.c:610
+msgid "\t-M\t\t\t--bignum\n"
+msgstr "\t-M\t\t\t--bignum\n"
+
+#: main.c:611
+msgid "\t-N\t\t\t--use-lc-numeric\n"
+msgstr "\t-N\t\t\t--use-lc-numeric\n"
+
+#: main.c:612
+msgid "\t-n\t\t\t--non-decimal-data\n"
+msgstr "\t-n\t\t\t--non-decimal-data\n"
+
+#: main.c:613
+msgid "\t-o[file]\t\t--pretty-print[=file]\n"
+msgstr "\t-o[tiedosto]\t\t--pretty-print[=tiedosto]\n"
+
+#: main.c:614
+msgid "\t-O\t\t\t--optimize\n"
+msgstr "\t-O\t\t\t--optimize\n"
+
+#: main.c:615
+msgid "\t-p[file]\t\t--profile[=file]\n"
+msgstr "\t-p[tiedosto]\t\t--profile[=tiedosto]\n"
+
+#: main.c:616
+msgid "\t-P\t\t\t--posix\n"
+msgstr "\t-P\t\t\t--posix\n"
+
+#: main.c:617
+msgid "\t-r\t\t\t--re-interval\n"
+msgstr "\t-r\t\t\t--re-interval\n"
+
+#: main.c:618
+msgid "\t-s\t\t\t--no-optimize\n"
+msgstr "\t-O\t\t\t--no-optimize\n"
+
+#: main.c:619
+msgid "\t-S\t\t\t--sandbox\n"
+msgstr "\t-S\t\t\t--sandbox\n"
+
+#: main.c:620
+msgid "\t-t\t\t\t--lint-old\n"
+msgstr "\t-t\t\t\t--lint-old\n"
+
+#: main.c:621
+msgid "\t-V\t\t\t--version\n"
+msgstr "\t-V\t\t\t--version\n"
+
+#: main.c:623
+msgid "\t-W nostalgia\t\t--nostalgia\n"
+msgstr "\t-W nostalgia\t\t--nostalgia\n"
+
+#: main.c:626
+#, fuzzy
+msgid "\t-Y\t\t\t--parsedebug\n"
+msgstr "\t-Y\t\t--parsedebug\n"
+
+#: main.c:629
+msgid "\t-Z locale-name\t\t--locale=locale-name\n"
+msgstr ""
+
+#. TRANSLATORS: --help output (end)
+#. no-wrap
+#: main.c:635
+#, fuzzy
+msgid ""
+"\n"
+"To report bugs, see node `Bugs' in `gawk.info'\n"
+"which is section `Reporting Problems and Bugs' in the\n"
+"printed version.  This same information may be found at\n"
+"https://www.gnu.org/software/gawk/manual/html_node/Bugs.html.\n"
+"PLEASE do NOT try to report bugs by posting in comp.lang.awk,\n"
+"or by using a web forum such as Stack Overflow.\n"
+"\n"
+msgstr ""
+"\n"
+"Virheiden ilmoittamista varten, katso solmua ”Bugs” tiedostossa ”gawk."
+"info”,\n"
+"joka on kappale ”Reporting Problems and Bugs” painetussa versiossa. Nämä\n"
+"samat tiedot löytyvät osoitteesta\n"
+"https://www.gnu.org/software/gawk/manual/html_node/Bugs.html.\n"
+"\n"
+
+#: main.c:643
+msgid ""
+"gawk is a pattern scanning and processing language.\n"
+"By default it reads standard input and writes standard output.\n"
+"\n"
+msgstr ""
+"gawk on mallietsintä- ja käsittelykieli.\n"
+"Oletuksena se lukee vakiosyötettä ja kirjoittaa vakiotulosteeseen.\n"
+"\n"
+
+#: main.c:647
+#, fuzzy, c-format
+msgid ""
+"Examples:\n"
+"\t%s '{ sum += $1 }; END { print sum }' file\n"
+"\t%s -F: '{ print $1 }' /etc/passwd\n"
+msgstr ""
+"Esimerkkejä:\n"
+"\tgawk '{ sum += $1 }; END { print sum }' tiedosto\n"
+"\tgawk -F: '{ print $1 }' /etc/passwd\n"
+
+#: main.c:679
+#, c-format
+msgid ""
+"Copyright (C) 1989, 1991-%d Free Software Foundation.\n"
+"\n"
+"This program is free software; you can redistribute it and/or modify\n"
+"it under the terms of the GNU General Public License as published by\n"
+"the Free Software Foundation; either version 3 of the License, or\n"
+"(at your option) any later version.\n"
+"\n"
+msgstr ""
+"Copyright © 1989, 1991-%d Free Software Foundation.\n"
+"\n"
+"Tämä ohjelma on ilmainen; voit jakaa sitä edelleen ja/tai muokata sitä\n"
+"Free Software Foundation julkaisemien GNU General Public License-lisenssin\n"
+"version 3, tai (valintasi mukaan) minkä tahansa myöhäisemmän version\n"
+"ehtojen mukaisesti.\n"
+"\n"
+
+#: main.c:687
+msgid ""
+"This program is distributed in the hope that it will be useful,\n"
+"but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+"GNU General Public License for more details.\n"
+"\n"
+msgstr ""
+"Tätä ohjelmaa levitetään toivossa, että se on hyödyllinen, mutta\n"
+"ILMAN MITÄÄN TAKUUTA; ilman edes viitattua takuuta KAUPALLISUUDESTA\n"
+"tai SOPIVUUDESTA TIETTYYN TARKOITUKSEEN. Katso yksityiskohdat\n"
+"GNU General Public License-ehdoista.\n"
+"\n"
+
+#: main.c:693
+msgid ""
+"You should have received a copy of the GNU General Public License\n"
+"along with this program. If not, see http://www.gnu.org/licenses/.\n"
+msgstr ""
+"Sinun pitäisi vastaanottaa kopion GNU General Public Licence-lisenssistä\n"
+"tämän ohjelman mukana. Jos näin ei ole, katso http://www.gnu.org/licenses/.\n"
+
+#: main.c:734
+msgid "-Ft does not set FS to tab in POSIX awk"
+msgstr "-Ft ei aseta FS välilehteen POSIX awk:ssa"
+
+#: main.c:1149
+#, c-format
+msgid ""
+"%s: `%s' argument to `-v' not in `var=value' form\n"
+"\n"
+msgstr ""
+"%s: ”%s” argumentti valitsimelle ”-v” ei ole ”var=arvo”-muodossa\n"
+"\n"
+
+#: main.c:1175
+#, c-format
+msgid "`%s' is not a legal variable name"
+msgstr "”%s” ei ole laillinen muuttujanimi"
+
+#: main.c:1178
+#, c-format
+msgid "`%s' is not a variable name, looking for file `%s=%s'"
+msgstr "”%s” ei ole muuttujanimi, etsitään tiedostoa ”%s=%s”"
+
+#: main.c:1192
+#, c-format
+msgid "cannot use gawk builtin `%s' as variable name"
+msgstr ""
+"gawk-ohjelman sisäisen ”%s”-määrittelyn käyttö muuttujanimenä epäonnistui"
+
+#: main.c:1197
+#, c-format
+msgid "cannot use function `%s' as variable name"
+msgstr "funktionimen ”%s” käyttö muuttujanimenä epäonnistui"
+
+#: main.c:1275
+msgid "floating point exception"
+msgstr "liukulukupoikkeus"
+
+#: main.c:1285
+msgid "fatal error: internal error"
+msgstr "tuhoisa virhe: sisäinen virhe"
+
+#: main.c:1305
+msgid "fatal error: internal error: segfault"
+msgstr "tuhoisa virhe: sisäinen virhe: segmenttivirhe"
+
+#: main.c:1318
+msgid "fatal error: internal error: stack overflow"
+msgstr "tuhoisa virhe: sisäinen virhe: pinoylivuoto"
+
+#: main.c:1378
+#, c-format
+msgid "no pre-opened fd %d"
+msgstr "ei avattu uudelleen tiedostomäärittelijää %d"
+
+#: main.c:1385
+#, c-format
+msgid "could not pre-open /dev/null for fd %d"
+msgstr ""
+"laitteen /dev/null avaaminen uudelleen tiedostomäärittelijälle %d epäonnistui"
+
+#: main.c:1599
+msgid "empty argument to `-e/--source' ignored"
+msgstr "tyhjä argumentti valitsimelle ”-e/--source” ohitetaan"
+
+#: main.c:1660 main.c:1665
+#, fuzzy
+msgid "`--profile' overrides `--pretty-print'"
+msgstr "valitsin ”--posix” korvaa valitsimen ”--traditional”"
+
+#: main.c:1677
+msgid "-M ignored: MPFR/GMP support not compiled in"
+msgstr "-M ohitettu: MPFR/GMP-tuki ei ole käännetty kohteessa"
+
+#: main.c:1702
+#, c-format
+msgid "%s: option `-W %s' unrecognized, ignored\n"
+msgstr "%s: valitsin ”-W %s” on tunnistamaton, ohitetaan\n"
+
+#: main.c:1755
+#, c-format
+msgid "%s: option requires an argument -- %c\n"
+msgstr "%s: valitsin vaatii argumentin -- %c\n"
+
+#: mpfr.c:551
+#, c-format
+msgid "PREC value `%.*s' is invalid"
+msgstr "PREC-arvo ”%.*s” on virheellinen"
+
+#: mpfr.c:610
+#, c-format
+msgid "RNDMODE value `%.*s' is invalid"
+msgstr "RNDMODE-arvo ”%.*s” on virheellinen"
+
+#: mpfr.c:674
+msgid "atan2: received non-numeric first argument"
+msgstr "atan2: ensimmäinen vastaanotettu argumentti ei ole numeerinen"
+
+#: mpfr.c:676
+msgid "atan2: received non-numeric second argument"
+msgstr "atan2: toinen vastaanotettu argumentti ei ole numeerinen"
+
+#: mpfr.c:774
+msgid "int: received non-numeric argument"
+msgstr "int: vastaanotettu argumentti ei ole numeerinen"
+
+#: mpfr.c:804
+msgid "compl: received non-numeric argument"
+msgstr "compl: vastaanotettu argumentti ei ole numeerinen"
+
+#: mpfr.c:816
+msgid "compl(%Rg): negative value is not allowed"
+msgstr "compl(%Rg): negatiivinen arvo ei ole sallittu"
+
+#: mpfr.c:821
+msgid "comp(%Rg): fractional value will be truncated"
+msgstr "compl(%Rg): jaosarvo typistetään"
+
+#: mpfr.c:832
+#, fuzzy, c-format
+msgid "compl(%Zd): negative values are not allowed"
+msgstr "compl(%Zd): negatiiviset arvot eivät ole sallittuja"
+
+#: mpfr.c:850
+#, c-format
+msgid "%s: received non-numeric argument #%d"
+msgstr "%s: vastaanotettu argumentti #%d ei ole numeerinen"
+
+#: mpfr.c:860
+msgid "%s: argument #%d has invalid value %Rg, using 0"
+msgstr "%s: argumentilla #%d on virheellinen arvo %Rg, käytetään 0"
+
+#: mpfr.c:871
+msgid "%s: argument #%d negative value %Rg is not allowed"
+msgstr "%s: argumentin #%d negatiivinen arvo %Rg ei ole sallittu"
+
+#: mpfr.c:878
+msgid "%s: argument #%d fractional value %Rg will be truncated"
+msgstr "%s: argumentin #%d jaosarvo %Rg typistetään"
+
+#: mpfr.c:892
+#, c-format
+msgid "%s: argument #%d negative value %Zd is not allowed"
+msgstr "%s: argumentin #%d negatiivinen arvo %Zd ei ole sallittu"
+
+#: mpfr.c:982
+msgid "and: called with less than two arguments"
+msgstr "and: kutsuttu vähemmällä kuin kahdella argumentilla"
+
+#: mpfr.c:1014
+msgid "or: called with less than two arguments"
+msgstr "or: kutsuttu vähemmällä kuin kahdella argumentilla"
+
+#: mpfr.c:1045
+msgid "xor: called with less than two arguments"
+msgstr "xor: kutsuttu vähemmällä kuin kahdella argumentilla"
+
+#: mpfr.c:1169
+msgid "srand: received non-numeric argument"
+msgstr "srand: vastaanotettu argumentti ei ole numeerinen"
+
+#: mpfr.c:1211
+msgid "intdiv: received non-numeric first argument"
+msgstr "intdiv: ensimmäinen vastaanotettu argumentti ei ole numeerinen"
+
+#: mpfr.c:1213
+msgid "intdiv: received non-numeric second argument"
+msgstr "intdiv: toinen vastaanotettu argumentti ei ole numeerinen"
+
+#: msg.c:75
+#, c-format
+msgid "cmd. line:"
+msgstr "komentorivi:"
+
+#: node.c:481
+msgid "could not make typed regex"
+msgstr "tyypitetyn regex-lausekeen tekeminen epäonnistui"
+
+#: node.c:555
+#, c-format
+msgid "old awk does not support the `\\%c' escape sequence"
+msgstr "vanha awk ei tue ”\\%c”-koodinvaihtosekvenssiä"
+
+#: node.c:606
+msgid "POSIX does not allow `\\x' escapes"
+msgstr "POSIX ei salli ”\\x”-koodinvaihtoja"
+
+#: node.c:612
+msgid "no hex digits in `\\x' escape sequence"
+msgstr "ei heksadesimaalilukuja ”\\x”-koodinvaihtosekvenssissä"
+
+#: node.c:633
+#, c-format
+msgid ""
+"hex escape \\x%.*s of %d characters probably not interpreted the way you "
+"expect"
+msgstr ""
+"heksadesimaalikoodinvaihtomerkkejä \\x%.*s / %d ei ole luultavasti tulkittu "
+"sillä tavalla kuin odotat"
+
+#: node.c:648
+#, c-format
+msgid "escape sequence `\\%c' treated as plain `%c'"
+msgstr "koodinvaihtosekvenssi ”\\%c” käsitelty kuin pelkkä ”%c”"
+
+#: node.c:784
+msgid ""
+"Invalid multibyte data detected. There may be a mismatch between your data "
+"and your locale."
+msgstr ""
+"Virheellinen monitavutieto havaittu. Paikallisasetuksesi ja tietojesi "
+"välillä saattaa olla täsmäämättömyys."
+
+#: posix/gawkmisc.c:177
+#, c-format
+msgid "%s %s `%s': could not get fd flags: (fcntl F_GETFD: %s)"
+msgstr "%s %s ”%s”: fd-lippujen hakeminen epäonnistui: (fcntl F_GETFD: %s)"
+
+#: posix/gawkmisc.c:189
+#, c-format
+msgid "%s %s `%s': could not set close-on-exec: (fcntl F_SETFD: %s)"
+msgstr ""
+"%s %s ”%s”: close-on-exec -asettaminen epäonnistui: (fcntl F_SETFD: %s)"
+
+#: profile.c:73
+msgid "Program indentation level too deep. Consider refactoring your code"
+msgstr ""
+
+#: profile.c:112
+msgid "sending profile to standard error"
+msgstr "lähetetään profiili vakiovirheeseen"
+
+#: profile.c:275
+#, c-format
+msgid ""
+"\t# %s rule(s)\n"
+"\n"
+msgstr ""
+"\t# %s säännöt\n"
+"\n"
+
+#: profile.c:283
+#, c-format
+msgid ""
+"\t# Rule(s)\n"
+"\n"
+msgstr ""
+"\t# Säännöt\n"
+"\n"
+
+#: profile.c:371
+#, c-format
+msgid "internal error: %s with null vname"
+msgstr "sisäinen virhe: %s null vname-arvolla"
+
+#: profile.c:662
+msgid "internal error: builtin with null fname"
+msgstr "sisäinen virhe: builtin null-funktionimellä"
+
+#: profile.c:1317
+#, fuzzy, c-format
+msgid ""
+"%s# Loaded extensions (-l and/or @load)\n"
+"\n"
+msgstr ""
+"\t# Ladatut laajennukset (-l ja/tai @load)\n"
+"\n"
+
+#: profile.c:1348
+#, fuzzy, c-format
+msgid ""
+"\n"
+"# Included files (-i and/or @include)\n"
+"\n"
+msgstr ""
+"\t# Ladatut laajennukset (-l ja/tai @load)\n"
+"\n"
+
+#: profile.c:1412
+#, c-format
+msgid "\t# gawk profile, created %s\n"
+msgstr "\t# gawk-profiili, luotu %s\n"
+
+#: profile.c:1980
+#, c-format
+msgid ""
+"\n"
+"\t# Functions, listed alphabetically\n"
+msgstr ""
+"\n"
+"\t# Funktiot, luetteloitu aakkosjärjestyksessä\n"
+
+#: profile.c:2041
+#, c-format
+msgid "redir2str: unknown redirection type %d"
+msgstr "redir2str: tuntematon edelleenohjaustyyppi %d"
+
+#: re.c:58 re.c:163
+msgid ""
+"behavior of matching a regexp containing NUL characters is not defined by "
+"POSIX"
+msgstr ""
+
+#: re.c:127
+msgid "invalid NUL byte in dynamic regexp"
+msgstr ""
+
+#: re.c:174
+#, fuzzy, c-format
+msgid "regexp escape sequence `\\%c' treated as plain `%c'"
+msgstr "koodinvaihtosekvenssi ”\\%c” käsitelty kuin pelkkä ”%c”"
+
+#: re.c:193
+#, c-format
+msgid "regexp escape sequence `\\%c' is not a known regexp operator"
+msgstr ""
+
+#: re.c:663
+#, c-format
+msgid "regexp component `%.*s' should probably be `[%.*s]'"
+msgstr ""
+"säännöllisen lausekkeen komponentin ”%.*s” pitäisi luultavasti olla ”[%.*s]”"
+
+#: support/dfa.c:950
+msgid "unbalanced ["
+msgstr "pariton ["
+
+#: support/dfa.c:1071
+msgid "invalid character class"
+msgstr "virheellinen merkkiluokka"
+
+#: support/dfa.c:1197
+msgid "character class syntax is [[:space:]], not [:space:]"
+msgstr "merkkiluokkasyntaksi on [[:space:]], ei [:space:]"
+
+#: support/dfa.c:1264
+msgid "unfinished \\ escape"
+msgstr "päättymätön \\-koodinvaihtomerkki"
+
+#: support/dfa.c:1425
+msgid "invalid content of \\{\\}"
+msgstr "virheellinen \\{\\}-sisältö"
+
+#: support/dfa.c:1428
+msgid "regular expression too big"
+msgstr "säännöllinen lauseke on liian suuri"
+
+#: support/dfa.c:1899
+msgid "unbalanced ("
+msgstr "pariton ("
+
+#: support/dfa.c:2016
+msgid "no syntax specified"
+msgstr "syntaksi ei ole määritelty"
+
+#: support/dfa.c:2027
+msgid "unbalanced )"
+msgstr "pariton )"
+
+#: support/getopt.c:605 support/getopt.c:634
+#, c-format
+msgid "%s: option '%s' is ambiguous; possibilities:"
+msgstr "%s: valitsin ’%s’ ei ole yksiselitteinen; mahdollisuudet:"
+
+#: support/getopt.c:680 support/getopt.c:684
+#, c-format
+msgid "%s: option '--%s' doesn't allow an argument\n"
+msgstr "%s: valitsin ’--%s’ ei salli argumenttia\n"
+
+#: support/getopt.c:693 support/getopt.c:698
+#, c-format
+msgid "%s: option '%c%s' doesn't allow an argument\n"
+msgstr "%s: valitsin ’%c%s’ ei salli argumenttia\n"
+
+#: support/getopt.c:741 support/getopt.c:760
+#, c-format
+msgid "%s: option '--%s' requires an argument\n"
+msgstr "%s: valitsin ’--%s’ vaatii argumentin\n"
+
+#: support/getopt.c:798 support/getopt.c:801
+#, c-format
+msgid "%s: unrecognized option '--%s'\n"
+msgstr "%s: tunnistamaton valitsin ’--%s’\n"
+
+#: support/getopt.c:809 support/getopt.c:812
+#, c-format
+msgid "%s: unrecognized option '%c%s'\n"
+msgstr "%s: tunnistamaton valitsin ’%c%s’\n"
+
+#: support/getopt.c:861 support/getopt.c:864
+#, c-format
+msgid "%s: invalid option -- '%c'\n"
+msgstr "%s: virheellinen valitsin -- ’%c’\n"
+
+#: support/getopt.c:917 support/getopt.c:934 support/getopt.c:1144
+#: support/getopt.c:1162
+#, c-format
+msgid "%s: option requires an argument -- '%c'\n"
+msgstr "%s: valitsin vaatii argumentin -- ’%c’\n"
+
+#: support/getopt.c:990 support/getopt.c:1006
+#, c-format
+msgid "%s: option '-W %s' is ambiguous\n"
+msgstr "%s: valitsin ’-W %s’ ei ole yksiselitteinen\n"
+
+#: support/getopt.c:1030 support/getopt.c:1048
+#, c-format
+msgid "%s: option '-W %s' doesn't allow an argument\n"
+msgstr "%s: valitsin ’-W %s’ ei salli argumenttia\n"
+
+#: support/getopt.c:1069 support/getopt.c:1087
+#, c-format
+msgid "%s: option '-W %s' requires an argument\n"
+msgstr "%s: valitsin ’-W %s’ vaatii argumentin\n"
+
+#: support/regcomp.c:135
+msgid "Success"
+msgstr "Onnistui"
+
+#: support/regcomp.c:138
+msgid "No match"
+msgstr "Ei täsmäystä"
+
+#: support/regcomp.c:141
+msgid "Invalid regular expression"
+msgstr "Virheellinen säännöllinen lauseke"
+
+#: support/regcomp.c:144
+msgid "Invalid collation character"
+msgstr "Virheellinen vertailumerkki"
+
+#: support/regcomp.c:147
+msgid "Invalid character class name"
+msgstr "Virheellinen merkkiluokkanimi"
+
+#: support/regcomp.c:150
+msgid "Trailing backslash"
+msgstr "Jäljessä oleva kenoviiva"
+
+#: support/regcomp.c:153
+msgid "Invalid back reference"
+msgstr "Virheellinen paluuviite"
+
+#: support/regcomp.c:156
+msgid "Unmatched [, [^, [:, [., or [="
+msgstr "Pariton [, [^, [:, [., or [="
+
+#: support/regcomp.c:159
+msgid "Unmatched ( or \\("
+msgstr "Pariton ( tai \\("
+
+#: support/regcomp.c:162
+msgid "Unmatched \\{"
+msgstr "Pariton \\{"
+
+#: support/regcomp.c:165
+msgid "Invalid content of \\{\\}"
+msgstr "Virheellinen \\{\\}-sisältö"
+
+#: support/regcomp.c:168
+msgid "Invalid range end"
+msgstr "Virheellinen lukualueen loppu"
+
+#: support/regcomp.c:171
+msgid "Memory exhausted"
+msgstr "Muisti loppui"
+
+#: support/regcomp.c:174
+msgid "Invalid preceding regular expression"
+msgstr "Virheellinen edeltävä säännöllinen lauseke"
+
+#: support/regcomp.c:177
+msgid "Premature end of regular expression"
+msgstr "Ennenaikainen säännöllisen lausekkeen loppu"
+
+#: support/regcomp.c:180
+msgid "Regular expression too big"
+msgstr "Säännöllinen lauseke on liian iso"
+
+#: support/regcomp.c:183
+msgid "Unmatched ) or \\)"
+msgstr "Pariton ) tai \\)"
+
+#: support/regcomp.c:676
+msgid "No previous regular expression"
+msgstr "Ei edellistä säännöllistä lauseketta"
+
+#: symbol.c:691
+#, fuzzy, c-format
+msgid "function `%s': cannot use function `%s' as a parameter name"
+msgstr "funktio ”%s”: funktion ”%s” käyttö parametrinimenä epäonnistui"
+
+#: symbol.c:821
+msgid "cannot pop main context"
+msgstr "pääsisällön pop-toiminto epäonnistui"
+
+#, fuzzy
+#~ msgid "fts: first parameter is not an array"
+#~ msgstr "asort: ensimmäinen argumentti ei ole taulukko"
+
+#, fuzzy
+#~ msgid "fts: third parameter is not an array"
+#~ msgstr "match: kolmas argumentti ei ole taulukko"
+
+#~ msgid "adump: first argument not an array"
+#~ msgstr "adump: ensimmäinen argumentti ei ole taulukko"
+
+#~ msgid "asort: second argument not an array"
+#~ msgstr "asort: toinen argumentti ei ole taulukko"
+
+#~ msgid "asorti: second argument not an array"
+#~ msgstr "asorti: toinen argumentti ei ole taulukko"
+
+#~ msgid "asorti: first argument not an array"
+#~ msgstr "asorti: ensimmäinen argumentti ei ole taulukko"
+
+#, fuzzy
+#~ msgid "asorti: first argument cannot be SYMTAB"
+#~ msgstr "asorti: ensimmäinen argumentti ei ole taulukko"
+
+#, fuzzy
+#~ msgid "asorti: first argument cannot be FUNCTAB"
+#~ msgstr "asorti: ensimmäinen argumentti ei ole taulukko"
+
+#~ msgid "asorti: cannot use a subarray of first arg for second arg"
+#~ msgstr ""
+#~ "asorti: ensimmäisen argumentin alitaulukon käyttö toiselle argumentille "
+#~ "epäonnistui"
+
+#~ msgid "asorti: cannot use a subarray of second arg for first arg"
+#~ msgstr ""
+#~ "asorti: toisen argumentin alitaulukon käyttö ensimmäiselle argumentille "
+#~ "epäonnistui"
+
+#~ msgid "can't read sourcefile `%s' (%s)"
+#~ msgstr "lähdetiedoston ”%s” (%s) lukeminen epäonnistui"
+
+#~ msgid "POSIX does not allow operator `**='"
+#~ msgstr "POSIX ei salli operaattoria ”**=”"
+
+#~ msgid "old awk does not support operator `**='"
+#~ msgstr "vanha awk ei tue operaattoria ”**=”"
+
+#~ msgid "old awk does not support operator `**'"
+#~ msgstr "vanha awk ei tue operaattoria ”**”"
+
+#~ msgid "operator `^=' is not supported in old awk"
+#~ msgstr "operaattoria ”^=” ei tueta vanhassa awk:ssa"
+
+#~ msgid "could not open `%s' for writing (%s)"
+#~ msgstr "tiedoston ”%s” avaaminen kirjoittamista varten (%s) epäonnistui"
+
+#~ msgid "exp: received non-numeric argument"
+#~ msgstr "exp: vastaanotettu argumentti ei ole numeerinen"
+
+#~ msgid "length: received non-string argument"
+#~ msgstr "length: vastaanotettu argumentti ei ole merkkijono"
+
+#~ msgid "log: received non-numeric argument"
+#~ msgstr "log: vastaanotettu argumentti ei ole numeerinen"
+
+#~ msgid "sqrt: received non-numeric argument"
+#~ msgstr "sqrt: vastaanotettu argumentti ei ole numeerinen"
+
+#~ msgid "sqrt: called with negative argument %g"
+#~ msgstr "sqrt: kutsuttu negatiivisella argumentilla %g"
+
+#~ msgid "strftime: received non-numeric second argument"
+#~ msgstr "strftime: toinen vastaanotettu argumentti ei ole numeerinen"
+
+#~ msgid "strftime: received non-string first argument"
+#~ msgstr "strftime: ensimmäinen vastaanotettu argumentti ei ole merkkijono"
+
+#~ msgid "mktime: received non-string argument"
+#~ msgstr "mktime: vastaanotettu argumentti ei ole merkkijono"
+
+#~ msgid "tolower: received non-string argument"
+#~ msgstr "tolower: vastaanotettu argumentti ei ole merkkijono"
+
+#~ msgid "toupper: received non-string argument"
+#~ msgstr "toupper: vastaanotettu argumentti ei ole merkkijono"
+
+#~ msgid "sin: received non-numeric argument"
+#~ msgstr "sin: vastaanotettu argumentti ei ole numeerinen"
+
+#~ msgid "cos: received non-numeric argument"
+#~ msgstr "cos: vastaanotettu argumentti ei ole numeerinen"
+
+#~ msgid "lshift: received non-numeric first argument"
+#~ msgstr "lshift: ensimmäinen vastaanotettu argumentti ei ole numeerinen"
+
+#~ msgid "lshift: received non-numeric second argument"
+#~ msgstr "lshift: toinen vastaanotettu argumentti ei ole numeerinen"
+
+#~ msgid "rshift: received non-numeric first argument"
+#~ msgstr "rshift: ensimmäinen vastaanotettu argumentti ei ole numeerinen"
+
+#~ msgid "rshift: received non-numeric second argument"
+#~ msgstr "rshift: toinen vastaanotettu argumentti ei ole numeerinen"
+
+#~ msgid "and: argument %d is non-numeric"
+#~ msgstr "and: argumentti %d ei ole numeeraaliargumentti"
+
+#~ msgid "and: argument %d negative value %g is not allowed"
+#~ msgstr "and: argumentin %d negatiivinen arvo %g ei ole sallittu"
+
+#~ msgid "or: argument %d negative value %g is not allowed"
+#~ msgstr "or: argumentin %d negatiivinen arvo %g ei ole sallittu"
+
+#~ msgid "xor: argument %d is non-numeric"
+#~ msgstr "xor: argumentti %d ei ole numeraaliargumentti"
+
+#~ msgid "xor: argument %d negative value %g is not allowed"
+#~ msgstr "xor: argumentin %d negatiivinen arvo %g ei ole sallittu"
+
+#~ msgid "Can't find rule!!!\n"
+#~ msgstr "Säännön löytäminen epäonnistui!!!\n"
+
+#~ msgid "q"
+#~ msgstr "q"
+
+#~ msgid "fts: bad first parameter"
+#~ msgstr "fts: väärä ensimmäinen parametri"
+
+#~ msgid "fts: bad second parameter"
+#~ msgstr "fts: väärä toinen parametri"
+
+#~ msgid "fts: bad third parameter"
+#~ msgstr "fts: väärä kolmas parametri"
+
+#~ msgid "fts: clear_array() failed\n"
+#~ msgstr "fts: clear_array() epäonnistui\n"
+
+#~ msgid "ord: called with inappropriate argument(s)"
+#~ msgstr "ord: kutsuttu sopimattomalla argumentilla"
+
+#~ msgid "chr: called with inappropriate argument(s)"
+#~ msgstr "chr: kutsuttu sopimattomalla argumentilla"
+
+#~ msgid "can not pop main context"
+#~ msgstr "pääsisällön pop-toiminto epäonnistui"
+
+#~ msgid "setenv(TZ, %s) failed (%s)"
+#~ msgstr "setenv(TZ, %s) epäonnistui (%s)"
+
+#, fuzzy
+#~ msgid "setenv(TZ, %s) restoration failed (%s)"
+#~ msgstr "setenv(TZ, %s) epäonnistui (%s)"
+
+#~ msgid "unsetenv(TZ) failed (%s)"
+#~ msgstr "unsetenv(TZ) epäonnistui (%s)"
+
+#~ msgid "backslash at end of string"
+#~ msgstr "kenoviiva merkkijonon lopussa"
+
+#~ msgid "attempt to use array `%s[\".*%s\"]' in a scalar context"
+#~ msgstr "yritettiin käyttää taulukkoa ”%s[\".*%s\"]” skalaarikontekstissa"
+
+#~ msgid "attempt to use scalar `%s[\".*%s\"]' as array"
+#~ msgstr "yritettiin käyttää skalaaria ”%s[\".*%s\"]” taulukkona"
+
+#~ msgid "delete: index `%s' not in array `%s'"
+#~ msgstr "delete: indeksi ”%s” ei ole taulukko ”%s”"
+
+#~ msgid "fflush: cannot flush: pipe `%s' opened for reading, not writing"
+#~ msgstr ""
+#~ "fflush: tyhjennys epäonnistui: putki ”%s” avattu lukemista varten, ei "
+#~ "kirjoittamista"
+
+#~ msgid "fflush: cannot flush: file `%s' opened for reading, not writing"
+#~ msgstr ""
+#~ "fflush: tyhjennys epäonnistui: tiedosto ”%s” avattu lukemista varten, ei "
+#~ "kirjoittamista"
+
+#~ msgid "fflush: cannot flush: two-way pipe `%s' has closed write end"
+#~ msgstr ""
+#~ "fflush: tyhjennys epäonnistui: kaksisuuntainen putki ”%s” suljettu "
+#~ "kirjoituspäässä"
+
+#~ msgid "fflush: `%s' is not an open file, pipe or co-process"
+#~ msgstr "fflush: ”%s” ei ole avoin tiedosto, putki tai apuprosessi"
+
+#~ msgid "gensub: third argument %g treated as 1"
+#~ msgstr "gensub: kolmas argumentti %g käsiteltiin kuin 1."
+
+#~ msgid "lshift(%f, %f): negative values will give strange results"
+#~ msgstr "lshift(%f, %f): negatiiviset arvot antavat outoja tuloksia"
+
+#~ msgid "rshift(%f, %f): negative values will give strange results"
+#~ msgstr "rshift(%f, %f): negatiiviset arvot antavat outoja tuloksia"
+
+#~ msgid "and: argument %d negative value %g will give strange results"
+#~ msgstr "and: argumentin %d negatiivinen arvo %g antaa outoja tuloksia"
+
+#~ msgid "or: argument %d negative value %g will give strange results"
+#~ msgstr "or: argumentin %d negatiivinen arvo %g antaa outoja tuloksia"
+
+#~ msgid "xor: argument %d negative value %g will give strange results"
+#~ msgstr "xor: argumentin %d negatiivinen arvo %g antaa outoja tuloksia"
+
+#~ msgid "compl(%f): negative value will give strange results"
+#~ msgstr "compl(%f): negatiivinen arvo antaa outoja tuloksia"
+
+#~ msgid "[\"%s\"] not in array `%s'\n"
+#~ msgstr "[\"%s\"] ei ole taulukko ”%s”\n"
+
+#~ msgid "`%s[\"%s\"]' is not an array\n"
+#~ msgstr "”%s[\"%s\"]” ei ole taulukko\n"
+
+#~ msgid "attempt to use array `%s[\"%s\"]' in a scalar context"
+#~ msgstr "yritys käyttää taulukkoa ”%s[\"%s\"]” skalaariyhteydessä"
+
+#~ msgid "attempt to use scalar `%s[\"%s\"]' as array"
+#~ msgstr "yritys käyttää skalaaria ”%s[\"%s\"]” taulukkona"
+
+#~ msgid "%d: [\"%s\"] not in array `%s'\n"
+#~ msgstr "%d: [\"%s\"] ei ole taulukko ”%s”\n"
+
+#~ msgid "Program exited %s with exit value: %d\n"
+#~ msgstr "Ohjelma sulkeutunut %s poistumisarvolla: %d\n"
+
+#~ msgid "[\"%s\"] not in array `%s'"
+#~ msgstr "[\"%s\"] ei ole taulukossa ”%s”"
+
+#~ msgid "`extension' is a gawk extension"
+#~ msgstr "”extension” on gawk-laajennus"
+
+#~ msgid "extension: received NULL lib_name"
+#~ msgstr "laajennos: vastaantotettu NULL lib_name"
+
+#~ msgid "extension: cannot open library `%s' (%s)"
+#~ msgstr "extension: kirjaston ”%s” (%s) avaus epäonnistui"
+
+#~ msgid ""
+#~ "extension: library `%s': does not define `plugin_is_GPL_compatible' (%s)"
+#~ msgstr ""
+#~ "extension: kirjasto ”%s”: ei määrittele ”plugin_is_GPL_compatible” (%s)"
+
+#~ msgid "extension: library `%s': cannot call function `%s' (%s)"
+#~ msgstr "extension: kirjasto ”%s”: funktion ”%s” (%s) kutsu epäonnistui"
+
+#~ msgid "extension: missing function name"
+#~ msgstr "extension: puuttuva funktionimi"
+
+#~ msgid "extension: illegal character `%c' in function name `%s'"
+#~ msgstr "extension: virheellinen merkki ”%c” funktionimessä ”%s”"
+
+#~ msgid "extension: can't redefine function `%s'"
+#~ msgstr "extension: funktion ”%s” uudelleenmäärittely epäonnistui"
+
+#~ msgid "extension: function `%s' already defined"
+#~ msgstr "extension: funktio ”%s” on jo määritelty"
+
+#~ msgid "extension: function name `%s' previously defined"
+#~ msgstr "extension: funktionimi ”%s” on määritelty jo aiemmin"
+
+#~ msgid "extension: can't use gawk built-in `%s' as function name"
+#~ msgstr ""
+#~ "extension: gawk-ohjelman sisäisen muuttujanimen käyttö ”%s” funktionimenä "
+#~ "epäonnistui"
+
+#~ msgid "chdir: called with incorrect number of arguments, expecting 1"
+#~ msgstr "chdir: kutsuttu argumenttien väärällä lukumäärällä, odotettiin 1"
+
+#~ msgid "stat: called with wrong number of arguments"
+#~ msgstr "stat: kutsuttu argumenttien väärällä lukumäärällä"
+
+#~ msgid "statvfs: called with wrong number of arguments"
+#~ msgstr "statvfs: kutsuttu väärällä argumenttimäärällä"
+
+#~ msgid "fnmatch: called with less than three arguments"
+#~ msgstr "fnmatch: kutsuttu vähemmällä kuin kolmella argumentilla"
+
+#~ msgid "fnmatch: called with more than three arguments"
+#~ msgstr "fnmatch: kutsuttu useammalla kuin kolmella argumentilla"
+
+#~ msgid "fork: called with too many arguments"
+#~ msgstr "fork: kutsuttu liian monella argumentilla"
+
+#~ msgid "waitpid: called with too many arguments"
+#~ msgstr "waitpid: kutsuttu liian monella argumentilla"
+
+#~ msgid "wait: called with no arguments"
+#~ msgstr "wait: kutsuttu ilman argumentteja"
+
+#~ msgid "wait: called with too many arguments"
+#~ msgstr "wait: kutsuttu liian monella argumentilla"
+
+#~ msgid "ord: called with too many arguments"
+#~ msgstr "ord: kutsuttu liian monella argumentilla"
+
+#~ msgid "ord: called with no arguments"
+#~ msgstr "ord: kutsuttu ilman argumentteja"
+
+#~ msgid "chr: called with too many arguments"
+#~ msgstr "chr: kutsuttu liian monella argumentilla"
+
+#~ msgid "chr: called with no arguments"
+#~ msgstr "chr: kutsuttu ilman argumentteja"
+
+#~ msgid "readfile: called with too many arguments"
+#~ msgstr "readfile: kutsuttu liian monella argumentilla"
+
+#~ msgid "readfile: called with no arguments"
+#~ msgstr "readfile: kutsuttu ilman argumentteja"
+
+#~ msgid "writea: called with too many arguments"
+#~ msgstr "writea: kutsuttu liian monella argumentilla"
+
+#~ msgid "reada: called with too many arguments"
+#~ msgstr "reada: kutsuttu liian monilla argumenteilla"
+
+#~ msgid "gettimeofday: ignoring arguments"
+#~ msgstr "gettimeofday: ohitetaan argumentit"
+
+#~ msgid "sleep: called with too many arguments"
+#~ msgstr "sleep: kutsuttu liian monella argumentilla"
+
+#~ msgid "invalid FIELDWIDTHS value, near `%s'"
+#~ msgstr "virheellinen FIELDWIDTHS-arvo, lähellä ”%s”"
+
+#~ msgid "api_flatten_array: could not convert index %d\n"
+#~ msgstr "api_flatten_array: indeksin %d muuntaminen epäonnistui\n"
+
+#~ msgid "api_flatten_array: could not convert value %d\n"
+#~ msgstr "api_flatten_array: arvon %d muuntaminen epäonnistui\n"
+
+#~ msgid "expression in `%s' redirection only has numeric value"
+#~ msgstr "lausekeella ”%s”-uudelleenohjauksessa on vain numeerinen arvo"
+
+#~ msgid ""
+#~ "filename `%s' for `%s' redirection may be result of logical expression"
+#~ msgstr ""
+#~ "tiedostonimi `%s' ”%s”-uudelleenohjaukselle saattaa olla loogisen "
+#~ "lausekkeen tulos"
+
+#~ msgid ""
+#~ "\n"
+#~ "To report bugs, see node `Bugs' in `gawk.info', which is\n"
+#~ "section `Reporting Problems and Bugs' in the printed version.\n"
+#~ "\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Vikailmoituksia varten katso solmua ”Bugs” tiedostossa ”gawk.info”, joka "
+#~ "on\n"
+#~ "kappaleessa ”Reporting Problems and Bugs” painetussa versiossa.\n"
+#~ "\n"
+
+#~ msgid "unknown value for field spec: %d\n"
+#~ msgstr "tuntematon arvo kenttämääritteelle: %d\n"
+
+#~ msgid "compl(%Rg): negative value will give strange results"
+#~ msgstr "compl(%Rg): negatiivinen arvo antaa outoja tuloksia"
+
+#~ msgid "cmpl(%Zd): negative values will give strange results"
+#~ msgstr "cmpl(%Zd): negatiiviset arvot antavat outoja tuloksia"
+
+#~ msgid "%s: argument #%d negative value %Rg will give strange results"
+#~ msgstr "%s: argumentin #%d negatiivinen arvo %Rg antaa outoja tuloksia"
+
+#~ msgid "%s: argument #%d negative value %Zd will give strange results"
+#~ msgstr "%s: argumentin #%d negatiivinen arvo %Zd antaa outoja tuloksia"
+
+#~ msgid "and: received non-numeric first argument"
+#~ msgstr "and: ensimmäinen vastaanotettu argumentti ei ole numeerinen"
+
+#~ msgid "and: received non-numeric second argument"
+#~ msgstr "and: toinen vastaanotettu argumentti ei ole numeerinen"
+
+#~ msgid "`next' cannot be called from a BEGIN rule"
+#~ msgstr "”next” ei voida kutsua BEGIN-säännöstä"
+
+#~ msgid "function `%s' defined to take no more than %d argument(s)"
+#~ msgstr "funktio ”%s” on määritelty ottamaan enemmän kuin %d argumenttia"
+
+#~ msgid "function `%s': missing argument #%d"
+#~ msgstr "function ”%s”: puuttuva argumentti #%d"
+
+#~ msgid "`getline var' invalid inside `%s' rule"
+#~ msgstr "”getline var” virheellinen säännön ”%s” sisällä"
+
+#~ msgid "`getline' invalid inside `%s' rule"
+#~ msgstr "”getline” virheellinen säännön ”%s” sisällä"
+
+#~ msgid "no (known) protocol supplied in special filename `%s'"
+#~ msgstr "ei (tunnettua) yhteyskäytäntöä tarjottu erikoistiedostonimessä ”%s”"
+
+#~ msgid "special file name `%s' is incomplete"
+#~ msgstr "erikoistiedostonimi ”%s” on vaillinainen"
+
+#~ msgid "must supply a remote hostname to `/inet'"
+#~ msgstr "on tarjottava etäkoneen nimi pistokkeeseen ”/inet”"
+
+#~ msgid "must supply a remote port to `/inet'"
+#~ msgstr "on tarjottava etäportti pistokkeeseen ”/inet”"
+
+#~ msgid ""
+#~ "\t# %s block(s)\n"
+#~ "\n"
+#~ msgstr ""
+#~ "\t# %s-lohko(t)\n"
+#~ "\n"
+
+#~ msgid "range of the form `[%c-%c]' is locale dependent"
+#~ msgstr "muodon ”[%c-%c]” lukualue on paikallisasetuksesta riippuvainen"
+
+#~ msgid "reference to uninitialized element `%s[\"%.*s\"]'"
+#~ msgstr "viite alustamattomaan elementtiin ”%s[\"%.*s\"]”"
+
+#~ msgid "subscript of array `%s' is null string"
+#~ msgstr "taulukon alaindeksi ”%s” on null-merkkijono"
+
+#~ msgid "%s: empty (null)\n"
+#~ msgstr "%s: tyhjä (null)\n"
+
+#~ msgid "%s: empty (zero)\n"
+#~ msgstr "%s: tyhjä (nolla)\n"
+
+#~ msgid "%s: table_size = %d, array_size = %d\n"
+#~ msgstr "%s: table_size = %d, array_size = %d\n"
+
+#~ msgid "%s: array_ref to %s\n"
+#~ msgstr "%s: array_ref-viite taulukkoon %s\n"
+
+#~ msgid "`nextfile' is a gawk extension"
+#~ msgstr "”nextfile” on gawk-laajennus"
+
+#~ msgid "`delete array' is a gawk extension"
+#~ msgstr "”delete array” on gawk-laajennus"
+
+#~ msgid "use of non-array as array"
+#~ msgstr "ei-taulukon käyttö taulukkona"
+
+#~ msgid "`%s' is a Bell Labs extension"
+#~ msgstr "”%s” on Bell Labs -laajennus"
+
+#~ msgid "or(%lf, %lf): negative values will give strange results"
+#~ msgstr "or(%lf, %lf): negatiiviset arvot antavat outoja tuloksia"
+
+#~ msgid "or(%lf, %lf): fractional values will be truncated"
+#~ msgstr "or(%lf, %lf): jaosarvot typistetään"
+
+#~ msgid "xor: received non-numeric first argument"
+#~ msgstr "xor: ensimmäinen vastaanotettu argumentti ei ole numeerinen"
+
+#~ msgid "xor: received non-numeric second argument"
+#~ msgstr "xor: toinen vastaanotettu argumentti ei ole numeerinen"
+
+#~ msgid "xor(%lf, %lf): fractional values will be truncated"
+#~ msgstr "xor(%lf, %lf): jaosarvot typistetään"
+
+#~ msgid "can't use function name `%s' as variable or array"
+#~ msgstr "funktionimeä ”%s” käyttö muuttujana tai taulukkona epäonnistui"
+
+#~ msgid "assignment used in conditional context"
+#~ msgstr "sijoitusta käytetty ehdollisessa kontekstissa"
+
+#~ msgid "statement has no effect"
+#~ msgstr "käskyllä ei ole vaikutusta"
+
+#~ msgid ""
+#~ "for loop: array `%s' changed size from %ld to %ld during loop execution"
+#~ msgstr ""
+#~ "for-silmukka: taulukon ”%s” koko muuttui arvosta %ld arvoon %ld silmukan "
+#~ "suorituksen aikana"
+
+#~ msgid "function called indirectly through `%s' does not exist"
+#~ msgstr "kohteen ”%s” kautta epäsuorasti kutsuttu funktio ei ole olemassa"
+
+#~ msgid "function `%s' not defined"
+#~ msgstr "funktio ”%s” ei ole määritelty"
+
+#~ msgid "`nextfile' cannot be called from a `%s' rule"
+#~ msgstr "”nextfile” ei voida kutsua ”%s”-säännöstä"
+
+#~ msgid "`next' cannot be called from a `%s' rule"
+#~ msgstr "”next” ei voida kutsua ”%s”-säännöstä"
+
+#~ msgid "Sorry, don't know how to interpret `%s'"
+#~ msgstr "Ei osata tulkita kohdetta ”%s”"
+
+#~ msgid "Operation Not Supported"
+#~ msgstr "Toimintoa ei tueta"
+
+#~ msgid "`-m[fr]' option irrelevant in gawk"
+#~ msgstr "”-m[fr]”-valitsin asiaanliittymätön gawk:ssa"
+
+#~ msgid "-m option usage: `-m[fr] nnn'"
+#~ msgstr "-m valitsinkäyttö: ”-m[fr] nnn”"
+
+#~ msgid "\t-R file\t\t\t--command=file\n"
+#~ msgstr "\t-R tiedosto\t\t\t--exec=tiedosto\n"
+
+#~ msgid "could not find groups: %s"
+#~ msgstr "ryhmien löytäminen epäonnistui: %s"
+
+#~ msgid "assignment is not allowed to result of builtin function"
+#~ msgstr "sijoitusta ei sallita sisäänrakennetun funktion tulokselle"
+
+#~ msgid "attempt to use array in a scalar context"
+#~ msgstr "yritettiin käyttää taulukkoa skalaarikontekstissa"
+
+#~ msgid "statement may have no effect"
+#~ msgstr "käsky saattaa olla tehoton"
+
+#~ msgid "out of memory"
+#~ msgstr "muisti loppui"
+
+#~ msgid "call of `length' without parentheses is deprecated by POSIX"
+#~ msgstr ""
+#~ "”length”-kutsu ilman sulkumerkkejä on vanhentunut POSIX-standardissa"
+
+#~ msgid "division by zero attempted in `/'"
+#~ msgstr "jakoa nollalla yritettiin operaatiossa ”/”"
+
+#~ msgid "length: untyped parameter argument will be forced to scalar"
+#~ msgstr "length: tyypitön parametri pakotetaan skalaariksi"
+
+#~ msgid "length: untyped argument will be forced to scalar"
+#~ msgstr "length: tyypitön argumentti pakotetaan skalaariksi"
+
+#~ msgid "`break' outside a loop is not portable"
+#~ msgstr "”break” silmukan ulkopuolella ei ole siirrettävä"
+
+#~ msgid "`continue' outside a loop is not portable"
+#~ msgstr "”continue” silmukan ulkopuolella ei ole siirrettävä"
+
+#~ msgid "`nextfile' cannot be called from a BEGIN rule"
+#~ msgstr "”nextfile” ei voida kutsua BEGIN-säännöstä"
+
+#~ msgid ""
+#~ "concatenation: side effects in one expression have changed the length of "
+#~ "another!"
+#~ msgstr ""
+#~ "concatenation: sivuvaikutukset yhdessä lausekkeessa ovat muuttaneet "
+#~ "toisen pituutta!"
+
+#~ msgid "illegal type (%s) in tree_eval"
+#~ msgstr "virheellinen tyyppi (%s) funktiossa tree_eval"
+
+#~ msgid "\t# -- main --\n"
+#~ msgstr "\t# -- main --\n"
+
+#~ msgid "invalid tree type %s in redirect()"
+#~ msgstr "virheellinen puutyyppi %s funktiossa redirec()"
+
+#~ msgid "/inet/raw client not ready yet, sorry"
+#~ msgstr "/inet/raw-asiakas ei ole vielä valitettavasti valmis"
+
+#~ msgid "only root may use `/inet/raw'."
+#~ msgstr "vain root-käyttäjä voi käyttää asiakasta ”/inet/raw”."
+
+#~ msgid "/inet/raw server not ready yet, sorry"
+#~ msgstr "/inet/raw-palvelin ei ole vielä valitettavasti valmis"
+
+#~ msgid "file `%s' is a directory"
+#~ msgstr "tiedosto ”%s” on hakemisto"
+
+#~ msgid "use `PROCINFO[\"%s\"]' instead of `%s'"
+#~ msgstr "käytä ”PROCINFO[\"%s\"]” eikä ”%s”"
+
+#~ msgid "use `PROCINFO[...]' instead of `/dev/user'"
+#~ msgstr "käytä ”PROCINFO[...]” eikä ”/dev/user”"
+
+#~ msgid "\t-m[fr] val\n"
+#~ msgstr "\t-m[fr] arvo\n"
+
+#~ msgid "\t-W compat\t\t--compat\n"
+#~ msgstr "\t-W compat\t\t--compat\n"
+
+#~ msgid "\t-W copyleft\t\t--copyleft\n"
+#~ msgstr "\t-W copyleft\t\t--copyleft\n"
+
+#~ msgid "\t-W usage\t\t--usage\n"
+#~ msgstr "\t-W usage\t\t--usage\n"
+
+#~ msgid "can't convert string to float"
+#~ msgstr "merkkijonon muuntaminen liukuluvuksi epäonnistui"
+
+#~ msgid "# treated internally as `delete'"
+#~ msgstr "# käsitelty sisäisesti kuin ”delete”"
+
+#~ msgid "# this is a dynamically loaded extension function"
+#~ msgstr "# tämä on dynaamisesti ladattu laajennusfunktio"
+
+#~ msgid ""
+#~ "\t# BEGIN block(s)\n"
+#~ "\n"
+#~ msgstr ""
+#~ "\t# BEGIN-lohko(t)\n"
+#~ "\n"
+
+#~ msgid "unexpected type %s in prec_level"
+#~ msgstr "odottamaton tyyppi %s funktiossa prec_level"
+
+#~ msgid "Unknown node type %s in pp_var"
+#~ msgstr "Tuntematon solmutyyppi %s funktiossa pp_var"
+
+#~ msgid "can't open two way socket `%s' for input/output (%s)"
+#~ msgstr ""
+#~ "kaksisuuntaisen vastakkeen ”%s” avaaminen syötteelle/tulosteelle (%s) "
+#~ "epäonnistui"
+
+#~ msgid "attempt to use scalar `%s' as array"
+#~ msgstr "yritettiin käyttää skalaaria ”%s” taulukkona"
+
+#~ msgid "gensub: third argument of 0 treated as 1"
+#~ msgstr "gensub: 0-arvoinen kolmas argumentti käsitellään kuin 1"
+
+#~ msgid "\t-L [fatal]\t\t--lint[=fatal]\n"
+#~ msgstr "\t-L [fatal]\t\t--lint[=fatal]\n"
+
+#~ msgid "Unmatched [ or [^"
+#~ msgstr "Pariton [ tai [^"
+
+#~ msgid "attempt to use function `%s' as an array"
+#~ msgstr "yritettiin käyttää funktiota ”%s” taulukkona"

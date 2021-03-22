@@ -1,0 +1,252 @@
+2020-04-14         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* 5.1.0: Release tar ball made.
+
+2020-04-13         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* gawktexi.in: Small typo fixes. Thanks to Antonio Columbo
+	for pointing them out.
+
+2020-04-12         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* gawktexi.in: Contribution from Manuel Collado related
+	to CSV processing.
+
+2020-04-10         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* gawktexi.in, gawk.1: Fix some spelling errors.
+	* wordlist, wordlist2, wordlist3: Updated with more words.
+
+2020-04-01         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* gawktexi.in: Clarify about whitespace.
+
+2020-03-30         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* gawktexi.in, gawk.1, awkcard.in: Minor edits before release.
+
+2020-03-18         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* gawktexi.in: Fix up references to POSIX standard. Thanks to
+	Antonio Columbo for the pointers.
+
+2020-03-15         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* texinfo.tex: Updated, via GNULIB.
+	* gawktexi.in: Misc updates.
+
+2020-03-09         Andrew J. Schorr      <aschorr@telemetry-investments.com>
+
+	* gawktexi.in (@val_str_asc, @val_num_asc, @val_str_desc,
+	@val_num_desc): Update descriptions to reflect that the index
+	strings are now used as a tie-breaker and @val_type_* is used
+	for comparing non-scalars.
+
+2020-03-04         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* gawktexi.in: Revised info on default values for AWKPATH
+	and AWKLIBPATH. Thanks to Jannick for the push.
+	* gawktexi.in: Document MSYS2 support and update the
+	updated month.
+
+2020-02-02         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* gawktexi.in (Getopt Function): Add support for long options,
+	contributed by Greg Minshall <minshall@acm.org>.
+
+2020-01-23         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* gawktexi.in: Document arry sorting by value for FUNCTAB.
+	Document that SYMTAB and FUNCTAB cannot be used with
+	asort() or asorti().
+
+2020-01-19         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* gawktexi.in (Escape Sequences): Stronger wording for \/
+	and \". Suggested by Jakub Martisko <jamartis@redhat.com>.
+
+2020-01-19         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* gawkinet.info: Rebuilt using makeinfo 6.7.
+
+2020-01-01         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* gawktexi.in (History Sorting): Supply a shorter version of the
+	program. Thanks to Rick van Rein <rick@openfortress.nl>.
+
+2019-12-22         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* implementation-notes.txt: New file.
+
+2019-12-15         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* gawktexi.in: Use `@codequoteundirected on' and
+	`@codequotebacktick on' to get straight quotes in PDF. Thanks
+	to empirical@quantbo.com for the report and to Assaf Gordon
+	for the pointer to the fix.
+
+2019-11-21         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* gawktexi.in: Document that the time extension is now obsolete.
+
+2019-11-03         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* gawktexi.in: Document that readdir extension can cause a
+	fatal error, which should be handled with BEGINFILE.
+	* gawk.1: Ditto.
+
+2019-10-16         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* awkcard.in: BWK awk now supports RS as regexp, so remove the
+	"not nawk" note.
+	* gawktexi.in: Updates for BWK awk and RS as regexp.
+
+2019-10-06         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* gawktexi.in: Fix typo related to @/.../. Thanks to
+	Mark Krauze <marcuscruse@ya.ru> for the report.
+
+2019-10-04         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* texinfo.tex: Updated.
+
+2019-09-24         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* gawktexi.in: Take advantage of new indexing features in
+	Texinfo 6.7.
+	* sidebar.awk: Ditto.
+	* texinfo.tex: Updated from Texinfo 6.7 distribution.
+
+2019-08-23         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* awkcard.in: Fixes and updates. Some cleanup.
+
+2019-08-21         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* texinfo.tex: Updated.
+
+2019-08-11         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* gawktexi.in (Other Arguments): Document the old trick of
+	using ./count=1 to name a file that looks like a variable
+	assignment. Thanks to Ed Morton <mortoneccc@comcast.net>
+	for the suggestion.
+
+2019-07-23         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* gawk.1: Fix typo, update edition. Thanks to Antonio
+	Columbo for the pointers.
+	* gawktexi.in: Update EDITION. Thanks to Antonio Columbo.
+	Fix two typos. Thanks to Mark Krauze.
+
+2019-07-21         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* awkcard.in, gawk.1, gawkinet.texi, gawktexi.in: Copyrights
+	updated, spell checked.
+	* wordlist, wordlist3: Updated.
+
+2019-06-26         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* gawktexi.in (Extension Sample Inplace): Fix backwards
+	compatibility. Thanks to Andrew Schorr for most of the change.
+
+2019-06-21         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* gawktexi.in (Input Exercises): Remove exercise that is
+	no longer relevant. Thanks to Mark Krauze <daburashka@ya.ru>
+	for pointing this out.
+
+2019-06-21         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* texinfo.tex: Updated from GNULIB.
+
+2019-06-18         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* 5.0.1: Release tar ball made.
+
+2019-06-18         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* gawktexi.in (Plain Getline): Improve the program and show
+	sample input and output. Thanks to Mark Krauze <daburashka@ya.ru>
+	for some of the changes.
+	Unrelated: Set the update month.
+	* awkcard.in: Bump version in download info.
+
+2019-06-11         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* gawktexi.in (Regexp Operator Details): Add a paragraph
+	describing how unmatched left and right parentheses work.
+	Thanks to Neil Ormos <ormos-gnulists17@ormos.org>
+	for pointing out the need.
+
+2019-06-05         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* gawktexi.in (Type Functions): Clarify isarray() and
+	typeof() behavior. Thanks to  Mark Krauze <daburashka@ya.ru>,
+	for pointing out the issues.
+
+2019-06-05         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* gawktexi.in (Invoking Summary): Added nice summarization of
+	argument processing contributed by Neil R. Ormos,
+	<ormos-gnulists17@ormos.org>.
+
+2019-05-22         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* gawk.1, gawktexi.in: Document --lint=no-ext.
+
+2019-05-06         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* gawktexi.in: Fix some typos.  Thanks to Mark Krauze
+	<daburashka@ya.ru>, for pointing them out.
+	(Options): Document new feature in --sandbox, that you can't
+	add files that weren't there to start with.
+
+2019-05-05         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* gawktexi.in (Additional Configuration Options): Document that
+	--disable-extensions also disables the extensions! Thanks to
+	Mark Krauze <daburashka@ya.ru>, for pointing it out.
+
+2019-04-28         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* gawktexi.in (Options): Fix a copy/paste error. Thanks to
+	Mark Krauze <daburashka@ya.ru>, for pointing it out.
+
+2019-04-22         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* gawktexi.in (Undocumented): Fix a typo. Thanks to Antonio Columbo
+	for pointing it out.
+
+2019-04-21         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* gawktexi.in (Limitations): Provide brief instructions
+	on how to use use a temporary file in a script with
+	the debugger.  Thanks to Holger Klene <h.klene@gmx.de>
+	for the discussion.
+	(Multiple Lines): Note that POSIX seems to require \n as
+	separator for all values of FS, but that in reality it
+	doesn't apply to regexps; this is a POSIX bug.
+	(Options): Document clearly that if no -f or -e, anything
+	after the program text is placed into ARGV and not
+	parsed for options. Thanks to Neil Ormos <ormos-gnulists17@ormos.org>
+	for the tip.
+	(Other Versions): Add a link to Mircea Neacsu's embeddable
+	awk interpreter.
+
+2019-04-18         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* gawktexi.in (Undocumented): Note an undocumented feature.
+	* Makefile.am (EXTRA_DIST): Add ChangeLog.1 to the list. Ooops.
+
+2019-04-14         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* gawktexi.in (Case-sensitivity): Document that single-byte
+	locales ignore case based on the current locale and not
+	always Latin-1.
+
+2019-04-12         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* ChangeLog.1: Rotated ChangeLog into this file.
+	* ChangeLog: Created anew for gawk 5.0.0 and on.
+	* 5.0.0: Release tar ball made.
