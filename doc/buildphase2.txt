@@ -30,6 +30,17 @@ install -c -o root -g bin -m 444 lksh.1 mksh.1 $LFS/usr/share/man/man1/
 coreutils
 configure --prefix=/usr --host=$LFS_TGT --build=$(/viewpoint-linux/bin/coreutils/dist/build-aux/config.guess) --enable-install-program=hostname --enable-no-install-program=kill,uptime
 
+# As per LFS guide
+mv $LFS/usr/bin/{cat,chgrp,chmod,chown,cp,date,dd,df,echo} $LFS/bin
+mv $LFS/usr/bin/{false,ln,ls,mkdir,mknod,mv,pwd,rm}        $LFS/bin
+mv $LFS/usr/bin/{rmdir,stty,sync,true,uname}               $LFS/bin
+mv $LFS/usr/bin/{head,nice,sleep,touch}                    $LFS/bin
+mv $LFS/usr/bin/chroot                                     $LFS/usr/sbin
+
+# To reduce changes to pkgsrc/mk/tools/tools.Linux.mk
+mv $LFS/usr/bin/hostname $LFS/bin
+mv $LFS/usr/bin/readlink $LFS/bin
+
 diffutils
 configure --prefix=/usr --host=$LFS_TGT
 
