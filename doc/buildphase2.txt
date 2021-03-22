@@ -51,3 +51,6 @@ configure --prefix=/usr --host=$LFS_TGT --build=$(/viewpoint-linux/bin/file/dist
 
 findutils
 configure --prefix=/usr --host=$LFS_TGT  --build=$(/viewpoint-linux/bin/findutils/dist/build-aux/config.guess)
+
+gawk
+configure --prefix=/osbt --host=$LFS_TGT --build=$(/viewpoint-linux/osbt/gawk/dist/config.guess)
