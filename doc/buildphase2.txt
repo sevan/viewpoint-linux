@@ -68,3 +68,6 @@ configure --prefix=/osbt --without-guile --host=$LFS_TGT --build=$(/viewpoint-li
 
 patch
 configure --prefix=/usr --host=$LFS_TGT  --build=$(/viewpoint-linux/bin/patch/dist/build-aux/config.guess)
+
+sed
+configure --prefix=/usr --host=$LFS_TGT --bindir=/bin
