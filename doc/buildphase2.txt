@@ -80,3 +80,9 @@ configure --prefix=/usr --host=$LFS_TGT --build=$(~/src/bin/xz/dist/build-aux/co
 
 binutils phase 2
 configure --prefix=/usr --build=$(/viewpoint-linux/bin/binutils/dist/config.guess) --host=$LFS_TGT --disable-nls --enable-shared --disable-werror --enable-64-bit-bfd --libdir=/usr/lib64
+
+gcc phase 2
+mkdir -p $LFS_TGT/libgcc
+ln -s /viewpoint-linux/bin/gcc/dist/libgcc/gthr-posix.h $LFS_TGT/libgcc/gthr-default.h
+configure --build=$(/home/sevan/viewpoint-linux/bin/gcc/dist/config.guess) --host=$LFS_TGT --prefix=/usr CC_FOR_TARGET=$LFS_TGT-gcc  --with-build-sysroot=$LFS  --enable-initfini-array --disable-nls  --disable-multilib --disable-decimal-float --disable-libatomic --disable-libgomp --disable-libquadmath --disable-libssp --disable-libvtv --disable-libstdcxx --enable-languages=c,c++ --libdir=/usr/lib64
+ln -s gcc $LFS/usr/bin/cc
