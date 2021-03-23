@@ -20,6 +20,7 @@ bash
 configure --prefix=/usr --build=$(/viewpoint-linux/bin/bash/dist/support/config.guess) --host=$LFS_TGT --without-bash-malloc --libdir=/usr/lib64
 
 mksh
+ln -s mksh $LFS/bin/sh
 From builddir
 install -c -s -o root -g bin -m 555 mksh $LFS/bin/mksh
 From distdir
