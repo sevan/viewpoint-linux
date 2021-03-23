@@ -77,3 +77,6 @@ configure --prefix=/usr --host=$LFS_TGT --build=$(/viewpoint-linux/lib/libarchiv
 
 xz
 configure --prefix=/usr --host=$LFS_TGT --build=$(~/src/bin/xz/dist/build-aux/config.guess) --disable-static --libdir=/usr/lib64
+
+binutils phase 2
+configure --prefix=/usr --build=$(/viewpoint-linux/bin/binutils/dist/config.guess) --host=$LFS_TGT --disable-nls --enable-shared --disable-werror --enable-64-bit-bfd --libdir=/usr/lib64
