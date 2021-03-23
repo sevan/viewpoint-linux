@@ -62,3 +62,6 @@ configure --prefix=/usr --host=$LFS_TGT --bindir=/bin
 
 gzip
 configure --prefix=/usr --host=$LFS_TGT
+
+make
+configure --prefix=/osbt --without-guile --host=$LFS_TGT --build=$(/viewpoint-linux/osbt/make/dist/build-aux/config.guess)
