@@ -74,3 +74,6 @@ configure --prefix=/usr --host=$LFS_TGT --bindir=/bin
 
 libarchive
 configure --prefix=/usr --host=$LFS_TGT --build=$(/viewpoint-linux/lib/libarchive/dist/build-aux/config.guess)
+
+xz
+configure --prefix=/usr --host=$LFS_TGT --build=$(~/src/bin/xz/dist/build-aux/config.guess) --disable-static --libdir=/usr/lib64
