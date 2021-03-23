@@ -56,3 +56,9 @@ gawk
 configure --prefix=/osbt --host=$LFS_TGT --build=$(/viewpoint-linux/osbt/gawk/dist/config.guess)
 
 rm $LFS/osbt/bin/awk
+
+grep
+configure --prefix=/usr --host=$LFS_TGT --bindir=/bin
+
+gzip
+configure --prefix=/usr --host=$LFS_TGT
