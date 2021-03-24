@@ -54,3 +54,6 @@ configure --prefix=/osbt
 AWK
 make
 cp a.out /usr/bin/awk
+
+Perl
+sh Configure -des -Dprefix=/osbt -Dvendorprefix=/osbt -Dprivlib=/osbt/lib/perl5/5.32/core_perl -Darchlib=/osbt/lib/perl5/5.32/core_perl -Dsitelib=/osbt/lib/perl5/5.32/site_perl -Dsitearch=/osbt/lib/perl5/5.32/site_perl -Dvendorlib=/osbt/lib/perl5/5.32/vendor_perl -Dvendorarch=/osbt/lib/perl5/5.32/vendor_perl -Uinstallusrbinperl
