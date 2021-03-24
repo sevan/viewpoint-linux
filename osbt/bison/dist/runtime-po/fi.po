@@ -1,0 +1,73 @@
+# Finnish messages for bison-runtime.
+# Copyright © 2007, 2012 Free Software Foundation, Inc.
+# This file is distributed under the same license as the bison package.
+# Jorma Karvonen <karvjorm@users.sf.net>, 2007.
+# Jorma Karvonen <karvonen.jorma@gmail.com>, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: bison-runtime 2.6.90\n"
+"Report-Msgid-Bugs-To: bug-bison@gnu.org\n"
+"POT-Creation-Date: 2021-03-07 14:53+0100\n"
+"PO-Revision-Date: 2012-12-09 17:25+0200\n"
+"Last-Translator: Jorma Karvonen <karvonen.jorma@gmail.com>\n"
+"Language-Team: Finnish <translation-team-fi@lists.sourceforge.net>\n"
+"Language: fi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Bugs: Report translation errors to the Language-Team address.\n"
+"X-Generator: KBabel 1.11.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: data/skeletons/glr.c:904 data/skeletons/yacc.c:690
+msgid "syntax error: cannot back up"
+msgstr "syntaksivirhe: ei voida tehdä varmuuskopiota"
+
+#: data/skeletons/glr.c:1819
+msgid "syntax is ambiguous"
+msgstr "syntaksi on moniselitteinen"
+
+#: data/skeletons/glr.c:2231 data/skeletons/glr.c:2257
+#: data/skeletons/glr.c:2310 data/skeletons/glr.c:2550
+#: data/skeletons/lalr1.cc:1046 data/skeletons/lalr1.cc:1543
+#: data/skeletons/yacc.c:1364 data/skeletons/yacc.c:1901
+#: data/skeletons/yacc.c:1905
+msgid "syntax error"
+msgstr "syntaksivirhe"
+
+#: data/skeletons/glr.c:2258 data/skeletons/lalr1.cc:1544
+#: data/skeletons/yacc.c:1365
+#, c-format
+msgid "syntax error, unexpected %s"
+msgstr "syntaksivirhe, odottamaton %s"
+
+#: data/skeletons/glr.c:2259 data/skeletons/lalr1.cc:1545
+#: data/skeletons/yacc.c:1366
+#, c-format
+msgid "syntax error, unexpected %s, expecting %s"
+msgstr "syntaksivirhe, odottamaton %s, odotetaan %s"
+
+#: data/skeletons/glr.c:2260 data/skeletons/lalr1.cc:1546
+#: data/skeletons/yacc.c:1367
+#, c-format
+msgid "syntax error, unexpected %s, expecting %s or %s"
+msgstr "syntaksivirhe, odottamaton %s, odotetaan %s tai %s"
+
+#: data/skeletons/glr.c:2261 data/skeletons/lalr1.cc:1547
+#: data/skeletons/yacc.c:1368
+#, c-format
+msgid "syntax error, unexpected %s, expecting %s or %s or %s"
+msgstr "syntaksivirhe, odottamaton %s, odotetaan %s tai %s tai %s"
+
+#: data/skeletons/glr.c:2262 data/skeletons/lalr1.cc:1548
+#: data/skeletons/yacc.c:1369
+#, c-format
+msgid "syntax error, unexpected %s, expecting %s or %s or %s or %s"
+msgstr "syntaksivirhe, odottamaton %s, odotetaan %s tai %s tai %s tai %s"
+
+#: data/skeletons/glr.c:2609 data/skeletons/yacc.c:1437
+#: data/skeletons/yacc.c:1439 data/skeletons/yacc.c:1644
+#: data/skeletons/yacc.c:2053
+msgid "memory exhausted"
+msgstr "muisti loppui"
