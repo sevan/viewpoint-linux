@@ -10,6 +10,7 @@ mount --bind /dev/pts $LFS/dev/pts
 mount -t proc proc $LFS/proc
 mount -t sysfs sysfs $LFS/sys
 mount -t tmpfs tmpfs $LFS/run
+mount -o bind,ro /usr/src $LFS/usr/src
 
 chroot "$LFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/osbt/bin:/bin:/usr/bin:/sbin:/usr/sbin /bin/bash --login +h
 
@@ -63,3 +64,11 @@ configure --prefix=/osbt --enable-shared --without-ensurepip --enable-optimizati
 
 util-linux
 configure ADJTIME_PATH=/var/lib/hwclock/adjtime --disable-chfn-chsh --disable-login --disable-nologin --disable-su --disable-setpriv --disable-runuser --disable-pylibmount --disable-static --without-python runstatedir=/run
+
+Exit chroot
+umount $LFS/usr/src
+umount $LFS/dev{/pts,}
+umount $LFS/{sys,proc,run}
+
+Optional: take a backup
+cd $LFS && tar -cjpf $HOME/lfs-temp-tools-10.1-systemd.tar.bz2 .
