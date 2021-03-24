@@ -17,7 +17,7 @@ Create hierarchy
 mkdir -p /{boot,home,mnt,srv}
 mkdir -p /lib/firmware
 mkdir -p /media/{floppy,cdrom}
-mkdir -p /usr/{bin,include,lib,sbin,src}
+mkdir -p /usr/{bin,include,lib,obj,sbin,src}
 mkdir -p /usr/share/{color,dict,doc,info,locale,man}
 mkdir -p /usr/share/{misc,terminfo,zoneinfo}
 mkdir -p /usr/share/man/man{1..8}
@@ -35,3 +35,10 @@ touch /var/log/{btmp,lastlog,faillog,wtmp}
 chgrp utmp /var/log/lastlog
 chmod 664  /var/log/lastlog
 chmod 600  /var/log/btmp
+
+libstdc++ from GCC, pass2
+mkdir /usr/obj/{gcc,libgcc}
+ln -s /usr/src/bin/gcc/dist/libgcc/gthr-posix.h /usr/obj/libgcc/gthr-default.h
+cd /usr/obj/gcc
+/usr/src/bin/gcc/dist/libstdc++-v3/configure CXXFLAGS="-g -O2 -D_GNU_SOURCE" --prefix=/usr --disable-multilib --disable-nls --host=$(uname -m)-lfs-linux-gnu --disable-libstdcxx-pch --libdir=/usr/lib64
+config.log should reference thread_header='gthr-posix.h'
