@@ -50,3 +50,7 @@ cp -v gettext-tools/src/{msgfmt,msgmerge,xgettext} /usr/bin
 
 bison
 configure --prefix=/osbt
+
+AWK
+make
+cp a.out /usr/bin/awk
