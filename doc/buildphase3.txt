@@ -60,7 +60,7 @@ Perl
 sh Configure -des -Dprefix=/osbt -Dvendorprefix=/osbt -Dprivlib=/osbt/lib/perl5/5.32/core_perl -Darchlib=/osbt/lib/perl5/5.32/core_perl -Dsitelib=/osbt/lib/perl5/5.32/site_perl -Dsitearch=/osbt/lib/perl5/5.32/site_perl -Dvendorlib=/osbt/lib/perl5/5.32/vendor_perl -Dvendorarch=/osbt/lib/perl5/5.32/vendor_perl -Uinstallusrbinperl
 
 Python
-configure --prefix=/osbt --enable-shared --without-ensurepip --enable-optimizations
+configure --prefix=/osbt --enable-shared --without-ensurepip LDFLAGS="-Wl,-R/osbt/lib"
 
 util-linux
 configure ADJTIME_PATH=/var/lib/hwclock/adjtime --disable-chfn-chsh --disable-login --disable-nologin --disable-su --disable-setpriv --disable-runuser --disable-pylibmount --disable-static --without-python runstatedir=/run
