@@ -1,0 +1,77 @@
+# Galician translation for bison-runtime package.
+# Copyright (C) 2010 Free Software Foundation, Inc.
+# This file is distributed under the same license as the bison package.
+# Copyright (C) 2010, 2015 Leandro Regueiro.
+#
+# Leandro Regueiro <leandro.regueiro@gmail.com>, 2010, 2015.
+#
+# Proxecto Trasno - Adaptación do software libre á lingua galega:  Se desexas
+# colaborar connosco, podes atopar máis información en <http://trasno.net>
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: bison-runtime 3.0.2\n"
+"Report-Msgid-Bugs-To: bug-bison@gnu.org\n"
+"POT-Creation-Date: 2021-03-07 14:53+0100\n"
+"PO-Revision-Date: 2015-09-09 16:02+0100\n"
+"Last-Translator: Leandro Regueiro <leandro.regueiro@gmail.com>\n"
+"Language-Team: Galician <proxecto@trasno.net>\n"
+"Language: gl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Bugs: Report translation errors to the Language-Team address.\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: data/skeletons/glr.c:904 data/skeletons/yacc.c:690
+msgid "syntax error: cannot back up"
+msgstr "erro de sintaxe: non foi posíbel realizar unha copia de seguridade"
+
+#: data/skeletons/glr.c:1819
+msgid "syntax is ambiguous"
+msgstr "a sintaxe é ambigua"
+
+#: data/skeletons/glr.c:2231 data/skeletons/glr.c:2257
+#: data/skeletons/glr.c:2310 data/skeletons/glr.c:2550
+#: data/skeletons/lalr1.cc:1046 data/skeletons/lalr1.cc:1543
+#: data/skeletons/yacc.c:1364 data/skeletons/yacc.c:1901
+#: data/skeletons/yacc.c:1905
+msgid "syntax error"
+msgstr "erro de sintaxe"
+
+#: data/skeletons/glr.c:2258 data/skeletons/lalr1.cc:1544
+#: data/skeletons/yacc.c:1365
+#, c-format
+msgid "syntax error, unexpected %s"
+msgstr "erro de sintaxe, non se agardaba %s"
+
+#: data/skeletons/glr.c:2259 data/skeletons/lalr1.cc:1545
+#: data/skeletons/yacc.c:1366
+#, c-format
+msgid "syntax error, unexpected %s, expecting %s"
+msgstr "erro de sintaxe, non se agardaba %s, agardábase %s"
+
+#: data/skeletons/glr.c:2260 data/skeletons/lalr1.cc:1546
+#: data/skeletons/yacc.c:1367
+#, c-format
+msgid "syntax error, unexpected %s, expecting %s or %s"
+msgstr "erro de sintaxe, non se agardaba %s, agardábase %s ou %s"
+
+#: data/skeletons/glr.c:2261 data/skeletons/lalr1.cc:1547
+#: data/skeletons/yacc.c:1368
+#, c-format
+msgid "syntax error, unexpected %s, expecting %s or %s or %s"
+msgstr "erro de sintaxe, non se agardaba %s, agardábase %s ou %s ou %s"
+
+#: data/skeletons/glr.c:2262 data/skeletons/lalr1.cc:1548
+#: data/skeletons/yacc.c:1369
+#, c-format
+msgid "syntax error, unexpected %s, expecting %s or %s or %s or %s"
+msgstr "erro de sintaxe, non se agardaba %s, agardábase %s ou %s ou %s ou %s"
+
+#: data/skeletons/glr.c:2609 data/skeletons/yacc.c:1437
+#: data/skeletons/yacc.c:1439 data/skeletons/yacc.c:1644
+#: data/skeletons/yacc.c:2053
+msgid "memory exhausted"
+msgstr "memoria esgotada"

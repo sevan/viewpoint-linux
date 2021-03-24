@@ -1,0 +1,73 @@
+# Swedish messages for bison.
+# Copyright © 2001-2006, 2008, 2010, 2012, 2019, 2020 Free Software Foundation, Inc.
+# This file is distributed under the same license as the bison package.
+# Göran Uddeborg <goeran@uddeborg.se>, 2001-2006, 2008, 2010, 2012, 2019, 2020.
+#
+# $Revision: 1.36 $
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: bison-runtime 3.5.90\n"
+"Report-Msgid-Bugs-To: bug-bison@gnu.org\n"
+"POT-Creation-Date: 2021-03-07 14:53+0100\n"
+"PO-Revision-Date: 2020-04-21 20:59+0200\n"
+"Last-Translator: Göran Uddeborg <goeran@uddeborg.se>\n"
+"Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
+"Language: sv\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Bugs: Report translation errors to the Language-Team address.\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: data/skeletons/glr.c:904 data/skeletons/yacc.c:690
+msgid "syntax error: cannot back up"
+msgstr "syntaxfel: kan inte backa"
+
+#: data/skeletons/glr.c:1819
+msgid "syntax is ambiguous"
+msgstr "tvetydig syntax"
+
+#: data/skeletons/glr.c:2231 data/skeletons/glr.c:2257
+#: data/skeletons/glr.c:2310 data/skeletons/glr.c:2550
+#: data/skeletons/lalr1.cc:1046 data/skeletons/lalr1.cc:1543
+#: data/skeletons/yacc.c:1364 data/skeletons/yacc.c:1901
+#: data/skeletons/yacc.c:1905
+msgid "syntax error"
+msgstr "syntaxfel"
+
+#: data/skeletons/glr.c:2258 data/skeletons/lalr1.cc:1544
+#: data/skeletons/yacc.c:1365
+#, c-format
+msgid "syntax error, unexpected %s"
+msgstr "syntaxfel, oväntad %s"
+
+#: data/skeletons/glr.c:2259 data/skeletons/lalr1.cc:1545
+#: data/skeletons/yacc.c:1366
+#, c-format
+msgid "syntax error, unexpected %s, expecting %s"
+msgstr "syntaxfel, oväntad %s, förväntade %s"
+
+#: data/skeletons/glr.c:2260 data/skeletons/lalr1.cc:1546
+#: data/skeletons/yacc.c:1367
+#, c-format
+msgid "syntax error, unexpected %s, expecting %s or %s"
+msgstr "syntaxfel, oväntad %s, förväntade %s eller %s"
+
+#: data/skeletons/glr.c:2261 data/skeletons/lalr1.cc:1547
+#: data/skeletons/yacc.c:1368
+#, c-format
+msgid "syntax error, unexpected %s, expecting %s or %s or %s"
+msgstr "syntaxfel, oväntad %s, förväntade %s eller %s eller %s"
+
+#: data/skeletons/glr.c:2262 data/skeletons/lalr1.cc:1548
+#: data/skeletons/yacc.c:1369
+#, c-format
+msgid "syntax error, unexpected %s, expecting %s or %s or %s or %s"
+msgstr "syntaxfel, oväntad %s, förväntade %s eller %s eller %s eller %s"
+
+#: data/skeletons/glr.c:2609 data/skeletons/yacc.c:1437
+#: data/skeletons/yacc.c:1439 data/skeletons/yacc.c:1644
+#: data/skeletons/yacc.c:2053
+msgid "memory exhausted"
+msgstr "minnet slut"

@@ -1,0 +1,77 @@
+# Vietnamese Translation for Bison-runtime.
+# Copyright © 2013 Free Software Foundation, Inc.
+# This file is distributed under the same license as the bison package.
+# Clytie Siddall <clytie@riverland.net.au>, 2005-2010.
+# Trần Ngọc Quân <vnwildman@gmail.com>, 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: bison-runtime-3.0\n"
+"Report-Msgid-Bugs-To: bug-bison@gnu.org\n"
+"POT-Creation-Date: 2021-03-07 14:53+0100\n"
+"PO-Revision-Date: 2013-07-26 14:19+0700\n"
+"Last-Translator: Trần Ngọc Quân <vnwildman@gmail.com>\n"
+"Language-Team: Vietnamese <translation-team-vi@lists.sourceforge.net>\n"
+"Language: vi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Bugs: Report translation errors to the Language-Team address.\n"
+"Language-Team-Website: <http://translationproject.org/team/vi.html>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 1.5.5\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-Language: Vietnamese\n"
+"X-Poedit-Country: VIET NAM\n"
+
+#: data/skeletons/glr.c:904 data/skeletons/yacc.c:690
+msgid "syntax error: cannot back up"
+msgstr "lỗi cú pháp: không thể sao lưu dự phòng"
+
+#: data/skeletons/glr.c:1819
+msgid "syntax is ambiguous"
+msgstr "cú pháp chưa rõ ràng"
+
+#: data/skeletons/glr.c:2231 data/skeletons/glr.c:2257
+#: data/skeletons/glr.c:2310 data/skeletons/glr.c:2550
+#: data/skeletons/lalr1.cc:1046 data/skeletons/lalr1.cc:1543
+#: data/skeletons/yacc.c:1364 data/skeletons/yacc.c:1901
+#: data/skeletons/yacc.c:1905
+msgid "syntax error"
+msgstr "lỗi cú pháp"
+
+#: data/skeletons/glr.c:2258 data/skeletons/lalr1.cc:1544
+#: data/skeletons/yacc.c:1365
+#, c-format
+msgid "syntax error, unexpected %s"
+msgstr "lỗi cú pháp, gặp %s bất thường"
+
+#: data/skeletons/glr.c:2259 data/skeletons/lalr1.cc:1545
+#: data/skeletons/yacc.c:1366
+#, c-format
+msgid "syntax error, unexpected %s, expecting %s"
+msgstr "lỗi cú pháp, gặp %s bất thường, cần %s"
+
+#: data/skeletons/glr.c:2260 data/skeletons/lalr1.cc:1546
+#: data/skeletons/yacc.c:1367
+#, c-format
+msgid "syntax error, unexpected %s, expecting %s or %s"
+msgstr "lỗi cú pháp, gặp %s bất thường, cần %s hoặc %s"
+
+#: data/skeletons/glr.c:2261 data/skeletons/lalr1.cc:1547
+#: data/skeletons/yacc.c:1368
+#, c-format
+msgid "syntax error, unexpected %s, expecting %s or %s or %s"
+msgstr "lỗi cú pháp, gặp %s bất thường, cần %s hoặc %s hay %s"
+
+#: data/skeletons/glr.c:2262 data/skeletons/lalr1.cc:1548
+#: data/skeletons/yacc.c:1369
+#, c-format
+msgid "syntax error, unexpected %s, expecting %s or %s or %s or %s"
+msgstr "lỗi cú pháp, gặp %s bất thường, cần %s hoặc %s hoặc %s hay %s "
+
+#: data/skeletons/glr.c:2609 data/skeletons/yacc.c:1437
+#: data/skeletons/yacc.c:1439 data/skeletons/yacc.c:1644
+#: data/skeletons/yacc.c:2053
+msgid "memory exhausted"
+msgstr "hết bộ nhớ"
