@@ -1,0 +1,52 @@
+New in 0.21:
+* Added support for emitting hyperlinks.
+  New functions:
+       TYPE                               FUNCTION
+  styled_ostream_t          styled_ostream_set_hyperlink
+  styled_ostream_t          styled_ostream_get_hyperlink_ref
+  styled_ostream_t          styled_ostream_get_hyperlink_id
+  term_ostream_t            term_ostream_set_hyperlink
+  term_ostream_t            term_ostream_get_hyperlink_ref
+  term_ostream_t            term_ostream_get_hyperlink_id
+  html_ostream_t            html_ostream_set_hyperlink_ref
+  html_ostream_t            html_ostream_get_hyperlink_ref
+* New API for doing formatted output:
+  functions ostream_printf, ostream_vprintf.
+* The example programs support the NO_COLOR environment variable,
+  as specified in https://no-color.org/.
+
+New in 0.20.2:
+* Fixed a number of bugs (by upgrading libcroco to version 0.6.13).
+
+New in 0.20:
+* New class: noop_styled_ostream_t.
+  New constructor function: noop_styled_ostream_create.
+
+New in 0.8:
+* Fixed a couple of reliability bugs:
+  - When a program exits while the terminal was in non-default state, the
+    library left the terminal with ECHO off.
+  - The SIGCONT signal handler would fail to restore the proper styling,
+    with a low probability.
+  - The SIGTSTP and SIGCONT signal handlers could clobber errno.
+* Added support for Windows consoles.
+* Improved support for TERM=Eterm-256color and TERM=mlterm-256color.
+* Added support for terminal emulators with true-color support (16 million
+  colors), such as TERM=xterm-direct and TERM=konsole-direct.
+
+New in 0.7:
+* Reliable tty control, as described by the ttyctl_t enum, is now implemented.
+
+New in 0.6:
+* The ostream_t operation 'flush' now takes an additional argument, of type
+  ostream_flush_scope_t.
+* New functions:
+       TYPE                               FUNCTION
+  styled_ostream_t          styled_ostream_flush_to_current_style
+  term_ostream_t            term_ostream_flush_to_current_style
+  html_ostream_t            html_ostream_flush_to_current_style
+
+New in 0.5:
+
+* The libtextstyle library can now be built and installed independently
+  of GNU gettext.
