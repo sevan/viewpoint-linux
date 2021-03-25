@@ -1,2 +1,4 @@
 Phase #4, chapter 8 of LFS 10.1 guide
 
+glibc
+configure --prefix=/usr --disable-werror --enable-kernel=3.2 --enable-stack-protector=strong --with-headers=/usr/include --disable-nscd CFLAGS="-fno-omit-frame-pointer -g -O2"
