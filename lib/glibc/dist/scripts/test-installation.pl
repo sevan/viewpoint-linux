@@ -125,7 +125,7 @@ while (<SOVERSIONS>) {
     next if ($build_mathvec == 0 && $name eq "mvec");
     if ($name ne "nss_ldap" && $name ne "db1"
 	&& $name ne "thread_db"
-	&& $name ne "nss_test1" && $name ne "libgcc_s") {
+	&& $name ne "nss_test1" && $name ne "nss_test2" && $name ne "nsl" && $name ne "libgcc_s") {
       $link_libs .= " -l$name";
       $versions{$name} = $version;
     }
