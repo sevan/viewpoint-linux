@@ -5,3 +5,8 @@ configure --prefix=/usr --disable-werror --enable-kernel=3.2 --enable-stack-prot
 
 zlib
 configure --prefix=/usr --libdir=/usr/lib64
+
+zstd
+make
+make check
+make prefix=/usr libdir=/usr/lib64 install
