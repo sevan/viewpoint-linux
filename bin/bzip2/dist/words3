@@ -20,6 +20,10 @@ is going to do, you can first do
 The -n instructs make to show the commands it would execute, but
 not actually execute them.
 
+If you want to make a staged install (for package managers), type
+
+   make install DESTDIR=/path/to/dir PREFIX=/xxx/yyy
+
 Instructions for use are in the preformatted manual page, in the file
 bzip2.txt.  For more detailed documentation, read the full manual.  
 It is available in Postscript form (manual.ps), PDF form (manual.pdf),
