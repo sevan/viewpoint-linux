@@ -11,6 +11,9 @@ make
 make check
 make prefix=/usr libdir=/usr/lib64 install
 
+file
+configure --prefix=/usr --libdir=/usr/lib64
+
 readline
 configure --prefix=/usr --disable-static --with-curses --libdir=/usr/lib64
 make SHLIB_LIBS="-lncursesw"
