@@ -1,0 +1,45 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD><TITLE>Tcl_OOInitStubs manual page - TclOO Library Functions</TITLE>
+<link rel="stylesheet" href="../docs.css" type="text/css" media="all">
+</HEAD>
+<BODY><H2><a href="../contents.htm">Tcl8.6.11/Tk8.6.11 Documentation</a> <small>&gt;</small> <a href="contents.htm">Tcl C API</a> <small>&gt;</small> OOInitStubs</H2>
+<H3><A HREF="../UserCmd/contents.htm">Tcl/Tk Applications</A> | <A HREF="../TclCmd/contents.htm">Tcl Commands</A> | <A HREF="../TkCmd/contents.htm">Tk Commands</A> | <A HREF="../ItclCmd/contents.htm">[incr Tcl] Package Commands</A> | <A HREF="../SqliteCmd/contents.htm">SQLite3 Package Commands</A> | <A HREF="../TdbcCmd/contents.htm">TDBC Package Commands</A> | <A HREF="../TdbcmysqlCmd/contents.htm">tdbc::mysql Package Commands</A> | <A HREF="../TdbcodbcCmd/contents.htm">tdbc::odbc Package Commands</A> | <A HREF="../TdbcpostgresCmd/contents.htm">tdbc::postgres Package Commands</A> | <A HREF="../TdbcsqliteCmd/contents.htm">tdbc::sqlite3 Package Commands</A> | <A HREF="../ThreadCmd/contents.htm">Thread Package Commands</A> | <A HREF="../TclLib/contents.htm">Tcl C API</A> | <A HREF="../TkLib/contents.htm">Tk C API</A> | <A HREF="../ItclLib/contents.htm">[incr Tcl] Package C API</A> | <A HREF="../TdbcLib/contents.htm">TDBC Package C API</A></H3>
+<H3><A NAME="M2">NAME</A></H3>
+Tcl_OOInitStubs &mdash; initialize library access to TclOO functionality
+<H3><A NAME="M3">SYNOPSIS</A></H3>
+<B>#include &lt;tclOO.h&gt;</B><BR>
+const char *<BR>
+<B>Tcl_OOInitStubs</B>(<I>interp</I>)<BR>
+<H3><A NAME="M4">ARGUMENTS</A></H3>
+<DL class="arguments">
+<DT><A HREF="../TclLib/Interp.htm">Tcl_Interp</A> <B>*interp</B> (in)<DD>
+The Tcl interpreter that the TclOO API is integrated with and whose C
+interface is going to be used.
+<P></DL>
+<H3><A NAME="M5">DESCRIPTION</A></H3>
+When an extension library is going to use the C interface exposed by TclOO, it
+should use <B>Tcl_OOInitStubs</B> to initialize its access to that interface
+from within its <I>*</I><B>_Init</B> (or <I>*</I><B>_SafeInit</B>) function, passing in
+the <I>interp</I> that was passed into that routine as context. If the result
+of calling <B>Tcl_OOInitStubs</B> is NULL, the initialization failed and an
+error message will have been left in the interpreter's result. Otherwise, the
+initialization succeeded and the TclOO API may thereafter be used; the
+version of the TclOO API is returned.
+<P>
+When using this function, either the C #define symbol <B>USE_TCLOO_STUBS</B>
+should be defined and your library code linked against the Tcl stub library,
+or that #define symbol should <I>not</I> be defined and your library code
+linked against the Tcl main library directly.
+<H3><A NAME="M6">BACKWARD COMPATIBILITY NOTE</A></H3>
+If you are linking against the Tcl 8.5 forward compatibility package for
+TclOO, <I>only</I> the stub-enabled configuration is supported and you should
+also link against the TclOO independent stub library; that library is an
+integrated part of the main Tcl stub library in Tcl 8.6.
+<H3><A NAME="M7">KEYWORDS</A></H3>
+<A href="../Keywords/S.htm#stubs">stubs</A>
+<H3><A NAME="M8">SEE ALSO</A></H3>
+<B><A HREF="../TclLib/InitStubs.htm">Tcl_InitStubs</A></B>
+<div class="copy">Copyright &copy; 2012 Donal K. Fellows
+</div>
+</BODY></HTML>

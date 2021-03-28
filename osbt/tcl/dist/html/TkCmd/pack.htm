@@ -1,0 +1,304 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD><TITLE>pack manual page - Tk Built-In Commands</TITLE>
+<link rel="stylesheet" href="../docs.css" type="text/css" media="all">
+</HEAD>
+<BODY><H2><a href="../contents.htm">Tcl8.6.11/Tk8.6.11 Documentation</a> <small>&gt;</small> <a href="contents.htm">Tk Commands</a> <small>&gt;</small> pack</H2>
+<H3><A HREF="../UserCmd/contents.htm">Tcl/Tk Applications</A> | <A HREF="../TclCmd/contents.htm">Tcl Commands</A> | <A HREF="../TkCmd/contents.htm">Tk Commands</A> | <A HREF="../ItclCmd/contents.htm">[incr Tcl] Package Commands</A> | <A HREF="../SqliteCmd/contents.htm">SQLite3 Package Commands</A> | <A HREF="../TdbcCmd/contents.htm">TDBC Package Commands</A> | <A HREF="../TdbcmysqlCmd/contents.htm">tdbc::mysql Package Commands</A> | <A HREF="../TdbcodbcCmd/contents.htm">tdbc::odbc Package Commands</A> | <A HREF="../TdbcpostgresCmd/contents.htm">tdbc::postgres Package Commands</A> | <A HREF="../TdbcsqliteCmd/contents.htm">tdbc::sqlite3 Package Commands</A> | <A HREF="../ThreadCmd/contents.htm">Thread Package Commands</A> | <A HREF="../TclLib/contents.htm">Tcl C API</A> | <A HREF="../TkLib/contents.htm">Tk C API</A> | <A HREF="../ItclLib/contents.htm">[incr Tcl] Package C API</A> | <A HREF="../TdbcLib/contents.htm">TDBC Package C API</A></H3>
+<DL>
+<DD><A HREF="pack.htm#M2" NAME="L1100">NAME</A>
+<DL><DD>pack &mdash; Geometry manager that packs around edges of cavity</DD></DL>
+<DD><A HREF="pack.htm#M3" NAME="L1101">SYNOPSIS</A>
+<DL>
+</DL>
+<DD><A HREF="pack.htm#M4" NAME="L1102">DESCRIPTION</A>
+<DL class="description">
+<DD><A HREF="pack.htm#M5" NAME="L1103"><B>pack </B><I>window </I>?<I>window ...</I>? ?<I>options</I>?</A>
+<DD><A HREF="pack.htm#M6" NAME="L1104"><B>pack configure </B><I>window </I>?<I>window ...</I>? ?<I>options</I>?</A>
+<DL class="description">
+<DD><A HREF="pack.htm#M7" NAME="L1105"><B>-after </B><I>other</I></A>
+<DD><A HREF="pack.htm#M8" NAME="L1106"><B>-anchor </B><I>anchor</I></A>
+<DD><A HREF="pack.htm#M9" NAME="L1107"><B>-before </B><I>other</I></A>
+<DD><A HREF="pack.htm#M10" NAME="L1108"><B>-expand </B><I>boolean</I></A>
+<DD><A HREF="pack.htm#M11" NAME="L1109"><B>-fill </B><I>style</I></A>
+<DL class="description">
+<DD><A HREF="pack.htm#M12" NAME="L1110"><B>none</B></A>
+<DD><A HREF="pack.htm#M13" NAME="L1111"><B>x</B></A>
+<DD><A HREF="pack.htm#M14" NAME="L1112"><B>y</B></A>
+<DD><A HREF="pack.htm#M15" NAME="L1113"><B>both</B></A>
+</DL>
+<DD><A HREF="pack.htm#M16" NAME="L1114"><B>-in </B><I>container</I></A>
+<DD><A HREF="pack.htm#M17" NAME="L1115"><B>-ipadx </B><I>amount</I></A>
+<DD><A HREF="pack.htm#M18" NAME="L1116"><B>-ipady </B><I>amount</I></A>
+<DD><A HREF="pack.htm#M19" NAME="L1117"><B>-padx </B><I>amount</I></A>
+<DD><A HREF="pack.htm#M20" NAME="L1118"><B>-pady </B><I>amount</I></A>
+<DD><A HREF="pack.htm#M21" NAME="L1119"><B>-side </B><I>side</I></A>
+</DL>
+<DD><A HREF="pack.htm#M22" NAME="L1120"><B>pack forget </B><I>window </I>?<I>window ...</I>?</A>
+<DD><A HREF="pack.htm#M23" NAME="L1121"><B>pack info </B><I>window</I></A>
+<DD><A HREF="pack.htm#M24" NAME="L1122"><B>pack propagate </B><I>container</I> ?<I>boolean</I>?</A>
+<DD><A HREF="pack.htm#M25" NAME="L1123"><B>pack slaves </B><I>window</I></A>
+<DD><A HREF="pack.htm#M26" NAME="L1124"><B>pack content </B><I>window</I></A>
+</DL>
+<DD><A HREF="pack.htm#M27" NAME="L1125">THE PACKER ALGORITHM</A>
+<OL class="the packer algorithm">
+</OL>
+<DD><A HREF="pack.htm#M28" NAME="L1126">EXPANSION</A>
+<DD><A HREF="pack.htm#M29" NAME="L1127">GEOMETRY PROPAGATION</A>
+<DD><A HREF="pack.htm#M30" NAME="L1128">RESTRICTIONS ON CONTAINER WINDOWS</A>
+<DD><A HREF="pack.htm#M31" NAME="L1129">PACKING ORDER</A>
+<DD><A HREF="pack.htm#M32" NAME="L1130">EXAMPLE</A>
+<DD><A HREF="pack.htm#M33" NAME="L1131">SEE ALSO</A>
+<DD><A HREF="pack.htm#M34" NAME="L1132">KEYWORDS</A>
+</DL>
+<H3><A NAME="M2">NAME</A></H3>
+pack &mdash; Geometry manager that packs around edges of cavity
+<H3><A NAME="M3">SYNOPSIS</A></H3>
+<B>pack </B><I>option arg </I>?<I>arg ...</I>?<BR>
+<H3><A NAME="M4">DESCRIPTION</A></H3>
+The <B>pack</B> command is used to communicate with the packer,
+a geometry manager that arranges the children of a parent by
+packing them in order around the edges of the parent.
+The <B>pack</B> command can have any of several forms, depending
+on the <I>option</I> argument:
+<P>
+<DL class="description">
+<DT><A NAME="M5"><B>pack </B><I>window </I>?<I>window ...</I>? ?<I>options</I>?</A><DD>
+If the first argument to <B>pack</B> is a window name (any value
+starting with
+&ldquo;.&rdquo;),
+then the command is processed in the same way as <B>pack configure</B>.
+<P><DT><A NAME="M6"><B>pack configure </B><I>window </I>?<I>window ...</I>? ?<I>options</I>?</A><DD>
+The arguments consist of the names of one or more content windows
+followed by pairs of arguments that specify how
+to manage the content.
+See <B><A HREF="#M27">THE PACKER ALGORITHM</A></B> below for details on how the options
+are used by the packer.
+The following options are supported:
+<P>
+<DL class="description">
+<DT><A NAME="M7"><B>-after </B><I>other</I></A><DD>
+<I>Other</I> must the name of another window.
+Use its container as the container for the content, and insert
+the content just after <I>other</I> in the packing order.
+<P><DT><A NAME="M8"><B>-anchor </B><I>anchor</I></A><DD>
+<I>Anchor</I> must be a valid anchor position such as <B>n</B>
+or <B>sw</B>; it specifies where to position each content in its
+parcel.
+Defaults to <B>center</B>.
+<P><DT><A NAME="M9"><B>-before </B><I>other</I></A><DD>
+<I>Other</I> must the name of another window.
+Use its container as the container for the content, and insert
+the content just before <I>other</I> in the packing order.
+<P><DT><A NAME="M10"><B>-expand </B><I>boolean</I></A><DD>
+Specifies whether the content should be expanded to consume
+extra space in their container.
+<I>Boolean</I> may have any proper boolean value, such as <B>1</B>
+or <B>no</B>.
+Defaults to 0.
+<P><DT><A NAME="M11"><B>-fill </B><I>style</I></A><DD>
+If a content's parcel is larger than its requested dimensions, this
+option may be used to stretch the content.
+<I>Style</I> must have one of the following values:
+<P>
+<DL class="description">
+<DT><A NAME="M12"><B>none</B></A><DD>
+Give the content its requested dimensions plus any internal padding
+requested with <B>-ipadx</B> or <B>-ipady</B>.  This is the default.
+<P><DT><A NAME="M13"><B>x</B></A><DD>
+Stretch the content horizontally to fill the entire width of its
+parcel (except leave external padding as specified by <B>-padx</B>).
+<P><DT><A NAME="M14"><B>y</B></A><DD>
+Stretch the content vertically to fill the entire height of its
+parcel (except leave external padding as specified by <B>-pady</B>).
+<P><DT><A NAME="M15"><B>both</B></A><DD>
+Stretch the content both horizontally and vertically.
+<P></DL>
+<P><DT><A NAME="M16"><B>-in </B><I>container</I></A><DD>
+Insert the window at the end of the packing order for the container
+window given by <I>container</I>.
+<P><DT><A NAME="M17"><B>-ipadx </B><I>amount</I></A><DD>
+<I>Amount</I> specifies how much horizontal internal padding to
+leave on each side of the content.
+<I>Amount</I> must be a valid screen distance, such as <B>2</B> or <B>.5c</B>.
+It defaults to 0.
+<P><DT><A NAME="M18"><B>-ipady </B><I>amount</I></A><DD>
+<I>Amount</I> specifies how much vertical internal padding to
+leave on each side of the content.
+<I>Amount</I>  defaults to 0.
+<P><DT><A NAME="M19"><B>-padx </B><I>amount</I></A><DD>
+<I>Amount</I> specifies how much horizontal external padding to
+leave on each side of the content.  <I>Amount</I> may be a list
+of two values to specify padding for left and right separately.
+<I>Amount</I> defaults to 0.
+<P><DT><A NAME="M20"><B>-pady </B><I>amount</I></A><DD>
+<I>Amount</I> specifies how much vertical external padding to
+leave on each side of the content.  <I>Amount</I> may be a list
+of two values to specify padding for top and bottom separately.
+<I>Amount</I> defaults to 0.
+<P><DT><A NAME="M21"><B>-side </B><I>side</I></A><DD>
+Specifies which side of the container the content will be packed against.
+Must be <B>left</B>, <B>right</B>, <B>top</B>, or <B>bottom</B>.
+Defaults to <B>top</B>.
+</DL><P>If no <B>-in</B>, <B>-after</B> or <B>-before</B> option is specified
+then each of the content will be inserted at the end of the packing list
+for its parent unless it is already managed by the packer (in which
+case it will be left where it is).
+If one of these options is specified then all the content will be
+inserted at the specified point.
+If any of the content are already managed by the geometry manager
+then any unspecified options for them retain their previous values rather
+than receiving default values.<DL class="description">
+</DL>
+<P><DT><A NAME="M22"><B>pack forget </B><I>window </I>?<I>window ...</I>?</A><DD>
+Removes each of the <I>window</I>s from the packing order for its
+container and unmaps their windows.
+The content will no longer be managed by the packer.
+<P><DT><A NAME="M23"><B>pack info </B><I>window</I></A><DD>
+Returns a list whose elements are the current configuration state of
+the window given by <I>window</I> in the same option-value form that
+might be specified to <B>pack configure</B>.
+The first two elements of the list are
+&ldquo;<B>-in </B><I>container</I>&rdquo;
+where <I>container</I> is the window's container.
+<P><DT><A NAME="M24"><B>pack propagate </B><I>container</I> ?<I>boolean</I>?</A><DD>
+If <I>boolean</I> has a true boolean value such as <B>1</B> or <B>on</B>
+then propagation is enabled for <I>container</I>, which must be a window
+name (see <B><A HREF="#M29">GEOMETRY PROPAGATION</A></B> below).
+If <I>boolean</I> has a false boolean value then propagation is
+disabled for <I>container</I>.
+In either of these cases an empty string is returned.
+If <I>boolean</I> is omitted then the command returns <B>0</B> or
+<B>1</B> to indicate whether propagation is currently enabled
+for <I>container</I>.
+Propagation is enabled by default.
+<P><DT><A NAME="M25"><B>pack slaves </B><I>window</I></A><DD>
+Returns a list of all of the content windows in the packing order for <I>window</I>.
+The order of the content windows in the list is the same as their order in
+the packing order.
+If <I>window</I> has no content then an empty string is returned.
+<P><DT><A NAME="M26"><B>pack content </B><I>window</I></A><DD>
+Synonym for . <B>pack slaves </B><I>window</I>
+<P></DL>
+<H3><A NAME="M27">THE PACKER ALGORITHM</A></H3>
+For each container the packer maintains an ordered list of content
+windows called the <I>packing list</I>.
+The <B>-in</B>, <B>-after</B>, and <B>-before</B> configuration
+options are used to specify the container for each content and the content's
+position in the packing list.
+If none of these options is given for a content then the content
+is added to the end of the packing list for its parent.
+<P>
+The packer arranges the content windows for a container by scanning the
+packing list in order.
+At the time it processes each content, a rectangular area within
+the container is still unallocated.
+This area is called the <I>cavity</I>;  for the first content it
+is the entire area of the container.
+<P>
+For each content the packer carries out the following steps:
+<P>
+<OL class="the packer algorithm">
+<LI value="1">
+The packer allocates a rectangular <I>parcel</I> for the content
+along the side of the cavity given by the content's <B>-side</B> option.
+If the side is top or bottom then the width of the parcel is
+the width of the cavity and its height is the requested height
+of the content plus the <B>-ipady</B> and <B>-pady</B> options.
+For the left or right side the height of the parcel is
+the height of the cavity and the width is the requested width
+of the content plus the <B>-ipadx</B> and <B>-padx</B> options.
+The parcel may be enlarged further because of the <B>-expand</B>
+option (see <B><A HREF="#M28">EXPANSION</A></B> below)
+<P><LI value="2">
+The packer chooses the dimensions of the content.
+The width will normally be the content's requested width plus
+twice its <B>-ipadx</B> option and the height will normally be
+the content's requested height plus twice its <B>-ipady</B>
+option.
+However, if the <B>-fill</B> option is <B>x</B> or <B>both</B>
+then the width of the content is expanded to fill the width of the parcel,
+minus twice the <B>-padx</B> option.
+If the <B>-fill</B> option is <B>y</B> or <B>both</B>
+then the height of the content is expanded to fill the width of the parcel,
+minus twice the <B>-pady</B> option.
+<P><LI value="3">
+The packer positions the content over its parcel.
+If the content is smaller than the parcel then the <B>-anchor</B>
+option determines where in the parcel the content will be placed.
+If <B>-padx</B> or <B>-pady</B> is non-zero, then the given
+amount of external padding will always be left between the
+content and the edges of the parcel.
+<P></OL>
+<P>
+Once a given content has been packed, the area of its parcel
+is subtracted from the cavity, leaving a smaller rectangular
+cavity for the next content.
+If a content does not use all of its parcel, the unused space
+in the parcel will not be used by subsequent content.
+If the cavity should become too small to meet the needs of
+a content then the content will be given whatever space is
+left in the cavity.
+If the cavity shrinks to zero size, then all remaining content
+on the packing list will be unmapped from the screen until
+the container window becomes large enough to hold them again.
+<H4><A NAME="M28">EXPANSION</A></H4>
+If a container window is so large that there will be extra space
+left over after all of its content have been packed, then the
+extra space is distributed uniformly among all of the content
+for which the <B>-expand</B> option is set.
+Extra horizontal space is distributed among the expandable
+content whose <B>-side</B> is <B>left</B> or <B>right</B>,
+and extra vertical space is distributed among the expandable
+content whose <B>-side</B> is <B>top</B> or <B>bottom</B>.
+<H4><A NAME="M29">GEOMETRY PROPAGATION</A></H4>
+The packer normally computes how large a container must be to
+just exactly meet the needs of its content, and it sets the
+requested width and height of the container to these dimensions.
+This causes geometry information to propagate up through a
+window hierarchy to a top-level window so that the entire
+sub-tree sizes itself to fit the needs of the leaf windows.
+However, the <B>pack propagate</B> command may be used to
+turn off propagation for one or more containers.
+If propagation is disabled then the packer will not set
+the requested width and height of the packer.
+This may be useful if, for example, you wish for a container
+window to have a fixed size that you specify.
+<H3><A NAME="M30">RESTRICTIONS ON CONTAINER WINDOWS</A></H3>
+The container for each content must either be the content's parent
+(the default) or a descendant of the content's parent.
+This restriction is necessary to guarantee that the
+content can be placed over any part of its container that is
+visible without danger of the content being clipped by its parent.
+<H3><A NAME="M31">PACKING ORDER</A></H3>
+If the container for a content is not its parent then you must make sure
+that the content is higher in the stacking order than the container.
+Otherwise the container will obscure the content and it will appear as
+if the content has not been packed correctly.
+The easiest way to make sure the content is higher than the container is
+to create the container window first:  the most recently created window
+will be highest in the stacking order.
+Or, you can use the <B><A HREF="../TkCmd/raise.htm">raise</A></B> and <B><A HREF="../TkCmd/lower.htm">lower</A></B> commands to change
+the stacking order of either the container or the content.
+<H3><A NAME="M32">EXAMPLE</A></H3>
+<PRE># Make the widgets
+label .t -text &quot;This widget is at the top&quot;    -bg red
+label .b -text &quot;This widget is at the bottom&quot; -bg green
+label .l -text &quot;Left&#92;nHand&#92;nSide&quot;
+label .r -text &quot;Right&#92;nHand&#92;nSide&quot;
+text .mid
+	.mid insert end &quot;This layout is like Java's BorderLayout&quot;
+# Lay them out
+<B>pack</B> .t   -side top    -fill x
+<B>pack</B> .b   -side bottom -fill x
+<B>pack</B> .l   -side left   -fill y
+<B>pack</B> .r   -side right  -fill y
+<B>pack</B> .mid -expand 1    -fill both</PRE>
+<H3><A NAME="M33">SEE ALSO</A></H3>
+<B><A HREF="../TkCmd/grid.htm">grid</A></B>, <B><A HREF="../TkCmd/place.htm">place</A></B>
+<H3><A NAME="M34">KEYWORDS</A></H3>
+<A href="../Keywords/G.htm#geometry manager">geometry manager</A>, <A href="../Keywords/L.htm#location">location</A>, <A href="../Keywords/P.htm#packer">packer</A>, <A href="../Keywords/P.htm#parcel">parcel</A>, <A href="../Keywords/P.htm#propagation">propagation</A>, <A href="../Keywords/S.htm#size">size</A>
+<div class="copy">Copyright &copy; 1990-1994 The Regents of the University of California.
+<BR>Copyright &copy; 1994-1996 Sun Microsystems, Inc.
+</div>
+</BODY></HTML>

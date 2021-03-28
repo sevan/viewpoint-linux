@@ -1,0 +1,147 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD><TITLE>timerate manual page - Built-In Commands</TITLE>
+<link rel="stylesheet" href="../docs.css" type="text/css" media="all">
+</HEAD>
+<BODY><H2><a href="../contents.htm">Tcl8.6.11/Tk8.6.11 Documentation</a> <small>&gt;</small> <a href="contents.htm">Tcl Commands</a> <small>&gt;</small> timerate</H2>
+<H3><A HREF="../UserCmd/contents.htm">Tcl/Tk Applications</A> | <A HREF="../TclCmd/contents.htm">Tcl Commands</A> | <A HREF="../TkCmd/contents.htm">Tk Commands</A> | <A HREF="../ItclCmd/contents.htm">[incr Tcl] Package Commands</A> | <A HREF="../SqliteCmd/contents.htm">SQLite3 Package Commands</A> | <A HREF="../TdbcCmd/contents.htm">TDBC Package Commands</A> | <A HREF="../TdbcmysqlCmd/contents.htm">tdbc::mysql Package Commands</A> | <A HREF="../TdbcodbcCmd/contents.htm">tdbc::odbc Package Commands</A> | <A HREF="../TdbcpostgresCmd/contents.htm">tdbc::postgres Package Commands</A> | <A HREF="../TdbcsqliteCmd/contents.htm">tdbc::sqlite3 Package Commands</A> | <A HREF="../ThreadCmd/contents.htm">Thread Package Commands</A> | <A HREF="../TclLib/contents.htm">Tcl C API</A> | <A HREF="../TkLib/contents.htm">Tk C API</A> | <A HREF="../ItclLib/contents.htm">[incr Tcl] Package C API</A> | <A HREF="../TdbcLib/contents.htm">TDBC Package C API</A></H3>
+<DL>
+<DD><A HREF="timerate.htm#M2" NAME="L2089">NAME</A>
+<DL><DD>timerate &mdash; Calibrated performance measurements of script execution time</DD></DL>
+<DD><A HREF="timerate.htm#M3" NAME="L2090">SYNOPSIS</A>
+<DL>
+</DL>
+<DD><A HREF="timerate.htm#M4" NAME="L2091">DESCRIPTION</A>
+<UL class="description">
+</UL>
+<DL class="description">
+<DD><A HREF="timerate.htm#M5" NAME="L2092"><B>-calibrate</B></A>
+<DD><A HREF="timerate.htm#M6" NAME="L2093"><B>-overhead </B><I>double</I></A>
+<DD><A HREF="timerate.htm#M7" NAME="L2094"><B>-direct</B></A>
+</DL>
+<DD><A HREF="timerate.htm#M8" NAME="L2095">EXAMPLES</A>
+<DD><A HREF="timerate.htm#M9" NAME="L2096">SEE ALSO</A>
+<DD><A HREF="timerate.htm#M10" NAME="L2097">KEYWORDS</A>
+</DL>
+<H3><A NAME="M2">NAME</A></H3>
+timerate &mdash; Calibrated performance measurements of script execution time
+<H3><A NAME="M3">SYNOPSIS</A></H3>
+<B>timerate </B><I>script</I> ?<I>time</I>? ?<I>max-count</I>?<BR>
+<B>timerate </B>?<B>-direct</B>? ?<B>-overhead</B><I> double</I>? <I>script</I> ?<I>time</I>? ?<I>max-count</I>?<BR>
+<B>timerate </B>?<B>-calibrate</B>? ?<B>-direct</B>? <I>script</I> ?<I>time</I>? ?<I>max-count</I>?<BR>
+<H3><A NAME="M4">DESCRIPTION</A></H3>
+The <B>timerate</B> command does calibrated performance measurement of a Tcl
+command or script, <I>script</I>. The <I>script</I> should be written so that it
+can be executed multiple times during the performance measurement process.
+Time is measured in elapsed time using the finest timer resolution as possible,
+not CPU time; if <I>script</I> interacts with the OS, the cost of that
+interaction is included.
+This command may be used to provide information as to how well a script or
+Tcl command is performing, and can help determine bottlenecks and fine-tune
+application performance.
+<P>
+The first and second form will evaluate <I>script</I> until the interval
+<I>time</I> given in milliseconds elapses, or for 1000 milliseconds (1 second)
+if <I>time</I> is not specified.
+<P>
+The parameter <I>max-count</I> could additionally impose a further restriction
+by the maximal number of iterations to evaluate the script.
+If <I>max-count</I> is specified, the evalution will stop either this count of
+iterations is reached or the time is exceeded.
+<P>
+It will then return a canonical tcl-list of the form:
+<P>
+<PRE><B>0.095977 &micro;s/# 52095836 # 10419167 #/sec 5000.000 net-ms</B></PRE>
+<P>
+which indicates:
+<P>
+<UL class="description">
+<LI>
+the average amount of time required per iteration, in microseconds ([<B><A HREF="../TclCmd/lindex.htm">lindex</A></B> $result 0])
+<P><LI>
+the count how many times it was executed ([<B><A HREF="../TclCmd/lindex.htm">lindex</A></B> $result 2])
+<P><LI>
+the estimated rate per second ([<B><A HREF="../TclCmd/lindex.htm">lindex</A></B> $result 4])
+<P><LI>
+the estimated real execution time without measurement overhead ([<B><A HREF="../TclCmd/lindex.htm">lindex</A></B> $result 6])
+<P></UL>
+<P>
+The following options may be supplied to the <B>timerate</B> command:
+<P>
+<DL class="description">
+<DT><A NAME="M5"><B>-calibrate</B></A><DD>
+To measure very fast scripts as exactly as possible, a calibration process
+may be required.
+The <B>-calibrate</B> option is used to calibrate <B>timerate</B> itself,
+calculating the estimated overhead of the given script as the default overhead
+for future invocations of the <B>timerate</B> command. If the <I>time</I>
+parameter is not specified, the calibrate procedure runs for up to 10 seconds.
+<P>
+Note that calibration is not thread safe in the current implementation.
+<P><DT><A NAME="M6"><B>-overhead </B><I>double</I></A><DD>
+The <B>-overhead</B> parameter supplies an estimate (in microseconds) of the
+measurement overhead of each iteration of the tested script. This quantity
+will be subtracted from the measured time prior to reporting results. This can
+be useful for removing the cost of interpreter state reset commands from the
+script being measured.
+<P><DT><A NAME="M7"><B>-direct</B></A><DD>
+The <B>-direct</B> option causes direct execution of the supplied script,
+without compilation, in a manner similar to the <B><A HREF="../TclCmd/time.htm">time</A></B> command. It can be
+used to measure the cost of <B><A HREF="../TclLib/Eval.htm">Tcl_EvalObjEx</A></B>, of the invocation of canonical
+lists, and of the uncompiled versions of bytecoded commands.
+<P></DL>
+<P>
+As opposed to the <B><A HREF="../TclCmd/time.htm">time</A></B> commmand, which runs the tested script for a fixed
+number of iterations, the timerate command runs it for a fixed time.
+Additionally, the compiled variant of the script will be used during the entire
+measurement, as if the script were part of a compiled procedure, if the <B>-direct</B>
+option is not specified. The fixed time period and possibility of compilation allow
+for more precise results and prevent very long execution times by slow scripts, making
+it practical for measuring scripts with highly uncertain execution times.
+<H3><A NAME="M8">EXAMPLES</A></H3>
+Estimate how fast it takes for a simple Tcl <B><A HREF="../TclCmd/for.htm">for</A></B> loop (including
+operations on variable <I>i</I>) to count to ten:
+<P>
+<PRE><I># calibrate</I>
+<B>timerate</B> -calibrate {}
+
+<I># measure</I>
+<B>timerate</B> { for {set i 0} {$i&lt;10} {incr i} {} } 5000</PRE>
+<P>
+Estimate how fast it takes for a simple Tcl <B><A HREF="../TclCmd/for.htm">for</A></B> loop, ignoring the
+overhead of the management of the variable that controls the loop:
+<P>
+<PRE><I># calibrate for overhead of variable operations</I>
+set i 0; <B>timerate</B> -calibrate {expr {$i&lt;10}; incr i} 1000
+
+<I># measure</I>
+<B>timerate</B> {
+    for {set i 0} {$i&lt;10} {incr i} {}
+} 5000</PRE>
+<P>
+Estimate the speed of calculating the hour of the day using <B><A HREF="../TclCmd/clock.htm">clock format</A></B> only,
+ignoring overhead of the portion of the script that prepares the time for it to
+calculate:
+<P>
+<PRE><I># calibrate</I>
+<B>timerate</B> -calibrate {}
+
+<I># estimate overhead</I>
+set tm 0
+set ovh [lindex [<B>timerate</B> {
+    incr tm [expr {24*60*60}]
+}] 0]
+
+<I># measure using estimated overhead</I>
+set tm 0
+<B>timerate</B> -overhead $ovh {
+    clock format $tm -format %H
+    incr tm [expr {24*60*60}]; # overhead for this is ignored
+} 5000</PRE>
+<H3><A NAME="M9">SEE ALSO</A></H3>
+<B><A HREF="../TclCmd/time.htm">time</A></B>
+<H3><A NAME="M10">KEYWORDS</A></H3>
+<A href="../Keywords/P.htm#performance measurement">performance measurement</A>, <A href="../Keywords/S.htm#script">script</A>, <A href="../Keywords/T.htm#time">time</A>
+<div class="copy">Copyright &copy; 2005 Sergey Brester aka sebres.
+</div>
+</BODY></HTML>

@@ -1,0 +1,148 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD><TITLE>ttk::button manual page - Tk Themed Widget</TITLE>
+<link rel="stylesheet" href="../docs.css" type="text/css" media="all">
+</HEAD>
+<BODY><H2><a href="../contents.htm">Tcl8.6.11/Tk8.6.11 Documentation</a> <small>&gt;</small> <a href="contents.htm">Tk Commands</a> <small>&gt;</small> ttk_button</H2>
+<H3><A HREF="../UserCmd/contents.htm">Tcl/Tk Applications</A> | <A HREF="../TclCmd/contents.htm">Tcl Commands</A> | <A HREF="../TkCmd/contents.htm">Tk Commands</A> | <A HREF="../ItclCmd/contents.htm">[incr Tcl] Package Commands</A> | <A HREF="../SqliteCmd/contents.htm">SQLite3 Package Commands</A> | <A HREF="../TdbcCmd/contents.htm">TDBC Package Commands</A> | <A HREF="../TdbcmysqlCmd/contents.htm">tdbc::mysql Package Commands</A> | <A HREF="../TdbcodbcCmd/contents.htm">tdbc::odbc Package Commands</A> | <A HREF="../TdbcpostgresCmd/contents.htm">tdbc::postgres Package Commands</A> | <A HREF="../TdbcsqliteCmd/contents.htm">tdbc::sqlite3 Package Commands</A> | <A HREF="../ThreadCmd/contents.htm">Thread Package Commands</A> | <A HREF="../TclLib/contents.htm">Tcl C API</A> | <A HREF="../TkLib/contents.htm">Tk C API</A> | <A HREF="../ItclLib/contents.htm">[incr Tcl] Package C API</A> | <A HREF="../TdbcLib/contents.htm">TDBC Package C API</A></H3>
+<DL>
+<DD><A HREF="ttk_button.htm#M2" NAME="L1768">NAME</A>
+<DL><DD>ttk::button &mdash; Widget that issues a command when pressed</DD></DL>
+<DD><A HREF="ttk_button.htm#M3" NAME="L1769">SYNOPSIS</A>
+<DL>
+</DL>
+<DD><A HREF="ttk_button.htm#M4" NAME="L1770">DESCRIPTION</A>
+<DD><A HREF="ttk_button.htm#M5" NAME="L1771">STANDARD OPTIONS</A>
+<DL>
+<DD><A HREF="ttk_widget.htm#M-class">-class, undefined, undefined</A>
+<DD><A HREF="ttk_widget.htm#M-compound">-compound, compound, Compound</A>
+<DD><A HREF="ttk_widget.htm#M-cursor">-cursor, cursor, Cursor</A>
+<DD><A HREF="ttk_widget.htm#M-image">-image, image, Image</A>
+<DD><A HREF="ttk_widget.htm#M-state">-state, state, State</A>
+<DD><A HREF="ttk_widget.htm#M-style">-style, style, Style</A>
+<DD><A HREF="ttk_widget.htm#M-takefocus">-takefocus, takeFocus, TakeFocus</A>
+<DD><A HREF="ttk_widget.htm#M-text">-text, text, Text</A>
+<DD><A HREF="ttk_widget.htm#M-textvariable">-textvariable, textVariable, Variable</A>
+<DD><A HREF="ttk_widget.htm#M-underline">-underline, underline, Underline</A>
+<DD><A HREF="ttk_widget.htm#M-width">-width, width, Width</A>
+</DL>
+<DD><A HREF="ttk_button.htm#M6" NAME="L1772">WIDGET-SPECIFIC OPTIONS</A>
+<DL>
+<DD><A HREF="ttk_button.htm#M7" NAME="L1773">-command, command, Command</A>
+<DD><A HREF="ttk_button.htm#M8" NAME="L1774">-default, default, Default</A>
+</DL>
+<DD><A HREF="ttk_button.htm#M9" NAME="L1775">WIDGET COMMAND</A>
+<DL class="widget command">
+<DD><A HREF="ttk_button.htm#M10" NAME="L1776"><I>pathName </I><B>invoke</B></A>
+</DL>
+<DD><A HREF="ttk_button.htm#M11" NAME="L1777">STANDARD STYLES</A>
+<DD><A HREF="ttk_button.htm#M12" NAME="L1778">STYLING OPTIONS</A>
+<DD><A HREF="ttk_button.htm#M13" NAME="L1779">SEE ALSO</A>
+<DD><A HREF="ttk_button.htm#M14" NAME="L1780">KEYWORDS</A>
+</DL>
+<H3><A NAME="M2">NAME</A></H3>
+ttk::button &mdash; Widget that issues a command when pressed
+<H3><A NAME="M3">SYNOPSIS</A></H3>
+<B>ttk::button</B> <I>pathName </I>?<I>options</I>?<BR>
+<H3><A NAME="M4">DESCRIPTION</A></H3>
+A <B>ttk::button</B> widget displays a textual label and/or image,
+and evaluates a command when pressed.
+<H3><A NAME="M5">STANDARD OPTIONS</A></H3>
+<DL>
+<DT><B><A HREF="ttk_widget.htm#M-class">-class, undefined, undefined</A></B>
+<DT><B><A HREF="ttk_widget.htm#M-compound">-compound, compound, Compound</A></B>
+<DT><B><A HREF="ttk_widget.htm#M-cursor">-cursor, cursor, Cursor</A></B>
+<DT><B><A HREF="ttk_widget.htm#M-image">-image, image, Image</A></B>
+<DT><B><A HREF="ttk_widget.htm#M-state">-state, state, State</A></B>
+<DT><B><A HREF="ttk_widget.htm#M-style">-style, style, Style</A></B>
+<DT><B><A HREF="ttk_widget.htm#M-takefocus">-takefocus, takeFocus, TakeFocus</A></B>
+<DT><B><A HREF="ttk_widget.htm#M-text">-text, text, Text</A></B>
+<DT><B><A HREF="ttk_widget.htm#M-textvariable">-textvariable, textVariable, Variable</A></B>
+<DT><B><A HREF="ttk_widget.htm#M-underline">-underline, underline, Underline</A></B>
+<DT><B><A HREF="ttk_widget.htm#M-width">-width, width, Width</A></B>
+</DL>
+<H3><A NAME="M6">WIDGET-SPECIFIC OPTIONS</A></H3>
+<DL>
+<DT>Command-Line Name: <B><A NAME="M7">-command</A></B>
+<DT>Database Name: <B>command</B>
+<DT>Database Class: <B>Command</B>
+<DD>A script to evaluate when the widget is invoked.
+<P><DT>Command-Line Name: <B><A NAME="M8">-default</A></B>
+<DT>Database Name: <B>default</B>
+<DT>Database Class: <B>Default</B>
+<DD>May be set to one of  <B>normal</B>, <B>active</B>, or <B>disabled</B>.
+In a dialog box, one button may be designated the
+&ldquo;default&rdquo;
+button (meaning, roughly,
+&ldquo;the one that gets invoked when the user presses &lt;Enter&gt;&rdquo;).
+<B>active</B> indicates that this is currently the default button;
+<B>normal</B> means that it may become the default button, and
+<B>disabled</B> means that it is not defaultable.
+The default is <B>normal</B>.
+<P>
+Depending on the theme, the default button may be displayed
+with an extra highlight ring, or with a different border color.
+</DL>
+<H3><A NAME="M9">WIDGET COMMAND</A></H3>
+In addition to the standard
+<B>cget</B>, <B>configure</B>, <B>identify</B>, <B>instate</B>, and <B>state</B>
+commands, buttons support the following additional widget commands:
+<P>
+<DL class="widget command">
+<DT><A NAME="M10"><I>pathName </I><B>invoke</B></A><DD>
+Invokes the command associated with the button.
+<P></DL>
+<H3><A NAME="M11">STANDARD STYLES</A></H3>
+<B>Ttk::button</B> widgets support the <B>Toolbutton</B> style in all standard
+themes, which is useful for creating widgets for toolbars.
+<H3><A NAME="M12">STYLING OPTIONS</A></H3>
+The class name for a <B>ttk::button</B> is <B>TButton</B>.
+<P>
+Dynamic states: <B>active</B>, <B>disabled</B>, <B>pressed</B>, <B>readonly</B>.
+<P>
+<B>TButton</B> styling options configurable with <B><A HREF="../TkCmd/ttk_style.htm">ttk::style</A></B>
+are:
+<P>
+<B>-anchor</B> <I>anchor</I>
+<BR>
+<B>-background</B> <I>color</I>
+<BR>
+<B>-bordercolor</B> <I>color</I>
+<BR>
+<B>-compound</B> <I>compound</I>
+<BR>
+<B>-darkcolor</B> <I>color</I>
+<BR>
+<B>-foreground</B> <I>color</I>
+<BR>
+<B>-font</B> <I>font</I>
+<BR>
+<B>-highlightcolor</B> <I>color</I>
+<BR>
+<B>-highlightthickness</B> <I>amount</I>
+<BR>
+<B>-lightcolor</B> <I>color</I>
+<BR>
+<B>-padding</B> <I>padding</I>
+<BR>
+<B>-relief</B> <I>relief</I>
+<BR>
+<B>-shiftrelief</B> <I>amount</I>
+<DL><DD>
+<B>-shiftrelief</B> specifies how far the button contents are
+shifted down and right in the <I>pressed</I> state.
+This action provides additional skeumorphic feedback.
+</DL>
+<B>-width</B> <I>amount</I>
+<P>
+Some options are only available for specific themes.
+<P>
+See the <B><A HREF="../TkCmd/ttk_style.htm">ttk::style</A></B> manual page for information on how to configure
+ttk styles.
+<H3><A NAME="M13">SEE ALSO</A></H3>
+<B><A HREF="../TkCmd/ttk_widget.htm">ttk::widget</A></B>, <B><A HREF="../TkCmd/button.htm">button</A></B>
+<H3><A NAME="M14">KEYWORDS</A></H3>
+<A href="../Keywords/W.htm#widget">widget</A>, <A href="../Keywords/B.htm#button">button</A>, <A href="../Keywords/D.htm#default">default</A>, <A href="../Keywords/C.htm#command">command</A>
+<div class="copy">Copyright &copy; 2004 Joe English
+</div>
+</BODY></HTML>
