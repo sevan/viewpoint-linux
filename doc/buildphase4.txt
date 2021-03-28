@@ -21,3 +21,6 @@ make SHLIB_LIBS="-lncursesw" install
 
 bc
 CC=gcc PREFIX=/usr LIBDIR=/usr/lib64 ./configure.sh -G -O3 -T
+
+flex
+configure --prefix=/osbt --disable-static
