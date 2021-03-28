@@ -18,3 +18,6 @@ readline
 configure --prefix=/usr --disable-static --with-curses --libdir=/usr/lib64
 make SHLIB_LIBS="-lncursesw"
 make SHLIB_LIBS="-lncursesw" install
+
+bc
+CC=gcc PREFIX=/usr LIBDIR=/usr/lib64 ./configure.sh -G -O3
