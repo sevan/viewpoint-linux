@@ -49,3 +49,10 @@ make install
 make install-private-headers
 ln -s tclsh8.6 /osbt/bin/tclsh
 mv /osbt/share/man/man3/{Thread,Tcl_Thread}.3
+
+expect
+configure --prefix=/osbt --with-tcl=/osbt/lib --enable-shared --with-tclinclude=/osbt/include
+make
+make test
+make install
+ln -s expect5.45.4/libexpect5.45.4.so /osbt/lib
