@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD><TITLE>ttk::frame manual page - Tk Themed Widget</TITLE>
+<link rel="stylesheet" href="../docs.css" type="text/css" media="all">
+</HEAD>
+<BODY><H2><a href="../contents.htm">Tcl8.6.11/Tk8.6.11 Documentation</a> <small>&gt;</small> <a href="contents.htm">Tk Commands</a> <small>&gt;</small> ttk_frame</H2>
+<H3><A HREF="../UserCmd/contents.htm">Tcl/Tk Applications</A> | <A HREF="../TclCmd/contents.htm">Tcl Commands</A> | <A HREF="../TkCmd/contents.htm">Tk Commands</A> | <A HREF="../ItclCmd/contents.htm">[incr Tcl] Package Commands</A> | <A HREF="../SqliteCmd/contents.htm">SQLite3 Package Commands</A> | <A HREF="../TdbcCmd/contents.htm">TDBC Package Commands</A> | <A HREF="../TdbcmysqlCmd/contents.htm">tdbc::mysql Package Commands</A> | <A HREF="../TdbcodbcCmd/contents.htm">tdbc::odbc Package Commands</A> | <A HREF="../TdbcpostgresCmd/contents.htm">tdbc::postgres Package Commands</A> | <A HREF="../TdbcsqliteCmd/contents.htm">tdbc::sqlite3 Package Commands</A> | <A HREF="../ThreadCmd/contents.htm">Thread Package Commands</A> | <A HREF="../TclLib/contents.htm">Tcl C API</A> | <A HREF="../TkLib/contents.htm">Tk C API</A> | <A HREF="../ItclLib/contents.htm">[incr Tcl] Package C API</A> | <A HREF="../TdbcLib/contents.htm">TDBC Package C API</A></H3>
+<DL>
+<DD><A HREF="ttk_frame.htm#M2" NAME="L1875">NAME</A>
+<DL><DD>ttk::frame &mdash; Simple container widget</DD></DL>
+<DD><A HREF="ttk_frame.htm#M3" NAME="L1876">SYNOPSIS</A>
+<DL>
+</DL>
+<DD><A HREF="ttk_frame.htm#M4" NAME="L1877">DESCRIPTION</A>
+<DD><A HREF="ttk_frame.htm#M5" NAME="L1878">STANDARD OPTIONS</A>
+<DL>
+<DD><A HREF="ttk_widget.htm#M-class">-class, undefined, undefined</A>
+<DD><A HREF="ttk_widget.htm#M-cursor">-cursor, cursor, Cursor</A>
+<DD><A HREF="ttk_widget.htm#M-padding">-padding, padding, Padding</A>
+<DD><A HREF="ttk_widget.htm#M-style">-style, style, Style</A>
+<DD><A HREF="ttk_widget.htm#M-takefocus">-takefocus, takeFocus, TakeFocus</A>
+</DL>
+<DD><A HREF="ttk_frame.htm#M6" NAME="L1879">WIDGET-SPECIFIC OPTIONS</A>
+<DL>
+<DD><A HREF="ttk_frame.htm#M7" NAME="L1880">-borderwidth, borderWidth, BorderWidth</A>
+<DD><A HREF="ttk_frame.htm#M8" NAME="L1881">-relief, relief, Relief</A>
+<DD><A HREF="ttk_frame.htm#M9" NAME="L1882">-width, width, Width</A>
+<DD><A HREF="ttk_frame.htm#M10" NAME="L1883">-height, height, Height</A>
+</DL>
+<DD><A HREF="ttk_frame.htm#M11" NAME="L1884">WIDGET COMMAND</A>
+<DD><A HREF="ttk_frame.htm#M12" NAME="L1885">NOTES</A>
+<DD><A HREF="ttk_frame.htm#M13" NAME="L1886">STYLING OPTIONS</A>
+<DD><A HREF="ttk_frame.htm#M14" NAME="L1887">BINDINGS</A>
+<DD><A HREF="ttk_frame.htm#M15" NAME="L1888">SEE ALSO</A>
+<DD><A HREF="ttk_frame.htm#M16" NAME="L1889">KEYWORDS</A>
+</DL>
+<H3><A NAME="M2">NAME</A></H3>
+ttk::frame &mdash; Simple container widget
+<H3><A NAME="M3">SYNOPSIS</A></H3>
+<B>ttk::frame</B> <I>pathName </I>?<I>options</I>?<BR>
+<H3><A NAME="M4">DESCRIPTION</A></H3>
+A <B>ttk::frame</B> widget is a container, used to group other widgets
+together.
+<H3><A NAME="M5">STANDARD OPTIONS</A></H3>
+<DL>
+<DT><B><A HREF="ttk_widget.htm#M-class">-class, undefined, undefined</A></B>
+<DT><B><A HREF="ttk_widget.htm#M-cursor">-cursor, cursor, Cursor</A></B>
+<DT><B><A HREF="ttk_widget.htm#M-padding">-padding, padding, Padding</A></B>
+<DT><B><A HREF="ttk_widget.htm#M-style">-style, style, Style</A></B>
+<DT><B><A HREF="ttk_widget.htm#M-takefocus">-takefocus, takeFocus, TakeFocus</A></B>
+</DL>
+<H3><A NAME="M6">WIDGET-SPECIFIC OPTIONS</A></H3>
+<DL>
+<DT>Command-Line Name: <B><A NAME="M7">-borderwidth</A></B>
+<DT>Database Name: <B>borderWidth</B>
+<DT>Database Class: <B>BorderWidth</B>
+<DD>The desired width of the widget border.  Defaults to 0.
+May be ignored depending on the theme used.
+<P><DT>Command-Line Name: <B><A NAME="M8">-relief</A></B>
+<DT>Database Name: <B>relief</B>
+<DT>Database Class: <B>Relief</B>
+<DD>One of the standard Tk border styles:
+<B>flat</B>, <B>groove</B>, <B>raised</B>, <B>ridge</B>,
+<B>solid</B>, or <B>sunken</B>.
+Defaults to <B>flat</B>.
+<P><DT>Command-Line Name: <B><A NAME="M9">-width</A></B>
+<DT>Database Name: <B>width</B>
+<DT>Database Class: <B>Width</B>
+<DD>If specified, the widget's requested width in pixels.
+<P><DT>Command-Line Name: <B><A NAME="M10">-height</A></B>
+<DT>Database Name: <B>height</B>
+<DT>Database Class: <B>Height</B>
+<DD>If specified, the widget's requested height in pixels.
+</DL>
+<H3><A NAME="M11">WIDGET COMMAND</A></H3>
+Supports the standard widget commands
+<B>configure</B>, <B>cget</B>, <B>identify</B>, <B>instate</B>, and <B>state</B>;
+see <I>ttk::widget(n)</I>.
+<H3><A NAME="M12">NOTES</A></H3>
+Note that if the <B><A HREF="../TkCmd/pack.htm">pack</A></B>, <B><A HREF="../TkCmd/grid.htm">grid</A></B>, or other geometry managers
+are used to manage the children of the <B><A HREF="../TkCmd/frame.htm">frame</A></B>,
+by the GM's requested size will normally take precedence
+over the <B><A HREF="../TkCmd/frame.htm">frame</A></B> widget's <B>-width</B> and <B>-height</B> options.
+<B><A HREF="../TkCmd/pack.htm">pack propagate</A></B> and <B><A HREF="../TkCmd/grid.htm">grid propagate</A></B> can be used
+to change this.
+<H3><A NAME="M13">STYLING OPTIONS</A></H3>
+The class name for a <B>ttk::frame</B> is <B>TFrame</B>.
+<P>
+<B>TFrame</B> styling options configurable with <B><A HREF="../TkCmd/ttk_style.htm">ttk::style</A></B>
+are:
+<P>
+<B>-background</B> <I>color</I>
+<BR>
+<B>-relief</B> <I>relief</I>
+<P>
+Some options are only available for specific themes.
+<P>
+See the <B><A HREF="../TkCmd/ttk_style.htm">ttk::style</A></B> manual page for information on how to configure
+ttk styles.
+<H3><A NAME="M14">BINDINGS</A></H3>
+When a new <B>ttk::frame</B> is created, it has no default event bindings;
+<B>ttk::frame</B>s are not intended to be interactive.
+<H3><A NAME="M15">SEE ALSO</A></H3>
+<B><A HREF="../TkCmd/ttk_widget.htm">ttk::widget</A></B>, <B><A HREF="../TkCmd/ttk_labelframe.htm">ttk::labelframe</A></B>, <B><A HREF="../TkCmd/frame.htm">frame</A></B>
+<H3><A NAME="M16">KEYWORDS</A></H3>
+<A href="../Keywords/W.htm#widget">widget</A>, <A href="../Keywords/F.htm#frame">frame</A>, <A href="../Keywords/C.htm#container">container</A>
+<div class="copy">Copyright &copy; 2005 Joe English
+</div>
+</BODY></HTML>

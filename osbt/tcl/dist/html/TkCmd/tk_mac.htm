@@ -1,0 +1,302 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD><TITLE>tk::mac manual page - Tk Built-In Commands</TITLE>
+<link rel="stylesheet" href="../docs.css" type="text/css" media="all">
+</HEAD>
+<BODY><H2><a href="../contents.htm">Tcl8.6.11/Tk8.6.11 Documentation</a> <small>&gt;</small> <a href="contents.htm">Tk Commands</a> <small>&gt;</small> tk_mac</H2>
+<H3><A HREF="../UserCmd/contents.htm">Tcl/Tk Applications</A> | <A HREF="../TclCmd/contents.htm">Tcl Commands</A> | <A HREF="../TkCmd/contents.htm">Tk Commands</A> | <A HREF="../ItclCmd/contents.htm">[incr Tcl] Package Commands</A> | <A HREF="../SqliteCmd/contents.htm">SQLite3 Package Commands</A> | <A HREF="../TdbcCmd/contents.htm">TDBC Package Commands</A> | <A HREF="../TdbcmysqlCmd/contents.htm">tdbc::mysql Package Commands</A> | <A HREF="../TdbcodbcCmd/contents.htm">tdbc::odbc Package Commands</A> | <A HREF="../TdbcpostgresCmd/contents.htm">tdbc::postgres Package Commands</A> | <A HREF="../TdbcsqliteCmd/contents.htm">tdbc::sqlite3 Package Commands</A> | <A HREF="../ThreadCmd/contents.htm">Thread Package Commands</A> | <A HREF="../TclLib/contents.htm">Tcl C API</A> | <A HREF="../TkLib/contents.htm">Tk C API</A> | <A HREF="../ItclLib/contents.htm">[incr Tcl] Package C API</A> | <A HREF="../TdbcLib/contents.htm">TDBC Package C API</A></H3>
+<DL>
+<DD><A HREF="tk_mac.htm#M2" NAME="L1689">NAME</A>
+<DL><DD>tk::mac &mdash; Access Mac-Specific Functionality on OS X from Tk</DD></DL>
+<DD><A HREF="tk_mac.htm#M3" NAME="L1690">SYNOPSIS</A>
+<DL>
+</DL>
+<DD><A HREF="tk_mac.htm#M4" NAME="L1691">EVENT HANDLER CALLBACKS</A>
+<DL class="event handler callbacks">
+<DD><A HREF="tk_mac.htm#M5" NAME="L1692"><B>::tk::mac::DoScriptFile</B></A>
+<DD><A HREF="tk_mac.htm#M6" NAME="L1693"><B>::tk::mac::DoScriptText</B></A>
+<DD><A HREF="tk_mac.htm#M7" NAME="L1694"><B>::tk::mac::ShowPreferences</B></A>
+<DD><A HREF="tk_mac.htm#M8" NAME="L1695"><B>::tk::mac::OpenApplication</B></A>
+<DD><A HREF="tk_mac.htm#M9" NAME="L1696"><B>::tk::mac::ReopenApplication</B></A>
+<DD><A HREF="tk_mac.htm#M10" NAME="L1697"><B>::tk::mac::OpenDocument </B><I>file...</I></A>
+<DD><A HREF="tk_mac.htm#M11" NAME="L1698"><B>::tk::mac::PrintDocument </B><I>file...</I></A>
+<DD><A HREF="tk_mac.htm#M12" NAME="L1699"><B>::tk::mac::Quit</B></A>
+<DD><A HREF="tk_mac.htm#M13" NAME="L1700"><B>::tk::mac::OnHide</B></A>
+<DD><A HREF="tk_mac.htm#M14" NAME="L1701"><B>::tk::mac::OnShow</B></A>
+<DD><A HREF="tk_mac.htm#M15" NAME="L1702"><B>::tk::mac::ShowHelp</B></A>
+<DD><A HREF="tk_mac.htm#M16" NAME="L1703"><B>::tk::mac::PerformService</B></A>
+<DD><A HREF="tk_mac.htm#M17" NAME="L1704"><B>::tk::mac::LaunchURL </B><I>URL...</I></A>
+<DD><A HREF="tk_mac.htm#M18" NAME="L1705"><B>::tk::mac::GetAppPath</B></A>
+<DD><A HREF="tk_mac.htm#M19" NAME="L1706"></A>
+</DL>
+<DD><A HREF="tk_mac.htm#M20" NAME="L1707">ADDITIONAL DIALOGS</A>
+<DL class="additional dialogs">
+<DD><A HREF="tk_mac.htm#M21" NAME="L1708"><B>::tk::mac::standardAboutPanel</B></A>
+</DL>
+<DD><A HREF="tk_mac.htm#M22" NAME="L1709">SYSTEM CONFIGURATION</A>
+<DL class="system configuration">
+<DD><A HREF="tk_mac.htm#M23" NAME="L1710"><B>::tk::mac::useCompatibilityMetrics </B><I>boolean</I></A>
+<DD><A HREF="tk_mac.htm#M24" NAME="L1711"><B>::tk::mac::CGAntialiasLimit </B><I>limit</I></A>
+<DD><A HREF="tk_mac.htm#M25" NAME="L1712"><B>::tk::mac::antialiasedtext </B><I>number</I></A>
+<DD><A HREF="tk_mac.htm#M26" NAME="L1713"><B>::tk::mac::useThemedToplevel </B><I>boolean</I></A>
+</DL>
+<DD><A HREF="tk_mac.htm#M27" NAME="L1714">SUPPORT COMMANDS</A>
+<DL class="support commands">
+<DD><A HREF="tk_mac.htm#M28" NAME="L1715"><B>::tk::mac::iconBitmap </B><I>name width height -kind value</I></A>
+<UL class="support commands">
+</UL>
+<DL class="support commands">
+<DD><A HREF="tk_mac.htm#M29" NAME="L1716"><B>-file</B></A>
+<DD><A HREF="tk_mac.htm#M30" NAME="L1717"><B>-fileType</B></A>
+<DD><A HREF="tk_mac.htm#M31" NAME="L1718"><B>-osType</B></A>
+<DD><A HREF="tk_mac.htm#M32" NAME="L1719"><B>-systemType</B></A>
+<DD><A HREF="tk_mac.htm#M33" NAME="L1720"><B>-namedImage</B></A>
+<DD><A HREF="tk_mac.htm#M34" NAME="L1721"><B>-imageFile</B></A>
+</DL>
+</DL>
+<DD><A HREF="tk_mac.htm#M35" NAME="L1722">SEE ALSO</A>
+<DD><A HREF="tk_mac.htm#M36" NAME="L1723">KEYWORDS</A>
+</DL>
+<H3><A NAME="M2">NAME</A></H3>
+tk::mac &mdash; Access Mac-Specific Functionality on OS X from Tk
+<H3><A NAME="M3">SYNOPSIS</A></H3>
+<B>::tk::mac::DoScriptFile</B><BR>
+<B>::tk::mac::DoScriptText</B><BR>
+<B>::tk::mac::ShowPreferences</B><BR>
+<B>::tk::mac::OpenApplication</B><BR>
+<B>::tk::mac::ReopenApplication</B><BR>
+<B>::tk::mac::OpenDocument </B><I>file...</I><BR>
+<B>::tk::mac::PrintDocument </B><I>file...</I><BR>
+<B>::tk::mac::Quit</B><BR>
+<B>::tk::mac::OnHide</B><BR>
+<B>::tk::mac::OnShow</B><BR>
+<B>::tk::mac::ShowHelp</B><BR>
+<B>::tk::mac::PerformService</B><BR>
+<B>::tk::mac::LaunchURL </B><I>URL...</I><BR>
+<B>::tk::mac::GetAppPath</B><BR>
+<BR>
+<B>::tk::mac::standardAboutPanel</B><BR>
+<BR>
+<B>::tk::mac::useCompatibilityMetrics </B><I>boolean</I><BR>
+<B>::tk::mac::CGAntialiasLimit </B><I>limit</I><BR>
+<B>::tk::mac::antialiasedtext </B><I>number</I><BR>
+<B>::tk::mac::useThemedToplevel </B><I>boolean</I><BR>
+<BR>
+<BR>
+<B>::tk::mac::iconBitmap </B><I>name width height -kind value</I><BR>
+<H3><A NAME="M4">EVENT HANDLER CALLBACKS</A></H3>
+The Aqua/Mac OS X application environment defines a number of additional
+events that applications should respond to. These events are mapped by Tk to
+calls to commands in the <B>::tk::mac</B> namespace; unless otherwise noted, if
+the command is absent, no action will be taken.
+<P>
+<DL class="event handler callbacks">
+<DT><A NAME="M5"><B>::tk::mac::DoScriptFile</B></A><DD>
+The default Apple Event handler for AEDoScriptHandler. This command 
+executes a Tcl file when an AppleScript sends a
+&ldquo;do script&rdquo;
+command to Wish with a file path as a parameter. 
+<P><DT><A NAME="M6"><B>::tk::mac::DoScriptText</B></A><DD>
+The default Apple Event handler for AEDoScriptHandler. This command
+executes Tcl code when an AppleScript sends a
+&ldquo;do script&rdquo;
+command to Wish with Tcl code or a Tcl procedure as a parameter.
+<P><DT><A NAME="M7"><B>::tk::mac::ShowPreferences</B></A><DD>
+The default Apple Event handler for kAEShowPreferences,
+&ldquo;pref&rdquo;.
+The application menu
+&ldquo;Preferences&rdquo;
+menu item is only enabled when this proc is defined. Typically this command is
+used to wrap a specific own preferences command, which pops up a preferences
+window. Something like:
+<P>
+<PRE>proc ::tk::mac::ShowPreferences {} {
+    setPref
+}</PRE>
+<P><DT><A NAME="M8"><B>::tk::mac::OpenApplication</B></A><DD>
+If a proc of this name is defined, this proc fill fire when your application
+is initially opened. It is the default Apple Event handler for
+kAEOpenApplication,
+&ldquo;oapp&rdquo;.
+<P><DT><A NAME="M9"><B>::tk::mac::ReopenApplication</B></A><DD>
+If a proc of this name is defined it is the default Apple Event handler for
+kAEReopenApplication,
+&ldquo;rapp&rdquo;,
+the Apple Event sent when your application is opened when it is already
+running (e.g. by clicking its icon in the Dock). Here is a sample that raises
+a minimized window when the Dock icon is clicked:
+<P>
+<PRE>proc ::tk::mac::ReopenApplication {} {
+    if {[wm state .] eq &quot;withdrawn&quot;} {
+        wm state . normal
+    } else {
+        wm deiconify .
+    }
+    raise .
+}</PRE>
+<P><DT><A NAME="M10"><B>::tk::mac::OpenDocument </B><I>file...</I></A><DD>
+If a proc of this name is defined it is the default Apple Event handler for
+kAEOpenDocuments,
+&ldquo;odoc&rdquo;,
+the Apple Event sent when your application is asked to open one or more
+documents (e.g., by drag &amp; drop onto the app or by opening a document of a
+type associated to the app). The proc should take as arguments paths to the
+files to be opened, like so:
+<P>
+<PRE>proc ::tk::mac::OpenDocument {args} {
+    foreach f $args {my_open_document $f}
+}</PRE>
+<P><DT><A NAME="M11"><B>::tk::mac::PrintDocument </B><I>file...</I></A><DD>
+If a proc of this name is defined it is the default Apple Event handler for
+kAEPrintDocuments,
+&ldquo;pdoc&rdquo;,
+the Apple Event sent when your application is asked to print a
+document.  It takes a single absolute file path as an argument. 
+<P><DT><A NAME="M12"><B>::tk::mac::Quit</B></A><DD>
+If a proc of this name is defined it is the default Apple Event handler for
+kAEQuitApplication,
+&ldquo;quit&rdquo;,
+the Apple Event sent when your application is asked to be quit, e.g. via the
+quit menu item in the application menu, the quit menu item in the Dock menu,
+or during a logout/restart/shutdown etc. If this is not defined, <B><A HREF="../TclCmd/exit.htm">exit</A></B> is
+called instead.
+<P><DT><A NAME="M13"><B>::tk::mac::OnHide</B></A><DD>
+If defined, this is called when your application receives a kEventAppHidden
+event, e.g. via the hide menu item in the application or Dock menus.
+<P><DT><A NAME="M14"><B>::tk::mac::OnShow</B></A><DD>
+If defined, this is called when your application receives a kEventAppShown
+event, e.g. via the show all menu item in the application menu, or by clicking
+the Dock icon of a hidden application.
+<P><DT><A NAME="M15"><B>::tk::mac::ShowHelp</B></A><DD>
+Customizes behavior of Apple Help menu; if this procedure is not defined, the
+platform-specific standard Help menu item
+&ldquo;YourApp Help&rdquo;
+performs the default Cocoa action of showing the Help Book configured in the
+application's Info.plist (or displaying an alert if no Help Book is
+set).
+<P><DT><A NAME="M16"><B>::tk::mac::PerformService</B></A><DD>
+Executes a Tcl procedure called from the macOS 
+&ldquo;Services&rdquo;
+menu in the Application menu item. The
+&ldquo;Services&rdquo;
+menu item allows for inter-application communication; data from one
+application, such as selected text, can be sent to another application
+for processing, for example to Safari as a search item for Google, or
+to TextEdit to be appended to a file. An example of the proc is below,
+and should be rewritten in an application script for customization: 
+<P>
+<PRE>proc ::tk::mac::PerformService {} {
+    set data [clipboard get]
+    $w insert end $data
+}</PRE>
+Note that the mechanism for retrieving the data is from the clipboard;
+there is no other supported way to obtain the data.  If the Services 
+process is not desired, the NSServices keys can be deleted from
+the application's Info.plist file. The underlying code supporting this
+command also allows the text, entry and ttk::entry widgets to access
+services from other applications via the Services menu. The NSPortName
+key in Wish's Info.plist file is currently set as
+&ldquo;Wish&rdquo;
+; if a developer changes the name of the Wish executable to something
+  else, this key should be modified with the same name.
+<P><DT><A NAME="M17"><B>::tk::mac::LaunchURL </B><I>URL...</I></A><DD>
+If defined, launches a URL within Tk. This would be used if a Tk
+application wants to handle a URL itself, such as displaying data from
+an RSS feed, rather than launching a default application to handle the
+URL, although it can defined as such. Wish includes a stub URL scheme
+of
+&ldquo;foo://&rdquo;
+in the CFBundleURLSchemes key of its Info.plist file; this should be customized for the specific URL
+scheme the developer wants to support. 
+<P><DT><A NAME="M18"><B>::tk::mac::GetAppPath</B></A><DD>
+Returns the current applications's file path.
+<P><DT><A NAME="M19"></A><DD>
+<P></DL>
+<H3><A NAME="M20">ADDITIONAL DIALOGS</A></H3>
+The Aqua/Mac OS X defines additional dialogs that applications should
+support.
+<P>
+<DL class="additional dialogs">
+<DT><A NAME="M21"><B>::tk::mac::standardAboutPanel</B></A><DD>
+Brings the standard Cocoa about panel to the front with information filled in
+from the application bundle files. The panel displays the application icon and
+the values associated to the info.plist keys named CFBundleName,
+CFBundleShortVersionString, NSAboutPanelOptionVersion and
+NSHumanReadableCopyright.  If a file named <I>Credits.html</I> or
+<I>Credits.rtf</I> exists in the bundle's Resources directory then its contents
+will be displayed in a scrolling text box at the bottom of the dialog. See the
+documentation for -[NSApplication orderFrontStandardAboutPanelWithOptions:]
+for more details. A hook is also provided for a custom About dialog.  If a Tcl
+proc named tkAboutDialog is defined in the main interpreter then that
+procedure will be called instead of opening the standardAboutPanel.
+<P></DL>
+<H3><A NAME="M22">SYSTEM CONFIGURATION</A></H3>
+There are a number of additional global configuration options that control the
+details of how Tk renders by default.
+<P>
+<DL class="system configuration">
+<DT><A NAME="M23"><B>::tk::mac::useCompatibilityMetrics </B><I>boolean</I></A><DD>
+Preserves compatibility with older Tk/Aqua metrics; set to <B>false</B> for
+more native spacing.
+<P><DT><A NAME="M24"><B>::tk::mac::CGAntialiasLimit </B><I>limit</I></A><DD>
+Sets the antialiasing limit; lines thinner that <I>limit</I> pixels will not be
+antialiased. Integer, set to 0 by default, making all lines be antialiased.
+<P><DT><A NAME="M25"><B>::tk::mac::antialiasedtext </B><I>number</I></A><DD>
+Sets anti-aliased text.  Controls text antialiasing, possible values for
+<I>number</I> are -1 (default, use system default for text AA), 0 (no text AA),
+1 (use text AA).
+<P><DT><A NAME="M26"><B>::tk::mac::useThemedToplevel </B><I>boolean</I></A><DD>
+Sets toplevel windows to draw with the modern grayish/ pinstripe Mac
+background. Equivalent to configuring the toplevel with
+&ldquo;<B>-background systemWindowHeaderBackground</B>&rdquo;,
+or to using a <B><A HREF="../TkCmd/ttk_frame.htm">ttk::frame</A></B>.
+<P></DL>
+<H3><A NAME="M27">SUPPORT COMMANDS</A></H3>
+<DL class="support commands">
+<DT><A NAME="M28"><B>::tk::mac::iconBitmap </B><I>name width height -kind value</I></A><DD>
+Renders native icons and bitmaps in Tk applications (including any image file
+readable by NSImage). A native bitmap name is interpreted as follows (in
+order):
+<P>
+<UL class="support commands">
+<LI>
+predefined builtin 32x32 icon name (<B>stop</B>, <B>caution</B>, <B>document</B>,
+etc.)
+<P><LI>
+<I>name</I>, as defined by <B>tk::mac::iconBitmap</B>
+<P><LI>
+NSImage named image name
+<P><LI>
+NSImage url string
+<P><LI>
+4-char OSType of IconServices icon
+<P></UL>
+<DL><DD>
+<P>
+The <I>width</I> and <I>height</I> arguments to <B>tk::mac::iconBitmap</B> define
+the dimensions of the image to create, and <I>-kind</I> must be one of:
+<P>
+<DL class="support commands">
+<DT><A NAME="M29"><B>-file</B></A><DD>
+icon of file at given path
+<P><DT><A NAME="M30"><B>-fileType</B></A><DD>
+icon of given file type
+<P><DT><A NAME="M31"><B>-osType</B></A><DD>
+icon of given 4-char OSType file type
+<P><DT><A NAME="M32"><B>-systemType</B></A><DD>
+icon for given IconServices 4-char OSType
+<P><DT><A NAME="M33"><B>-namedImage</B></A><DD>
+named NSImage for given name
+<P><DT><A NAME="M34"><B>-imageFile</B></A><DD>
+image at given path
+<P></DL>
+</DL>
+<P></DL>
+<H3><A NAME="M35">SEE ALSO</A></H3>
+<B><A HREF="../TkCmd/bind.htm">bind</A></B>, <B><A HREF="../TkCmd/wm.htm">wm</A></B>
+<H3><A NAME="M36">KEYWORDS</A></H3>
+<A href="../Keywords/A.htm#about dialog">about dialog</A>, <A href="../Keywords/A.htm#antialiasing">antialiasing</A>, <A href="../Keywords/A.htm#Apple event">Apple event</A>, <A href="../Keywords/I.htm#icon">icon</A>, <A href="../Keywords/N.htm#NSImage">NSImage</A>
+<div class="copy">Copyright &copy; 2011 Kevin Walzer.
+<BR>Copyright &copy; 2011 Donal K. Fellows.
+</div>
+</BODY></HTML>

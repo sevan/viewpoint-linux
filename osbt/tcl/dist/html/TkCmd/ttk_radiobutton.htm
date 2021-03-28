@@ -1,0 +1,149 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD><TITLE>ttk::radiobutton manual page - Tk Themed Widget</TITLE>
+<link rel="stylesheet" href="../docs.css" type="text/css" media="all">
+</HEAD>
+<BODY><H2><a href="../contents.htm">Tcl8.6.11/Tk8.6.11 Documentation</a> <small>&gt;</small> <a href="contents.htm">Tk Commands</a> <small>&gt;</small> ttk_radiobutton</H2>
+<H3><A HREF="../UserCmd/contents.htm">Tcl/Tk Applications</A> | <A HREF="../TclCmd/contents.htm">Tcl Commands</A> | <A HREF="../TkCmd/contents.htm">Tk Commands</A> | <A HREF="../ItclCmd/contents.htm">[incr Tcl] Package Commands</A> | <A HREF="../SqliteCmd/contents.htm">SQLite3 Package Commands</A> | <A HREF="../TdbcCmd/contents.htm">TDBC Package Commands</A> | <A HREF="../TdbcmysqlCmd/contents.htm">tdbc::mysql Package Commands</A> | <A HREF="../TdbcodbcCmd/contents.htm">tdbc::odbc Package Commands</A> | <A HREF="../TdbcpostgresCmd/contents.htm">tdbc::postgres Package Commands</A> | <A HREF="../TdbcsqliteCmd/contents.htm">tdbc::sqlite3 Package Commands</A> | <A HREF="../ThreadCmd/contents.htm">Thread Package Commands</A> | <A HREF="../TclLib/contents.htm">Tcl C API</A> | <A HREF="../TkLib/contents.htm">Tk C API</A> | <A HREF="../ItclLib/contents.htm">[incr Tcl] Package C API</A> | <A HREF="../TdbcLib/contents.htm">TDBC Package C API</A></H3>
+<DL>
+<DD><A HREF="ttk_radiobutton.htm#M2" NAME="L2038">NAME</A>
+<DL><DD>ttk::radiobutton &mdash; Mutually exclusive option widget</DD></DL>
+<DD><A HREF="ttk_radiobutton.htm#M3" NAME="L2039">SYNOPSIS</A>
+<DL>
+</DL>
+<DD><A HREF="ttk_radiobutton.htm#M4" NAME="L2040">DESCRIPTION</A>
+<DD><A HREF="ttk_radiobutton.htm#M5" NAME="L2041">STANDARD OPTIONS</A>
+<DL>
+<DD><A HREF="ttk_widget.htm#M-class">-class, undefined, undefined</A>
+<DD><A HREF="ttk_widget.htm#M-compound">-compound, compound, Compound</A>
+<DD><A HREF="ttk_widget.htm#M-cursor">-cursor, cursor, Cursor</A>
+<DD><A HREF="ttk_widget.htm#M-image">-image, image, Image</A>
+<DD><A HREF="ttk_widget.htm#M-state">-state, state, State</A>
+<DD><A HREF="ttk_widget.htm#M-style">-style, style, Style</A>
+<DD><A HREF="ttk_widget.htm#M-takefocus">-takefocus, takeFocus, TakeFocus</A>
+<DD><A HREF="ttk_widget.htm#M-text">-text, text, Text</A>
+<DD><A HREF="ttk_widget.htm#M-textvariable">-textvariable, textVariable, Variable</A>
+<DD><A HREF="ttk_widget.htm#M-underline">-underline, underline, Underline</A>
+<DD><A HREF="ttk_widget.htm#M-width">-width, width, Width</A>
+</DL>
+<DD><A HREF="ttk_radiobutton.htm#M6" NAME="L2042">WIDGET-SPECIFIC OPTIONS</A>
+<DL>
+<DD><A HREF="ttk_radiobutton.htm#M7" NAME="L2043">-command, command, Command</A>
+<DD><A HREF="ttk_radiobutton.htm#M8" NAME="L2044">-value, Value, Value</A>
+<DD><A HREF="ttk_radiobutton.htm#M9" NAME="L2045">-variable, variable, Variable</A>
+</DL>
+<DD><A HREF="ttk_radiobutton.htm#M10" NAME="L2046">WIDGET COMMAND</A>
+<DL class="widget command">
+<DD><A HREF="ttk_radiobutton.htm#M11" NAME="L2047"><I>pathname</I><B> invoke</B></A>
+</DL>
+<DD><A HREF="ttk_radiobutton.htm#M12" NAME="L2048">WIDGET STATES</A>
+<DD><A HREF="ttk_radiobutton.htm#M13" NAME="L2049">STANDARD STYLES</A>
+<DD><A HREF="ttk_radiobutton.htm#M14" NAME="L2050">STYLING OPTIONS</A>
+<DD><A HREF="ttk_radiobutton.htm#M15" NAME="L2051">SEE ALSO</A>
+<DD><A HREF="ttk_radiobutton.htm#M16" NAME="L2052">KEYWORDS</A>
+</DL>
+<H3><A NAME="M2">NAME</A></H3>
+ttk::radiobutton &mdash; Mutually exclusive option widget
+<H3><A NAME="M3">SYNOPSIS</A></H3>
+<B>ttk::radiobutton</B> <I>pathName </I>?<I>options</I>?<BR>
+<H3><A NAME="M4">DESCRIPTION</A></H3>
+<B>ttk::radiobutton</B> widgets are used in groups to show or change
+a set of mutually-exclusive options.
+Radiobuttons are linked to a Tcl variable,
+and have an associated value; when a radiobutton is clicked,
+it sets the variable to its associated value.
+<H3><A NAME="M5">STANDARD OPTIONS</A></H3>
+<DL>
+<DT><B><A HREF="ttk_widget.htm#M-class">-class, undefined, undefined</A></B>
+<DT><B><A HREF="ttk_widget.htm#M-compound">-compound, compound, Compound</A></B>
+<DT><B><A HREF="ttk_widget.htm#M-cursor">-cursor, cursor, Cursor</A></B>
+<DT><B><A HREF="ttk_widget.htm#M-image">-image, image, Image</A></B>
+<DT><B><A HREF="ttk_widget.htm#M-state">-state, state, State</A></B>
+<DT><B><A HREF="ttk_widget.htm#M-style">-style, style, Style</A></B>
+<DT><B><A HREF="ttk_widget.htm#M-takefocus">-takefocus, takeFocus, TakeFocus</A></B>
+<DT><B><A HREF="ttk_widget.htm#M-text">-text, text, Text</A></B>
+<DT><B><A HREF="ttk_widget.htm#M-textvariable">-textvariable, textVariable, Variable</A></B>
+<DT><B><A HREF="ttk_widget.htm#M-underline">-underline, underline, Underline</A></B>
+<DT><B><A HREF="ttk_widget.htm#M-width">-width, width, Width</A></B>
+</DL>
+<H3><A NAME="M6">WIDGET-SPECIFIC OPTIONS</A></H3>
+<DL>
+<DT>Command-Line Name: <B><A NAME="M7">-command</A></B>
+<DT>Database Name: <B>command</B>
+<DT>Database Class: <B>Command</B>
+<DD>A Tcl script to evaluate whenever the widget is invoked.
+<P><DT>Command-Line Name: <B><A NAME="M8">-value</A></B>
+<DT>Database Name: <B>Value</B>
+<DT>Database Class: <B>Value</B>
+<DD>The value to store in the associated <B>-variable</B>
+when the widget is selected.
+<P><DT>Command-Line Name: <B><A NAME="M9">-variable</A></B>
+<DT>Database Name: <B>variable</B>
+<DT>Database Class: <B>Variable</B>
+<DD>The name of a global variable whose value is linked to the widget.
+Default value is <B>::selectedButton</B>.
+</DL>
+<H3><A NAME="M10">WIDGET COMMAND</A></H3>
+In addition to the standard
+<B>cget</B>, <B>configure</B>, <B>identify</B>, <B>instate</B>, and <B>state</B>
+commands, radiobuttons support the following additional
+widget commands:
+<P>
+<DL class="widget command">
+<DT><A NAME="M11"><I>pathname</I><B> invoke</B></A><DD>
+Sets the <B>-variable</B> to the <B>-value</B>, selects the widget,
+and evaluates the associated <B>-command</B>.
+Returns the result of the <B>-command</B>, or the empty
+string if no <B>-command</B> is specified.
+<P></DL>
+<H3><A NAME="M12">WIDGET STATES</A></H3>
+The widget does not respond to user input if the <B>disabled</B> state is set.
+The widget sets the <B>selected</B> state whenever
+the linked <B>-variable</B> is set to the widget's <B>-value</B>,
+and clears it otherwise.
+The widget sets the <B>alternate</B> state whenever the
+linked <B>-variable</B> is unset.
+(The <B>alternate</B> state may be used to indicate a
+&ldquo;tri-state&rdquo;
+or
+&ldquo;indeterminate&rdquo;
+selection.)
+<H3><A NAME="M13">STANDARD STYLES</A></H3>
+<B>Ttk::radiobutton</B> widgets support the <B>Toolbutton</B> style in all
+standard themes, which is useful for creating widgets for toolbars.
+<H3><A NAME="M14">STYLING OPTIONS</A></H3>
+The class name for a <B>ttk::radiobutton</B> is <B>TRadiobutton</B>.
+<P>
+Dynamic states: <B>active</B>, <B>alternate</B>, <B>disabled</B>,
+<B>pressed</B>, <B>readonly</B>, <B>selected</B>.
+<P>
+<B>TRadiobutton</B> styling options configurable with <B><A HREF="../TkCmd/ttk_style.htm">ttk::style</A></B>
+are:
+<P>
+<B>-background</B> <I>color</I>
+<BR>
+<B>-compound</B> <I>compound</I>
+<BR>
+<B>-foreground</B> <I>color</I>
+<BR>
+<B>-indicatorbackground</B> <I>color</I>
+<BR>
+<B>-indicatorcolor</B> <I>color</I>
+<BR>
+<B>-indicatormargin</B> <I>padding</I>
+<BR>
+<B>-indicatorrelief</B> <I>relief</I>
+<BR>
+<B>-padding</B> <I>padding</I>
+<P>
+Some options are only available for specific themes.
+<P>
+See the <B><A HREF="../TkCmd/ttk_style.htm">ttk::style</A></B> manual page for information on how to configure
+ttk styles.
+<H3><A NAME="M15">SEE ALSO</A></H3>
+<B><A HREF="../TkCmd/ttk_widget.htm">ttk::widget</A></B>, <B><A HREF="../TkCmd/ttk_checkbutton.htm">ttk::checkbutton</A></B>, <B><A HREF="../TkCmd/radiobutton.htm">radiobutton</A></B>
+<H3><A NAME="M16">KEYWORDS</A></H3>
+<A href="../Keywords/W.htm#widget">widget</A>, <A href="../Keywords/B.htm#button">button</A>, <A href="../Keywords/O.htm#option">option</A>
+<div class="copy">Copyright &copy; 2004 Joe English
+</div>
+</BODY></HTML>
