@@ -24,3 +24,28 @@ CC=gcc PREFIX=/usr LIBDIR=/usr/lib64 ./configure.sh -G -O3 -T
 
 flex
 configure --prefix=/osbt --disable-static
+
+tcl
+SRCDIR=$(pwd)
+configure --prefix=/osbt --mandir=/osbt/share/man --enable-64bit
+make
+sed -e "s|$SRCDIR/unix|/osbt/lib|" \
+    -e "s|$SRCDIR|/osbt/include|"  \
+    -i tclConfig.sh
+
+sed -e "s|$SRCDIR/unix/pkgs/tdbc1.1.2|/osbt/lib/tdbc1.1.2|" \
+    -e "s|$SRCDIR/pkgs/tdbc1.1.2/generic|/osbt/include|"    \
+    -e "s|$SRCDIR/pkgs/tdbc1.1.2/library|/osbt/lib/tcl8.6|" \
+    -e "s|$SRCDIR/pkgs/tdbc1.1.2|/osbt/include|"            \
+    -i pkgs/tdbc1.1.2/tdbcConfig.sh
+
+sed -e "s|$SRCDIR/unix/pkgs/itcl4.2.1|/osbt/lib/itcl4.2.1|" \
+    -e "s|$SRCDIR/pkgs/itcl4.2.1/generic|/osbt/include|"    \
+    -e "s|$SRCDIR/pkgs/itcl4.2.1|/osbt/include|"            \
+    -i pkgs/itcl4.2.1/itclConfig.sh
+unset SRCDIR
+make test
+make install
+make install-private-headers
+ln -s tclsh8.6 /osbt/bin/tclsh
+mv /osbt/share/man/man3/{Thread,Tcl_Thread}.3
