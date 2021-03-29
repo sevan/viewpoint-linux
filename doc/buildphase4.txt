@@ -68,3 +68,6 @@ configure --prefix=/usr --enable-gold --enable-ld=default --enable-plugins  --en
 
 gmp
 configure --prefix=/usr --enable-cxx --disable-static --libdir=/usr/lib64
+
+mpfr
+configure --prefix=/usr --disable-static --enable-thread-safe --libdir=/usr/lib64
