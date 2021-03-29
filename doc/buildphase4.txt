@@ -80,3 +80,7 @@ configure --prefix=/usr --disable-static --sysconfdir=/etc --libdir=/usr/lib64
 
 acl
 configure --prefix=/usr --disable-static --libdir=/usr/lib64
+
+libcap
+make prefix=/usr lib=lib64
+make prefix=/usr lib=lib64 install
