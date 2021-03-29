@@ -1,0 +1,94 @@
+set srcdir [lindex $argv 0]
+set subdir [lindex $argv 1]
+set objdir [lindex $argv 2]
+
+if [ file exists $objdir/setval.tmp ] {
+    source $objdir/setval.tmp
+} else {
+    puts "ERROR: $objdir/setval.tmp doesn't exist"
+}
+if [ file exists $srcdir/$subdir/default_procs.tcl ] {
+    source "$srcdir/$subdir/default_procs.tcl"
+} else {
+    puts "ERROR: $srcdir/$subdir/default_procs.tcl doesn't exist"
+}
+
+proc load_lib { lib } {
+     global srcdir
+     source "$srcdir/../lib/$lib"
+}
+
+set file $srcdir/../lib/target.exp
+if [ file exists $file] {
+    source $file
+} else {
+    puts "ERROR: $file doesn't exist"
+}
+# we load framework so we can use stuff like is3way
+set file $srcdir/../lib/framework.exp
+if [ file exists $file] {
+    source $file
+} else {
+    puts "ERROR: $file doesn't exist"
+}
+# we load the remote stuff so we can test execute_anywhere
+set file $srcdir/../lib/remote.exp
+if [ file exists $file] {
+    source $file
+} else {
+    puts "ERROR: $file doesn't exist"
+}
+
+#
+# Create a false target config array
+#
+set target_info(idp,name)       "idp"
+set target_info(idp,ldflags)    "-Tidp.ld"
+set target_info(idp,config)     m68k-unknown-aout
+set target_info(idp,cflags)     ""
+set target_info(idp,connect)    "telnet"
+set target_info(idp,target)     "s12"
+set target_info(idp,serial)     "tstty12"
+set target_info(idp,netport)    "localhost:23"
+set target_info(idp,baud)       "9600"
+# MVME target
+set target_info(mvme,name)      "mvme"
+set target_info(mvme,ldflags)   "-Tmvme.ld"
+set target_info(mvme,config)    m68k-unknown-aout
+set target_info(mvme,cflags)    ""
+set target_info(mvme,connect)   "telnet"
+set target_info(mvme,target)    "s12"
+set target_info(mvme,serial)    "tstty8"
+set target_info(mvme,netport)   "localhost:23"
+set target_info(mvme,baud)      "9600"
+
+# test push_config target
+push_config target idp
+if { $target_info(target,name) == "idp" } {
+    puts "PASSED: push_config target"
+} else {
+    puts "FAILED: push_config target"
+}
+
+# test pop_config target
+pop_config target
+if { ![info exists target_info(target,name)] } {
+    puts "PASSED: pop_config target"
+} else {
+    puts "FAILED: pop_config target"
+}
+
+push_config host idp
+if { $target_info(host,name) == "idp" } {
+    puts "PASSED: push_config target"
+} else {
+    puts "FAILED: push_config target"
+}
+
+# test pop_config host
+pop_config host
+if { ![info exists target_info(host,name)] } {
+   puts "PASSED: pop_config host"
+} else {
+    puts "FAILED: pop_config host"
+}
