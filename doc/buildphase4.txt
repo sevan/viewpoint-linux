@@ -56,3 +56,9 @@ make
 make test
 make install
 ln -s expect5.45.4/libexpect5.45.4.so /osbt/lib
+
+dejagnu
+configure --prefix=/osbt
+make
+make install
+make check
