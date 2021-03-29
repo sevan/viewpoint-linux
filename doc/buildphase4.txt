@@ -71,3 +71,6 @@ configure --prefix=/usr --enable-cxx --disable-static --libdir=/usr/lib64
 
 mpfr
 configure --prefix=/usr --disable-static --enable-thread-safe --libdir=/usr/lib64
+
+mpc
+configure --prefix=/usr --disable-static --libdir=/usr/lib64
