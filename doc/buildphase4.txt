@@ -74,3 +74,6 @@ configure --prefix=/usr --disable-static --enable-thread-safe --libdir=/usr/lib6
 
 mpc
 configure --prefix=/usr --disable-static --libdir=/usr/lib64
+
+attr
+configure --prefix=/usr --disable-static --sysconfdir=/etc --libdir=/usr/lib64
