@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w -U
+#!/usr/bin/env -S perl -w -U
 
 # Copyright (c) 2007, 2008 Andreas Gruenbacher.
 # All rights reserved.
