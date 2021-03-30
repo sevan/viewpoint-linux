@@ -1,0 +1,308 @@
+'\" t
+.\"     Title: userdel
+.\"    Author: Julianne Frances Haugh
+.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
+.\"      Date: 2020-01-23
+.\"    Manual: 系统管理命令
+.\"    Source: shadow-utils 4.8.1
+.\"  Language: Chinese Simplified
+.\"
+.TH "USERDEL" "8" "2020-01-23" "shadow\-utils 4\&.8\&.1" "系统管理命令"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "名称"
+userdel \- 删除用户账户和相关文件
+.SH "大纲"
+.HP \w'\fBuserdel\fR\ 'u
+\fBuserdel\fR [选项] \fI登录\fR
+.SH "描述"
+.PP
+The
+\fBuserdel\fR
+command modifies the system account files, deleting all entries that refer to the user name
+\fILOGIN\fR\&. The named user must exist\&.
+.SH "选项"
+.PP
+The options which apply to the
+\fBuserdel\fR
+command are:
+.PP
+\fB\-f\fR, \fB\-\-force\fR
+.RS 4
+This option forces the removal of the user account, even if the user is still logged in\&. It also forces
+\fBuserdel\fR
+to remove the user\*(Aqs home directory and mail spool, even if another user uses the same home directory or if the mail spool is not owned by the specified user\&. If
+\fBUSERGROUPS_ENAB\fR
+is defined to
+\fIyes\fR
+in
+/etc/login\&.defs
+and if a group exists with the same name as the deleted user, then this group will be removed, even if it is still the primary group of another user\&.
+.sp
+\fINote:\fR
+This option is dangerous and may leave your system in an inconsistent state\&.
+.RE
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+现实帮助信息并退出。
+.RE
+.PP
+\fB\-r\fR, \fB\-\-remove\fR
+.RS 4
+用户主目录中的文件将随用户主目录和用户邮箱一起删除。在其它文件系统中的文件必须手动搜索并删除。
+.sp
+The mail spool is defined by the
+\fBMAIL_DIR\fR
+variable in the
+login\&.defs
+file\&.
+.RE
+.PP
+\fB\-R\fR, \fB\-\-root\fR\ \&\fICHROOT_DIR\fR
+.RS 4
+Apply changes in the
+\fICHROOT_DIR\fR
+directory and use the configuration files from the
+\fICHROOT_DIR\fR
+directory\&.
+.RE
+.PP
+\fB\-P\fR, \fB\-\-prefix\fR\ \&\fIPREFIX_DIR\fR
+.RS 4
+Apply changes in the
+\fIPREFIX_DIR\fR
+directory and use the configuration files from the
+\fIPREFIX_DIR\fR
+directory\&. This option does not chroot and is intended for preparing a cross\-compilation target\&. Some limitations: NIS and LDAP users/groups are not verified\&. PAM authentication is using the host files\&. No SELINUX support\&.
+.RE
+.PP
+\fB\-Z\fR, \fB\-\-selinux\-user\fR
+.RS 4
+移除用户登录的所有 SELinux 用户映射。
+.RE
+.SH "配置文件"
+.PP
+The following configuration variables in
+/etc/login\&.defs
+change the behavior of this tool:
+.PP
+\fBMAIL_DIR\fR (string)
+.RS 4
+邮箱目录。修改或删除用户账户时需要处理邮箱，如果没有指定，将使用编译时指定的默认值。
+.RE
+.PP
+\fBMAIL_FILE\fR (string)
+.RS 4
+定义用户邮箱文件的位置(相对于主目录)。
+.RE
+.PP
+The
+\fBMAIL_DIR\fR
+and
+\fBMAIL_FILE\fR
+variables are used by
+\fBuseradd\fR,
+\fBusermod\fR, and
+\fBuserdel\fR
+to create, move, or delete the user\*(Aqs mail spool\&.
+.PP
+If
+\fBMAIL_CHECK_ENAB\fR
+is set to
+\fIyes\fR, they are also used to define the
+\fBMAIL\fR
+environment variable\&.
+.PP
+\fBMAX_MEMBERS_PER_GROUP\fR (number)
+.RS 4
+Maximum members per group entry\&. When the maximum is reached, a new group entry (line) is started in
+/etc/group
+(with the same name, same password, and same GID)\&.
+.sp
+默认值是 0，意味着组中的成员数没有限制。
+.sp
+此功能(分割组)允许限制组文件中的行长度。这对于确保 NIS 组的行比长于 1024 字符。
+.sp
+如果要强制这个限制，可以使用 25。
+.sp
+注意：分割组可能不受所有工具的支持(甚至在 Shadow 工具集中)。您不应该使用这个变量，除非真的需要。
+.RE
+.PP
+\fBUSERDEL_CMD\fR (string)
+.RS 4
+如果定义了，这是删除账户时执行的命令。它应该移除所有属于此用户的的 at/cron/print 等作业(作为第一个参数传递)。
+.sp
+这个脚本的返回值并不被带到账户中去。
+.sp
+Here is an example script, which removes the user\*(Aqs cron, at and print jobs:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+#! /bin/sh
+
+# Check for the required argument\&.
+if [ $# != 1 ]; then
+	echo "Usage: $0 username"
+	exit 1
+fi
+
+# Remove cron jobs\&.
+crontab \-r \-u $1
+
+# Remove at jobs\&.
+# Note that it will remove any jobs owned by the same UID,
+# even if it was shared by a different username\&.
+AT_SPOOL_DIR=/var/spool/cron/atjobs
+find $AT_SPOOL_DIR \-name "[^\&.]*" \-type f \-user $1 \-delete \e;
+
+# Remove print jobs\&.
+lprm $1
+
+# All done\&.
+exit 0
+      
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+.RE
+.PP
+\fBUSERGROUPS_ENAB\fR (boolean)
+.RS 4
+如果 uid 和 gid 相同，用户名和主用户名也相同，使非 root 组的组掩码位和属主位相同 (如：022 \-> 002, 077 \-> 007)。
+.sp
+If set to
+\fIyes\fR,
+\fBuserdel\fR
+will remove the user\*(Aqs group if it contains no more members, and
+\fBuseradd\fR
+will create by default a group with the name of the user\&.
+.RE
+.SH "文件"
+.PP
+/etc/group
+.RS 4
+组账户信息。
+.RE
+.PP
+/etc/login\&.defs
+.RS 4
+Shadow 密码套件配置。
+.RE
+.PP
+/etc/passwd
+.RS 4
+用户账户信息。
+.RE
+.PP
+/etc/shadow
+.RS 4
+安全用户账户信息。
+.RE
+.PP
+/etc/subgid
+.RS 4
+Per user subordinate group IDs\&.
+.RE
+.PP
+/etc/subuid
+.RS 4
+Per user subordinate user IDs\&.
+.RE
+.SH "退出值"
+.PP
+The
+\fBuserdel\fR
+command exits with the following values:
+.PP
+\fI0\fR
+.RS 4
+success
+.RE
+.PP
+\fI1\fR
+.RS 4
+can\*(Aqt update password file
+.RE
+.PP
+\fI2\fR
+.RS 4
+invalid command syntax
+.RE
+.PP
+\fI6\fR
+.RS 4
+specified user doesn\*(Aqt exist
+.RE
+.PP
+\fI8\fR
+.RS 4
+user currently logged in
+.RE
+.PP
+\fI10\fR
+.RS 4
+can\*(Aqt update group file
+.RE
+.PP
+\fI12\fR
+.RS 4
+can\*(Aqt remove home directory
+.RE
+.SH "CAVEATS"
+.PP
+\fBuserdel\fR
+will not allow you to remove an account if there are running processes which belong to this account\&. In that case, you may have to kill those processes or lock the user\*(Aqs password or account and remove the account later\&. The
+\fB\-f\fR
+option can force the deletion of this account\&.
+.PP
+您应该手动检查所以文件系统，以确保没有遗留此用户的文件。
+.PP
+您不能在 NIS 客户端上移除任何 NIS 属性。这必须在 NIS 服务器上执行。
+.PP
+If
+\fBUSERGROUPS_ENAB\fR
+is defined to
+\fIyes\fR
+in
+/etc/login\&.defs,
+\fBuserdel\fR
+will delete the group with the same name as the user\&. To avoid inconsistencies in the passwd and group databases,
+\fBuserdel\fR
+will check that this group is not used as a primary group for another user, and will just warn without deleting the group otherwise\&. The
+\fB\-f\fR
+option can force the deletion of this group\&.
+.SH "参见"
+.PP
+\fBchfn\fR(1),
+\fBchsh\fR(1),
+\fBpasswd\fR(1),
+\fBlogin.defs\fR(5),
+\fBgpasswd\fR(8),
+\fBgroupadd\fR(8),
+\fBgroupdel\fR(8),
+\fBgroupmod\fR(8),
+\fBsubgid\fR(5), \fBsubuid\fR(5),
+\fBuseradd\fR(8),
+\fBusermod\fR(8)\&.

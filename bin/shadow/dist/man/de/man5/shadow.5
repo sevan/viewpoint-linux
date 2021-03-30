@@ -1,0 +1,148 @@
+'\" t
+.\"     Title: shadow
+.\"    Author: Julianne Frances Haugh
+.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
+.\"      Date: 23.01.2020
+.\"    Manual: Dateiformate und konvertierung
+.\"    Source: shadow-utils 4.8.1
+.\"  Language: German
+.\"
+.TH "SHADOW" "5" "23.01.2020" "shadow\-utils 4\&.8\&.1" "Dateiformate und konvertierung"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+shadow \- Shadow\-Passwortdatei
+.SH "BESCHREIBUNG"
+.PP
+shadow
+is a file which contains the password information for the system\*(Aqs accounts and optional aging information\&.
+.PP
+Um die Sicherheit der Passw\(:orter zu gew\(:ahrleisten, darf diese Datei nicht f\(:ur normale Benutzer lesbar sein\&.
+.PP
+Each line of this file contains 9 fields, separated by colons (\(Bq:\(lq), in the following order:
+.PP
+\fBAnmeldename\fR
+.RS 4
+Dabei muss es sich um eine g\(:ultigen Kontonamen handeln, der auf dem System existiert\&.
+.RE
+.PP
+\fBverschl\(:usseltes Passwort\fR
+.RS 4
+This field may be empty, in which case no passwords are required to authenticate as the specified login name\&. However, some applications which read the
+/etc/shadow
+file may decide not to permit any access at all if the password field is empty\&.
+.sp
+A password field which starts with an exclamation mark means that the password is locked\&. The remaining characters on the line represent the password field before the password was locked\&.
+.sp
+Refer to
+\fBcrypt\fR(3)
+for details on how this string is interpreted\&.
+.sp
+If the password field contains some string that is not a valid result of
+\fBcrypt\fR(3), for instance ! or *, the user will not be able to use a unix password to log in (but the user may log in the system by other means)\&.
+.RE
+.PP
+\fBDatum, an dem das Passwort das letzte Mal ge\(:andert wurde\fR
+.RS 4
+Das Datum, als das Passwort das letzte Mal ge\(:andert wurde, wird als Anzahl der Tage seit dem 1\&. Januar 1970 ausgedr\(:uckt\&.
+.sp
+The value 0 has a special meaning, which is that the user should change her password the next time she will log in the system\&.
+.sp
+Ein leeres Feld bedeutet, dass das Altern des Passworts abgeschaltet ist\&.
+.RE
+.PP
+\fBMindestalter des Passworts\fR
+.RS 4
+Das Mindestalter des Passworts ist die Anzahl von Tagen, die ein Benutzer warten muss, bevor er sein Passwort wieder \(:andern darf\&.
+.sp
+Eine leeres Feld oder der Wert 0 bedeuten, dass es kein Mindestalter eines Passworts gibt\&.
+.RE
+.PP
+\fBH\(:ochstalter des Passworts\fR
+.RS 4
+Das H\(:ochstalter des Passworts ist die Anzahl von Tagen, nach welcher der Benutzer sein Passwort \(:andern muss\&.
+.sp
+Auch nach Ablauf dieser Anzahl von Tagen bleibt das Passwort g\(:ultig\&. Der Benutzer wird bei der n\(:achsten Anmeldung aufgefordert, sein Passwort zu \(:andern\&.
+.sp
+Ein leeres Feld bedeutet, dass es kein H\(:ochstalter f\(:ur das Passwort, keine Vorwarnung und keine Dauer der Unt\(:atigkeit (siehe unten) gibt\&.
+.sp
+Wenn das H\(:ochstalter niedriger als das Mindestalter eines Passworts ist, kann ein Benutzer sein Passwort nicht \(:andern\&.
+.RE
+.PP
+\fBPasswortvorwarndauer\fR
+.RS 4
+Die Anzahl von Tagen, w\(:ahrend welcher der Benutzer vorgewarnt wird, bevor sein Passwort abl\(:auft (siehe das H\(:ochstalter des Passworts)\&.
+.sp
+Ein leeres Feld oder der Wert 0 bedeutet, dass es keine Vorwarnung gibt\&.
+.RE
+.PP
+\fBDauer der fehlenden Verwendung des Passworts\fR
+.RS 4
+Die Anzahl von Tagen, f\(:ur die ein Benutzer sein Passwort, nachdem es abgelaufen ist (vergleiche oben das H\(:ochstalter des Passworts), noch verwenden kann (und w\(:ahrend des n\(:achsten Logins \(:andern muss)\&.
+.sp
+Nachdem das Passwort abgelaufen ist und auch die Dauer der Unt\(:atigkeit verstrichen ist, kann sich der Benutzer mit seinem Passwort nicht mehr anmelden\&. Er muss sich dann an den Administrator wenden\&.
+.sp
+Ein leeres Feld bedeutet, dass es keine H\(:ochstdauer zwischen Ablauf des Passworts und erneuter Anmeldung des Benutzers gibt\&.
+.RE
+.PP
+\fBDatum des Verfalls des Kontos\fR
+.RS 4
+Das Datum, an dem das Konto verf\(:allt, wird als Anzahl der Tage seit dem 1\&. Januar 1970 ausgedr\(:uckt\&.
+.sp
+Note that an account expiration differs from a password expiration\&. In case of an account expiration, the user shall not be allowed to login\&. In case of a password expiration, the user is not allowed to login using her password\&.
+.sp
+Ein leeres Feld bedeutet, dass das Konto nicht verfallen wird\&.
+.sp
+Der Wert 0 sollte nicht verwendet werden, weil er sowohl bedeuten kann, dass das Konto nicht verf\(:allt als auch, dass das Konto bereits am 1\&. Januar 1970 verfallen ist\&.
+.RE
+.PP
+\fBreserviertes Feld\fR
+.RS 4
+Dieses Feld ist f\(:ur zuk\(:unftigen Gebrauch reserviert\&.
+.RE
+.SH "DATEIEN"
+.PP
+/etc/passwd
+.RS 4
+Informationen zu den Benutzerkonten
+.RE
+.PP
+/etc/shadow
+.RS 4
+verschl\(:usselte Informationen zu den Benutzerkonten
+.RE
+.PP
+/etc/shadow\-
+.RS 4
+Sicherungskopie von /etc/shadow
+.sp
+Beachten Sie, dass diese Datei von Werkzeugen der Shadow\-Werkzeugsammlung verwendet wird, aber nicht von allen sonstigen Programmen zur Benutzer\- und Passwortverwaltung\&.
+.RE
+.SH "SIEHE AUCH"
+.PP
+\fBchage\fR(1),
+\fBlogin\fR(1),
+\fBpasswd\fR(1),
+\fBpasswd\fR(5),
+\fBpwck\fR(8),
+\fBpwconv\fR(8),
+\fBpwunconv\fR(8),
+\fBsu\fR(1),
+\fBsulogin\fR(8)\&.

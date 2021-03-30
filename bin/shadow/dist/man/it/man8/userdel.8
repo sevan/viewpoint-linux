@@ -1,0 +1,308 @@
+'\" t
+.\"     Title: userdel
+.\"    Author: Julianne Frances Haugh
+.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
+.\"      Date: 23/01/2020
+.\"    Manual: Comandi per la gestione del sistema
+.\"    Source: shadow-utils 4.8.1
+.\"  Language: Italian
+.\"
+.TH "USERDEL" "8" "23/01/2020" "shadow\-utils 4\&.8\&.1" "Comandi per la gestione del si"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NOME"
+userdel \- rimuove l\*(Aqaccount di un utente ed i file relativi
+.SH "SINOSSI"
+.HP \w'\fBuserdel\fR\ 'u
+\fBuserdel\fR [opzioni] \fILOGIN\fR
+.SH "DESCRIZIONE"
+.PP
+The
+\fBuserdel\fR
+command modifies the system account files, deleting all entries that refer to the user name
+\fILOGIN\fR\&. The named user must exist\&.
+.SH "OPZIONI"
+.PP
+The options which apply to the
+\fBuserdel\fR
+command are:
+.PP
+\fB\-f\fR, \fB\-\-force\fR
+.RS 4
+This option forces the removal of the user account, even if the user is still logged in\&. It also forces
+\fBuserdel\fR
+to remove the user\*(Aqs home directory and mail spool, even if another user uses the same home directory or if the mail spool is not owned by the specified user\&. If
+\fBUSERGROUPS_ENAB\fR
+is defined to
+\fIyes\fR
+in
+/etc/login\&.defs
+and if a group exists with the same name as the deleted user, then this group will be removed, even if it is still the primary group of another user\&.
+.sp
+\fINote:\fR
+This option is dangerous and may leave your system in an inconsistent state\&.
+.RE
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+Mostra un messaggio di aiuto ed esce\&.
+.RE
+.PP
+\fB\-r\fR, \fB\-\-remove\fR
+.RS 4
+I file nella home directory dell\*(Aqutente verranno rimossi insieme alla home directory stessa e alla casella di posta dell\*(Aqutente\&. I file collocati in altri file system dovranno essere cercati e rimossi manualmente\&.
+.sp
+The mail spool is defined by the
+\fBMAIL_DIR\fR
+variable in the
+login\&.defs
+file\&.
+.RE
+.PP
+\fB\-R\fR, \fB\-\-root\fR\ \&\fICHROOT_DIR\fR
+.RS 4
+Apply changes in the
+\fICHROOT_DIR\fR
+directory and use the configuration files from the
+\fICHROOT_DIR\fR
+directory\&.
+.RE
+.PP
+\fB\-P\fR, \fB\-\-prefix\fR\ \&\fIPREFIX_DIR\fR
+.RS 4
+Apply changes in the
+\fIPREFIX_DIR\fR
+directory and use the configuration files from the
+\fIPREFIX_DIR\fR
+directory\&. This option does not chroot and is intended for preparing a cross\-compilation target\&. Some limitations: NIS and LDAP users/groups are not verified\&. PAM authentication is using the host files\&. No SELINUX support\&.
+.RE
+.PP
+\fB\-Z\fR, \fB\-\-selinux\-user\fR
+.RS 4
+Rimuove tutti gli utenti SELinux assegnati al login utente\&.
+.RE
+.SH "CONFIGURAZIONE"
+.PP
+The following configuration variables in
+/etc/login\&.defs
+change the behavior of this tool:
+.PP
+\fBMAIL_DIR\fR (string)
+.RS 4
+La directory di spool per la posta\&. Questa \(`e necessaria per manipolare la casella di posta quando il corrispondente account utente viene modificato o cancellato\&. Se non \(`e specificata viene utilizzato un valore impostato al momento della compilazione\&.
+.RE
+.PP
+\fBMAIL_FILE\fR (string)
+.RS 4
+Imposta la posizione delle caselle di posta degli utenti relative alla loro directory home\&.
+.RE
+.PP
+The
+\fBMAIL_DIR\fR
+and
+\fBMAIL_FILE\fR
+variables are used by
+\fBuseradd\fR,
+\fBusermod\fR, and
+\fBuserdel\fR
+to create, move, or delete the user\*(Aqs mail spool\&.
+.PP
+If
+\fBMAIL_CHECK_ENAB\fR
+is set to
+\fIyes\fR, they are also used to define the
+\fBMAIL\fR
+environment variable\&.
+.PP
+\fBMAX_MEMBERS_PER_GROUP\fR (number)
+.RS 4
+Maximum members per group entry\&. When the maximum is reached, a new group entry (line) is started in
+/etc/group
+(with the same name, same password, and same GID)\&.
+.sp
+Il valore predefinito \(`e 0, che non pone nessun limite al numero di membri per gruppo\&.
+.sp
+Questa opzione (dividi gruppo) permette di limitare la lunghezza delle righe nel file \(Fogroup\(Fc\&. Questo \(`e utile per essere certi che le righe per gruppi NIS non eccedano i 1024 caratteri\&.
+.sp
+Se si deve impostare questo limite, si pu\(`o usare 25\&.
+.sp
+Nota: la divisione dei gruppi potrebbe non essere supportata da ogni strumento (anche all\*(Aqinterno del pacchetto Shadow)\&. Non si dovrebbe utilizzare questa variabile a meno di esserci forzati\&.
+.RE
+.PP
+\fBUSERDEL_CMD\fR (string)
+.RS 4
+Se definito, questo comando viene eseguito quando si cancella un utente\&. Dovrebbe rimuovere tutti i compiti di stampa/cron/at di propriet\(`a dell\*(Aqutente da cancellare (passato come primo argomento)\&.
+.sp
+Il codice d\*(Aquscita restituito dallo script non \(`e preso in considerazione\&.
+.sp
+Here is an example script, which removes the user\*(Aqs cron, at and print jobs:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+#! /bin/sh
+
+# Check for the required argument\&.
+if [ $# != 1 ]; then
+	echo "Usage: $0 username"
+	exit 1
+fi
+
+# Remove cron jobs\&.
+crontab \-r \-u $1
+
+# Remove at jobs\&.
+# Note that it will remove any jobs owned by the same UID,
+# even if it was shared by a different username\&.
+AT_SPOOL_DIR=/var/spool/cron/atjobs
+find $AT_SPOOL_DIR \-name "[^\&.]*" \-type f \-user $1 \-delete \e;
+
+# Remove print jobs\&.
+lprm $1
+
+# All done\&.
+exit 0
+      
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+.RE
+.PP
+\fBUSERGROUPS_ENAB\fR (boolean)
+.RS 4
+Abilita l\*(Aqimpostazione dei bit di gruppo di umask in modo che siano gli stessi dei bit del proprietario (esempio: 022 \-> 002, 077 \-> 007) per utenti non root a condizione che uid e gid siano identici e che il nome utente sia lo stesso del gruppo primario\&.
+.sp
+If set to
+\fIyes\fR,
+\fBuserdel\fR
+will remove the user\*(Aqs group if it contains no more members, and
+\fBuseradd\fR
+will create by default a group with the name of the user\&.
+.RE
+.SH "FILE"
+.PP
+/etc/group
+.RS 4
+Informazioni sugli account di gruppo\&.
+.RE
+.PP
+/etc/login\&.defs
+.RS 4
+Configurazione del pacchetto password shadow
+.RE
+.PP
+/etc/passwd
+.RS 4
+Informazioni sugli account utente\&.
+.RE
+.PP
+/etc/shadow
+.RS 4
+Informazioni sicure sugli account utente\&.
+.RE
+.PP
+/etc/subgid
+.RS 4
+Per user subordinate group IDs\&.
+.RE
+.PP
+/etc/subuid
+.RS 4
+Per user subordinate user IDs\&.
+.RE
+.SH "VALORI RESTITUITI"
+.PP
+The
+\fBuserdel\fR
+command exits with the following values:
+.PP
+\fI0\fR
+.RS 4
+success
+.RE
+.PP
+\fI1\fR
+.RS 4
+can\*(Aqt update password file
+.RE
+.PP
+\fI2\fR
+.RS 4
+invalid command syntax
+.RE
+.PP
+\fI6\fR
+.RS 4
+specified user doesn\*(Aqt exist
+.RE
+.PP
+\fI8\fR
+.RS 4
+user currently logged in
+.RE
+.PP
+\fI10\fR
+.RS 4
+can\*(Aqt update group file
+.RE
+.PP
+\fI12\fR
+.RS 4
+can\*(Aqt remove home directory
+.RE
+.SH "AVVISI/CAVEAT"
+.PP
+\fBuserdel\fR
+will not allow you to remove an account if there are running processes which belong to this account\&. In that case, you may have to kill those processes or lock the user\*(Aqs password or account and remove the account later\&. The
+\fB\-f\fR
+option can force the deletion of this account\&.
+.PP
+Occorre controllare manualmente tutti i file system per assicurarsi che non rimanga nessun file di propriet\(`a di questo utente\&.
+.PP
+Non \(`e possibile rimuovere nessun attributo NIS su un client NIS\&. Questo deve essere fatto sul server NIS\&.
+.PP
+If
+\fBUSERGROUPS_ENAB\fR
+is defined to
+\fIyes\fR
+in
+/etc/login\&.defs,
+\fBuserdel\fR
+will delete the group with the same name as the user\&. To avoid inconsistencies in the passwd and group databases,
+\fBuserdel\fR
+will check that this group is not used as a primary group for another user, and will just warn without deleting the group otherwise\&. The
+\fB\-f\fR
+option can force the deletion of this group\&.
+.SH "VEDERE ANCHE"
+.PP
+\fBchfn\fR(1),
+\fBchsh\fR(1),
+\fBpasswd\fR(1),
+\fBlogin.defs\fR(5),
+\fBgpasswd\fR(8),
+\fBgroupadd\fR(8),
+\fBgroupdel\fR(8),
+\fBgroupmod\fR(8),
+\fBsubgid\fR(5), \fBsubuid\fR(5),
+\fBuseradd\fR(8),
+\fBusermod\fR(8)\&.

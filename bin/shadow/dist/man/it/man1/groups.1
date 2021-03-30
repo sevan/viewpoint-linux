@@ -1,0 +1,64 @@
+'\" t
+.\"     Title: groups
+.\"    Author: Julianne Frances Haugh
+.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
+.\"      Date: 23/01/2020
+.\"    Manual: Comandi utente
+.\"    Source: shadow-utils 4.8.1
+.\"  Language: Italian
+.\"
+.TH "GROUPS" "1" "23/01/2020" "shadow\-utils 4\&.8\&.1" "Comandi utente"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NOME"
+groups \- mostra i nomi dei gruppi correnti
+.SH "SINOSSI"
+.HP \w'\fBgroups\fR\ 'u
+\fBgroups\fR [\fIutente\fR]
+.SH "DESCRIZIONE"
+.PP
+The
+\fBgroups\fR
+command displays the current group names or ID values\&. If the value does not have a corresponding entry in
+/etc/group, the value will be displayed as the numerical group value\&. The optional
+\fIuser\fR
+parameter will display the groups for the named
+\fIuser\fR\&.
+.SH "NOTA"
+.PP
+Systems which do not support concurrent group sets will have the information from
+/etc/group
+reported\&. The user must use
+\fBnewgrp\fR
+or
+\fBsg\fR
+to change his current real and effective group ID\&.
+.SH "FILE"
+.PP
+/etc/group
+.RS 4
+Informazioni sugli account di gruppo\&.
+.RE
+.SH "VEDERE ANCHE"
+.PP
+\fBnewgrp\fR(1),
+\fBgetgid\fR(2),
+\fBgetgroups\fR(2),
+\fBgetuid\fR(2)\&.

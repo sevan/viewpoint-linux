@@ -1,0 +1,449 @@
+'\" t
+.\"     Title: newusers
+.\"    Author: Julianne Frances Haugh
+.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
+.\"      Date: 2020-01-23
+.\"    Manual: 系统管理命令
+.\"    Source: shadow-utils 4.8.1
+.\"  Language: Chinese Simplified
+.\"
+.TH "NEWUSERS" "8" "2020-01-23" "shadow\-utils 4\&.8\&.1" "系统管理命令"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "名称"
+newusers \- 批量更新和创建新用户
+.SH "大纲"
+.HP \w'\fBnewusers\fR\ 'u
+\fBnewusers\fR [\fI选项\fR] [\fI文件\fR]
+.SH "描述"
+.PP
+The
+\fBnewusers\fR
+command reads a
+\fIfile\fR
+(or the standard input by default) and uses this information to update a set of existing users or to create new users\&. Each line is in the same format as the standard password file (see
+\fBpasswd\fR(5)) with the exceptions explained below:
+.PP
+pw_name:pw_passwd:pw_uid:pw_gid:pw_gecos:pw_dir:pw_shell
+.PP
+\fIpw_name\fR
+.RS 4
+这是用户的用户名。
+.sp
+It can be the name of a new user or the name of an existing user (or a user created before by
+\fBnewusers\fR)\&. In case of an existing user, the user\*(Aqs information will be changed, otherwise a new user will be created\&.
+.RE
+.PP
+\fIpw_passwd\fR
+.RS 4
+此字段将被加密然后用于加密后密码的新值。
+.RE
+.PP
+\fIpw_uid\fR
+.RS 4
+此字段用于定义用户的 UID。
+.sp
+If the field is empty, a new (unused) UID will be defined automatically by
+\fBnewusers\fR\&.
+.sp
+如果此字段包含一个数字，此数字会用于 UID。
+.sp
+If this field contains the name of an existing user (or the name of a user created before by
+\fBnewusers\fR), the UID of the specified user will be used\&.
+.sp
+如果一个现有用户更改了 UID，此用户的文件所有权需要手动修复。
+.RE
+.PP
+\fIpw_gid\fR
+.RS 4
+此字段用于定义用户的主组 ID。
+.sp
+If this field contains the name of an existing group (or a group created before by
+\fBnewusers\fR), the GID of this group will be used as the primary group ID for the user\&.
+.sp
+如果此字段是一个数字，此数字会被用作此用户的主组 ID。如果没有对应此 GID 的现有组，将会使用此 GID 创建一个新组，名称和用户名相同。
+.sp
+If this field is empty, a new group will be created with the name of the user and a GID will be automatically defined by
+\fBnewusers\fR
+to be used as the primary group ID for the user and as the GID for the new group\&.
+.sp
+If this field contains the name of a group which does not exist (and was not created before by
+\fBnewusers\fR), a new group will be created with the specified name and a GID will be automatically defined by
+\fBnewusers\fR
+to be used as the primary group ID for the user and GID for the new group\&.
+.RE
+.PP
+\fIpw_gecos\fR
+.RS 4
+此字段复制到用户的 GECOS 字段。
+.RE
+.PP
+\fIpw_dir\fR
+.RS 4
+此字段用于定义用户的主目录。
+.sp
+如果此字段指定的不是现有的目录，将会创建指定的目录，所有权设置为创建或更新的用户及其主组。
+.sp
+If the home directory of an existing user is changed,
+\fBnewusers\fR
+does not move or copy the content of the old directory to the new location\&. This should be done manually\&.
+.RE
+.PP
+\fIpw_shell\fR
+.RS 4
+此字段定义了用户的 shell。对此字段不进行任何检查。
+.RE
+.PP
+\fBnewusers\fR
+first tries to create or change all the specified users, and then write these changes to the user or group databases\&. If an error occurs (except in the final writes to the databases), no changes are committed to the databases\&.
+.PP
+此命令一般用于在大型的应用环境中，对大量账户进行一次性更新。
+.SH "选项"
+.PP
+The options which apply to the
+\fBnewusers\fR
+command are:
+.PP
+\fB\-\-badname\fR\ \&
+.RS 4
+Allow names that do not conform to standards\&.
+.RE
+.PP
+\fB\-c\fR, \fB\-\-crypt\-method\fR
+.RS 4
+使用指定的方法加密密码。
+.sp
+可用的方法有 DES, MD5, NONE, and SHA256 或 SHA512，前提是您的 libc 支持这写方法。
+.RE
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+现实帮助信息并退出。
+.RE
+.PP
+\fB\-r\fR, \fB\-\-system\fR
+.RS 4
+创建一个系统账户。
+.sp
+System users will be created with no aging information in
+/etc/shadow, and their numeric identifiers are chosen in the
+\fBSYS_UID_MIN\fR\-\fBSYS_UID_MAX\fR
+range, defined in
+login\&.defs, instead of
+\fBUID_MIN\fR\-\fBUID_MAX\fR
+(and their
+\fBGID\fR
+counterparts for the creation of groups)\&.
+.RE
+.PP
+\fB\-R\fR, \fB\-\-root\fR\ \&\fICHROOT_DIR\fR
+.RS 4
+Apply changes in the
+\fICHROOT_DIR\fR
+directory and use the configuration files from the
+\fICHROOT_DIR\fR
+directory\&.
+.RE
+.PP
+\fB\-s\fR, \fB\-\-sha\-rounds\fR
+.RS 4
+使用指定次数的轮转来加密密码。
+.sp
+值 0 表示让系统为加密方法选择默认的轮转次数 (5000)。
+.sp
+会强制最小 1,000，最大 9,9999,9999
+.sp
+您只可以对 SHA256 或 SHA512 使用此选项。
+.sp
+By default, the number of rounds is defined by the SHA_CRYPT_MIN_ROUNDS and SHA_CRYPT_MAX_ROUNDS variables in
+/etc/login\&.defs\&.
+.RE
+.SH "CAVEATS"
+.PP
+输入文件必须受到保护，因为它包含未加密的密码。
+.PP
+您需要确保你吗和加密方法符合系统的密码策略。
+.SH "配置文件"
+.PP
+The following configuration variables in
+/etc/login\&.defs
+change the behavior of this tool:
+.PP
+\fBENCRYPT_METHOD\fR (string)
+.RS 4
+这定义了系统加密密码的默认算法(如果没有在命令行上指定算法)。
+.sp
+It can take one of these values:
+\fIDES\fR
+(default),
+\fIMD5\fR, \fISHA256\fR, \fISHA512\fR\&.
+.sp
+Note: this parameter overrides the
+\fBMD5_CRYPT_ENAB\fR
+variable\&.
+.RE
+.PP
+\fBGID_MAX\fR (number), \fBGID_MIN\fR (number)
+.RS 4
+Range of group IDs used for the creation of regular groups by
+\fBuseradd\fR,
+\fBgroupadd\fR, or
+\fBnewusers\fR\&.
+.sp
+The default value for
+\fBGID_MIN\fR
+(resp\&.
+\fBGID_MAX\fR) is 1000 (resp\&. 60000)\&.
+.RE
+.PP
+\fBHOME_MODE\fR (number)
+.RS 4
+The mode for new home directories\&. If not specified, the
+\fBUMASK\fR
+is used to create the mode\&.
+.sp
+\fBuseradd\fR
+and
+\fBnewusers\fR
+use this to set the mode of the home directory they create\&.
+.RE
+.PP
+\fBMAX_MEMBERS_PER_GROUP\fR (number)
+.RS 4
+Maximum members per group entry\&. When the maximum is reached, a new group entry (line) is started in
+/etc/group
+(with the same name, same password, and same GID)\&.
+.sp
+默认值是 0，意味着组中的成员数没有限制。
+.sp
+此功能(分割组)允许限制组文件中的行长度。这对于确保 NIS 组的行比长于 1024 字符。
+.sp
+如果要强制这个限制，可以使用 25。
+.sp
+注意：分割组可能不受所有工具的支持(甚至在 Shadow 工具集中)。您不应该使用这个变量，除非真的需要。
+.RE
+.PP
+\fBMD5_CRYPT_ENAB\fR (boolean)
+.RS 4
+Indicate if passwords must be encrypted using the MD5\-based algorithm\&. If set to
+\fIyes\fR, new passwords will be encrypted using the MD5\-based algorithm compatible with the one used by recent releases of FreeBSD\&. It supports passwords of unlimited length and longer salt strings\&. Set to
+\fIno\fR
+if you need to copy encrypted passwords to other systems which don\*(Aqt understand the new algorithm\&. Default is
+\fIno\fR\&.
+.sp
+This variable is superseded by the
+\fBENCRYPT_METHOD\fR
+variable or by any command line option used to configure the encryption algorithm\&.
+.sp
+This variable is deprecated\&. You should use
+\fBENCRYPT_METHOD\fR\&.
+.RE
+.PP
+\fBPASS_MAX_DAYS\fR (number)
+.RS 4
+一个密码可以使用的最大天数。如果密码比这旧，将会强迫更改密码。如果不指定，就假定为 \-1，这会禁用这个限制。
+.RE
+.PP
+\fBPASS_MIN_DAYS\fR (number)
+.RS 4
+两次更改密码时间的最小间隔。将会拒绝任何早于此的更改密码的尝试。如果不指定，假定为 \-1，将会禁用这个限制。
+.RE
+.PP
+\fBPASS_WARN_AGE\fR (number)
+.RS 4
+密码过期之前给出警告的天数。0 表示只有只在过期的当天警告，负值表示不警告。如果没有指定，不会给警告。
+.RE
+.PP
+\fBSHA_CRYPT_MIN_ROUNDS\fR (number), \fBSHA_CRYPT_MAX_ROUNDS\fR (number)
+.RS 4
+When
+\fBENCRYPT_METHOD\fR
+is set to
+\fISHA256\fR
+or
+\fISHA512\fR, this defines the number of SHA rounds used by the encryption algorithm by default (when the number of rounds is not specified on the command line)\&.
+.sp
+使用很多轮转，会让暴力破解更加困难。但是需要注意，认证用户时也会需要更多的 CPU 资源。
+.sp
+如果没有指定，libc 会选择默认的轮转数(5000)。
+.sp
+值必须在 1000 \- 999,999,999 之间。
+.sp
+If only one of the
+\fBSHA_CRYPT_MIN_ROUNDS\fR
+or
+\fBSHA_CRYPT_MAX_ROUNDS\fR
+values is set, then this value will be used\&.
+.sp
+If
+\fBSHA_CRYPT_MIN_ROUNDS\fR
+>
+\fBSHA_CRYPT_MAX_ROUNDS\fR, the highest value will be used\&.
+.RE
+.PP
+\fBSUB_GID_MIN\fR (number), \fBSUB_GID_MAX\fR (number), \fBSUB_GID_COUNT\fR (number)
+.RS 4
+If
+/etc/subuid
+exists, the commands
+\fBuseradd\fR
+and
+\fBnewusers\fR
+(unless the user already have subordinate group IDs) allocate
+\fBSUB_GID_COUNT\fR
+unused group IDs from the range
+\fBSUB_GID_MIN\fR
+to
+\fBSUB_GID_MAX\fR
+for each new user\&.
+.sp
+The default values for
+\fBSUB_GID_MIN\fR,
+\fBSUB_GID_MAX\fR,
+\fBSUB_GID_COUNT\fR
+are respectively 100000, 600100000 and 65536\&.
+.RE
+.PP
+\fBSUB_UID_MIN\fR (number), \fBSUB_UID_MAX\fR (number), \fBSUB_UID_COUNT\fR (number)
+.RS 4
+If
+/etc/subuid
+exists, the commands
+\fBuseradd\fR
+and
+\fBnewusers\fR
+(unless the user already have subordinate user IDs) allocate
+\fBSUB_UID_COUNT\fR
+unused user IDs from the range
+\fBSUB_UID_MIN\fR
+to
+\fBSUB_UID_MAX\fR
+for each new user\&.
+.sp
+The default values for
+\fBSUB_UID_MIN\fR,
+\fBSUB_UID_MAX\fR,
+\fBSUB_UID_COUNT\fR
+are respectively 100000, 600100000 and 65536\&.
+.RE
+.PP
+\fBSYS_GID_MAX\fR (number), \fBSYS_GID_MIN\fR (number)
+.RS 4
+Range of group IDs used for the creation of system groups by
+\fBuseradd\fR,
+\fBgroupadd\fR, or
+\fBnewusers\fR\&.
+.sp
+The default value for
+\fBSYS_GID_MIN\fR
+(resp\&.
+\fBSYS_GID_MAX\fR) is 101 (resp\&.
+\fBGID_MIN\fR\-1)\&.
+.RE
+.PP
+\fBSYS_UID_MAX\fR (number), \fBSYS_UID_MIN\fR (number)
+.RS 4
+Range of user IDs used for the creation of system users by
+\fBuseradd\fR
+or
+\fBnewusers\fR\&.
+.sp
+The default value for
+\fBSYS_UID_MIN\fR
+(resp\&.
+\fBSYS_UID_MAX\fR) is 101 (resp\&.
+\fBUID_MIN\fR\-1)\&.
+.RE
+.PP
+\fBUID_MAX\fR (number), \fBUID_MIN\fR (number)
+.RS 4
+Range of user IDs used for the creation of regular users by
+\fBuseradd\fR
+or
+\fBnewusers\fR\&.
+.sp
+The default value for
+\fBUID_MIN\fR
+(resp\&.
+\fBUID_MAX\fR) is 1000 (resp\&. 60000)\&.
+.RE
+.PP
+\fBUMASK\fR (number)
+.RS 4
+文件模式创建掩码初始化为此值。如果没有指定，掩码初始化为 022。
+.sp
+\fBuseradd\fR
+and
+\fBnewusers\fR
+use this mask to set the mode of the home directory they create if
+\fBHOME_MODE\fR
+is not set\&.
+.sp
+It is also used by
+\fBlogin\fR
+to define users\*(Aq initial umask\&. Note that this mask can be overridden by the user\*(Aqs GECOS line (if
+\fBQUOTAS_ENAB\fR
+is set) or by the specification of a limit with the
+\fIK\fR
+identifier in
+\fBlimits\fR(5)\&.
+.RE
+.SH "文件"
+.PP
+/etc/passwd
+.RS 4
+用户账户信息。
+.RE
+.PP
+/etc/shadow
+.RS 4
+安全用户账户信息。
+.RE
+.PP
+/etc/group
+.RS 4
+组账户信息。
+.RE
+.PP
+/etc/gshadow
+.RS 4
+安全组账户信息。
+.RE
+.PP
+/etc/login\&.defs
+.RS 4
+Shadow 密码套件配置。
+.RE
+.PP
+/etc/subgid
+.RS 4
+Per user subordinate group IDs\&.
+.RE
+.PP
+/etc/subuid
+.RS 4
+Per user subordinate user IDs\&.
+.RE
+.SH "参见"
+.PP
+\fBlogin.defs\fR(5),
+\fBpasswd\fR(1),
+\fBsubgid\fR(5), \fBsubuid\fR(5),
+\fBuseradd\fR(8)\&.

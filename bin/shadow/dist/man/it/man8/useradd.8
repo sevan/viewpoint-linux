@@ -1,0 +1,784 @@
+'\" t
+.\"     Title: useradd
+.\"    Author: Julianne Frances Haugh
+.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
+.\"      Date: 23/01/2020
+.\"    Manual: Comandi per la gestione del sistema
+.\"    Source: shadow-utils 4.8.1
+.\"  Language: Italian
+.\"
+.TH "USERADD" "8" "23/01/2020" "shadow\-utils 4\&.8\&.1" "Comandi per la gestione del si"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NOME"
+useradd \- crea un nuovo utente o aggiorna le informazioni predefinite per i nuovi utenti
+.SH "SINOSSI"
+.HP \w'\fBuseradd\fR\ 'u
+\fBuseradd\fR [\fIopzioni\fR] \fILOGIN\fR
+.HP \w'\fBuseradd\fR\ 'u
+\fBuseradd\fR \-D
+.HP \w'\fBuseradd\fR\ 'u
+\fBuseradd\fR \-D [\fIopzioni\fR]
+.SH "DESCRIZIONE"
+.PP
+When invoked without the
+\fB\-D\fR
+option, the
+\fBuseradd\fR
+command creates a new user account using the values specified on the command line plus the default values from the system\&. Depending on command line options, the
+\fBuseradd\fR
+command will update system files and may also create the new user\*(Aqs home directory and copy initial files\&.
+.PP
+By default, a group will also be created for the new user (see
+\fB\-g\fR,
+\fB\-N\fR,
+\fB\-U\fR, and
+\fBUSERGROUPS_ENAB\fR)\&.
+.SH "OPZIONI"
+.PP
+The options which apply to the
+\fBuseradd\fR
+command are:
+.PP
+\fB\-\-badname\fR\ \&
+.RS 4
+Allow names that do not conform to standards\&.
+.RE
+.PP
+\fB\-b\fR, \fB\-\-base\-dir\fR\ \&\fIBASE_DIR\fR
+.RS 4
+The default base directory for the system if
+\fB\-d\fR\ \&\fIHOME_DIR\fR
+is not specified\&.
+\fIBASE_DIR\fR
+is concatenated with the account name to define the home directory\&. If the
+\fB\-m\fR
+option is not used,
+\fIBASE_DIR\fR
+must exist\&.
+.sp
+If this option is not specified,
+\fBuseradd\fR
+will use the base directory specified by the
+\fBHOME\fR
+variable in
+/etc/default/useradd, or
+/home
+by default\&.
+.RE
+.PP
+\fB\-c\fR, \fB\-\-comment\fR\ \&\fICOMMENT\fR
+.RS 4
+Un testo qualsiasi\&. Di norma \(`e una breve descrizione del login, ed \(`e attualmente usato come nome completo dell\*(Aqutente\&.
+.RE
+.PP
+\fB\-d\fR, \fB\-\-home\-dir\fR\ \&\fIHOME_DIR\fR
+.RS 4
+The new user will be created using
+\fIHOME_DIR\fR
+as the value for the user\*(Aqs login directory\&. The default is to append the
+\fILOGIN\fR
+name to
+\fIBASE_DIR\fR
+and use that as the login directory name\&. The directory
+\fIHOME_DIR\fR
+does not have to exist but will not be created if it is missing\&.
+.RE
+.PP
+\fB\-D\fR, \fB\-\-defaults\fR
+.RS 4
+Vedere oltre, la sezione \(FoCambiare i valori predefiniti\(Fc\&.
+.RE
+.PP
+\fB\-e\fR, \fB\-\-expiredate\fR\ \&\fIEXPIRE_DATE\fR
+.RS 4
+The date on which the user account will be disabled\&. The date is specified in the format
+\fIYYYY\-MM\-DD\fR\&.
+.sp
+If not specified,
+\fBuseradd\fR
+will use the default expiry date specified by the
+\fBEXPIRE\fR
+variable in
+/etc/default/useradd, or an empty string (no expiry) by default\&.
+.RE
+.PP
+\fB\-f\fR, \fB\-\-inactive\fR\ \&\fIINACTIVE\fR
+.RS 4
+Il numero di giorni dopo la scadenza della password prima che l\*(Aqaccount venga permanentemente disabilitato\&. Un valore pari a 0 disabilita l\*(Aqaccount non appena la password \(`e scaduta, ed un valore pari a \-1 disabilita questa funzionalit\(`a\&.
+.sp
+If not specified,
+\fBuseradd\fR
+will use the default inactivity period specified by the
+\fBINACTIVE\fR
+variable in
+/etc/default/useradd, or \-1 by default\&.
+.RE
+.PP
+\fB\-g\fR, \fB\-\-gid\fR\ \&\fIGROUP\fR
+.RS 4
+Il nome o numero del gruppo di connessione iniziale dell\*(Aqutente\&. Il nome del gruppo deve esistere\&. Un numero di gruppo deve riferirsi ad un gruppo gi\(`a esistente\&.
+.sp
+If not specified, the behavior of
+\fBuseradd\fR
+will depend on the
+\fBUSERGROUPS_ENAB\fR
+variable in
+/etc/login\&.defs\&. If this variable is set to
+\fIyes\fR
+(or
+\fB\-U/\-\-user\-group\fR
+is specified on the command line), a group will be created for the user, with the same name as her loginname\&. If the variable is set to
+\fIno\fR
+(or
+\fB\-N/\-\-no\-user\-group\fR
+is specified on the command line), useradd will set the primary group of the new user to the value specified by the
+\fBGROUP\fR
+variable in
+/etc/default/useradd, or 100 by default\&.
+.RE
+.PP
+\fB\-G\fR, \fB\-\-groups\fR\ \&\fIGROUP1\fR[\fI,GROUP2,\&.\&.\&.\fR[\fI,GROUPN\fR]]]
+.RS 4
+A list of supplementary groups which the user is also a member of\&. Each group is separated from the next by a comma, with no intervening whitespace\&. The groups are subject to the same restrictions as the group given with the
+\fB\-g\fR
+option\&. The default is for the user to belong only to the initial group\&.
+.RE
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+Mostra un messaggio di aiuto ed esce\&.
+.RE
+.PP
+\fB\-k\fR, \fB\-\-skel\fR\ \&\fISKEL_DIR\fR
+.RS 4
+The skeleton directory, which contains files and directories to be copied in the user\*(Aqs home directory, when the home directory is created by
+\fBuseradd\fR\&.
+.sp
+This option is only valid if the
+\fB\-m\fR
+(or
+\fB\-\-create\-home\fR) option is specified\&.
+.sp
+If this option is not set, the skeleton directory is defined by the
+\fBSKEL\fR
+variable in
+/etc/default/useradd
+or, by default,
+/etc/skel\&.
+.sp
+Se possibile vengono copiate le ACL e gli attributi estesi\&.
+.RE
+.PP
+\fB\-K\fR, \fB\-\-key\fR\ \&\fIKEY\fR=\fIVALUE\fR
+.RS 4
+Overrides
+/etc/login\&.defs
+defaults (\fBUID_MIN\fR,
+\fBUID_MAX\fR,
+\fBUMASK\fR,
+\fBPASS_MAX_DAYS\fR
+and others)\&.
+
+Example:
+\fB\-K\fR\ \&\fIPASS_MAX_DAYS\fR=\fI\-1\fR
+can be used when creating system account to turn off password aging, even though system account has no password at all\&. Multiple
+\fB\-K\fR
+options can be specified, e\&.g\&.:
+\fB\-K\fR\ \&\fIUID_MIN\fR=\fI100\fR\ \&
+\fB\-K\fR\ \&\fIUID_MAX\fR=\fI499\fR
+.RE
+.PP
+\fB\-l\fR, \fB\-\-no\-log\-init\fR
+.RS 4
+Non aggiunge l\*(Aqutente ai database \(Folastlog\(Fc e \(Fofaillog\(Fc\&.
+.sp
+By default, the user\*(Aqs entries in the lastlog and faillog databases are reset to avoid reusing the entry from a previously deleted user\&.
+.RE
+.PP
+\fB\-m\fR, \fB\-\-create\-home\fR
+.RS 4
+Create the user\*(Aqs home directory if it does not exist\&. The files and directories contained in the skeleton directory (which can be defined with the
+\fB\-k\fR
+option) will be copied to the home directory\&.
+.sp
+By default, if this option is not specified and
+\fBCREATE_HOME\fR
+is not enabled, no home directories are created\&.
+.RE
+.PP
+\fB\-M\fR, \fB\-\-no\-create\-home\fR
+.RS 4
+Do no create the user\*(Aqs home directory, even if the system wide setting from
+/etc/login\&.defs
+(\fBCREATE_HOME\fR) is set to
+\fIyes\fR\&.
+.RE
+.PP
+\fB\-N\fR, \fB\-\-no\-user\-group\fR
+.RS 4
+Do not create a group with the same name as the user, but add the user to the group specified by the
+\fB\-g\fR
+option or by the
+\fBGROUP\fR
+variable in
+/etc/default/useradd\&.
+.sp
+The default behavior (if the
+\fB\-g\fR,
+\fB\-N\fR, and
+\fB\-U\fR
+options are not specified) is defined by the
+\fBUSERGROUPS_ENAB\fR
+variable in
+/etc/login\&.defs\&.
+.RE
+.PP
+\fB\-o\fR, \fB\-\-non\-unique\fR
+.RS 4
+Permette la creazione di un utente con un UID duplicato (non unico)\&.
+.sp
+This option is only valid in combination with the
+\fB\-u\fR
+option\&.
+.RE
+.PP
+\fB\-p\fR, \fB\-\-password\fR\ \&\fIPASSWORD\fR
+.RS 4
+The encrypted password, as returned by
+\fBcrypt\fR(3)\&. The default is to disable the password\&.
+.sp
+\fBNote:\fR
+This option is not recommended because the password (or encrypted password) will be visible by users listing the processes\&.
+.sp
+Ci si deve accertare che la password rispetti le norme delle password del sistema\&.
+.RE
+.PP
+\fB\-r\fR, \fB\-\-system\fR
+.RS 4
+Crea un account di sistema\&.
+.sp
+System users will be created with no aging information in
+/etc/shadow, and their numeric identifiers are chosen in the
+\fBSYS_UID_MIN\fR\-\fBSYS_UID_MAX\fR
+range, defined in
+/etc/login\&.defs, instead of
+\fBUID_MIN\fR\-\fBUID_MAX\fR
+(and their
+\fBGID\fR
+counterparts for the creation of groups)\&.
+.sp
+Note that
+\fBuseradd\fR
+will not create a home directory for such a user, regardless of the default setting in
+/etc/login\&.defs
+(\fBCREATE_HOME\fR)\&. You have to specify the
+\fB\-m\fR
+options if you want a home directory for a system account to be created\&.
+.RE
+.PP
+\fB\-R\fR, \fB\-\-root\fR\ \&\fICHROOT_DIR\fR
+.RS 4
+Apply changes in the
+\fICHROOT_DIR\fR
+directory and use the configuration files from the
+\fICHROOT_DIR\fR
+directory\&.
+.RE
+.PP
+\fB\-P\fR, \fB\-\-prefix\fR\ \&\fIPREFIX_DIR\fR
+.RS 4
+Apply changes in the
+\fIPREFIX_DIR\fR
+directory and use the configuration files from the
+\fIPREFIX_DIR\fR
+directory\&. This option does not chroot and is intended for preparing a cross\-compilation target\&. Some limitations: NIS and LDAP users/groups are not verified\&. PAM authentication is using the host files\&. No SELINUX support\&.
+.RE
+.PP
+\fB\-s\fR, \fB\-\-shell\fR\ \&\fISHELL\fR
+.RS 4
+The name of the user\*(Aqs login shell\&. The default is to leave this field blank, which causes the system to select the default login shell specified by the
+\fBSHELL\fR
+variable in
+/etc/default/useradd, or an empty string by default\&.
+.RE
+.PP
+\fB\-u\fR, \fB\-\-uid\fR\ \&\fIUID\fR
+.RS 4
+The numerical value of the user\*(Aqs ID\&. This value must be unique, unless the
+\fB\-o\fR
+option is used\&. The value must be non\-negative\&. The default is to use the smallest ID value greater than or equal to
+\fBUID_MIN\fR
+and greater than every other user\&.
+.sp
+See also the
+\fB\-r\fR
+option and the
+\fBUID_MAX\fR
+description\&.
+.RE
+.PP
+\fB\-U\fR, \fB\-\-user\-group\fR
+.RS 4
+Crea un gruppo con lo stesso nome dell\*(Aqutente e aggiunge l\*(Aqutente al gruppo stesso\&.
+.sp
+The default behavior (if the
+\fB\-g\fR,
+\fB\-N\fR, and
+\fB\-U\fR
+options are not specified) is defined by the
+\fBUSERGROUPS_ENAB\fR
+variable in
+/etc/login\&.defs\&.
+.RE
+.PP
+\fB\-Z\fR, \fB\-\-selinux\-user\fR\ \&\fISEUSER\fR
+.RS 4
+L\*(Aqutente SELinux per questo login utente\&. Lasciando questo campo vuoto si fa in modo che il sistema selezioni automaticamente l\*(Aqutente SELinux\&.
+.RE
+.SS "Cambiare i valori predefiniti"
+.PP
+When invoked with only the
+\fB\-D\fR
+option,
+\fBuseradd\fR
+will display the current default values\&. When invoked with
+\fB\-D\fR
+plus other options,
+\fBuseradd\fR
+will update the default values for the specified options\&. Valid default\-changing options are:
+.PP
+\fB\-b\fR, \fB\-\-base\-dir\fR\ \&\fIBASE_DIR\fR
+.RS 4
+The path prefix for a new user\*(Aqs home directory\&. The user\*(Aqs name will be affixed to the end of
+\fIBASE_DIR\fR
+to form the new user\*(Aqs home directory name, if the
+\fB\-d\fR
+option is not used when creating a new account\&.
+.sp
+This option sets the
+\fBHOME\fR
+variable in
+/etc/default/useradd\&.
+.RE
+.PP
+\fB\-e\fR, \fB\-\-expiredate\fR\ \&\fIEXPIRE_DATE\fR
+.RS 4
+La data in cui l\*(Aqaccount dell\*(Aqutente verr\(`a disabilitato\&.
+.sp
+This option sets the
+\fBEXPIRE\fR
+variable in
+/etc/default/useradd\&.
+.RE
+.PP
+\fB\-f\fR, \fB\-\-inactive\fR\ \&\fIINACTIVE\fR
+.RS 4
+Il numero di giorni dopo la scadenza di una password prima che l\*(Aqaccount venga disabilitato\&.
+.sp
+This option sets the
+\fBINACTIVE\fR
+variable in
+/etc/default/useradd\&.
+.RE
+.PP
+\fB\-g\fR, \fB\-\-gid\fR\ \&\fIGROUP\fR
+.RS 4
+The group name or ID for a new user\*(Aqs initial group (when the
+\fB\-N/\-\-no\-user\-group\fR
+is used or when the
+\fBUSERGROUPS_ENAB\fR
+variable is set to
+\fIno\fR
+in
+/etc/login\&.defs)\&. The named group must exist, and a numerical group ID must have an existing entry\&.
+.sp
+This option sets the
+\fBGROUP\fR
+variable in
+/etc/default/useradd\&.
+.RE
+.PP
+\fB\-s\fR, \fB\-\-shell\fR\ \&\fISHELL\fR
+.RS 4
+Il nome della shell di login per il nuovo utente\&.
+.sp
+This option sets the
+\fBSHELL\fR
+variable in
+/etc/default/useradd\&.
+.RE
+.SH "NOTE"
+.PP
+The system administrator is responsible for placing the default user files in the
+/etc/skel/
+directory (or any other skeleton directory specified in
+/etc/default/useradd
+or on the command line)\&.
+.SH "AVVISI/CAVEAT"
+.PP
+Non \(`e possibile aggiungere un utente ad un gruppo NIS o LDAP\&. Questo deve essere fatto sul server corrispondente\&.
+.PP
+Similarly, if the username already exists in an external user database such as NIS or LDAP,
+\fBuseradd\fR
+will deny the user account creation request\&.
+.PP
+I nomi utente devono iniziare con una lettera minuscola o un underscore, seguiti da lettere minuscole, cifre numeriche, underscore o trattini\&. Possono terminare con il simbolo del dollaro\&. In termini di espressioni regolari: [a\-z_][a\-z0\-9_\-]*[$]?
+.PP
+I nomi utente non possono eccedere i 32 caratteri di lunghezza\&.
+.SH "CONFIGURAZIONE"
+.PP
+The following configuration variables in
+/etc/login\&.defs
+change the behavior of this tool:
+.PP
+\fBCREATE_HOME\fR (boolean)
+.RS 4
+Indica se per i nuovi utenti va creata la directory home\&.
+.sp
+Questa impostazione non viene applicata agli utenti di sistema e pu\(`o essere modificata sulla riga di comando\&.
+.RE
+.PP
+\fBGID_MAX\fR (number), \fBGID_MIN\fR (number)
+.RS 4
+Range of group IDs used for the creation of regular groups by
+\fBuseradd\fR,
+\fBgroupadd\fR, or
+\fBnewusers\fR\&.
+.sp
+The default value for
+\fBGID_MIN\fR
+(resp\&.
+\fBGID_MAX\fR) is 1000 (resp\&. 60000)\&.
+.RE
+.PP
+\fBHOME_MODE\fR (number)
+.RS 4
+The mode for new home directories\&. If not specified, the
+\fBUMASK\fR
+is used to create the mode\&.
+.sp
+\fBuseradd\fR
+and
+\fBnewusers\fR
+use this to set the mode of the home directory they create\&.
+.RE
+.PP
+\fBLASTLOG_UID_MAX\fR (number)
+.RS 4
+Highest user ID number for which the lastlog entries should be updated\&. As higher user IDs are usually tracked by remote user identity and authentication services there is no need to create a huge sparse lastlog file for them\&.
+.sp
+No
+\fBLASTLOG_UID_MAX\fR
+option present in the configuration means that there is no user ID limit for writing lastlog entries\&.
+.RE
+.PP
+\fBMAIL_DIR\fR (string)
+.RS 4
+La directory di spool per la posta\&. Questa \(`e necessaria per manipolare la casella di posta quando il corrispondente account utente viene modificato o cancellato\&. Se non \(`e specificata viene utilizzato un valore impostato al momento della compilazione\&.
+.RE
+.PP
+\fBMAIL_FILE\fR (string)
+.RS 4
+Imposta la posizione delle caselle di posta degli utenti relative alla loro directory home\&.
+.RE
+.PP
+The
+\fBMAIL_DIR\fR
+and
+\fBMAIL_FILE\fR
+variables are used by
+\fBuseradd\fR,
+\fBusermod\fR, and
+\fBuserdel\fR
+to create, move, or delete the user\*(Aqs mail spool\&.
+.PP
+If
+\fBMAIL_CHECK_ENAB\fR
+is set to
+\fIyes\fR, they are also used to define the
+\fBMAIL\fR
+environment variable\&.
+.PP
+\fBMAX_MEMBERS_PER_GROUP\fR (number)
+.RS 4
+Maximum members per group entry\&. When the maximum is reached, a new group entry (line) is started in
+/etc/group
+(with the same name, same password, and same GID)\&.
+.sp
+Il valore predefinito \(`e 0, che non pone nessun limite al numero di membri per gruppo\&.
+.sp
+Questa opzione (dividi gruppo) permette di limitare la lunghezza delle righe nel file \(Fogroup\(Fc\&. Questo \(`e utile per essere certi che le righe per gruppi NIS non eccedano i 1024 caratteri\&.
+.sp
+Se si deve impostare questo limite, si pu\(`o usare 25\&.
+.sp
+Nota: la divisione dei gruppi potrebbe non essere supportata da ogni strumento (anche all\*(Aqinterno del pacchetto Shadow)\&. Non si dovrebbe utilizzare questa variabile a meno di esserci forzati\&.
+.RE
+.PP
+\fBPASS_MAX_DAYS\fR (number)
+.RS 4
+Il numero massimo di giorni che una password pu\(`o essere utilizzata\&. Se la password \(`e pi\(`u vecchia verr\(`a imposto il suo cambiamento\&. Se non specificato viene assunto \-1 (che disabilita questo controllo)\&.
+.RE
+.PP
+\fBPASS_MIN_DAYS\fR (number)
+.RS 4
+Il numero minimo di giorni tra due cambiamenti di password\&. Ogni tentativo di cambiare la password prima di questo periodo verr\(`a rifiutato\&. Se non specificato viene assunto \-1 (che disabilita questo controllo)\&.
+.RE
+.PP
+\fBPASS_WARN_AGE\fR (number)
+.RS 4
+Il numero di giorni per i quali un utente va avvisato che la sua password sta per scadere\&. Se zero l\*(Aqutente viene avvisato solo alla scadenza\&. Un valore negativo indica che non si deve avvisare mai\&. Se non specificato allora non c\*(Aq\(`e nessun avviso\&.
+.RE
+.PP
+\fBSUB_GID_MIN\fR (number), \fBSUB_GID_MAX\fR (number), \fBSUB_GID_COUNT\fR (number)
+.RS 4
+If
+/etc/subuid
+exists, the commands
+\fBuseradd\fR
+and
+\fBnewusers\fR
+(unless the user already have subordinate group IDs) allocate
+\fBSUB_GID_COUNT\fR
+unused group IDs from the range
+\fBSUB_GID_MIN\fR
+to
+\fBSUB_GID_MAX\fR
+for each new user\&.
+.sp
+The default values for
+\fBSUB_GID_MIN\fR,
+\fBSUB_GID_MAX\fR,
+\fBSUB_GID_COUNT\fR
+are respectively 100000, 600100000 and 65536\&.
+.RE
+.PP
+\fBSUB_UID_MIN\fR (number), \fBSUB_UID_MAX\fR (number), \fBSUB_UID_COUNT\fR (number)
+.RS 4
+If
+/etc/subuid
+exists, the commands
+\fBuseradd\fR
+and
+\fBnewusers\fR
+(unless the user already have subordinate user IDs) allocate
+\fBSUB_UID_COUNT\fR
+unused user IDs from the range
+\fBSUB_UID_MIN\fR
+to
+\fBSUB_UID_MAX\fR
+for each new user\&.
+.sp
+The default values for
+\fBSUB_UID_MIN\fR,
+\fBSUB_UID_MAX\fR,
+\fBSUB_UID_COUNT\fR
+are respectively 100000, 600100000 and 65536\&.
+.RE
+.PP
+\fBSYS_GID_MAX\fR (number), \fBSYS_GID_MIN\fR (number)
+.RS 4
+Range of group IDs used for the creation of system groups by
+\fBuseradd\fR,
+\fBgroupadd\fR, or
+\fBnewusers\fR\&.
+.sp
+The default value for
+\fBSYS_GID_MIN\fR
+(resp\&.
+\fBSYS_GID_MAX\fR) is 101 (resp\&.
+\fBGID_MIN\fR\-1)\&.
+.RE
+.PP
+\fBSYS_UID_MAX\fR (number), \fBSYS_UID_MIN\fR (number)
+.RS 4
+Range of user IDs used for the creation of system users by
+\fBuseradd\fR
+or
+\fBnewusers\fR\&.
+.sp
+The default value for
+\fBSYS_UID_MIN\fR
+(resp\&.
+\fBSYS_UID_MAX\fR) is 101 (resp\&.
+\fBUID_MIN\fR\-1)\&.
+.RE
+.PP
+\fBUID_MAX\fR (number), \fBUID_MIN\fR (number)
+.RS 4
+Range of user IDs used for the creation of regular users by
+\fBuseradd\fR
+or
+\fBnewusers\fR\&.
+.sp
+The default value for
+\fBUID_MIN\fR
+(resp\&.
+\fBUID_MAX\fR) is 1000 (resp\&. 60000)\&.
+.RE
+.PP
+\fBUMASK\fR (number)
+.RS 4
+La maschera di permessi alla creazione dei file \(`e inizializzata con questo valore\&. Se non specificato la maschera viene impostata a 022\&.
+.sp
+\fBuseradd\fR
+and
+\fBnewusers\fR
+use this mask to set the mode of the home directory they create if
+\fBHOME_MODE\fR
+is not set\&.
+.sp
+It is also used by
+\fBlogin\fR
+to define users\*(Aq initial umask\&. Note that this mask can be overridden by the user\*(Aqs GECOS line (if
+\fBQUOTAS_ENAB\fR
+is set) or by the specification of a limit with the
+\fIK\fR
+identifier in
+\fBlimits\fR(5)\&.
+.RE
+.PP
+\fBUSERGROUPS_ENAB\fR (boolean)
+.RS 4
+Abilita l\*(Aqimpostazione dei bit di gruppo di umask in modo che siano gli stessi dei bit del proprietario (esempio: 022 \-> 002, 077 \-> 007) per utenti non root a condizione che uid e gid siano identici e che il nome utente sia lo stesso del gruppo primario\&.
+.sp
+If set to
+\fIyes\fR,
+\fBuserdel\fR
+will remove the user\*(Aqs group if it contains no more members, and
+\fBuseradd\fR
+will create by default a group with the name of the user\&.
+.RE
+.SH "FILE"
+.PP
+/etc/passwd
+.RS 4
+Informazioni sugli account utente\&.
+.RE
+.PP
+/etc/shadow
+.RS 4
+Informazioni sicure sugli account utente\&.
+.RE
+.PP
+/etc/group
+.RS 4
+Informazioni sugli account di gruppo\&.
+.RE
+.PP
+/etc/gshadow
+.RS 4
+Informazioni sicure sugli account di gruppo\&.
+.RE
+.PP
+/etc/default/useradd
+.RS 4
+Valori predefiniti per la creazione dell\*(Aqaccount\&.
+.RE
+.PP
+/etc/skel/
+.RS 4
+Directory contenente i file predefiniti\&.
+.RE
+.PP
+/etc/subgid
+.RS 4
+Per user subordinate group IDs\&.
+.RE
+.PP
+/etc/subuid
+.RS 4
+Per user subordinate user IDs\&.
+.RE
+.PP
+/etc/login\&.defs
+.RS 4
+Configurazione del pacchetto password shadow
+.RE
+.SH "VALORI RESTITUITI"
+.PP
+The
+\fBuseradd\fR
+command exits with the following values:
+.PP
+\fI0\fR
+.RS 4
+success
+.RE
+.PP
+\fI1\fR
+.RS 4
+can\*(Aqt update password file
+.RE
+.PP
+\fI2\fR
+.RS 4
+invalid command syntax
+.RE
+.PP
+\fI3\fR
+.RS 4
+invalid argument to option
+.RE
+.PP
+\fI4\fR
+.RS 4
+UID already in use (and no
+\fB\-o\fR)
+.RE
+.PP
+\fI6\fR
+.RS 4
+specified group doesn\*(Aqt exist
+.RE
+.PP
+\fI9\fR
+.RS 4
+username already in use
+.RE
+.PP
+\fI10\fR
+.RS 4
+can\*(Aqt update group file
+.RE
+.PP
+\fI12\fR
+.RS 4
+can\*(Aqt create home directory
+.RE
+.PP
+\fI14\fR
+.RS 4
+can\*(Aqt update SELinux user mapping
+.RE
+.SH "VEDERE ANCHE"
+.PP
+\fBchfn\fR(1),
+\fBchsh\fR(1),
+\fBpasswd\fR(1),
+\fBcrypt\fR(3),
+\fBgroupadd\fR(8),
+\fBgroupdel\fR(8),
+\fBgroupmod\fR(8),
+\fBlogin.defs\fR(5),
+\fBnewusers\fR(8),
+\fBsubgid\fR(5), \fBsubuid\fR(5),
+\fBuserdel\fR(8),
+\fBusermod\fR(8)\&.
