@@ -1,0 +1,469 @@
+'\" t
+.\"     Title: usermod
+.\"    Author: Julianne Frances Haugh
+.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
+.\"      Date: 2020-01-23
+.\"    Manual: 系统管理命令
+.\"    Source: shadow-utils 4.8.1
+.\"  Language: Chinese Simplified
+.\"
+.TH "USERMOD" "8" "2020-01-23" "shadow\-utils 4\&.8\&.1" "系统管理命令"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "名称"
+usermod \- 修改一个用户账户
+.SH "大纲"
+.HP \w'\fBusermod\fR\ 'u
+\fBusermod\fR [\fI选项\fR] \fI登录\fR
+.SH "描述"
+.PP
+The
+\fBusermod\fR
+command modifies the system account files to reflect the changes that are specified on the command line\&.
+.SH "选项"
+.PP
+The options which apply to the
+\fBusermod\fR
+command are:
+.PP
+\fB\-a\fR, \fB\-\-append\fR
+.RS 4
+Add the user to the supplementary group(s)\&. Use only with the
+\fB\-G\fR
+option\&.
+.RE
+.PP
+\fB\-b\fR, \fB\-\-badnames\fR
+.RS 4
+Allow names that do not conform to standards\&.
+.RE
+.PP
+\fB\-c\fR, \fB\-\-comment\fR\ \&\fICOMMENT\fR
+.RS 4
+The new value of the user\*(Aqs password file comment field\&. It is normally modified using the
+\fBchfn\fR(1)
+utility\&.
+.RE
+.PP
+\fB\-d\fR, \fB\-\-home\fR\ \&\fIHOME_DIR\fR
+.RS 4
+用户的新登录目录。
+.sp
+If the
+\fB\-m\fR
+option is given, the contents of the current home directory will be moved to the new home directory, which is created if it does not already exist\&.
+.RE
+.PP
+\fB\-e\fR, \fB\-\-expiredate\fR\ \&\fIEXPIRE_DATE\fR
+.RS 4
+The date on which the user account will be disabled\&. The date is specified in the format
+\fIYYYY\-MM\-DD\fR\&.
+.sp
+An empty
+\fIEXPIRE_DATE\fR
+argument will disable the expiration of the account\&.
+.sp
+This option requires a
+/etc/shadow
+file\&. A
+/etc/shadow
+entry will be created if there were none\&.
+.RE
+.PP
+\fB\-f\fR, \fB\-\-inactive\fR\ \&\fIINACTIVE\fR
+.RS 4
+密码过期之后，账户被彻底禁用之前的天数。
+.sp
+0 表示密码过期时，立即禁用账户；\-1 表示不使用这个功能。
+.sp
+This option requires a
+/etc/shadow
+file\&. A
+/etc/shadow
+entry will be created if there were none\&.
+.RE
+.PP
+\fB\-g\fR, \fB\-\-gid\fR\ \&\fIGROUP\fR
+.RS 4
+用户的新初始登录组的组名或数字代号。此组必须存在。
+.sp
+用户主目录中，属于原来的主组的文件将转交新组所有。
+.sp
+主目录之外的文件所属的组必须手动修改。
+.RE
+.PP
+\fB\-G\fR, \fB\-\-groups\fR\ \&\fIGROUP1\fR[\fI,GROUP2,\&.\&.\&.\fR[\fI,GROUPN\fR]]]
+.RS 4
+A list of supplementary groups which the user is also a member of\&. Each group is separated from the next by a comma, with no intervening whitespace\&. The groups are subject to the same restrictions as the group given with the
+\fB\-g\fR
+option\&.
+.sp
+If the user is currently a member of a group which is not listed, the user will be removed from the group\&. This behaviour can be changed via the
+\fB\-a\fR
+option, which appends the user to the current supplementary group list\&.
+.RE
+.PP
+\fB\-l\fR, \fB\-\-login\fR\ \&\fINEW_LOGIN\fR
+.RS 4
+The name of the user will be changed from
+\fILOGIN\fR
+to
+\fINEW_LOGIN\fR\&. Nothing else is changed\&. In particular, the user\*(Aqs home directory or mail spool should probably be renamed manually to reflect the new login name\&.
+.RE
+.PP
+\fB\-L\fR, \fB\-\-lock\fR
+.RS 4
+Lock a user\*(Aqs password\&. This puts a \*(Aq!\*(Aq in front of the encrypted password, effectively disabling the password\&. You can\*(Aqt use this option with
+\fB\-p\fR
+or
+\fB\-U\fR\&.
+.sp
+Note: if you wish to lock the account (not only access with a password), you should also set the
+\fIEXPIRE_DATE\fR
+to
+\fI1\fR\&.
+.RE
+.PP
+\fB\-m\fR, \fB\-\-move\-home\fR
+.RS 4
+将用户的主目录移动到新位置。
+.sp
+This option is only valid in combination with the
+\fB\-d\fR
+(or
+\fB\-\-home\fR) option\&.
+.sp
+\fBusermod\fR
+will try to adapt the ownership of the files and to copy the modes, ACL and extended attributes, but manual changes might be needed afterwards\&.
+.RE
+.PP
+\fB\-o\fR, \fB\-\-non\-unique\fR
+.RS 4
+When used with the
+\fB\-u\fR
+option, this option allows to change the user ID to a non\-unique value\&.
+.RE
+.PP
+\fB\-p\fR, \fB\-\-password\fR\ \&\fIPASSWORD\fR
+.RS 4
+The encrypted password, as returned by
+\fBcrypt\fR(3)\&.
+.sp
+\fBNote:\fR
+This option is not recommended because the password (or encrypted password) will be visible by users listing the processes\&.
+.sp
+您应该确保密码符合系统的密码政策。
+.RE
+.PP
+\fB\-R\fR, \fB\-\-root\fR\ \&\fICHROOT_DIR\fR
+.RS 4
+Apply changes in the
+\fICHROOT_DIR\fR
+directory and use the configuration files from the
+\fICHROOT_DIR\fR
+directory\&.
+.RE
+.PP
+\fB\-P\fR, \fB\-\-prefix\fR\ \&\fIPREFIX_DIR\fR
+.RS 4
+Apply changes in the
+\fIPREFIX_DIR\fR
+directory and use the configuration files from the
+\fIPREFIX_DIR\fR
+directory\&. This option does not chroot and is intended for preparing a cross\-compilation target\&. Some limitations: NIS and LDAP users/groups are not verified\&. PAM authentication is using the host files\&. No SELINUX support\&.
+.RE
+.PP
+\fB\-s\fR, \fB\-\-shell\fR\ \&\fISHELL\fR
+.RS 4
+用户的新登录 shell 的名称。将此字段设置为空会让系统选择默认的登录 shell。
+.RE
+.PP
+\fB\-u\fR, \fB\-\-uid\fR\ \&\fIUID\fR
+.RS 4
+用户 ID 的新数值。
+.sp
+This value must be unique, unless the
+\fB\-o\fR
+option is used\&. The value must be non\-negative\&.
+.sp
+用户的邮箱，用户主目录中属于此用户的文件的属主 ID 也将自动更改。
+.sp
+用户主目录之外文件所有权必须手动修复。
+.sp
+No checks will be performed with regard to the
+\fBUID_MIN\fR,
+\fBUID_MAX\fR,
+\fBSYS_UID_MIN\fR, or
+\fBSYS_UID_MAX\fR
+from
+/etc/login\&.defs\&.
+.RE
+.PP
+\fB\-U\fR, \fB\-\-unlock\fR
+.RS 4
+Unlock a user\*(Aqs password\&. This removes the \*(Aq!\*(Aq in front of the encrypted password\&. You can\*(Aqt use this option with
+\fB\-p\fR
+or
+\fB\-L\fR\&.
+.sp
+Note: if you wish to unlock the account (not only access with a password), you should also set the
+\fIEXPIRE_DATE\fR
+(for example to
+\fI99999\fR, or to the
+\fBEXPIRE\fR
+value from
+/etc/default/useradd)\&.
+.RE
+.PP
+\fB\-v\fR, \fB\-\-add\-subuids\fR\ \&\fIFIRST\fR\-\fILAST\fR
+.RS 4
+Add a range of subordinate uids to the user\*(Aqs account\&.
+.sp
+This option may be specified multiple times to add multiple ranges to a users account\&.
+.sp
+No checks will be performed with regard to
+\fBSUB_UID_MIN\fR,
+\fBSUB_UID_MAX\fR, or
+\fBSUB_UID_COUNT\fR
+from /etc/login\&.defs\&.
+.RE
+.PP
+\fB\-V\fR, \fB\-\-del\-subuids\fR\ \&\fIFIRST\fR\-\fILAST\fR
+.RS 4
+Remove a range of subordinate uids from the user\*(Aqs account\&.
+.sp
+This option may be specified multiple times to remove multiple ranges to a users account\&. When both
+\fB\-\-del\-subuids\fR
+and
+\fB\-\-add\-subuids\fR
+are specified, the removal of all subordinate uid ranges happens before any subordinate uid range is added\&.
+.sp
+No checks will be performed with regard to
+\fBSUB_UID_MIN\fR,
+\fBSUB_UID_MAX\fR, or
+\fBSUB_UID_COUNT\fR
+from /etc/login\&.defs\&.
+.RE
+.PP
+\fB\-w\fR, \fB\-\-add\-subgids\fR\ \&\fIFIRST\fR\-\fILAST\fR
+.RS 4
+Add a range of subordinate gids to the user\*(Aqs account\&.
+.sp
+This option may be specified multiple times to add multiple ranges to a users account\&.
+.sp
+No checks will be performed with regard to
+\fBSUB_GID_MIN\fR,
+\fBSUB_GID_MAX\fR, or
+\fBSUB_GID_COUNT\fR
+from /etc/login\&.defs\&.
+.RE
+.PP
+\fB\-W\fR, \fB\-\-del\-subgids\fR\ \&\fIFIRST\fR\-\fILAST\fR
+.RS 4
+Remove a range of subordinate gids from the user\*(Aqs account\&.
+.sp
+This option may be specified multiple times to remove multiple ranges to a users account\&. When both
+\fB\-\-del\-subgids\fR
+and
+\fB\-\-add\-subgids\fR
+are specified, the removal of all subordinate gid ranges happens before any subordinate gid range is added\&.
+.sp
+No checks will be performed with regard to
+\fBSUB_GID_MIN\fR,
+\fBSUB_GID_MAX\fR, or
+\fBSUB_GID_COUNT\fR
+from /etc/login\&.defs\&.
+.RE
+.PP
+\fB\-Z\fR, \fB\-\-selinux\-user\fR\ \&\fISEUSER\fR
+.RS 4
+用户登陆的 SELinux 用户。
+.sp
+A blank
+\fISEUSER\fR
+will remove the SELinux user mapping for user
+\fILOGIN\fR
+(if any)\&.
+.RE
+.SH "CAVEATS"
+.PP
+You must make certain that the named user is not executing any processes when this command is being executed if the user\*(Aqs numerical user ID, the user\*(Aqs name, or the user\*(Aqs home directory is being changed\&.
+\fBusermod\fR
+checks this on Linux\&. On other platforms it only uses utmp to check if the user is logged in\&.
+.PP
+You must change the owner of any
+\fBcrontab\fR
+files or
+\fBat\fR
+jobs manually\&.
+.PP
+您必须更改 NIS 服务器上的 NIS 相关内容。
+.SH "配置文件"
+.PP
+The following configuration variables in
+/etc/login\&.defs
+change the behavior of this tool:
+.PP
+\fBLASTLOG_UID_MAX\fR (number)
+.RS 4
+Highest user ID number for which the lastlog entries should be updated\&. As higher user IDs are usually tracked by remote user identity and authentication services there is no need to create a huge sparse lastlog file for them\&.
+.sp
+No
+\fBLASTLOG_UID_MAX\fR
+option present in the configuration means that there is no user ID limit for writing lastlog entries\&.
+.RE
+.PP
+\fBMAIL_DIR\fR (string)
+.RS 4
+邮箱目录。修改或删除用户账户时需要处理邮箱，如果没有指定，将使用编译时指定的默认值。
+.RE
+.PP
+\fBMAIL_FILE\fR (string)
+.RS 4
+定义用户邮箱文件的位置(相对于主目录)。
+.RE
+.PP
+The
+\fBMAIL_DIR\fR
+and
+\fBMAIL_FILE\fR
+variables are used by
+\fBuseradd\fR,
+\fBusermod\fR, and
+\fBuserdel\fR
+to create, move, or delete the user\*(Aqs mail spool\&.
+.PP
+If
+\fBMAIL_CHECK_ENAB\fR
+is set to
+\fIyes\fR, they are also used to define the
+\fBMAIL\fR
+environment variable\&.
+.PP
+\fBMAX_MEMBERS_PER_GROUP\fR (number)
+.RS 4
+Maximum members per group entry\&. When the maximum is reached, a new group entry (line) is started in
+/etc/group
+(with the same name, same password, and same GID)\&.
+.sp
+默认值是 0，意味着组中的成员数没有限制。
+.sp
+此功能(分割组)允许限制组文件中的行长度。这对于确保 NIS 组的行比长于 1024 字符。
+.sp
+如果要强制这个限制，可以使用 25。
+.sp
+注意：分割组可能不受所有工具的支持(甚至在 Shadow 工具集中)。您不应该使用这个变量，除非真的需要。
+.RE
+.PP
+\fBSUB_GID_MIN\fR (number), \fBSUB_GID_MAX\fR (number), \fBSUB_GID_COUNT\fR (number)
+.RS 4
+If
+/etc/subuid
+exists, the commands
+\fBuseradd\fR
+and
+\fBnewusers\fR
+(unless the user already have subordinate group IDs) allocate
+\fBSUB_GID_COUNT\fR
+unused group IDs from the range
+\fBSUB_GID_MIN\fR
+to
+\fBSUB_GID_MAX\fR
+for each new user\&.
+.sp
+The default values for
+\fBSUB_GID_MIN\fR,
+\fBSUB_GID_MAX\fR,
+\fBSUB_GID_COUNT\fR
+are respectively 100000, 600100000 and 65536\&.
+.RE
+.PP
+\fBSUB_UID_MIN\fR (number), \fBSUB_UID_MAX\fR (number), \fBSUB_UID_COUNT\fR (number)
+.RS 4
+If
+/etc/subuid
+exists, the commands
+\fBuseradd\fR
+and
+\fBnewusers\fR
+(unless the user already have subordinate user IDs) allocate
+\fBSUB_UID_COUNT\fR
+unused user IDs from the range
+\fBSUB_UID_MIN\fR
+to
+\fBSUB_UID_MAX\fR
+for each new user\&.
+.sp
+The default values for
+\fBSUB_UID_MIN\fR,
+\fBSUB_UID_MAX\fR,
+\fBSUB_UID_COUNT\fR
+are respectively 100000, 600100000 and 65536\&.
+.RE
+.SH "文件"
+.PP
+/etc/group
+.RS 4
+组账户信息。
+.RE
+.PP
+/etc/gshadow
+.RS 4
+安全组账户信息。
+.RE
+.PP
+/etc/login\&.defs
+.RS 4
+Shadow 密码套件配置。
+.RE
+.PP
+/etc/passwd
+.RS 4
+用户账户信息。
+.RE
+.PP
+/etc/shadow
+.RS 4
+安全用户账户信息。
+.RE
+.PP
+/etc/subgid
+.RS 4
+Per user subordinate group IDs\&.
+.RE
+.PP
+/etc/subuid
+.RS 4
+Per user subordinate user IDs\&.
+.RE
+.SH "参见"
+.PP
+\fBchfn\fR(1),
+\fBchsh\fR(1),
+\fBpasswd\fR(1),
+\fBcrypt\fR(3),
+\fBgpasswd\fR(8),
+\fBgroupadd\fR(8),
+\fBgroupdel\fR(8),
+\fBgroupmod\fR(8),
+\fBlogin.defs\fR(5),
+\fBsubgid\fR(5), \fBsubuid\fR(5),
+\fBuseradd\fR(8),
+\fBuserdel\fR(8)\&.

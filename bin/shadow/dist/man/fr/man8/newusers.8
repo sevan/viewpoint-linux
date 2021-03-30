@@ -1,0 +1,449 @@
+'\" t
+.\"     Title: newusers
+.\"    Author: Julianne Frances Haugh
+.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
+.\"      Date: 23/01/2020
+.\"    Manual: Commandes de gestion du syst\(`eme
+.\"    Source: shadow-utils 4.8.1
+.\"  Language: French
+.\"
+.TH "NEWUSERS" "8" "23/01/2020" "shadow\-utils 4\&.8\&.1" "Commandes de gestion du syst\(`em"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NOM"
+newusers \- Mettre \(`a jour, ou cr\('eer de nouveaux utilisateurs par lots
+.SH "SYNOPSIS"
+.HP \w'\fBnewusers\fR\ 'u
+\fBnewusers\fR [\fIoptions\fR] [\fIfichier\fR]
+.SH "DESCRIPTION"
+.PP
+The
+\fBnewusers\fR
+command reads a
+\fIfile\fR
+(or the standard input by default) and uses this information to update a set of existing users or to create new users\&. Each line is in the same format as the standard password file (see
+\fBpasswd\fR(5)) with the exceptions explained below:
+.PP
+pw_name:pw_passwd:pw_uid:pw_gid:pw_gecos:pw_dir:pw_shell
+.PP
+\fIpw_name\fR
+.RS 4
+C\*(Aqest le nom de l\*(Aqutilisateur\&.
+.sp
+It can be the name of a new user or the name of an existing user (or a user created before by
+\fBnewusers\fR)\&. In case of an existing user, the user\*(Aqs information will be changed, otherwise a new user will be created\&.
+.RE
+.PP
+\fIpw_passwd\fR
+.RS 4
+Ce champ sera chiffr\('e et utilis\('e comme nouvelle valeur du mot de passe chiffr\('e\&.
+.RE
+.PP
+\fIpw_uid\fR
+.RS 4
+Ce champ est utilis\('e pour d\('efinir l\*(AqUID de l\*(Aqutilisateur\&.
+.sp
+If the field is empty, a new (unused) UID will be defined automatically by
+\fBnewusers\fR\&.
+.sp
+Si ce champ contient un nombre, ce nombre sera utilis\('e comme UID\&.
+.sp
+If this field contains the name of an existing user (or the name of a user created before by
+\fBnewusers\fR), the UID of the specified user will be used\&.
+.sp
+Si l\*(AqUID d\*(Aqun utilisateur existant est modifi\('e, vous devrez configurer vous\-m\(^eme le propri\('etaire des fichiers de l\*(Aqutilisateur\&.
+.RE
+.PP
+\fIpw_gid\fR
+.RS 4
+Ce champ est utilis\('e pour d\('efinir l\*(Aqidentifiant du groupe primaire de l\*(Aqutilisateur\&.
+.sp
+If this field contains the name of an existing group (or a group created before by
+\fBnewusers\fR), the GID of this group will be used as the primary group ID for the user\&.
+.sp
+Si ce champ est un nombre, ce nombre sera utilis\('e comme identifiant de groupe primaire de cet utilisateur\&. Si aucun groupe n\*(Aqexiste avec ce GID, un nouveau groupe sera cr\('e\('e avec ce GID et le nom de l\*(Aqutilisateur\&.
+.sp
+If this field is empty, a new group will be created with the name of the user and a GID will be automatically defined by
+\fBnewusers\fR
+to be used as the primary group ID for the user and as the GID for the new group\&.
+.sp
+If this field contains the name of a group which does not exist (and was not created before by
+\fBnewusers\fR), a new group will be created with the specified name and a GID will be automatically defined by
+\fBnewusers\fR
+to be used as the primary group ID for the user and GID for the new group\&.
+.RE
+.PP
+\fIpw_gecos\fR
+.RS 4
+Ce champ est copi\('e dans le champ GECOS de l\*(Aqutilisateur\&.
+.RE
+.PP
+\fIpw_dir\fR
+.RS 4
+Ce champ est utilis\('e pour d\('efinir le r\('epertoire personnel de l\*(Aqutilisateur\&.
+.sp
+Si ce champ n\*(Aqindique pas de r\('epertoire existant, le r\('epertoire indiqu\('e est cr\('e\('e, avec comme propri\('etaire l\*(Aqutilisateur en cours de cr\('eation ou mis \(`a jour et son groupe primaire\&.
+.sp
+If the home directory of an existing user is changed,
+\fBnewusers\fR
+does not move or copy the content of the old directory to the new location\&. This should be done manually\&.
+.RE
+.PP
+\fIpw_shell\fR
+.RS 4
+Ce champ d\('efinit l\*(Aqinterpr\('eteur de commande de l\*(Aqutilisateur\&. Aucune v\('erification n\*(Aqest effectu\('ee sur ce champ\&.
+.RE
+.PP
+\fBnewusers\fR
+first tries to create or change all the specified users, and then write these changes to the user or group databases\&. If an error occurs (except in the final writes to the databases), no changes are committed to the databases\&.
+.PP
+Cette commande a \('et\('e con\(,cue pour les gros syst\(`emes pour lesquels un grand nombre de comptes sont mis \(`a jour en m\(^eme temps\&.
+.SH "OPTIONS"
+.PP
+The options which apply to the
+\fBnewusers\fR
+command are:
+.PP
+\fB\-\-badname\fR\ \&
+.RS 4
+Allow names that do not conform to standards\&.
+.RE
+.PP
+\fB\-c\fR, \fB\-\-crypt\-method\fR
+.RS 4
+Utiliser la m\('ethode pr\('ecis\('ee pour chiffrer les mots de passe\&.
+.sp
+Les m\('ethodes disponibles sont DES, MD5, NONE et SHA256 ou SHA512 si votre libc prend en charge ces m\('ethodes\&.
+.RE
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+Afficher un message d\*(Aqaide et quitter\&.
+.RE
+.PP
+\fB\-r\fR, \fB\-\-system\fR
+.RS 4
+Cr\('eer un compte syst\(`eme\&.
+.sp
+System users will be created with no aging information in
+/etc/shadow, and their numeric identifiers are chosen in the
+\fBSYS_UID_MIN\fR\-\fBSYS_UID_MAX\fR
+range, defined in
+login\&.defs, instead of
+\fBUID_MIN\fR\-\fBUID_MAX\fR
+(and their
+\fBGID\fR
+counterparts for the creation of groups)\&.
+.RE
+.PP
+\fB\-R\fR, \fB\-\-root\fR\ \&\fICHROOT_DIR\fR
+.RS 4
+Apply changes in the
+\fICHROOT_DIR\fR
+directory and use the configuration files from the
+\fICHROOT_DIR\fR
+directory\&.
+.RE
+.PP
+\fB\-s\fR, \fB\-\-sha\-rounds\fR
+.RS 4
+Utiliser le nombre de rounds pr\('ecis\('e pour chiffrer les mots de passe\&.
+.sp
+La valeur 0 signifie que le syst\(`eme choisira la valeur par d\('efaut du nombre de rounds pour la m\('ethode de chiffrement (5\ \&000)\&.
+.sp
+Une valeur minimale de 1\ \&000 et une valeur maximale de 999\ \&999\ \&999 seront impos\('ees\&.
+.sp
+Vous ne pouvez utiliser cette m\('ethode qu\*(Aqavec les m\('ethodes de chiffrement SHA256 ou SHA512\&.
+.sp
+By default, the number of rounds is defined by the SHA_CRYPT_MIN_ROUNDS and SHA_CRYPT_MAX_ROUNDS variables in
+/etc/login\&.defs\&.
+.RE
+.SH "AVERTISSEMENTS"
+.PP
+Le fichier d\*(Aqentr\('ee doit \(^etre correctement prot\('eg\('e puisqu\*(Aqil contient des mots de passe en clair\&.
+.PP
+Vous devez vous assurer que les mots de passe et la m\('ethode de chiffrement respectent la politique de mot de passe du syst\(`eme\&.
+.SH "CONFIGURATION"
+.PP
+The following configuration variables in
+/etc/login\&.defs
+change the behavior of this tool:
+.PP
+\fBENCRYPT_METHOD\fR (string)
+.RS 4
+D\('efinir les algorithmes de chiffrement par d\('efaut du syst\(`eme pour coder les mots de passes (si aucun algorithme n\*(Aqa \('et\('e indiqu\('e sur la ligne de commandes)\&.
+.sp
+It can take one of these values:
+\fIDES\fR
+(default),
+\fIMD5\fR, \fISHA256\fR, \fISHA512\fR\&.
+.sp
+Note: this parameter overrides the
+\fBMD5_CRYPT_ENAB\fR
+variable\&.
+.RE
+.PP
+\fBGID_MAX\fR (number), \fBGID_MIN\fR (number)
+.RS 4
+Range of group IDs used for the creation of regular groups by
+\fBuseradd\fR,
+\fBgroupadd\fR, or
+\fBnewusers\fR\&.
+.sp
+The default value for
+\fBGID_MIN\fR
+(resp\&.
+\fBGID_MAX\fR) is 1000 (resp\&. 60000)\&.
+.RE
+.PP
+\fBHOME_MODE\fR (number)
+.RS 4
+The mode for new home directories\&. If not specified, the
+\fBUMASK\fR
+is used to create the mode\&.
+.sp
+\fBuseradd\fR
+and
+\fBnewusers\fR
+use this to set the mode of the home directory they create\&.
+.RE
+.PP
+\fBMAX_MEMBERS_PER_GROUP\fR (number)
+.RS 4
+Maximum members per group entry\&. When the maximum is reached, a new group entry (line) is started in
+/etc/group
+(with the same name, same password, and same GID)\&.
+.sp
+La valeur par d\('efaut est 0, ce qui signifie qu\*(Aqil n\*(Aqy a pas de limites pour le nombre de membres dans un groupe\&.
+.sp
+Cette fonctionnalit\('e (groupe d\('ecoup\('e) permet de limiter la longueur des lignes dans le fichier de groupes\&. Ceci est utile pour s\*(Aqassurer que les lignes pour les groupes NIS ne sont pas plus grandes que 1024 caract\(`eres\&.
+.sp
+Si vous avez besoin de configurer cette limite, vous pouvez utiliser 25\&.
+.sp
+Remarque\ \&: les groupes d\('ecoup\('es ne sont peut\-\(^etre pas pris en charge par tous les outils (m\(^eme dans la suite d\*(Aqoutils Shadow)\&. Vous ne devriez pas utiliser cette variable, sauf si vous en avez vraiment besoin\&.
+.RE
+.PP
+\fBMD5_CRYPT_ENAB\fR (boolean)
+.RS 4
+Indicate if passwords must be encrypted using the MD5\-based algorithm\&. If set to
+\fIyes\fR, new passwords will be encrypted using the MD5\-based algorithm compatible with the one used by recent releases of FreeBSD\&. It supports passwords of unlimited length and longer salt strings\&. Set to
+\fIno\fR
+if you need to copy encrypted passwords to other systems which don\*(Aqt understand the new algorithm\&. Default is
+\fIno\fR\&.
+.sp
+This variable is superseded by the
+\fBENCRYPT_METHOD\fR
+variable or by any command line option used to configure the encryption algorithm\&.
+.sp
+This variable is deprecated\&. You should use
+\fBENCRYPT_METHOD\fR\&.
+.RE
+.PP
+\fBPASS_MAX_DAYS\fR (number)
+.RS 4
+Nombre maximum de jours de validit\('e d\*(Aqun mot de passe\&. Apr\(`es cette dur\('ee, une modification du mot de passe est obligatoire\&. S\*(Aqil n\*(Aqest pas pr\('ecis\('e, la valeur de \-1 est utilis\('ee (ce qui enl\(`eve toute restriction)\&.
+.RE
+.PP
+\fBPASS_MIN_DAYS\fR (number)
+.RS 4
+Nombre minimum de jours autoris\('e avant la modification d\*(Aqun mot de passe\&. Toute tentative de modification du mot de passe avant cette dur\('ee est rejet\('ee\&. S\*(Aqil n\*(Aqest pas pr\('ecis\('e, la valeur de \-1 est utilis\('ee (ce qui enl\(`eve toute restriction)\&.
+.RE
+.PP
+\fBPASS_WARN_AGE\fR (number)
+.RS 4
+Nombre de jours durant lesquels l\*(Aqutilisateur recevra un avertissement avant que son mot de passe n\*(Aqarrive en fin de validit\('e\&. Une valeur n\('egative signifie qu\*(Aqaucun avertissement n\*(Aqest donn\('e\&. S\*(Aqil n\*(Aqest pas pr\('ecis\('e, aucun avertissement n\*(Aqest donn\('e\&.
+.RE
+.PP
+\fBSHA_CRYPT_MIN_ROUNDS\fR (number), \fBSHA_CRYPT_MAX_ROUNDS\fR (number)
+.RS 4
+When
+\fBENCRYPT_METHOD\fR
+is set to
+\fISHA256\fR
+or
+\fISHA512\fR, this defines the number of SHA rounds used by the encryption algorithm by default (when the number of rounds is not specified on the command line)\&.
+.sp
+Avec beaucoup de rounds, il est plus difficile de trouver le mot de passe avec une attaque par force brute\&. Veuillez remarquer que plus de ressources processeur seront n\('ecessaires pour authentifier les utilisateurs\&.
+.sp
+Si non pr\('ecis\('ee, la libc utilisera le nombre de rounds par d\('efaut (5000)\&.
+.sp
+Les valeurs doivent \(^etre comprises dans l\*(Aqintervalle 1\ \&000\ \&\-\ \&999\ \&999\ \&999\&.
+.sp
+If only one of the
+\fBSHA_CRYPT_MIN_ROUNDS\fR
+or
+\fBSHA_CRYPT_MAX_ROUNDS\fR
+values is set, then this value will be used\&.
+.sp
+If
+\fBSHA_CRYPT_MIN_ROUNDS\fR
+>
+\fBSHA_CRYPT_MAX_ROUNDS\fR, the highest value will be used\&.
+.RE
+.PP
+\fBSUB_GID_MIN\fR (number), \fBSUB_GID_MAX\fR (number), \fBSUB_GID_COUNT\fR (number)
+.RS 4
+If
+/etc/subuid
+exists, the commands
+\fBuseradd\fR
+and
+\fBnewusers\fR
+(unless the user already have subordinate group IDs) allocate
+\fBSUB_GID_COUNT\fR
+unused group IDs from the range
+\fBSUB_GID_MIN\fR
+to
+\fBSUB_GID_MAX\fR
+for each new user\&.
+.sp
+The default values for
+\fBSUB_GID_MIN\fR,
+\fBSUB_GID_MAX\fR,
+\fBSUB_GID_COUNT\fR
+are respectively 100000, 600100000 and 65536\&.
+.RE
+.PP
+\fBSUB_UID_MIN\fR (number), \fBSUB_UID_MAX\fR (number), \fBSUB_UID_COUNT\fR (number)
+.RS 4
+If
+/etc/subuid
+exists, the commands
+\fBuseradd\fR
+and
+\fBnewusers\fR
+(unless the user already have subordinate user IDs) allocate
+\fBSUB_UID_COUNT\fR
+unused user IDs from the range
+\fBSUB_UID_MIN\fR
+to
+\fBSUB_UID_MAX\fR
+for each new user\&.
+.sp
+The default values for
+\fBSUB_UID_MIN\fR,
+\fBSUB_UID_MAX\fR,
+\fBSUB_UID_COUNT\fR
+are respectively 100000, 600100000 and 65536\&.
+.RE
+.PP
+\fBSYS_GID_MAX\fR (number), \fBSYS_GID_MIN\fR (number)
+.RS 4
+Range of group IDs used for the creation of system groups by
+\fBuseradd\fR,
+\fBgroupadd\fR, or
+\fBnewusers\fR\&.
+.sp
+The default value for
+\fBSYS_GID_MIN\fR
+(resp\&.
+\fBSYS_GID_MAX\fR) is 101 (resp\&.
+\fBGID_MIN\fR\-1)\&.
+.RE
+.PP
+\fBSYS_UID_MAX\fR (number), \fBSYS_UID_MIN\fR (number)
+.RS 4
+Range of user IDs used for the creation of system users by
+\fBuseradd\fR
+or
+\fBnewusers\fR\&.
+.sp
+The default value for
+\fBSYS_UID_MIN\fR
+(resp\&.
+\fBSYS_UID_MAX\fR) is 101 (resp\&.
+\fBUID_MIN\fR\-1)\&.
+.RE
+.PP
+\fBUID_MAX\fR (number), \fBUID_MIN\fR (number)
+.RS 4
+Range of user IDs used for the creation of regular users by
+\fBuseradd\fR
+or
+\fBnewusers\fR\&.
+.sp
+The default value for
+\fBUID_MIN\fR
+(resp\&.
+\fBUID_MAX\fR) is 1000 (resp\&. 60000)\&.
+.RE
+.PP
+\fBUMASK\fR (number)
+.RS 4
+Valeur d\*(Aqinitialisation du masque de permissions\&. S\*(Aqil n\*(Aqest pas pr\('ecis\('e, le masque des permissions sera initialis\('e \(`a 022\&.
+.sp
+\fBuseradd\fR
+and
+\fBnewusers\fR
+use this mask to set the mode of the home directory they create if
+\fBHOME_MODE\fR
+is not set\&.
+.sp
+It is also used by
+\fBlogin\fR
+to define users\*(Aq initial umask\&. Note that this mask can be overridden by the user\*(Aqs GECOS line (if
+\fBQUOTAS_ENAB\fR
+is set) or by the specification of a limit with the
+\fIK\fR
+identifier in
+\fBlimits\fR(5)\&.
+.RE
+.SH "FICHIERS"
+.PP
+/etc/passwd
+.RS 4
+Informations sur les comptes des utilisateurs\&.
+.RE
+.PP
+/etc/shadow
+.RS 4
+Informations s\('ecuris\('ees sur les comptes utilisateurs\&.
+.RE
+.PP
+/etc/group
+.RS 4
+Informations sur les groupes\&.
+.RE
+.PP
+/etc/gshadow
+.RS 4
+Informations s\('ecuris\('ees sur les groupes\&.
+.RE
+.PP
+/etc/login\&.defs
+.RS 4
+Configuration de la suite des mots de passe cach\('es \(Fo\ \&shadow password\ \&\(Fc\&.
+.RE
+.PP
+/etc/subgid
+.RS 4
+IDs des groupes subalternes d\*(Aqun utilisateur\&.
+.RE
+.PP
+/etc/subuid
+.RS 4
+IDs de utilisateurs subalternes d\*(Aqun utilisateur\&.
+.RE
+.SH "VOIR AUSSI"
+.PP
+\fBlogin.defs\fR(5),
+\fBpasswd\fR(1),
+\fBsubgid\fR(5), \fBsubuid\fR(5),
+\fBuseradd\fR(8)\&.

@@ -1,0 +1,365 @@
+'\" t
+.\"     Title: passwd
+.\"    Author: Julianne Frances Haugh
+.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
+.\"      Date: 23.01.2020
+.\"    Manual: Dienstprogramme f\(:ur Benutzer
+.\"    Source: shadow-utils 4.8.1
+.\"  Language: German
+.\"
+.TH "PASSWD" "1" "23.01.2020" "shadow\-utils 4\&.8\&.1" "Dienstprogramme f\(:ur Benutzer"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+passwd \- \(:andert das Passwort eines Benutzers
+.SH "\(:UBERSICHT"
+.HP \w'\fBpasswd\fR\ 'u
+\fBpasswd\fR [\fIOptionen\fR] [\fIANMELDENAME\fR]
+.SH "BESCHREIBUNG"
+.PP
+The
+\fBpasswd\fR
+command changes passwords for user accounts\&. A normal user may only change the password for their own account, while the superuser may change the password for any account\&.
+\fBpasswd\fR
+also changes the account or associated password validity period\&.
+.SS "Ver\(:andern des Passworts"
+.PP
+Der Benutzer wird zuerst nach seinem alten Passwort gefragt, falls eines vorhanden ist\&. Dieses Passwort wird dann verschl\(:usselt und mit dem gespeicherten Passwort verglichen\&. Der Benutzer hat nur eine Gelegenheit, das richtige Passwort einzugeben\&. Der Superuser kann diesen Schritt \(:uberspringen, um so vergessene Passw\(:orter zu \(:andern\&.
+.PP
+After the password has been entered, password aging information is checked to see if the user is permitted to change the password at this time\&. If not,
+\fBpasswd\fR
+refuses to change the password and exits\&.
+.PP
+Der Benutzer wird dann aufgefordert, zweimal ein neues Passwort einzugeben\&. Beide Eingaben werden miteinander verglichen\&. Sie m\(:ussen \(:ubereinstimmen, damit das Passwort ge\(:andert wird\&.
+.PP
+Anschlie\(ssend wird das Passwort auf seine Komplexit\(:at \(:uberpr\(:uft\&. Eine allgemeine Richtlinie besagt, dass Passw\(:orter aus sechs bis acht Zeichen bestehen sollten und ein oder mehrere Zeichen aus folgenden Mengen enthalten sollten:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Kleinbuchstaben
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Ziffern 0 bis 9
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Satzzeichen
+.RE
+.PP
+Care must be taken not to include the system default erase or kill characters\&.
+\fBpasswd\fR
+will reject any password which is not suitably complex\&.
+.SS "Hinweise zu Benutzerpassw\(:ortern"
+.PP
+The security of a password depends upon the strength of the encryption algorithm and the size of the key space\&. The legacy
+\fIUNIX\fR
+System encryption method is based on the NBS DES algorithm\&. More recent methods are now recommended (see
+\fBENCRYPT_METHOD\fR)\&. The size of the key space depends upon the randomness of the password which is selected\&.
+.PP
+Gefahren f\(:ur die Sicherheit von Passw\(:ortern kommen gew\(:ohnlich von sorgloser Wahl oder Handhabung des Passworts\&. Daher sollten Sie kein Passwort w\(:ahlen, das in einem W\(:orterbuch auftaucht oder das aufgeschrieben werden muss\&. Das Passwort sollte somit kein echter Name, Ihr Autokennzeichen, Geburtstag oder Ihre Adresse sein\&. All das kann dazu verwendet werden, das Passwort zu erraten, und stellt daher eine Gefahr f\(:ur die Sicherheit Ihres Systems dar\&.
+.PP
+You can find advice on how to choose a strong password on http://en\&.wikipedia\&.org/wiki/Password_strength
+.SH "OPTIONEN"
+.PP
+The options which apply to the
+\fBpasswd\fR
+command are:
+.PP
+\fB\-a\fR, \fB\-\-all\fR
+.RS 4
+This option can be used only with
+\fB\-S\fR
+and causes show status for all users\&.
+.RE
+.PP
+\fB\-d\fR, \fB\-\-delete\fR
+.RS 4
+L\(:oscht das Passwort eines Benutzers (macht es leer)\&. Dies ist ein schneller Weg, um das Passwort eines Kontos zu deaktivieren\&. Dem Konto ist dann kein Passwort zugeordnet\&.
+.RE
+.PP
+\fB\-e\fR, \fB\-\-expire\fR
+.RS 4
+L\(:asst das Passwort eines Kontos sofort verfallen\&. Im Ergebnis kann damit erreicht werden, dass ein Benutzer beim n\(:achsten Login das Passwort \(:andern muss\&.
+.RE
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+zeigt die Hilfe an und beendet das Programm
+.RE
+.PP
+\fB\-i\fR, \fB\-\-inactive\fR\ \&\fIINACTIVE\fR
+.RS 4
+This option is used to disable an account after the password has been expired for a number of days\&. After a user account has had an expired password for
+\fIINACTIVE\fR
+days, the user may no longer sign on to the account\&.
+.RE
+.PP
+\fB\-k\fR, \fB\-\-keep\-tokens\fR
+.RS 4
+Zeigt an, dass nur abgelaufene Passw\(:orter ge\(:andert werden sollen\&. Der Benutzer m\(:ochte seine g\(:ultigen Passw\(:orter unver\(:andert lassen\&.
+.RE
+.PP
+\fB\-l\fR, \fB\-\-lock\fR
+.RS 4
+Sperrt das Passwort des bezeichneten Kontos\&. Die Option schaltet ein Passwort ab, indem es ihm einen Wert zuweist, der mit keinem m\(:oglichen verschl\(:usselten Wert \(:ubereinstimmen kann\&. Dies geschieht, indem ein \(Fc!\(Fo dem Passwort vorangestellt wird\&.
+.sp
+Note that this does not disable the account\&. The user may still be able to login using another authentication token (e\&.g\&. an SSH key)\&. To disable the account, administrators should use
+\fBusermod \-\-expiredate 1\fR
+(this set the account\*(Aqs expire date to Jan 2, 1970)\&.
+.sp
+Benutzer mit einem gesperrten Passwort k\(:onnen dieses nicht \(:andern\&.
+.RE
+.PP
+\fB\-n\fR, \fB\-\-mindays\fR\ \&\fIMIN_DAYS\fR
+.RS 4
+Set the minimum number of days between password changes to
+\fIMIN_DAYS\fR\&. A value of zero for this field indicates that the user may change their password at any time\&.
+.RE
+.PP
+\fB\-q\fR, \fB\-\-quiet\fR
+.RS 4
+stiller Modus
+.RE
+.PP
+\fB\-r\fR, \fB\-\-repository\fR\ \&\fIREPOSITORY\fR
+.RS 4
+change password in
+\fIREPOSITORY\fR
+repository
+.RE
+.PP
+\fB\-R\fR, \fB\-\-root\fR\ \&\fICHROOT_DIR\fR
+.RS 4
+Apply changes in the
+\fICHROOT_DIR\fR
+directory and use the configuration files from the
+\fICHROOT_DIR\fR
+directory\&.
+.RE
+.PP
+\fB\-S\fR, \fB\-\-status\fR
+.RS 4
+Zeigt Informationen \(:uber den Kontostatus an\&. Die Statusinformation besteht aus sieben Feldern\&. Das erste Feld ist der Anmeldename des Benutzers\&. Das zweite Feld zeigt an, ob das Benutzerkonto ein gesperrtes Passwort (L), kein Passwort (NP) oder ein verwendbares Passwort hat (P)\&. Das dritte Feld zeigt das Datum der letzten \(:Anderung des Passworts an\&. Die n\(:achsten vier Felder sind das Mindestalter, das H\(:ochstalter, die Dauer der Warnung und die Dauer der Unt\(:atigkeit f\(:ur das Passwort\&. Die Zeitr\(:aume werden in Tagen ausgedr\(:uckt\&.
+.RE
+.PP
+\fB\-u\fR, \fB\-\-unlock\fR
+.RS 4
+Unlock the password of the named account\&. This option re\-enables a password by changing the password back to its previous value (to the value before using the
+\fB\-l\fR
+option)\&.
+.RE
+.PP
+\fB\-w\fR, \fB\-\-warndays\fR\ \&\fIWARN_DAYS\fR
+.RS 4
+Set the number of days of warning before a password change is required\&. The
+\fIWARN_DAYS\fR
+option is the number of days prior to the password expiring that a user will be warned that their password is about to expire\&.
+.RE
+.PP
+\fB\-x\fR, \fB\-\-maxdays\fR\ \&\fIMAX_DAYS\fR
+.RS 4
+Set the maximum number of days a password remains valid\&. After
+\fIMAX_DAYS\fR, the password is required to be changed\&.
+.sp
+Passing the number
+\fI\-1\fR
+as
+\fIMAX_DAYS\fR
+will remove checking a password\*(Aqs validity\&.
+.RE
+.SH "WARNUNGEN"
+.PP
+Die Komplexit\(:at der Passwortpr\(:ufung kann sich auf verschiedenen Systemen unterscheiden\&. Der Benutzer wird angehalten, ein m\(:oglichst komplexes, von ihm aber gut zu verwendendes Passwort zu w\(:ahlen\&.
+.PP
+Benutzer k\(:onnen unter Umst\(:anden ihr Passwort nicht \(:andern, wenn auf dem System NIS aktiviert ist, sie aber nicht am NIS\-Server angemeldet sind\&.
+.SH "KONFIGURATION"
+.PP
+The following configuration variables in
+/etc/login\&.defs
+change the behavior of this tool:
+.PP
+\fBENCRYPT_METHOD\fR (string)
+.RS 4
+Damit wird der standardm\(:a\(ssige Verschl\(:usselungsalgorithmus, mit dem Passw\(:orter verschl\(:usselt werden, bestimmt (soweit nicht in der Befehlszeile ein Algorithmus angegeben wird)\&.
+.sp
+It can take one of these values:
+\fIDES\fR
+(default),
+\fIMD5\fR, \fISHA256\fR, \fISHA512\fR\&.
+.sp
+Note: this parameter overrides the
+\fBMD5_CRYPT_ENAB\fR
+variable\&.
+.RE
+.PP
+\fBMD5_CRYPT_ENAB\fR (boolean)
+.RS 4
+Indicate if passwords must be encrypted using the MD5\-based algorithm\&. If set to
+\fIyes\fR, new passwords will be encrypted using the MD5\-based algorithm compatible with the one used by recent releases of FreeBSD\&. It supports passwords of unlimited length and longer salt strings\&. Set to
+\fIno\fR
+if you need to copy encrypted passwords to other systems which don\*(Aqt understand the new algorithm\&. Default is
+\fIno\fR\&.
+.sp
+This variable is superseded by the
+\fBENCRYPT_METHOD\fR
+variable or by any command line option used to configure the encryption algorithm\&.
+.sp
+This variable is deprecated\&. You should use
+\fBENCRYPT_METHOD\fR\&.
+.RE
+.PP
+\fBOBSCURE_CHECKS_ENAB\fR (boolean)
+.RS 4
+Aktiviert zus\(:atzliche Tests bei der Ver\(:anderung eines Passworts\&.
+.RE
+.PP
+\fBPASS_ALWAYS_WARN\fR (boolean)
+.RS 4
+weist auf schwache Passw\(:orter hin (aber l\(:asst sie zu), falls Sie root sind
+.RE
+.PP
+\fBPASS_CHANGE_TRIES\fR (number)
+.RS 4
+maximale Anzahl von Versuchen, ein Passwort zu \(:andern, wenn dies wegen zu geringer St\(:arke des gew\(:ahlten Passworts abgelehnt wurde
+.RE
+.PP
+\fBPASS_MAX_LEN\fR (number), \fBPASS_MIN_LEN\fR (number)
+.RS 4
+Number of significant characters in the password for crypt()\&.
+\fBPASS_MAX_LEN\fR
+is 8 by default\&. Don\*(Aqt change unless your crypt() is better\&. This is ignored if
+\fBMD5_CRYPT_ENAB\fR
+set to
+\fIyes\fR\&.
+.RE
+.PP
+\fBSHA_CRYPT_MIN_ROUNDS\fR (number), \fBSHA_CRYPT_MAX_ROUNDS\fR (number)
+.RS 4
+When
+\fBENCRYPT_METHOD\fR
+is set to
+\fISHA256\fR
+or
+\fISHA512\fR, this defines the number of SHA rounds used by the encryption algorithm by default (when the number of rounds is not specified on the command line)\&.
+.sp
+Je mehr Runden Sie definieren, umso schwieriger ist es, das Passwort mit sturem Durchprobieren (brute force) zu knacken; umso mehr Rechenleistung wird jedoch auch f\(:ur die Anmeldung eines Benutzers ben\(:otigt\&.
+.sp
+Falls Sie nichts angeben, wird libc die Standardanzahl der Runden festlegen (5000)\&.
+.sp
+Die Werte m\(:ussen zwischen 1000\-999\&.999\&.999 liegen\&.
+.sp
+If only one of the
+\fBSHA_CRYPT_MIN_ROUNDS\fR
+or
+\fBSHA_CRYPT_MAX_ROUNDS\fR
+values is set, then this value will be used\&.
+.sp
+If
+\fBSHA_CRYPT_MIN_ROUNDS\fR
+>
+\fBSHA_CRYPT_MAX_ROUNDS\fR, the highest value will be used\&.
+.RE
+.SH "DATEIEN"
+.PP
+/etc/passwd
+.RS 4
+Informationen zu den Benutzerkonten
+.RE
+.PP
+/etc/shadow
+.RS 4
+verschl\(:usselte Informationen zu den Benutzerkonten
+.RE
+.PP
+/etc/login\&.defs
+.RS 4
+Konfiguration der Shadow\-Passwort\-Werkzeugsammlung
+.RE
+.SH "R\(:UCKGABEWERTE"
+.PP
+The
+\fBpasswd\fR
+command exits with the following values:
+.PP
+\fI0\fR
+.RS 4
+success
+.RE
+.PP
+\fI1\fR
+.RS 4
+permission denied
+.RE
+.PP
+\fI2\fR
+.RS 4
+invalid combination of options
+.RE
+.PP
+\fI3\fR
+.RS 4
+unexpected failure, nothing done
+.RE
+.PP
+\fI4\fR
+.RS 4
+unexpected failure,
+passwd
+file missing
+.RE
+.PP
+\fI5\fR
+.RS 4
+passwd
+file busy, try again
+.RE
+.PP
+\fI6\fR
+.RS 4
+invalid argument to option
+.RE
+.SH "SIEHE AUCH"
+.PP
+\fBchpasswd\fR(8),
+\fBpasswd\fR(5),
+\fBshadow\fR(5),
+\fBlogin.defs\fR(5),
+\fBusermod\fR(8)\&.

@@ -1,0 +1,193 @@
+'\" t
+.\"     Title: pwconv
+.\"    Author: Marek Micha\(/lkiewicz
+.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
+.\"      Date: 23/01/2020
+.\"    Manual: Comandi per la gestione del sistema
+.\"    Source: shadow-utils 4.8.1
+.\"  Language: Italian
+.\"
+.TH "PWCONV" "8" "23/01/2020" "shadow\-utils 4\&.8\&.1" "Comandi per la gestione del si"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NOME"
+pwconv, pwunconv, grpconv, grpunconv \- convertono a e da password e gruppi shadow\&.
+.SH "SINOSSI"
+.HP \w'\fBpwconv\fR\ 'u
+\fBpwconv\fR [\fIopzioni\fR]
+.HP \w'\fBpwunconv\fR\ 'u
+\fBpwunconv\fR [\fIopzioni\fR]
+.HP \w'\fBgrpconv\fR\ 'u
+\fBgrpconv\fR [\fIopzioni\fR]
+.HP \w'\fBgrpunconv\fR\ 'u
+\fBgrpunconv\fR [\fIopzioni\fR]
+.SH "DESCRIZIONE"
+.PP
+The
+\fBpwconv\fR
+command creates
+\fIshadow\fR
+from
+\fIpasswd\fR
+and an optionally existing
+\fIshadow\fR\&.
+.PP
+The
+\fBpwunconv\fR
+command creates
+\fIpasswd\fR
+from
+\fIpasswd\fR
+and
+\fIshadow\fR
+and then removes
+\fIshadow\fR\&.
+.PP
+The
+\fBgrpconv\fR
+command creates
+\fIgshadow\fR
+from
+\fIgroup\fR
+and an optionally existing
+\fIgshadow\fR\&.
+.PP
+The
+\fBgrpunconv\fR
+command creates
+\fIgroup\fR
+from
+\fIgroup\fR
+and
+\fIgshadow\fR
+and then removes
+\fIgshadow\fR\&.
+.PP
+These four programs all operate on the normal and shadow password and group files:
+/etc/passwd,
+/etc/group,
+/etc/shadow, and
+/etc/gshadow\&.
+.PP
+Each program acquires the necessary locks before conversion\&.
+\fBpwconv\fR
+and
+\fBgrpconv\fR
+are similar\&. First, entries in the shadowed file which don\*(Aqt exist in the main file are removed\&. Then, shadowed entries which don\*(Aqt have `x\*(Aq as the password in the main file are updated\&. Any missing shadowed entries are added\&. Finally, passwords in the main file are replaced with `x\*(Aq\&. These programs can be used for initial conversion as well to update the shadowed file if the main file is edited by hand\&.
+.PP
+\fBpwconv\fR
+will use the values of
+\fIPASS_MIN_DAYS\fR,
+\fIPASS_MAX_DAYS\fR, and
+\fIPASS_WARN_AGE\fR
+from
+/etc/login\&.defs
+when adding new entries to
+/etc/shadow\&.
+.PP
+Likewise
+\fBpwunconv\fR
+and
+\fBgrpunconv\fR
+are similar\&. Passwords in the main file are updated from the shadowed file\&. Entries which exist in the main file but not in the shadowed file are left alone\&. Finally, the shadowed file is removed\&. Some password aging information is lost by
+\fBpwunconv\fR\&. It will convert what it can\&.
+.SH "OPZIONI"
+.PP
+The options which apply to the
+\fBpwconv\fR,
+\fBpwunconv\fR,
+\fBgrpconv\fR, and
+\fBgrpunconv\fR
+commands are:
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+Mostra un messaggio di aiuto ed esce\&.
+.RE
+.PP
+\fB\-R\fR, \fB\-\-root\fR\ \&\fICHROOT_DIR\fR
+.RS 4
+Apply changes in the
+\fICHROOT_DIR\fR
+directory and use the configuration files from the
+\fICHROOT_DIR\fR
+directory\&.
+.RE
+.SH "ERRORI"
+.PP
+Errors in the password or group files (such as invalid or duplicate entries) may cause these programs to loop forever or fail in other strange ways\&. Please run
+\fBpwck\fR
+and
+\fBgrpck\fR
+to correct any such errors before converting to or from shadow passwords or groups\&.
+.SH "CONFIGURAZIONE"
+.PP
+The following configuration variable in
+/etc/login\&.defs
+changes the behavior of
+\fBgrpconv\fR
+and
+\fBgrpunconv\fR:
+.PP
+\fBMAX_MEMBERS_PER_GROUP\fR (number)
+.RS 4
+Maximum members per group entry\&. When the maximum is reached, a new group entry (line) is started in
+/etc/group
+(with the same name, same password, and same GID)\&.
+.sp
+Il valore predefinito \(`e 0, che non pone nessun limite al numero di membri per gruppo\&.
+.sp
+Questa opzione (dividi gruppo) permette di limitare la lunghezza delle righe nel file \(Fogroup\(Fc\&. Questo \(`e utile per essere certi che le righe per gruppi NIS non eccedano i 1024 caratteri\&.
+.sp
+Se si deve impostare questo limite, si pu\(`o usare 25\&.
+.sp
+Nota: la divisione dei gruppi potrebbe non essere supportata da ogni strumento (anche all\*(Aqinterno del pacchetto Shadow)\&. Non si dovrebbe utilizzare questa variabile a meno di esserci forzati\&.
+.RE
+.PP
+The following configuration variables in
+/etc/login\&.defs
+change the behavior of
+\fBpwconv\fR:
+.PP
+\fBPASS_MAX_DAYS\fR (number)
+.RS 4
+Il numero massimo di giorni che una password pu\(`o essere utilizzata\&. Se la password \(`e pi\(`u vecchia verr\(`a imposto il suo cambiamento\&. Se non specificato viene assunto \-1 (che disabilita questo controllo)\&.
+.RE
+.PP
+\fBPASS_MIN_DAYS\fR (number)
+.RS 4
+Il numero minimo di giorni tra due cambiamenti di password\&. Ogni tentativo di cambiare la password prima di questo periodo verr\(`a rifiutato\&. Se non specificato viene assunto \-1 (che disabilita questo controllo)\&.
+.RE
+.PP
+\fBPASS_WARN_AGE\fR (number)
+.RS 4
+Il numero di giorni per i quali un utente va avvisato che la sua password sta per scadere\&. Se zero l\*(Aqutente viene avvisato solo alla scadenza\&. Un valore negativo indica che non si deve avvisare mai\&. Se non specificato allora non c\*(Aq\(`e nessun avviso\&.
+.RE
+.SH "FILE"
+.PP
+/etc/login\&.defs
+.RS 4
+Configurazione del pacchetto password shadow
+.RE
+.SH "VEDERE ANCHE"
+.PP
+\fBgrpck\fR(8),
+\fBlogin.defs\fR(5),
+\fBpwck\fR(8)\&.
