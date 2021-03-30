@@ -88,7 +88,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-bin_PROGRAMS = groups$(EXEEXT) login$(EXEEXT) $(am__EXEEXT_1)
+bin_PROGRAMS = login$(EXEEXT) $(am__EXEEXT_1)
 sbin_PROGRAMS = nologin$(EXEEXT)
 ubin_PROGRAMS = faillog$(EXEEXT) lastlog$(EXEEXT) chage$(EXEEXT) \
 	chfn$(EXEEXT) chsh$(EXEEXT) expiry$(EXEEXT) gpasswd$(EXEEXT) \
