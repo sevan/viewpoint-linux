@@ -84,3 +84,7 @@ configure --prefix=/usr --disable-static --libdir=/usr/lib64
 libcap
 make prefix=/usr lib=lib64
 make prefix=/usr lib=lib64 install
+
+shadow
+touch /usr/bin/passwd
+configure --sysconf=/etc --with-group-name-max-length=32 --without-nscd
