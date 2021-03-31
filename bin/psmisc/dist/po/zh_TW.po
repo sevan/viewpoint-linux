@@ -1,0 +1,828 @@
+# Traditional Chinese Messages for psmisc.
+# Copyright (C) 2021 Free Software Foundation, Inc.
+# This file is distributed under the same license as the psmisc package.
+#
+# Wei-Lun Chao <bluebat@member.fsf.org>, 2009, 2013, 2015.
+# pan93412 <pan93412@gmail.com>, 2018, 2019, 2021.
+msgid ""
+msgstr ""
+"Project-Id-Version: psmisc 23.4rc1\n"
+"Report-Msgid-Bugs-To: csmall@dropbear.xyz\n"
+"POT-Creation-Date: 2021-02-06 11:02+1100\n"
+"PO-Revision-Date: 2021-01-24 19:42+0800\n"
+"Last-Translator: Yi-Jyun Pan <pan93412@gmail.com>\n"
+"Language-Team: Chinese (traditional) <zh-l10n@lists.linux.org.tw>\n"
+"Language: zh_TW\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Bugs: Report translation errors to the Language-Team address.\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 2.4.2\n"
+
+#: src/fuser.c:145
+#, c-format
+msgid ""
+"Usage: fuser [-fIMuvw] [-a|-s] [-4|-6] [-c|-m|-n SPACE]\n"
+"             [-k [-i] [-SIGNAL]] NAME...\n"
+"       fuser -l\n"
+"       fuser -V\n"
+"Show which processes use the named files, sockets, or filesystems.\n"
+"\n"
+"  -a,--all              display unused files too\n"
+"  -i,--interactive      ask before killing (ignored without -k)\n"
+"  -I,--inode            use always inodes to compare files\n"
+"  -k,--kill             kill processes accessing the named file\n"
+"  -l,--list-signals     list available signal names\n"
+"  -m,--mount            show all processes using the named filesystems or\n"
+"                        block device\n"
+"  -M,--ismountpoint     fulfill request only if NAME is a mount point\n"
+"  -n,--namespace SPACE  search in this name space (file, udp, or tcp)\n"
+"  -s,--silent           silent operation\n"
+"  -SIGNAL               send this signal instead of SIGKILL\n"
+"  -u,--user             display user IDs\n"
+"  -v,--verbose          verbose output\n"
+"  -w,--writeonly        kill only processes with write access\n"
+"  -V,--version          display version information\n"
+msgstr ""
+"用法： fuser [-fIMuvw] [-a|-s] [-4|-6] [-c|-m|-n 空白]\n"
+"             [-k [-i] [-SIGNAL]] 名稱...\n"
+"       fuser -l\n"
+"       fuser -V\n"
+"顯示哪個執行程序使用了該名稱的檔案、接口或檔案系統。\n"
+"\n"
+"  -a,--all              亦顯示未用到檔案\n"
+"  -i,--interactive      強制停止執行程序前詢問 (若沒有 -k 參數則忽略)\n"
+"  -I,--inode            始終使用 inode 來比較檔案\n"
+"  -k,--kill             強制停止存取該名稱檔案的執行程序\n"
+"  -l,--list-signals     列出可用的信號名稱\n"
+"  -m,--mount            顯示所有使用該名稱的檔案系統或\n"
+"                        block 區塊裝置的執行程序\n"
+"  -M,--ismountpoint     只有當名稱是掛載點時才完全達到要求\n"
+"  -n,--namespace 空間    在這個命名空間中搜尋 (檔案、udp 或 tcp)\n"
+"  -s,--silent           安靜地作業\n"
+"  -SIGNAL               發送這個信號以代替 SIGKILL\n"
+"  -u,--user             顯示使用者識別號\n"
+"  -v,--verbose          詳細的輸出\n"
+"  -w,--writeonly        只砍除有寫入權限的行程\n"
+"  -V,--version          顯示版本資訊\n"
+
+#: src/fuser.c:166
+#, c-format
+msgid ""
+"  -4,--ipv4             search IPv4 sockets only\n"
+"  -6,--ipv6             search IPv6 sockets only\n"
+msgstr ""
+"  -4,--ipv4             只搜尋 IPv4 通訊端\n"
+"  -6,--ipv6             只搜尋 IPv6 通訊端\n"
+
+#: src/fuser.c:169
+#, c-format
+msgid ""
+"  -                     reset options\n"
+"\n"
+"  udp/tcp names: [local_port][,[rmt_host][,[rmt_port]]]\n"
+"\n"
+msgstr ""
+"  -                     重置選項\n"
+"\n"
+"  udp/tcp 名稱：[本地埠號][,[遠端主機][,[遠端埠號]]]\n"
+"\n"
+
+#: src/fuser.c:176
+#, c-format
+msgid "fuser (PSmisc) %s\n"
+msgstr "fuser (PSmisc) %s\n"
+
+#: src/fuser.c:179 src/pstree.c:1266
+#, c-format
+msgid ""
+"Copyright (C) 1993-2020 Werner Almesberger and Craig Small\n"
+"\n"
+msgstr ""
+"著作權所有 © 1993-2020 Werner Almesberger 和 Craig Small\n"
+"\n"
+
+#: src/fuser.c:181 src/killall.c:839 src/peekfd.c:195 src/prtstat.c:68
+#: src/pstree.c:1268
+#, c-format
+msgid ""
+"PSmisc comes with ABSOLUTELY NO WARRANTY.\n"
+"This is free software, and you are welcome to redistribute it under\n"
+"the terms of the GNU General Public License.\n"
+"For more information about these matters, see the files named COPYING.\n"
+msgstr ""
+"PSmisc 完全不附帶任何擔保。\n"
+"這是自由軟體，並且歡迎您依照 GNU 通用公共授權\n"
+"來再次散布它。\n"
+"請參看名為 COPYING 的檔案，以獲得更多關於這些問題的資訊。\n"
+
+#: src/fuser.c:203
+#, c-format
+msgid "Cannot open /proc directory: %s\n"
+msgstr "無法開啟 /proc 目錄：%s\n"
+
+#: src/fuser.c:394 src/fuser.c:447 src/fuser.c:2078
+#, c-format
+msgid "Cannot allocate memory for matched proc: %s\n"
+msgstr "無法為符合的行程配置記憶體：%s\n"
+
+#: src/fuser.c:474
+#, c-format
+msgid "Specified filename %s does not exist.\n"
+msgstr "指定的檔名 %s 不存在。\n"
+
+#: src/fuser.c:477
+#, c-format
+msgid "Cannot stat %s: %s\n"
+msgstr "無法顯示 %s:%s\n"
+
+#: src/fuser.c:614
+#, c-format
+msgid "Cannot resolve local port %s: %s\n"
+msgstr "無法解析本機通訊埠 %s:%s\n"
+
+#: src/fuser.c:634
+#, c-format
+msgid "Unknown local port AF %d\n"
+msgstr "不明的本機通訊埠 AF %d\n"
+
+#: src/fuser.c:723
+#, c-format
+msgid "Cannot open protocol file \"%s\": %s\n"
+msgstr "無法開啟協定檔案「%s」：%s\n"
+
+#: src/fuser.c:1026
+#, c-format
+msgid "Specified filename %s is not a mountpoint.\n"
+msgstr "指定的檔名 %s 並非掛載點。\n"
+
+#: src/fuser.c:1118
+#, c-format
+msgid "%s: Invalid option %s\n"
+msgstr "%s：無效的選項 %s\n"
+
+#: src/fuser.c:1172
+msgid "Namespace option requires an argument."
+msgstr "命名空間選項需要一個引數。"
+
+#: src/fuser.c:1189
+msgid "Invalid namespace name"
+msgstr "無效的命名空間名稱"
+
+#: src/fuser.c:1254
+msgid "You can only use files with mountpoint options"
+msgstr "您只能使用具備掛載點選項的檔案"
+
+#: src/fuser.c:1304
+msgid "No process specification given"
+msgstr "沒有給定任何行程規格"
+
+#: src/fuser.c:1319
+msgid "all option cannot be used with silent option."
+msgstr "所有選項無法與安靜選項一起使用。"
+
+#: src/fuser.c:1324
+msgid "You cannot search for only IPv4 and only IPv6 sockets at the same time"
+msgstr "您無法同時只搜尋 IPv4 又只搜尋 IPv6 通訊端"
+
+#: src/fuser.c:1413
+#, c-format
+msgid "%*s USER        PID ACCESS COMMAND\n"
+msgstr "%*s 使用者      PID 存取命令\n"
+
+#: src/fuser.c:1446 src/fuser.c:1503
+msgid "(unknown)"
+msgstr "(不明)"
+
+#: src/fuser.c:1588 src/fuser.c:1638
+#, c-format
+msgid "Cannot stat file %s: %s\n"
+msgstr "無法顯示檔案 %s：%s\n"
+
+#: src/fuser.c:1731
+#, c-format
+msgid "Cannot open /proc/net/unix: %s\n"
+msgstr "無法開啟 /proc/net/unix：%s\n"
+
+#: src/fuser.c:1826
+#, c-format
+msgid "Kill process %d ? (y/N) "
+msgstr "砍除行程 %d？(y/N) "
+
+#: src/fuser.c:1862
+#, c-format
+msgid "Could not kill process %d: %s\n"
+msgstr "無法砍除行程 %d：%s\n"
+
+#: src/fuser.c:1877
+#, c-format
+msgid "Cannot open a network socket.\n"
+msgstr "無法開啟網路通訊端。\n"
+
+#: src/fuser.c:1881
+#, c-format
+msgid "Cannot find socket's device number.\n"
+msgstr "找不到通訊端裝置編號。\n"
+
+#: src/killall.c:109
+#, c-format
+msgid "Kill %s(%s%d) ? (y/N) "
+msgstr "砍除 %s(%s%d)？(y/N) "
+
+#: src/killall.c:112
+#, c-format
+msgid "Signal %s(%s%d) ? (y/N) "
+msgstr "信號 %s(%s%d)？(y/N) "
+
+#: src/killall.c:255
+#, c-format
+msgid "killall: Cannot get UID from process status\n"
+msgstr "killall：無法從程序狀態提取 UID\n"
+
+#: src/killall.c:344
+#, c-format
+msgid "killall: Bad regular expression: %s\n"
+msgstr "killall：不當的正規表示式：%s\n"
+
+#: src/killall.c:501
+#, c-format
+msgid "killall: skipping partial match %s(%d)\n"
+msgstr "killall：跳過部分匹配 %s(%d)\n"
+
+#: src/killall.c:744
+#, c-format
+msgid "Killed %s(%s%d) with signal %d\n"
+msgstr "藉由信號 %4$d 砍除 %1$s(%2$s%3$d)\n"
+
+#: src/killall.c:763
+#, c-format
+msgid "%s: no process found\n"
+msgstr "%s：找不到任何行程\n"
+
+#: src/killall.c:804
+#, c-format
+msgid "Usage: killall [OPTION]... [--] NAME...\n"
+msgstr "用法：killall [選項]… [--] 名稱…\n"
+
+#: src/killall.c:806
+#, c-format
+msgid ""
+"       killall -l, --list\n"
+"       killall -V, --version\n"
+"\n"
+"  -e,--exact          require exact match for very long names\n"
+"  -I,--ignore-case    case insensitive process name match\n"
+"  -g,--process-group  kill process group instead of process\n"
+"  -y,--younger-than   kill processes younger than TIME\n"
+"  -o,--older-than     kill processes older than TIME\n"
+"  -i,--interactive    ask for confirmation before killing\n"
+"  -l,--list           list all known signal names\n"
+"  -q,--quiet          don't print complaints\n"
+"  -r,--regexp         interpret NAME as an extended regular expression\n"
+"  -s,--signal SIGNAL  send this signal instead of SIGTERM\n"
+"  -u,--user USER      kill only process(es) running as USER\n"
+"  -v,--verbose        report if the signal was successfully sent\n"
+"  -V,--version        display version information\n"
+"  -w,--wait           wait for processes to die\n"
+"  -n,--ns PID         match processes that belong to the same namespaces\n"
+"                      as PID\n"
+msgstr ""
+"       killall -l, --list\n"
+"       killall -V, --version\n"
+"\n"
+"  -e,--exact          對於很長的名稱需要精確的符合\n"
+"  -I,--ignore-case    行程名稱符合時大小寫不須相符\n"
+"  -g,--process-group  砍除行程群組以代替行程\n"
+"  -y,--younger-than   砍除時間較新的行程\n"
+"  -o,--older-than     砍除時間較舊的行程\n"
+"  -i,--interactive    砍除之前徵詢確認\n"
+"  -l,--list           列出所有已知信號名稱\n"
+"  -q,--quiet          不印出抱怨訊息\n"
+"  -r,--regexp         將名稱以進階正規表示式解譯\n"
+"  -s,--signal 信號    發送這個信號以代替 SIGTERM\n"
+"  -u,--user 使用者    只砍除指定使用者執行的行程\n"
+"  -v,--verbose        如果信號已被成功發送則回報\n"
+"  -V,--version        顯示版本資訊\n"
+"  -w,--wait           等待行程的消滅\n"
+"  -n,--ns PID         符合屬於與 PID 相同命名空間的執行程序\n"
+
+#: src/killall.c:826
+#, c-format
+msgid ""
+"  -Z,--context REGEXP kill only process(es) having context\n"
+"                      (must precede other arguments)\n"
+msgstr ""
+"  -Z,--context REGEXP 只砍除有此上下文的行程\n"
+"                     (必須位於其他引數之前)\n"
+
+#: src/killall.c:837
+#, c-format
+msgid ""
+"Copyright (C) 1993-2021 Werner Almesberger and Craig Small\n"
+"\n"
+msgstr ""
+"著作權所有 © 1993-2021 Werner Almesberger 和 Craig Small\n"
+"\n"
+
+#: src/killall.c:922 src/killall.c:928
+msgid "Invalid time format"
+msgstr "無效的時間格式"
+
+#: src/killall.c:948
+#, c-format
+msgid "Cannot find user %s\n"
+msgstr "找不到使用者 %s\n"
+
+#: src/killall.c:983
+msgid "Invalid namespace PID"
+msgstr "無效的命名空間 PID"
+
+#: src/killall.c:990
+#, c-format
+msgid "Bad regular expression: %s\n"
+msgstr "不當的正規表示式：%s\n"
+
+#: src/killall.c:1024
+#, c-format
+msgid "killall: Maximum number of names is %d\n"
+msgstr "killall：名稱數量最大值是 %d\n"
+
+#: src/killall.c:1029
+#, c-format
+msgid "killall: %s lacks process entries (not mounted ?)\n"
+msgstr "killall：%s 缺乏行程條目 (未掛載？)\n"
+
+#: src/peekfd.c:183
+#, c-format
+msgid "Error attaching to pid %i\n"
+msgstr "附加到 pid %i 時發生錯誤\n"
+
+#: src/peekfd.c:191
+#, c-format
+msgid "peekfd (PSmisc) %s\n"
+msgstr "peekfd (PSmisc) %s\n"
+
+#: src/peekfd.c:193
+#, c-format
+msgid ""
+"Copyright (C) 2007 Trent Waddington\n"
+"\n"
+msgstr ""
+"著作權 © 2007 Trent Waddington\n"
+"\n"
+
+#: src/peekfd.c:203
+#, c-format
+msgid ""
+"Usage: peekfd [-8] [-n] [-c] [-d] [-V] [-h] <pid> [<fd> ..]\n"
+"    -8, --eight-bit-clean        output 8 bit clean streams.\n"
+"    -n, --no-headers             don't display read/write from fd headers.\n"
+"    -c, --follow                 peek at any new child processes too.\n"
+"    -t, --tgid                   peek at all threads where tgid equals "
+"<pid>.\n"
+"    -d, --duplicates-removed     remove duplicate read/writes from the "
+"output.\n"
+"    -V, --version                prints version info.\n"
+"    -h, --help                   prints this help.\n"
+"\n"
+"  Press CTRL-C to end output.\n"
+msgstr ""
+"用法：peekfd [-8] [-n] [-c] [-d] [-V] [-h] <pid> [<fd> ..]\n"
+"    -8 輸出不含第八位元的資料流。\n"
+"    -n 不從 fd 標頭顯示讀取/寫入。\n"
+"    -c 也取自任何新的子行程。\n"
+"    -d 從輸出移除重複的讀取/寫入。\n"
+"    -V 印出版本資訊。\n"
+"    -h 印出這個說明。\n"
+"\n"
+"  按下 CTRL-C 以結束輸出。\n"
+"用法：peekfd [-8] [-n] [-c] [-d] [-V] [-h] <pid> [<fd> ..]\n"
+"    -8, --eight-bit-clean        輸出 8 位元 clean 串流。\n"
+"    -n, --no-headers             不顯示來自 fd 標頭的讀取與寫入\n"
+"    -c, --follow                 亦跳至任何新的子執行程序\n"
+"    -t, --tgid                   跳至 tgid 等於 <pid> 的所有線程.\n"
+"    -d, --duplicates-removed     從輸出中移除重複的讀取與寫入\n"
+"    -V, --version                顯示版本資訊\n"
+"    -h, --help                    顯示此說明\n"
+"\n"
+"  輸入 CTRL-C 結束輸出。\n"
+
+#: src/prtstat.c:54
+#, c-format
+msgid ""
+"Usage: prtstat [options] PID ...\n"
+"       prtstat -V\n"
+"Print information about a process\n"
+"    -r,--raw       Raw display of information\n"
+"    -V,--version   Display version information and exit\n"
+msgstr ""
+"用法：prtstat [選項] PID…\n"
+"     prtstat -V\n"
+"印出行程的相關資訊\n"
+"    -r,--raw       資訊的原始顯示\n"
+"    -V,--version   顯示版本資訊然後離開\n"
+
+#: src/prtstat.c:65
+#, c-format
+msgid "prtstat (PSmisc) %s\n"
+msgstr "prtstat (PSmisc) %s\n"
+
+#: src/prtstat.c:66
+#, c-format
+msgid ""
+"Copyright (C) 2009-2020 Craig Small\n"
+"\n"
+msgstr ""
+"著作權所有 © 2009-2020 Craig Small\n"
+"\n"
+
+#: src/prtstat.c:78
+msgid "running"
+msgstr "執行中"
+
+#: src/prtstat.c:80
+msgid "sleeping"
+msgstr "暫停中"
+
+#: src/prtstat.c:82
+msgid "disk sleep"
+msgstr "磁碟暫停"
+
+#: src/prtstat.c:84
+msgid "zombie"
+msgstr "殭屍"
+
+#: src/prtstat.c:86
+msgid "traced"
+msgstr "追蹤"
+
+#: src/prtstat.c:88
+msgid "paging"
+msgstr "分頁"
+
+#: src/prtstat.c:90
+msgid "unknown"
+msgstr "不明"
+
+#: src/prtstat.c:164
+#, c-format
+msgid ""
+"Process: %-14s\t\tState: %c (%s)\n"
+"  CPU#:  %-3d\t\tTTY: %s\tThreads: %ld\n"
+msgstr ""
+"行程：%-14s\t\t狀態：%c (%s)\n"
+"  CPU#: %-3d\t\tTTY：%s\t執行緒：%ld\n"
+
+#: src/prtstat.c:169
+#, c-format
+msgid ""
+"Process, Group and Session IDs\n"
+"  Process ID: %d\t\t  Parent ID: %d\n"
+"    Group ID: %d\t\t Session ID: %d\n"
+"  T Group ID: %d\n"
+"\n"
+msgstr ""
+"行程、群組和執行階段識別碼\n"
+"    行程識別號：%d\t\t     上層識別號：%d\n"
+"    群組識別號：%d\t\t 執行階段識別碼：%d\n"
+"  T 群組識別號：%d\n"
+"\n"
+
+#: src/prtstat.c:175
+#, c-format
+msgid ""
+"Page Faults\n"
+"  This Process    (minor major): %8lu  %8lu\n"
+"  Child Processes (minor major): %8lu  %8lu\n"
+msgstr ""
+"分頁錯誤\n"
+"  此行程 (次要 主要)：%8lu  %8lu\n"
+"  子行程 (次要 主要)：%8lu  %8lu\n"
+
+#: src/prtstat.c:180
+#, c-format
+msgid ""
+"CPU Times\n"
+"  This Process    (user system guest blkio): %6.2f %6.2f %6.2f %6.2f\n"
+"  Child processes (user system guest):       %6.2f %6.2f %6.2f\n"
+msgstr ""
+"CPU 時間\n"
+"  此行程 (使用者 系統 訪客 區塊輸出入)：%6.2f %6.2f %6.2f %6.2f\n"
+"  子行程 (使用者 系統 訪客)：           %6.2f %6.2f %6.2f\n"
+
+#: src/prtstat.c:189
+#, c-format
+msgid ""
+"Memory\n"
+"  Vsize:       %-10s\n"
+"  RSS:         %-10s \t\t RSS Limit: %s\n"
+"  Code Start:  %#-10lx\t\t Code Stop:  %#-10lx\n"
+"  Stack Start: %#-10lx\n"
+"  Stack Pointer (ESP): %#10lx\t Inst Pointer (EIP): %#10lx\n"
+msgstr ""
+"記憶體\n"
+"  Vsize：      %-10s\n"
+"  RSS：        %-10s\t\t RSS 限制：%s\n"
+"  程式開始：    %#-10lx\t\t 程式停止： %#-10lx\n"
+"  堆疊開始：    %#-10lx\n"
+"  堆疊指標 (ESP)：%#10lx\t 指令指標 (EIP)：%#10lx\n"
+
+#: src/prtstat.c:199
+#, c-format
+msgid ""
+"Scheduling\n"
+"  Policy: %s\n"
+"  Nice:   %ld \t\t RT Priority: %ld %s\n"
+msgstr ""
+"排程\n"
+"  策略：%s\n"
+"  善意：%ld \t\t RT 優先權：%ld %s\n"
+
+#: src/prtstat.c:220
+msgid "asprintf in print_stat failed.\n"
+msgstr "print_stat 中的 asprintf 失敗。\n"
+
+#: src/prtstat.c:225
+#, c-format
+msgid "Process with pid %d does not exist.\n"
+msgstr "具有 pid %d 的行程不存在。\n"
+
+#: src/prtstat.c:227
+#, c-format
+msgid "Unable to open stat file for pid %d (%s)\n"
+msgstr "無法開啟 pid %d (%s) 的 stat 檔案\n"
+
+#: src/prtstat.c:243
+#, c-format
+msgid "Unable to allocate memory for proc_info\n"
+msgstr "無法對 proc_info 分配記憶體\n"
+
+#: src/prtstat.c:283
+#, c-format
+msgid "Unable to scan stat file"
+msgstr "無法掃描 stat 檔案"
+
+#: src/prtstat.c:318
+msgid "Invalid option"
+msgstr "無效的選項"
+
+#: src/prtstat.c:323
+msgid "You must provide at least one PID."
+msgstr "您必須提供至少一個 PID。"
+
+#: src/prtstat.c:327
+#, c-format
+msgid "/proc is not mounted, cannot stat /proc/self/stat.\n"
+msgstr "/proc 未被掛載，無法取得 /proc/self/stat 的狀態。\n"
+
+#: src/pstree.c:1183
+#, c-format
+msgid "%s is empty (not mounted ?)\n"
+msgstr "%s 是空的 (尚未掛載？)\n"
+
+#: src/pstree.c:1216
+#, c-format
+msgid ""
+"Usage: pstree [-acglpsStTuZ] [ -h | -H PID ] [ -n | -N type ]\n"
+"              [ -A | -G | -U ] [ PID | USER ]\n"
+"   or: pstree -V\n"
+msgstr ""
+"用法:  pstree [-acglpsStTuZ] [ -h | -H PID ] [ -n | -N 類型 ]\n"
+"              [ -A | -G | -U ] [ PID | 使用者 ]\n"
+"  或:  pstree -V\n"
+
+#: src/pstree.c:1220
+#, c-format
+msgid ""
+"\n"
+"Display a tree of processes.\n"
+"\n"
+msgstr ""
+"\n"
+"顯示行程的樹狀圖。\n"
+"\n"
+
+#: src/pstree.c:1223
+#, c-format
+msgid ""
+"  -a, --arguments     show command line arguments\n"
+"  -A, --ascii         use ASCII line drawing characters\n"
+"  -c, --compact-not   don't compact identical subtrees\n"
+msgstr ""
+"  -a, --arguments     顯示指令列參數\n"
+"  -A, --ascii         使用 ASCII 行繪製字元\n"
+"  -c, --compact-not   不合併完全相同的子樹\n"
+
+#: src/pstree.c:1227
+#, c-format
+msgid ""
+"  -C, --color=TYPE    color process by attribute\n"
+"                      (age)\n"
+msgstr "  -C, --color=類型    依屬性 (age) 為行程上色\n"
+
+#: src/pstree.c:1230
+#, c-format
+msgid ""
+"  -g, --show-pgids    show process group ids; implies -c\n"
+"  -G, --vt100         use VT100 line drawing characters\n"
+msgstr ""
+"  -g, --show-pgids    顯示行程的群組 ID；隱含 -c\n"
+"  -G, --vt100         使用 VT100 行繪製字元\n"
+
+#: src/pstree.c:1233
+#, c-format
+msgid ""
+"  -h, --highlight-all highlight current process and its ancestors\n"
+"  -H PID, --highlight-pid=PID\n"
+"                      highlight this process and its ancestors\n"
+"  -l, --long          don't truncate long lines\n"
+msgstr ""
+"  -h, --highlight-all 標示目前及上級行程\n"
+"  -H PID, --highlight-pid=PID\n"
+"                      標示這個及上級行程\n"
+"  -l, --long          不截短長行\n"
+
+#: src/pstree.c:1238
+#, c-format
+msgid ""
+"  -n, --numeric-sort  sort output by PID\n"
+"  -N TYPE, --ns-sort=TYPE\n"
+"                      sort output by this namespace type\n"
+"                              (cgroup, ipc, mnt, net, pid, time, user, uts)\n"
+"  -p, --show-pids     show PIDs; implies -c\n"
+msgstr ""
+"  -n, --numeric-sort  依 PID 排序輸出\n"
+"  -N 類型, --ns-sort=類型\n"
+"                      依此命名空間類型排序輸出\n"
+"                              (cgroup, ipc, mnt, net, pid, time, user, uts)\n"
+"  -p, --show-pids     顯示 PID；隱含 -c\n"
+
+#: src/pstree.c:1244
+#, c-format
+msgid ""
+"  -s, --show-parents  show parents of the selected process\n"
+"  -S, --ns-changes    show namespace transitions\n"
+"  -t, --thread-names  show full thread names\n"
+"  -T, --hide-threads  hide threads, show only processes\n"
+msgstr ""
+"  -s, --show-parents  顯示選取行程的上級\n"
+"  -S, --ns-changes    顯示命名空間轉換\n"
+"  -t, --thread-names  顯示完整執行緒名稱\n"
+"  -T, --hide-threads  隱藏執行緒，只顯示行程\n"
+
+#: src/pstree.c:1249
+#, c-format
+msgid ""
+"  -u, --uid-changes   show uid transitions\n"
+"  -U, --unicode       use UTF-8 (Unicode) line drawing characters\n"
+"  -V, --version       display version information\n"
+msgstr ""
+"  -u, --uid-changes   顯示使用者 ID (UID) 轉換\n"
+"  -U, --unicode       使用 UTF-8 (Unicode) 行繪製字元\n"
+"  -V, --version       顯示版本資訊\n"
+
+#: src/pstree.c:1253
+#, c-format
+msgid ""
+"  -Z, --security-context\n"
+"                      show security attributes\n"
+msgstr ""
+"  -Z, --security-context\n"
+"                      顯示安全屬性\n"
+
+#: src/pstree.c:1255
+#, c-format
+msgid ""
+"\n"
+"  PID    start at this PID; default is 1 (init)\n"
+"  USER   show only trees rooted at processes of this user\n"
+"\n"
+msgstr ""
+"\n"
+"  PID    從這個 PID 開始；預設是 1 (init)\n"
+"  使用者 只顯示源自此使用者行程的樹狀結構\n"
+"\n"
+
+#: src/pstree.c:1263
+#, c-format
+msgid "pstree (PSmisc) %s\n"
+msgstr "pstree (PSmisc) %s\n"
+
+#: src/pstree.c:1383
+#, c-format
+msgid "TERM is not set\n"
+msgstr "TERM 尚未設定\n"
+
+#: src/pstree.c:1387
+#, c-format
+msgid "Can't get terminal capabilities\n"
+msgstr "無法取得終端機功能\n"
+
+#: src/pstree.c:1405
+#, c-format
+msgid "procfs file for %s namespace not available\n"
+msgstr "無法使用 procfs 檔案於 %s 命名空間\n"
+
+#: src/pstree.c:1452
+#, c-format
+msgid "No such user name: %s\n"
+msgstr "無此類使用者名稱：%s\n"
+
+#: src/pstree.c:1478
+#, c-format
+msgid "No processes found.\n"
+msgstr "找不到任何行程。\n"
+
+#: src/pstree.c:1486
+#, c-format
+msgid "Press return to close\n"
+msgstr "按下輸入鍵以關閉\n"
+
+#: src/signals.c:84
+#, c-format
+msgid "%s: unknown signal; %s -l lists signals.\n"
+msgstr "%s: 不明的信號；%s -l 列出信號。\n"
+
+#~ msgid ""
+#~ "Usage: killall [ -Z CONTEXT ] [ -u USER ] [ -y TIME ] [ -o TIME ] [ -"
+#~ "eIgiqrvw ]\n"
+#~ "               [ -s SIGNAL | -SIGNAL ] NAME...\n"
+#~ msgstr ""
+#~ "用法：killall [ -Z 上下文 ] [ -u 使用者 ] [ -y 時間 ] [ -o 時間 ] [ -"
+#~ "eIgiqrvw ]\n"
+#~ "               [ -s SIGNAL | -SIGNAL ] 名稱...\n"
+
+#~ msgid ""
+#~ "Usage: pstree [-acglpsStTu] [ -h | -H PID ] [ -n | -N type ]\n"
+#~ "              [ -A | -G | -U ] [ PID | USER ]\n"
+#~ "   or: pstree -V\n"
+#~ msgstr ""
+#~ "用法:  pstree [-acglpsStTu] [ -h | -H PID ] [ -n | -N 類型 ]\n"
+#~ "              [ -A | -G | -U ] [ PID | 使用者 ]\n"
+#~ "  或:  pstree -V\n"
+
+#~ msgid ""
+#~ "Copyright (C) 1993-2019 Werner Almesberger and Craig Small\n"
+#~ "\n"
+#~ msgstr ""
+#~ "著作權 © 1993-2019 Werner Almesberger 和 Craig Small\n"
+#~ "\n"
+
+#~ msgid ""
+#~ "Usage: pstree [-acglpsStuZ] [ -h | -H PID ] [ -n | -N type ]\n"
+#~ "Usage: pstree [-acglpsStu] [ -h | -H PID ] [ -n | -N type ]\n"
+#~ "              [ -A | -G | -U ] [ PID | USER ]\n"
+#~ "       pstree -V\n"
+#~ "Display a tree of processes.\n"
+#~ "\n"
+#~ "  -a, --arguments     show command line arguments\n"
+#~ "  -A, --ascii         use ASCII line drawing characters\n"
+#~ "  -c, --compact       don't compact identical subtrees\n"
+#~ "  -h, --highlight-all highlight current process and its ancestors\n"
+#~ "  -H PID,\n"
+#~ "  --highlight-pid=PID highlight this process and its ancestors\n"
+#~ "  -g, --show-pgids    show process group ids; implies -c\n"
+#~ "  -G, --vt100         use VT100 line drawing characters\n"
+#~ "  -l, --long          don't truncate long lines\n"
+#~ "  -n, --numeric-sort  sort output by PID\n"
+#~ "  -N type,\n"
+#~ "  --ns-sort=type      sort by namespace type (cgroup, ipc, mnt, net, "
+#~ "pid,\n"
+#~ "                                              user, uts)\n"
+#~ "  -p, --show-pids     show PIDs; implies -c\n"
+#~ "  -s, --show-parents  show parents of the selected process\n"
+#~ "  -S, --ns-changes    show namespace transitions\n"
+#~ "  -t, --thread-names  show full thread names\n"
+#~ "  -T, --hide-threads  hide threads, show only processes\n"
+#~ "  -u, --uid-changes   show uid transitions\n"
+#~ "  -U, --unicode       use UTF-8 (Unicode) line drawing characters\n"
+#~ "  -V, --version       display version information\n"
+#~ msgstr ""
+#~ "用法：pstree [-acglpsStuZ] [ -h | -H PID ] [ -n | -N 類型 ]\n"
+#~ "用法：pstree [-acglpsStu] [ -h | -H PID ] [ -n | -N 類型 ]\n"
+#~ "              [ -A | -G | -U ] [ PID | 使用者 ]\n"
+#~ "       pstree -V\n"
+#~ "顯示執行程序的樹狀圖。\n"
+#~ "\n"
+#~ "  -a, --arguments     顯示命令列引數\n"
+#~ "  -A, --ascii         使用 ASCII 線條繪製字元\n"
+#~ "  -c, --compact       不壓縮相同的子樹\n"
+#~ "  -h, --highlight-all 標示目前行程和它的原始節點\n"
+#~ "  -H PID，\n"
+#~ "  --highlight-pid=PID 標示這個行程和它的原始節點\n"
+#~ "  -g, --show-pgids    顯示行程群組識別號；意味著 -c\n"
+#~ "  -G, --vt100         使用 VT100 線條繪製字元\n"
+#~ "  -l, --long          不截斷長列\n"
+#~ "  -n, --numeric-sort  依照 PID 排序輸出\n"
+#~ "  -N 類型,\n"
+#~ "  --ns-sort=類型      依照命名空間類型排序 (cgroup, ipc, mnt, net, pid,\n"
+#~ "                                              user, uts)\n"
+#~ "  -p, --show-pids     顯示 PIDs；隱含 -c\n"
+#~ "  -s, --show-parents  顯示已選行程的上層\n"
+#~ "  -S, --ns-changes    顯示命名空間轉換\n"
+#~ "  -t, --thread-names  顯示完整的執行緒名稱\n"
+#~ "  -T, --hide-threads  隱藏執行緒，只顯示執行程序\n"
+#~ "  -u, --uid-changes   顯示 uid 轉換\n"
+#~ "  -U, --unicode       使用 UTF-8 (萬國碼) 線條繪製字元\n"
+#~ "  -V, --version       顯示版本資訊\n"

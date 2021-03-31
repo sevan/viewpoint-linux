@@ -1,0 +1,60 @@
+.\"
+.\" Copyright 2007 Trent Waddington <trent.waddington@gmail.com>
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH PEEKFD 1 2020\-09\-09 psmisc "Пользовательские команды"
+.SH ИМЯ
+peekfd \- подглядывает в файловые дескрипторы выполняющихся процессов
+.SH ОБЗОР
+\fBpeekfd\fP [\fB\-8\fP,\fB\-\-eight\-bit\-clean\fP] [\fB\-n\fP,\fB\-\-no\-headers\fP]
+[\fB\-f\fP,\fB\-\-follow\fP] [\fB\-d\fP,\fB\-\-duplicates\-removed\fP] [\fB\-V\fP,\fB\-\-version\fP]
+[\fB\-h\fP,\fB\-\-help\fP] \fIpid\fP [\fIfd\fP] [\fIfd\fP] ...
+.SH ОПИСАНИЕ
+\fBpeekfd\fP подключается к выполняющемуся процессу и перехватывает все чтения
+и записи в файловые дескрипторы. Вы можете указать номер желаемого файлового
+дескриптора или захватить их все.
+.SH ПАРАМЕТРЫ
+.IP \-8
+Не выполнять конечную обработку читаемых и записываемых байт.
+.IP \-n
+Не отображать заголовки, показывающие источник получаемых байт.
+.IP \-c
+Наблюдать также за действиями с запрошенным файловым дескриптором и во всех
+новых дочерних процессах.
+.IP \-d
+Удалять повторяющиеся операции чтения/записи при выводе. Полезно, если
+обрабатывается tty с эхо.
+.IP \-v
+Вывести информацию о версии.
+.IP \-h
+Показать справку.
+.SH ФАЙЛЫ
+\fB/proc/\fP\fI*\fP\fB/fd\fP
+.RS
+Не используется, то полезно пользователю, чтобы найти нужные номера файловых
+дескрипторов.
+.SH ОКРУЖЕНИЕ
+Нет.
+.SH ДИАГНОСТИКА
+В stderr могут выдаваться следующие отладочные сообщения:
+.TP 
+\fBError attaching to pid \fP\fI<PID>\fP
+Произошла неизвестная ошибка при попытке присоединения к процесса, вероятно
+нужны права root.
+.SH ДЕФЕКТЫ
+Вероятно много. Не удивляйтесь, если отслеживаемый процесс завершится.
+.SH АВТОР
+.MT trent.waddington@gmail.com
+Trent Waddington
+.ME
+.SH "СМОТРИТЕ ТАКЖЕ"
+\fBttysnoop\fP(8)

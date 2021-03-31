@@ -1,0 +1,130 @@
+.\"
+.\" Copyright 1993-2002 Werner Almesberger
+.\"           2002-2021 Craig Small
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH KILLALL 1 2021\-01\-11 psmisc "Commandes de l'utilisateur"
+.SH NOM
+killall \- tuer des processus par leur nom
+.SH SYNOPSIS
+.ad l
+\fBkillall\fP [\fB\-Z\fP,\fB\ \-\-context\fP \fIpattern\fP] [\fB\-e\fP,\fB\ \-\-exact\fP] [\fB\-g\fP,\fB\ \-\-process\-group\fP] [\fB\-i\fP,\fB\ \-\-interactive\fP] [\fB\-n\fP,\fB\ \-\-ns\fP \fIPID\fP]
+[\fB\-o\fP,\fB\ \-\-older\-than\fP \fITIME\fP] [\fB\-q\fP,\fB\ \-\-quiet\fP] [\fB\-r\fP,\fB\ \-\-regexp\fP]
+[\fB\-s\fP,\fB\ \-\-signal\fP \fISIGNAL\fP,\ \fB\-\fP\fISIGNAL\fP] [\fB\-u\fP,\fB\ \-\-user\fP \fIuser\fP]
+[\fB\-v\fP,\fB\ \-\-verbose\fP] [\fB\-w\fP,\fB\ \-\-wait\fP] [\fB\-y\fP,\fB\ \-\-younger\-than\fP
+\fITIME\fP] [\fB\-I\fP,\fB\ \-\-ignore\-case\fP] [\fB\-V\fP,\fB\ \-\-version\fP] [\fB\-\-\fP] \fIname\fP
+\&...
+.br
+\fBkillall\fP \-l
+.br
+\fBkillall\fP \fB\-V\fP,\fB\ \-\-version\fP
+.ad b
+.SH DESCRIPTION
+\fBkillall\fP envoie le signal à tous les processus exécutant une des commandes
+spécifiées. Si aucun nom de signal est fourni, SIGTERM est utilisé.
+.PP
+Les signaux peuvent être spécifiés par nom (par exemple, \fB\-HUP\fP ou
+\fB\-SIGHUP\fP) ou par numéro (par exemple, \fB\-1\fP) ou par l'option \fB\-s\fP.
+.PP
+Si le nom de commande n'est pas une expression rationnelle (option \fB\-r\fP) et
+contient une barre oblique (\fB/\fP), les processus exécutant ce fichier en
+particulier seront sélectionnés pour être tués indépendamment de leur nom.
+.PP
+\fBkillall\fP retourne un code de retour nul si au moins un processus a été tué
+pour chaque commande listée ou si aucune commande a été listée et au moins
+un processus correspondait aux critères de recherche de \fB\-u\fP et
+\fB\-Z\fP. \fBkillall\fP retourne un code non nul dans les autres cas.
+.PP
+Un processus \fBkillall\fP ne se tue jamais lui\-même (mais il peut tuer
+d'autres processus \fBkillall\fP).
+.SH OPTIONS
+.IP "\fB\-e\fP, \fB\-\-exact\fP"
+Exiger une correspondance exacte pour des noms très longs.  Si un nom de
+commande est plus long que 15 caractères, le nom complet peut ne pas être
+disponible (c\-à\-d qu'il est dans le fichier d'échange). Dans ce cas,
+\fBkillall\fP tuera tout ce qui correspond aux 15 premiers caractères. Avec
+\fB\-e\fP, de telles entrées sont ignorées.  \fBkillall\fP affiche un message pour
+chaque entrée ignorée si \fB\-v\fP est spécifié en plus de \fB\-e\fP.
+.IP "\fB\-I\fP, \fB\-\-ignore\-case\fP"
+Ignorer la casse lors des recherches de correspondances sur les noms des
+processus.
+.IP "\fB\-g\fP, \fB\-\-process\-group\fP"
+Tuer le groupe de processus auquel le processus appartient.  Le signal de
+fin est envoyé une seule fois par groupe, même si plusieurs processus
+appartenant au même groupe de processus ont été trouvés.
+.IP "\fB\-i\fP, \fB\-\-interactive\fP"
+Demander, interactivement, une confirmation avant de tuer.
+.IP "\fB\-l\fP, \fB\-\-list\fP"
+Lister tous les noms de signaux connus.
+.IP "\fB\-n\fP, \fB\-\-ns\fP"
+Établir la correspondance sur l'espace de noms du PID pour le PID donné. Par
+défaut, la correspondance est établie pour tous les espaces de noms.
+.IP "\fB\-o\fP, \fB\-\-older\-than\fP"
+Correspondre uniquement au processus qui sont plus vieux (démarrés avant)
+que le temps spécifié. Le temps est spécifié avec un nombre décimal suivi
+d'une unité. Les unités sont s,m,h,d,w,M,y pour secondes, minutes, heures,
+jours, semaines, mois et années respectivement.
+.IP "\fB\-q\fP, \fB\-\-quiet\fP"
+Ne pas se plaindre si aucun processus a été tué.
+.IP "\fB\-r\fP, \fB\-\-regexp\fP"
+Interpréter le motif du nom de processus comme une expression rationnelle
+étendue POSIX comme défini par \fBregex\fP(3).
+.IP "\fB\-s\fP, \fB\-\-signal\fP, \fB\-\fP\fISIGNAL\fP"
+Envoyer ce signal au lieu de SIGTERM.
+.IP "\fB\-u\fP, \fB\-\-user\fP"
+Ne tuer que les processus que l'utilisateur spécifié possède. Les noms de
+commandes sont optionnels.
+.IP "\fB\-v\fP, \fB\-\-verbose\fP"
+Indiquer si le signal a été envoyé avec succès.
+.IP "\fB\-V\fP, \fB\-\-version\fP"
+Afficher les informations de version.
+.IP "\fB\-w\fP, \fB\-\-wait\fP"
+Attendre que tous les processus tués soient morts.  \fBkillall\fP vérifie une
+fois par seconde si un des processus tués existe encore et ne retourne que
+si plus aucun processus subsiste.  Notez que \fBkillall\fP peut attendre
+indéfiniment si le signal a été ignoré, n'a pas eu d'effet ou si le
+processus reste dans un état zombie.
+.IP "\fB\-y\fP, \fB\-\-younger\-than\fP"
+Correspondre uniquement au processus qui sont plus jeunes (démarrés après)
+que le temps spécifié. Le temps est spécifié avec un nombre décimal suivi
+d'une unité. Les unités sont s,m,h,d,w,M,y pour secondes, minutes, heures,
+jours, semaines, mois et années respectivement.
+.IP "\fB\-Z\fP, \fB\-\-context\fP"
+Specify security context: kill only processes having security context that
+match with given extended regular expression pattern.  Must precede other
+arguments on the command line.  Command names are optional.
+.SH FICHIERS
+.TP 
+/proc
+emplacement du système de fichiers proc
+.SH "BOGUES CONNUS"
+Tuer par fichier ne fonctionne que si les exécutables restent ouverts durant
+l'exécution. Cela signifie que les exécutables impures ne peuvent pas être
+tués de cette manière.
+.PP
+Gardez à l'esprit que \fBkillall\fP \fInom\fP peut ne pas avoir l'effet désiré sur
+des systèmes non linux, en particulier, quand il est exécuté par un
+utilisateur privilégié.
+.PP
+\fBkillall \-w\fP ne détecte pas si un processus disparaît et est remplacé par
+un nouveau processus avec le même PID entre deux balayages.
+.PP
+Si des processus changent leur nom, \fBkillall\fP peut être incapable d'établir
+une correspondance avec eux.
+.PP
+Il y a une limite sur les noms qui peuvent être spécifiés sur la ligne de
+commande de \fBkillall\fP. Ce nombre est la taille d'un entier long non signé
+multipliée par 8.  Pour la plupart des systèmes 32 bits, cette limite est
+32. De manière similaire, elle vaut habituellement 64 pour les systèmes 64
+bits.
+.SH "VOIR AUSSI"
+\fBkill\fP(1), \fBfuser\fP(1), \fBpgrep\fP(1), \fBpidof\fP(1), \fBpkill\fP(1), \fBps\fP(1),
+\fBkill\fP(2), \fBregex\fP(3).

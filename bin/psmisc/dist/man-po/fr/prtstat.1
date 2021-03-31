@@ -1,0 +1,36 @@
+.\"
+.\" Copyright 2009-2020 Craig Small
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH PRTSTAT 1 "29 septembre 2020" psmisc "Commandes de l'utilisateur"
+.SH NOM
+prstat \- imprimer les statistiques d'un processus
+.SH SYNOPSIS
+.ad l
+\fBprtstat\fP [\fB\-r\fP|\fB\-\-raw\fP] \fIpid\fP
+.br
+\fBprtstat\fP \fB\-V\fP|\fB\-\-version\fP
+.ad b
+.SH DESCRIPTION
+\fBprtstat\fP prints the statistics of the specified process.  This information
+comes from the \fB/proc/\fP\fIpid\fP\fB/stat\fP file.
+.SH OPTIONS
+.TP 
+\fB\-r\fP,\fB\ \-\-raw\fP
+Imprimer les informations au format brut.
+.TP 
+\fB\-V\fP, \fB\-\-version\fP
+Afficher les informations de version pour \fBprtstat\fP.
+.SH FICHIERS
+.TP 
+\fB/proc/\fP\fIpid\fP\fB/stat\fP
+source des informations utilisées par \fBprtstat\fP.

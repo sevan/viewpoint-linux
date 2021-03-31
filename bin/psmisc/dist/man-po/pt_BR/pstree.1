@@ -1,0 +1,139 @@
+.\"
+.\" Copyright 1993-2002 Werner Almesberger
+.\"           2002-2021 Craig Small
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH PSTREE 1 2021\-01\-05 psmisc "Comandos de usuário"
+.SH NOME
+pstree \- exibe uma árvore de processos
+.SH SINOPSE
+.ad l
+\fBpstree\fP [\fB\-a\fP,\fB\ \-\-arguments\fP] [\fB\-c\fP,\fB\ \-\-compact\-not\fP] [\fB\-C\fP,\fB\ \-\-color\ \fP\fIattr\fP] [\fB\-g\fP,\fB\ \-\-show\-pgids\fP] [\fB\-h\fP,\fB\ \-\-highlight\-all\fP,\fB\ \-H\fP\fI\ pid\fP,\fB\ \-\-highlight\-pid\ \fP\fIpid\fP] [\fB\-l\fP,\fB\ \-\-long\fP] [\fB\-n\fP,\fB\ \-\-numeric\-sort\fP] [\fB\-N\fP,\fB\ \-\-ns\-sort\ \fP\fIns\fP] [\fB\-p\fP,\fB\ \-\-show\-pids\fP]
+[\fB\-s\fP,\fB\ \-\-show\-parents\fP] [\fB\-S\fP,\fB\ \-\-ns\-changes\fP] [\fB\-t\fP,\fB\ \-\-thread\-names\fP] [\fB\-T\fP,\fB\ \-\-hide\-threads\fP] [\fB\-u\fP,\fB\ \-\-uid\-changes\fP]
+[\fB\-Z\fP,\fB\ \-\-security\-context\fP] [\fB\-A\fP,\fB\ \-\-ascii\fP,\fB\ \-G\fP,\fB\ \-\-vt100\fP,\fB\ \-U\fP,\fB\ \-\-unicode\fP] [\fIpid\fP,\fB\ \fP\fIuser\fP]
+.br
+\fBpstree\fP \fB\-V\fP,\fB\ \-\-version\fP
+.ad b
+.SH DESCRIÇÃO
+\fBpstree\fP mostra os processos em execução como uma árvore. A árvore está
+enraizada em \fIpid\fP ou \fBinit\fP se \fIpid\fP for omitido. Se um nome de usuário
+for especificado, todas as árvores de processo enraizadas em processos
+pertencentes a esse usuário serão mostradas.
+.PP
+\fBpstree\fP mescla visualmente ramos idênticos colocando\-os entre colchetes e
+prefixando\-os com a contagem de repetição. Por exemplo:
+.nf
+.sp
+    init\-+\-getty
+         |\-getty
+         |\-getty
+         `\-getty
+.sp
+.fi
+se torna
+.nf
+.sp
+    init\-\-\-4*[getty]
+.sp
+.fi
+.PP
+.PP
+Threads filhos de um processo são encontrados sob o processo pai e são
+mostrados com o nome do processo entre chaves. Por exemplo:
+.nf
+.sp
+    icecast2\-\-\-13*[{icecast2}]
+.sp
+.fi
+.PP
+Se \fBpstree\fP for chamado como \fBpstree.x11\fP, ele solicitará que o usuário no
+final da linha pressione Enter e não retornará até que isso aconteça. Isso é
+útil quando \fBpstree\fP é executado em um xterminal.
+.PP
+Certos parâmetros do kernel ou de montagem, como a opção \fIhidepid\fP para
+procfs, irão ocultar informações para alguns processos. Nessas situações,
+\fBpstree\fP tentará construir a árvore sem essas informações, mostrando os
+nomes dos processos como pontos de interrogação.
+
+.SH OPÇÕES
+.IP \fB\-a\fP
+Mostra os argumentos da linha de comando. Se a linha de comando de um
+processo for trocada, esse processo será mostrado entre parênteses. \fB\-a\fP
+desativa implicitamente a compactação para processos, mas não para threads.
+.IP \fB\-A\fP
+Usa caracteres ASCII para desenhar a árvore.
+.IP \fB\-c\fP
+Desativa a compactação de subárvores idênticas. Por padrão, as subárvores
+são compactadas sempre que possível.
+.IP \fB\-C\fP
+Color the process name by given attribute. Currently \fBpstree\fP only accepts
+the value \fBage\fP which colors by process age.  Processes newer than 60
+seconds are green, newer than an hour yellow and the remaining red.
+.IP \fB\-g\fP
+Mostra PGIDs. Os IDs do grupo de processos são mostrados como números
+decimais entre parênteses após cada nome de processo. \fB\-g\fP desativa
+implicitamente a compactação. Se os PIDs e os PGIDs forem exibidos, os PIDs
+serão mostrados primeiro.
+.IP \fB\-G\fP
+Usa caracteres VT100 no desenho de linhas.
+.IP \fB\-h\fP
+Realça o processo atual e seus ancestrais. Este é um ambiente autônomo se o
+terminal não suportar o realce ou se nem o processo atual nem qualquer um de
+seus ancestrais estiverem na subárvore sendo exibida.
+.IP \fB\-H\fP
+Como \fB\-h\fP, mas realça o processo especificado. Ao contrário de \fB\-h\fP,
+\fBpstree\fP falha ao usar \fB\-H\fP se o realce não estiver disponível.
+.IP \fB\-l\fP
+Exibe linhas longas. Por padrão, as linhas são truncadas para a variável de
+ambiente COLUMNS ou para a largura da tela. Se nenhum desses métodos
+funcionar, o padrão de 132 colunas será usado.
+.IP \fB\-n\fP
+Classifica processos com o mesmo pai por PID em vez de por
+nome. (Classificação numérica.)
+.IP \fB\-N\fP
+Mostra árvores individuais para cada espaço de nomes do tipo
+especificado. Os tipos disponíveis são: \fIipc\fP, \fImnt\fP, \fInet\fP, \fIpid\fP,
+\fItime\fP, \fIuser\fP, \fIuts\fP. Os usuários comuns não têm acesso às informações
+dos processos de outros usuários, então a saída será limitada.
+.IP \fB\-p\fP
+Mostra PIDs. Os PIDs são mostrados como números decimais entre parênteses
+após cada nome de processo. \fB\-p\fP desabilita implicitamente a compactação.
+.IP \fB\-s\fP
+Mostra processos pais do processo especificado.
+.IP \fB\-S\fP
+Mostra transições de espaços de nomes. Como \fB\-N\fP, a saída é limitada quando
+executado como um usuário comum.
+.IP \fB\-t\fP
+Mostra os nomes completos dos threads quando disponíveis.
+.IP \fB\-T\fP
+Oculta threads e só mostra processos.
+.IP \fB\-u\fP
+Mostra transições de uid. Sempre que o uid de um processo difere do uid de
+seu pai, o novo uid é mostrado entre parênteses após o nome do processo.
+.IP \fB\-U\fP
+Usa caracteres de desenho de linha UTF\-8 (Unicode). No Linux 1.1\-54 e
+superior, o modo UTF\-8 é inserido no console com \fBecho \-e '\033%8'\fP e
+deixado com \fBecho \-e '\033%@'\fP.
+.IP \fB\-V\fP
+Exibe informação da versão.
+.IP \fB\-Z\fP
+Show the current security attributes of the process. For SELinux systems
+this will be the security context.
+.SH ARQUIVOS
+.TP 
+/proc
+local do sistema de arquivos proc
+.SH BUGS
+Alguns conjuntos de caracteres podem ser incompatíveis com os caracteres
+VT100.
+.SH "VEJA TAMBÉM"
+\fBps\fP(1), \fBtop\fP(1), \fBproc\fP(5).
+.\"{{{}}}

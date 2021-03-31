@@ -1,0 +1,147 @@
+.\"
+.\" Copyright 1993-2002 Werner Almesberger
+.\"           2002-2021 Craig Small
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH PSTREE 1 2021\-01\-05 psmisc "Dienstprogramme für Benutzer"
+.SH BEZEICHNUNG
+pstree \- Prozesse in einer Baumansicht anzeigen
+.SH ÜBERSICHT
+.ad l
+\fBpstree\fP [\fB\-a\fP,\fB\ \-\-arguments\fP] [\fB\-c\fP,\fB\ \-\-compact\-not\fP] [\fB\-C\fP,\fB\ \-\-color\ \fP\fIattr\fP] [\fB\-g\fP,\fB\ \-\-show\-pgids\fP] [\fB\-h\fP,\fB\ \-\-highlight\-all\fP,\fB\ \-H\fP\fI\ pid\fP,\fB\ \-\-highlight\-pid\ \fP\fIpid\fP] [\fB\-l\fP,\fB\ \-\-long\fP] [\fB\-n\fP,\fB\ \-\-numeric\-sort\fP] [\fB\-N\fP,\fB\ \-\-ns\-sort\ \fP\fIns\fP] [\fB\-p\fP,\fB\ \-\-show\-pids\fP]
+[\fB\-s\fP,\fB\ \-\-show\-parents\fP] [\fB\-S\fP,\fB\ \-\-ns\-changes\fP] [\fB\-t\fP,\fB\ \-\-thread\-names\fP] [\fB\-T\fP,\fB\ \-\-hide\-threads\fP] [\fB\-u\fP,\fB\ \-\-uid\-changes\fP]
+[\fB\-Z\fP,\fB\ \-\-security\-context\fP] [\fB\-A\fP,\fB\ \-\-ascii\fP,\fB\ \-G\fP,\fB\ \-\-vt100\fP,\fB\ \-U\fP,\fB\ \-\-unicode\fP] [\fIpid\fP,\fB\ \fP\fIuser\fP]
+.br
+\fBpstree\fP \fB\-V\fP,\fB\ \-\-version\fP
+.ad b
+.SH BESCHREIBUNG
+\fBpstree\fP zeigt die laufenden Prozesse in einer Baumansicht an. Die Wurzel
+des Baums wird anhand der angegebenen \fIPID\fP oder mittels \fBinit\fP gewählt,
+falls die \fIPID\fP weggelassen wird. Wenn ein Benutzername angegeben wird,
+werden die Wurzeln aller Prozessbäume anhand der Prozesse gewählt, die
+diesem Benutzer gehören.
+.PP
+\fBpstree\fP führt identische Zweige visuell zusammen, indem diese in eckige
+Klammern gesetzt werden und ihnen die Anzahl der Wiederholungen
+vorangestellt wird. Zum Beispiel wird
+.nf
+.sp
+    init\-+\-getty
+         |\-getty
+         |\-getty
+         `\-getty
+.sp
+.fi
+zu
+.nf
+.sp
+    init\-\-\-4*[getty]
+.sp
+.fi
+.PP
+.PP
+Kind\-Threads eines Prozesses werden unter dem Elternprozess angezeigt und
+der Prozessname in geschweifte Klammern gesetzt, zum Beispiel
+.nf
+.sp
+    icecast2\-\-\-13*[{icecast2}]
+.sp
+.fi
+.PP
+Falls \fBpstree\fP als \fBpstree.x11\fP aufgerufen wird, bittet es den Benutzer am
+Ende der Zeile, die Eingabetaste zu drücken und kehrt nicht zurück, bis dies
+geschehen ist. Dies ist nützlich, wenn \fBpstree\fP in einem X\-Terminal
+ausgeführt wird.
+.PP
+Bestimmte Kernel\- oder Einhängeparameter, wie die Option \fBhidepid\fP für
+\fBprocfs\fP, verstecken Informationen für einige Prozesse. In diesen
+Situationen versucht \fBpstree\fP, die Baumansicht ohne diese Informationen zu
+erstellen, wobei die Prozessnamen als Fragezeichen dargestellt werden.
+
+.SH OPTIONEN
+.IP \fB\-a\fP
+zeigt Befehlszeilenargumente an. Falls die Befehlszeile eines Prozesses
+ausgelagert ist, wird dieser Prozess in Klammern angezeigt. Die Option \fB\-a\fP
+deaktiviert implizit die Verdichtung für Prozesse, aber nicht für Threads.
+.IP \fB\-A\fP
+verwendet ASCII\-Zeichen zum Darstellen des Baums.
+.IP \fB\-c\fP
+deaktiviert die Verdichtung identischer Unterbäume. Standardmäßig werden
+Unterbäume verdichtet, wo immer es möglich ist.
+.IP \fB\-C\fP
+Color the process name by given attribute. Currently \fBpstree\fP only accepts
+the value \fBage\fP which colors by process age.  Processes newer than 60
+seconds are green, newer than an hour yellow and the remaining red.
+.IP \fB\-g\fP
+zeigt Prozessgruppenkennungen (PGIDs) an. Die PGIDs werden als Dezimalzahlen
+in Klammern nach jedem der Prozessnamen angezeigt. \fB\-g\fP deaktiviert die
+Verdichtung implizit. Falls sowohl PIDs als auch PGIDs angezeigt werden,
+erscheinen die PIDs zuerst.
+.IP \fB\-G\fP
+verwendet VT100\-Zeichen zum Darstellen von Linien.
+.IP \fB\-h\fP
+hebt den aktuellen Prozess und dessen Elternprozess hervor. Diese Option ist
+unwirksam, wenn das Terminal keine Hervorhebung unterstützt oder wenn weder
+der aktuelle Prozess noch irgendeiner seiner Elternprozesse im Unterbaum
+liegen, der angezeigt wird.
+.IP \fB\-H\fP
+agiert wie \fB\-h\fP, hebt aber stattdessen den angegebenen Prozess hervor. Im
+Gegensatz zu \fB\-h\fP schlägt \fBpstree\fP mit \fB\-H\fP fehl, falls keine
+Hervorhebung verfügbar ist.
+.IP \fB\-l\fP
+zeigt lange Zeilen an. Standardmäßig werden Zeilen entweder gemäß der
+Unmgebungsvariable COLUMN oder auf die Breite der Anzeige beschnitten. Falls
+keine dieser Methoden funktioniert, werden standardmäßig 132 Spalten
+verwendet.
+.IP \fB\-n\fP
+sortiert Prozesse mit dem gleichen Elternprozess nach PID anstatt nach Namen
+(numerische Sortierung).
+.IP \fB\-N\fP
+zeigt individuelle Bäume für jeden Namensraum des angegebenen Typs
+an. Folgende Typen sind verfügbar: \fIipc\fP, \fImnt\fP, \fInet\fP, \fIpid\fP, \fItime\fP,
+\fIuser\fP, \fIuts\fP. Gewöhnliche Benutzer haben keinen Zugriff auf die
+Informationen der Prozesse anderer Benutzer, daher wird die Ausgabe
+eingeschränkt sein.
+.IP \fB\-p\fP
+zeigt PIDs an. Die PIDs werden als Dezimalzahlen in Klammern nach jedem der
+Prozessnamen angezeigt. \fB\-p\fP deaktiviert die Verdichtung implizit.
+.IP \fB\-s\fP
+zeigt Elternprozesse des angegebenen Prozesses an.
+.IP \fB\-S\fP
+zeigt Namensraum\-Übergänge an. Wie mit \fB\-N\fP wird die Ausgabe bei der
+Ausführung als gewöhnlicher Benutzer eingeschränkt.
+.IP \fB\-t\fP
+zeigt vollständige Namen für Threads an, sofern verfügbar.
+.IP \fB\-T\fP
+versteckt Threads und zeigt nur Prozesse an.
+.IP \fB\-u\fP
+zeigt UID\-Übergänge an. Wann immer sich eine UID eines Prozesses von der UID
+seines Elternprozesses unterscheidet, wird die neue UID in Klammern nach dem
+Prozessnamen angezeigt.
+.IP \fB\-U\fP
+verwendet UTF\-8\-Zeichen (Unicode) zum Darstellen der Linien. Unter Linux
+1.1\-54 und neueren Versionen können Sie auf der Konsole mit \fBecho \-e
+\&'\033%8'\fP in den UTF\-8\-Modus wechseln und diesen mit \fBecho \-e '\033%@'\fP
+wieder verlassen.
+.IP \fB\-V\fP
+zeigt Versionsinformationen an.
+.IP \fB\-Z\fP
+Show the current security attributes of the process. For SELinux systems
+this will be the security context.
+.SH DATEIEN
+.TP 
+/proc
+Ort des /proc\-Dateisystems
+.SH FEHLER
+Einige Zeichensätze könnten zu den VT100\-Zeichen inkompatibel sein.
+.SH "SIEHE AUCH"
+\fBps\fP(1), \fBtop\fP(1), \fBproc\fP(5).
+.\"{{{}}}

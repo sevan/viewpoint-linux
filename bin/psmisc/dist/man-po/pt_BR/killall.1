@@ -1,0 +1,129 @@
+.\"
+.\" Copyright 1993-2002 Werner Almesberger
+.\"           2002-2021 Craig Small
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH KILLALL 1 2021\-01\-11 psmisc "Comandos de usuário"
+.SH NOME
+killall \- mata processos por nome
+.SH SINOPSE
+.ad l
+\fBkillall\fP [\fB\-Z\fP,\fB\ \-\-context\fP \fIpattern\fP] [\fB\-e\fP,\fB\ \-\-exact\fP] [\fB\-g\fP,\fB\ \-\-process\-group\fP] [\fB\-i\fP,\fB\ \-\-interactive\fP] [\fB\-n\fP,\fB\ \-\-ns\fP \fIPID\fP]
+[\fB\-o\fP,\fB\ \-\-older\-than\fP \fITIME\fP] [\fB\-q\fP,\fB\ \-\-quiet\fP] [\fB\-r\fP,\fB\ \-\-regexp\fP]
+[\fB\-s\fP,\fB\ \-\-signal\fP \fISIGNAL\fP,\ \fB\-\fP\fISIGNAL\fP] [\fB\-u\fP,\fB\ \-\-user\fP \fIuser\fP]
+[\fB\-v\fP,\fB\ \-\-verbose\fP] [\fB\-w\fP,\fB\ \-\-wait\fP] [\fB\-y\fP,\fB\ \-\-younger\-than\fP
+\fITIME\fP] [\fB\-I\fP,\fB\ \-\-ignore\-case\fP] [\fB\-V\fP,\fB\ \-\-version\fP] [\fB\-\-\fP] \fIname\fP
+\&...
+.br
+\fBkillall\fP \-l
+.br
+\fBkillall\fP \fB\-V\fP,\fB\ \-\-version\fP
+.ad b
+.SH DESCRIÇÃO
+\fBkillall\fP envia um sinal para todos os processos que executam qualquer um
+dos comandos especificados. Se nenhum nome de sinal for especificado,
+SIGTERM será enviado.
+.PP
+Os sinais podem ser especificados pelo nome (por exemplo, \fB\-HUP\fP ou
+\fB\-SIGHUP\fP) ou por número (por exemplo, \fB\-1\fP) ou pela opção \fB\-s\fP.
+.PP
+Se o nome do comando não for uma expressão regular (opção \fB\-r\fP) e contiver
+uma barra (\fB/\fP), os processos que executam aquele arquivo específico serão
+selecionados para eliminação, independente de seu nome.
+.PP
+\fBkillall\fP retorna um código de retorno zero se pelo menos um processo foi
+eliminado para cada comando listado, ou nenhum comando foi listado e pelo
+menos um processo correspondeu aos critérios de pesquisa \fB\-u\fP e
+\fB\-Z\fP. \fBkillall\fP retorna diferente de zero, caso contrário.
+.PP
+Um processo \fBkillall\fP nunca se mata (mas pode matar outros processos
+\fBkillall\fP).
+.SH OPÇÕES
+.IP "\fB\-e\fP, \fB\-\-exact\fP"
+Requer uma correspondência exata para nomes muito longos. Se um nome de
+comando tiver mais de 15 caracteres, o nome completo pode não estar
+disponível (ou seja, foi trocado). Nesse caso, \fBkillall\fP matará tudo o que
+corresponder aos primeiros 15 caracteres. Com \fB\-e\fP, essas entradas são
+ignoradas. \fBkillall\fP imprime uma mensagem para cada entrada ignorada se
+\fB\-v\fP for especificado além de \fB\-e\fP.
+.IP "\fB\-I\fP, \fB\-\-ignore\-case\fP"
+Faz correspondência de nomes de processo sem diferenciar maiusculização de
+minúsculo.
+.IP "\fB\-g\fP, \fB\-\-process\-group\fP"
+Mata o grupo de processos ao qual o processo pertence. O sinal de eliminação
+é enviado apenas uma vez por grupo, mesmo se vários processos pertencentes
+ao mesmo grupo de processos forem encontrados.
+.IP "\fB\-i\fP, \fB\-\-interactive\fP"
+Pede confirmação interativamente antes de matar.
+.IP "\fB\-l\fP, \fB\-\-list\fP"
+Lista todos os nomes de sinal conhecidos.
+.IP "\fB\-n\fP, \fB\-\-ns\fP"
+Compara com o espaço de nomes do PID ao PID fornecido. O padrão é
+corresponder a todos os espaço de nomes.
+.IP "\fB\-o\fP, \fB\-\-older\-than\fP"
+Corresponde apenas aos processos que são mais antigos (iniciados antes) da
+hora especificada. O tempo é especificado como um flutuante e depois como
+uma unidade. As unidades são s,m,h,d,w,M,y para segundos, minutos, horas,
+dias, semanas, meses e anos, respectivamente.
+.IP "\fB\-q\fP, \fB\-\-quiet\fP"
+Não reclama se nenhum processo tiver sido eliminado.
+.IP "\fB\-r\fP, \fB\-\-regexp\fP"
+Interpreta o padrão do nome do processo como uma expressão regular estendida
+POSIX, por \fBregex\fP(3).
+.IP "\fB\-s\fP, \fB\-\-signal\fP, \fB\-\fP\fISIGNAL\fP"
+Envia este sinal ao invés de SIGTERM.
+.IP "\fB\-u\fP, \fB\-\-user\fP"
+Mata apenas os processos que o usuário especificado possui. Os nomes dos
+comandos são opcionais.
+.IP "\fB\-v\fP, \fB\-\-verbose\fP"
+Relata se o sinal foi enviado com sucesso.
+.IP "\fB\-V\fP, \fB\-\-version\fP"
+Exibe informação da versão.
+.IP "\fB\-w\fP, \fB\-\-wait\fP"
+Aguarda todos os processos eliminados morrerem. \fBkillall\fP verifica uma vez
+a cada segundo se algum dos processos eliminados ainda existe e só retorna
+se nenhum sobrar. Observe que \fBkillall\fP pode esperar para sempre se o sinal
+for ignorado, não tiver efeito ou se o processo permanecer no estado zumbi.
+.IP "\fB\-y\fP, \fB\-\-younger\-than\fP"
+Corresponde apenas aos processos que são mais recentes (iniciados após) o
+tempo especificado. O tempo é especificado como um flutuante e depois como
+uma unidade. As unidades são s,m,h,d,w,M,y para segundos, minutos, horas,
+dias, semanas, meses e anos, respectivamente.
+.IP "\fB\-Z\fP, \fB\-\-context\fP"
+Specify security context: kill only processes having security context that
+match with given extended regular expression pattern.  Must precede other
+arguments on the command line.  Command names are optional.
+.SH ARQUIVOS
+.TP 
+/proc
+local do sistema de arquivos proc
+.SH "BUGS CONHECIDOS"
+Matar por arquivo só funciona para executáveis que são mantidos abertos
+durante a execução, ou seja, executáveis impuros não podem ser matados dessa
+maneira.
+.PP
+Esteja avisado que digitar \fBkillall\fP \fInome\fP pode não ter o efeito desejado
+em sistemas não Linux, especialmente quando feito por um usuário
+privilegiado.
+.PP
+\fBkillall \-w\fP não detecta se um processo desaparece e é substituído por um
+novo processo com o mesmo PID entre as varreduras.
+.PP
+Se os processos mudarem de nome, \fBkillall\fP pode não ser capaz de
+correspondê\-los corretamente.
+.PP
+\fBkillall\fP tem um limite de nomes que podem ser especificados na linha de
+comando. Este número é o tamanho de um inteiro longo sem sinal multiplicado
+por 8. Para a maioria dos sistemas de 32 bits, o limite é 32 e, da mesma
+forma, para um sistema de 64 bits, o limite é geralmente 64.
+.SH "VEJA TAMBÉM"
+\fBkill\fP(1), \fBfuser\fP(1), \fBpgrep\fP(1), \fBpidof\fP(1), \fBpkill\fP(1), \fBps\fP(1),
+\fBkill\fP(2), \fBregex\fP(3).

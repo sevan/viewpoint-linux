@@ -1,0 +1,15 @@
+#
+# Testsuite for pslog
+#
+
+set pslog "${topdir}src/pslog"
+set fake_pid "27000"
+
+set test "pslog with no arguments"
+spawn $pslog
+expect_pass "$test" "^Usage: pslog PID\\.\\.\\."
+
+set test "pslog pid not found"
+spawn $pslog ${fake_pid}
+expect_pass "$test" "opendir: No such file or directory"
+

@@ -1,0 +1,895 @@
+# Swedish language file for psmisc.
+# Copyright © 2003, 2006, 2007, 2009, 2016, 2018, 2019, 2020 Free Software Foundation, Inc.
+# This file is distributed under the same license as the psmisc package.
+# Joakim Mared <joakim at bfcom dot se>, 2003.
+# Daniel Nylander <po@danielnylander.se>, 2006, 2007, 2009.
+# Sebastian Rasmussen <sebras@gmail.com>, 2016, 2018, 2019, 2020.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: psmisc 23.3\n"
+"Report-Msgid-Bugs-To: csmall@dropbear.xyz\n"
+"POT-Creation-Date: 2021-02-06 11:02+1100\n"
+"PO-Revision-Date: 2020-12-26 03:58+0100\n"
+"Last-Translator: Sebastian Rasmussen <sebras@gmail.com>\n"
+"Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
+"Language: sv\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Bugs: Report translation errors to the Language-Team address.\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.4.2\n"
+
+#: src/fuser.c:145
+#, c-format
+msgid ""
+"Usage: fuser [-fIMuvw] [-a|-s] [-4|-6] [-c|-m|-n SPACE]\n"
+"             [-k [-i] [-SIGNAL]] NAME...\n"
+"       fuser -l\n"
+"       fuser -V\n"
+"Show which processes use the named files, sockets, or filesystems.\n"
+"\n"
+"  -a,--all              display unused files too\n"
+"  -i,--interactive      ask before killing (ignored without -k)\n"
+"  -I,--inode            use always inodes to compare files\n"
+"  -k,--kill             kill processes accessing the named file\n"
+"  -l,--list-signals     list available signal names\n"
+"  -m,--mount            show all processes using the named filesystems or\n"
+"                        block device\n"
+"  -M,--ismountpoint     fulfill request only if NAME is a mount point\n"
+"  -n,--namespace SPACE  search in this name space (file, udp, or tcp)\n"
+"  -s,--silent           silent operation\n"
+"  -SIGNAL               send this signal instead of SIGKILL\n"
+"  -u,--user             display user IDs\n"
+"  -v,--verbose          verbose output\n"
+"  -w,--writeonly        kill only processes with write access\n"
+"  -V,--version          display version information\n"
+msgstr ""
+"Användning: fuser [-fIMuvw] [-a|-s] [-4|-6] [-c|-m|-n RYMD]\n"
+"             [-k [-i] [-SIGNAL]] NAMN…\n"
+"       fuser -l\n"
+"       fuser -V\n"
+"Visa vilka processer som använder namngivna filer, uttag eller filsystem.\n"
+"\n"
+"  -a,--all              visa även filer som inte används\n"
+"  -i,--interactive      fråga innan processen dödas (ignoreras utan -k)\n"
+"  -I,--inode            använd alltid inoder för att jämföra filer\n"
+"  -k,--kill             döda processer som använder namngiven fil\n"
+"  -l,--list-signals     lista tillgängliga signalnamn\n"
+"  -m,--mount            visa alla processer som använder namngivna filsystem "
+"eller blockenheter\n"
+"  -M,--ismountpoint     genomför begäran endast om NAMN är en "
+"monteringspunkt\n"
+"  -n,--namespace RYMD   sök i denna namnrymd (fil, udp, tcp)\n"
+"  -s,--silent           tyst körning\n"
+"  -SIGNAL               skicka denna signal istället för SIGKILL\n"
+"  -u,--user             visa användar-ID\n"
+"  -v,--verbose          informativ utskrift\n"
+"  -w,--writeonly        döda bara processer med skrivrättighet\n"
+"  -V,--version          visa versionsinformation\n"
+
+#: src/fuser.c:166
+#, c-format
+msgid ""
+"  -4,--ipv4             search IPv4 sockets only\n"
+"  -6,--ipv6             search IPv6 sockets only\n"
+msgstr ""
+"  -4,--ipv4             sök endast bland IPv4-uttag (socket)\n"
+"  -6,--ipv6             sök endast bland IPv6-uttag (socket)\n"
+
+#: src/fuser.c:169
+#, c-format
+msgid ""
+"  -                     reset options\n"
+"\n"
+"  udp/tcp names: [local_port][,[rmt_host][,[rmt_port]]]\n"
+"\n"
+msgstr ""
+"  -                     nollställ flaggor\n"
+"\n"
+"  udp/tcp-namn: [lokal_port][,[fjärrvärd][,[fjärrport]]]\n"
+"\n"
+
+#: src/fuser.c:176
+#, c-format
+msgid "fuser (PSmisc) %s\n"
+msgstr "fuser (PSmisc) %s\n"
+
+#: src/fuser.c:179 src/pstree.c:1266
+#, fuzzy, c-format
+msgid ""
+"Copyright (C) 1993-2020 Werner Almesberger and Craig Small\n"
+"\n"
+msgstr ""
+"Copyright © 1993-2009 Werner Almesberger och Craig Small\n"
+"\n"
+
+#: src/fuser.c:181 src/killall.c:839 src/peekfd.c:195 src/prtstat.c:68
+#: src/pstree.c:1268
+#, c-format
+msgid ""
+"PSmisc comes with ABSOLUTELY NO WARRANTY.\n"
+"This is free software, and you are welcome to redistribute it under\n"
+"the terms of the GNU General Public License.\n"
+"For more information about these matters, see the files named COPYING.\n"
+msgstr ""
+"PSmisc kommer med ABSOLUT INGEN GARANTI.\n"
+"Detta är fri programvara och du är välkommen att distribuera den under\n"
+"villkoren för GNU General Public License.\n"
+"För mer information om dessa villkor, se filerna kallade COPYING.\n"
+"Följande text är en informell översättning som enbart tillhandahålls\n"
+"i informativt syfte. För alla juridiska tolkningar gäller den engelska "
+"originaltexten.\n"
+
+#: src/fuser.c:203
+#, c-format
+msgid "Cannot open /proc directory: %s\n"
+msgstr "Kan inte öppna katalogen /proc: %s\n"
+
+#: src/fuser.c:394 src/fuser.c:447 src/fuser.c:2078
+#, c-format
+msgid "Cannot allocate memory for matched proc: %s\n"
+msgstr "Kan inte allokera minne för matchande proc: %s\n"
+
+#: src/fuser.c:474
+#, c-format
+msgid "Specified filename %s does not exist.\n"
+msgstr "Angivna filnamnet %s finns inte.\n"
+
+#: src/fuser.c:477
+#, c-format
+msgid "Cannot stat %s: %s\n"
+msgstr "Kan inte ta status på %s: %s\n"
+
+#: src/fuser.c:614
+#, c-format
+msgid "Cannot resolve local port %s: %s\n"
+msgstr "Kan inte slå upp lokal port %s: %s\n"
+
+#: src/fuser.c:634
+#, c-format
+msgid "Unknown local port AF %d\n"
+msgstr "Okänd AF %d för lokal port\n"
+
+#: src/fuser.c:723
+#, c-format
+msgid "Cannot open protocol file \"%s\": %s\n"
+msgstr "Kan inte öppna protokollfilen \"%s\": %s\n"
+
+#: src/fuser.c:1026
+#, c-format
+msgid "Specified filename %s is not a mountpoint.\n"
+msgstr "Angivet filnamn %s är inte en monteringspunkt.\n"
+
+#: src/fuser.c:1118
+#, c-format
+msgid "%s: Invalid option %s\n"
+msgstr "%s: Ogiltig flagga %s\n"
+
+#: src/fuser.c:1172
+msgid "Namespace option requires an argument."
+msgstr "Flagga för namnrymd kräver ett argument."
+
+#: src/fuser.c:1189
+msgid "Invalid namespace name"
+msgstr "Ogiltigt namn för namnrymd"
+
+#: src/fuser.c:1254
+msgid "You can only use files with mountpoint options"
+msgstr "Du kan endast använda filer med monteringspunktsflaggor"
+
+#: src/fuser.c:1304
+msgid "No process specification given"
+msgstr "Ingen processpecifikation angiven"
+
+#: src/fuser.c:1319
+msgid "all option cannot be used with silent option."
+msgstr "flagga för alla, -m,  kan inte användas med flaggan för tyst, -s."
+
+#: src/fuser.c:1324
+msgid "You cannot search for only IPv4 and only IPv6 sockets at the same time"
+msgstr "Du kan inte söka efter endast IPv4- och endast IPv6-uttag samtidigt"
+
+#: src/fuser.c:1413
+#, c-format
+msgid "%*s USER        PID ACCESS COMMAND\n"
+msgstr "%*s ANVÄNDARE   PID ÅTKOMS KOMMANDO\n"
+
+#: src/fuser.c:1446 src/fuser.c:1503
+msgid "(unknown)"
+msgstr "(okänd)"
+
+#: src/fuser.c:1588 src/fuser.c:1638
+#, c-format
+msgid "Cannot stat file %s: %s\n"
+msgstr "Kan inte ta status på fil %s: %s\n"
+
+#: src/fuser.c:1731
+#, c-format
+msgid "Cannot open /proc/net/unix: %s\n"
+msgstr "Kan inte öppna /proc/net/unix: %s\n"
+
+#: src/fuser.c:1826
+#, c-format
+msgid "Kill process %d ? (y/N) "
+msgstr "Döda process %d ? (y/N) "
+
+#: src/fuser.c:1862
+#, c-format
+msgid "Could not kill process %d: %s\n"
+msgstr "Kunde inte döda process %d: %s\n"
+
+#: src/fuser.c:1877
+#, c-format
+msgid "Cannot open a network socket.\n"
+msgstr "Kan inte öppna ett nätverksuttag.\n"
+
+#: src/fuser.c:1881
+#, c-format
+msgid "Cannot find socket's device number.\n"
+msgstr "Kan inte hitta uttagets enhetsnummer.\n"
+
+#: src/killall.c:109
+#, c-format
+msgid "Kill %s(%s%d) ? (y/N) "
+msgstr "Döda %s(%s%d) ? (y/N) "
+
+#: src/killall.c:112
+#, c-format
+msgid "Signal %s(%s%d) ? (y/N) "
+msgstr "Signalera %s(%s%d) ? (y/N) "
+
+#: src/killall.c:255
+#, c-format
+msgid "killall: Cannot get UID from process status\n"
+msgstr "killall: Kan inte hämta UID från processtatus\n"
+
+#: src/killall.c:344
+#, c-format
+msgid "killall: Bad regular expression: %s\n"
+msgstr "killall: Felaktigt reguljärt uttryck: %s\n"
+
+#: src/killall.c:501
+#, c-format
+msgid "killall: skipping partial match %s(%d)\n"
+msgstr "killall: hoppar över partiell matchning %s(%d)\n"
+
+#: src/killall.c:744
+#, c-format
+msgid "Killed %s(%s%d) with signal %d\n"
+msgstr "Dödade %s(%s%d) med signal %d\n"
+
+#: src/killall.c:763
+#, c-format
+msgid "%s: no process found\n"
+msgstr "%s: ingen process hittades\n"
+
+#: src/killall.c:804
+#, c-format
+msgid "Usage: killall [OPTION]... [--] NAME...\n"
+msgstr "Användning: killall [FLAGGA]… [--] NAMN…\n"
+
+#: src/killall.c:806
+#, c-format
+msgid ""
+"       killall -l, --list\n"
+"       killall -V, --version\n"
+"\n"
+"  -e,--exact          require exact match for very long names\n"
+"  -I,--ignore-case    case insensitive process name match\n"
+"  -g,--process-group  kill process group instead of process\n"
+"  -y,--younger-than   kill processes younger than TIME\n"
+"  -o,--older-than     kill processes older than TIME\n"
+"  -i,--interactive    ask for confirmation before killing\n"
+"  -l,--list           list all known signal names\n"
+"  -q,--quiet          don't print complaints\n"
+"  -r,--regexp         interpret NAME as an extended regular expression\n"
+"  -s,--signal SIGNAL  send this signal instead of SIGTERM\n"
+"  -u,--user USER      kill only process(es) running as USER\n"
+"  -v,--verbose        report if the signal was successfully sent\n"
+"  -V,--version        display version information\n"
+"  -w,--wait           wait for processes to die\n"
+"  -n,--ns PID         match processes that belong to the same namespaces\n"
+"                      as PID\n"
+msgstr ""
+"       killall -l, --list\n"
+"       killall -V, --version\n"
+"\n"
+"  -e,--exact          kräver exakt matchning för väldigt långa namn\n"
+"  -I,--ignore-case    ingen skillnad på gemener/versaler vid namnmatchning\n"
+"  -g,--process-group  döda processgrupp istället för process\n"
+"  -y,--younger-than   döda processer yngre än TID\n"
+"  -o,--older-than     döda processer äldre än TID\n"
+"  -i,--interactive    fråga efter bekräftelse före dödandet\n"
+"  -l,--list           lista alla kända signalnamn\n"
+"  -q,--quiet          skriv inte ut klagomål\n"
+"  -r,--regexp         tolka NAMN som ett utökat reguljärt uttryck\n"
+"  -s,--signal SIGNAL  skicka signal istället för SIGTERM\n"
+"  -u,--user ANVÄNDARE döda endast process(er) som körs som ANVÄNDARE\n"
+"  -v,--verbose        rapportera om signalen blev skickad korrekt\n"
+"  -V,--version        visa versionsinformation\n"
+"  -w,--wait           vänta tills processerna är döda\n"
+"  -n,--ns PID         matcha processer som tillhöl samma namnrymd\n"
+"                      som PID\n"
+
+#: src/killall.c:826
+#, c-format
+msgid ""
+"  -Z,--context REGEXP kill only process(es) having context\n"
+"                      (must precede other arguments)\n"
+msgstr ""
+"  -Z,--context REGEXP döda endast process(er) som har kontext\n"
+"                      (måste föregå andra argument)\n"
+
+#: src/killall.c:837
+#, fuzzy, c-format
+msgid ""
+"Copyright (C) 1993-2021 Werner Almesberger and Craig Small\n"
+"\n"
+msgstr ""
+"Copyright © 1993-2017 Werner Almesberger och Craig Small\n"
+"\n"
+
+#: src/killall.c:922 src/killall.c:928
+msgid "Invalid time format"
+msgstr "Ogiltigt tidsformat"
+
+#: src/killall.c:948
+#, c-format
+msgid "Cannot find user %s\n"
+msgstr "Kan inte hitta användare %s\n"
+
+#: src/killall.c:983
+msgid "Invalid namespace PID"
+msgstr "Ogiltig PID för namnrymd"
+
+#: src/killall.c:990
+#, c-format
+msgid "Bad regular expression: %s\n"
+msgstr "Felaktigt reguljärt uttryck: %s\n"
+
+#: src/killall.c:1024
+#, c-format
+msgid "killall: Maximum number of names is %d\n"
+msgstr "killall: Maximalt antal namn är %d\n"
+
+#: src/killall.c:1029
+#, c-format
+msgid "killall: %s lacks process entries (not mounted ?)\n"
+msgstr "killall: %s saknar processposter (inte monterad?)\n"
+
+#: src/peekfd.c:183
+#, c-format
+msgid "Error attaching to pid %i\n"
+msgstr "Fel vid koppling till pid %i\n"
+
+#: src/peekfd.c:191
+#, c-format
+msgid "peekfd (PSmisc) %s\n"
+msgstr "peekfd (PSmisc) %s\n"
+
+#: src/peekfd.c:193
+#, c-format
+msgid ""
+"Copyright (C) 2007 Trent Waddington\n"
+"\n"
+msgstr ""
+"Copyright © 2007 Trent Waddington\n"
+"\n"
+
+#: src/peekfd.c:203
+#, c-format
+msgid ""
+"Usage: peekfd [-8] [-n] [-c] [-d] [-V] [-h] <pid> [<fd> ..]\n"
+"    -8, --eight-bit-clean        output 8 bit clean streams.\n"
+"    -n, --no-headers             don't display read/write from fd headers.\n"
+"    -c, --follow                 peek at any new child processes too.\n"
+"    -t, --tgid                   peek at all threads where tgid equals "
+"<pid>.\n"
+"    -d, --duplicates-removed     remove duplicate read/writes from the "
+"output.\n"
+"    -V, --version                prints version info.\n"
+"    -h, --help                   prints this help.\n"
+"\n"
+"  Press CTRL-C to end output.\n"
+msgstr ""
+"Användning: peekfd [-8] [-n] [-c] [-d] [-V] [-h] <pid> [<fd> ..]\n"
+"    -8, --eight-bit-clean         skriv ut 8-bitars rena strömmar.\n"
+"    -n, --no-headers              visa inte läs/skriv från fd-huvuden.\n"
+"    -c, --follow                  titta även på alla nya barnprocesser.\n"
+"    -t, --tgid                    titta på alla trådar där tgid är lika med "
+"<pid>.\n"
+"    -d, --duplicates-removed      Ta bort dubbletter av läs/skriv från "
+"utdata.\n"
+"    -V, --version                 visar versionsinformation.\n"
+"    -h, --help                    visar den här hjälpen.\n"
+"\n"
+"  Tryck CTRL-C för att avsluta utdata.\n"
+
+#: src/prtstat.c:54
+#, c-format
+msgid ""
+"Usage: prtstat [options] PID ...\n"
+"       prtstat -V\n"
+"Print information about a process\n"
+"    -r,--raw       Raw display of information\n"
+"    -V,--version   Display version information and exit\n"
+msgstr ""
+"Användning: prtstat [flaggor] PID …\n"
+"       prtstat -V\n"
+"Skriv ut information om en process\n"
+"    -r,--raw       Rå visning av information\n"
+"    -V,--version   Visa versionsinformation och avsluta\n"
+
+#: src/prtstat.c:65
+#, c-format
+msgid "prtstat (PSmisc) %s\n"
+msgstr "prtstat (PSmisc) %s\n"
+
+#: src/prtstat.c:66
+#, fuzzy, c-format
+msgid ""
+"Copyright (C) 2009-2020 Craig Small\n"
+"\n"
+msgstr ""
+"Copyright © 2009-2017 Craig Small\n"
+"\n"
+
+#: src/prtstat.c:78
+msgid "running"
+msgstr "kör"
+
+#: src/prtstat.c:80
+msgid "sleeping"
+msgstr "sover"
+
+#: src/prtstat.c:82
+msgid "disk sleep"
+msgstr "disk sover"
+
+#: src/prtstat.c:84
+msgid "zombie"
+msgstr "zombie"
+
+#: src/prtstat.c:86
+msgid "traced"
+msgstr "spårad"
+
+#: src/prtstat.c:88
+msgid "paging"
+msgstr "sidväxling"
+
+#: src/prtstat.c:90
+msgid "unknown"
+msgstr "okänd"
+
+#: src/prtstat.c:164
+#, c-format
+msgid ""
+"Process: %-14s\t\tState: %c (%s)\n"
+"  CPU#:  %-3d\t\tTTY: %s\tThreads: %ld\n"
+msgstr ""
+"Process: %-14s\t\tTillstånd: %c (%s)\n"
+"  Proc.:  %-3d\t\tTTY: %s\tTrådar: %ld\n"
+
+#: src/prtstat.c:169
+#, c-format
+msgid ""
+"Process, Group and Session IDs\n"
+"  Process ID: %d\t\t  Parent ID: %d\n"
+"    Group ID: %d\t\t Session ID: %d\n"
+"  T Group ID: %d\n"
+"\n"
+msgstr ""
+"Process-, Grupp- och Sessions-ID\n"
+"  Process-ID: %d\t\t Överordnat ID: %d\n"
+"    Group-ID: %d\t\t   Sessions-ID: %d\n"
+"  T Group-ID: %d\n"
+"\n"
+
+#: src/prtstat.c:175
+#, c-format
+msgid ""
+"Page Faults\n"
+"  This Process    (minor major): %8lu  %8lu\n"
+"  Child Processes (minor major): %8lu  %8lu\n"
+msgstr ""
+"Sidfel\n"
+"  Denna Process (lägre övre): %8lu  %8lu\n"
+"  Barnprocesser (lägre övre): %8lu  %8lu\n"
+
+#: src/prtstat.c:180
+#, c-format
+msgid ""
+"CPU Times\n"
+"  This Process    (user system guest blkio): %6.2f %6.2f %6.2f %6.2f\n"
+"  Child processes (user system guest):       %6.2f %6.2f %6.2f\n"
+msgstr ""
+"CPU-tider\n"
+"  Denna process (användare system gäst blkio): %6.2f %6.2f %6.2f %6.2f\n"
+"  Barnprocesser (användare system gäst):       %6.2f %6.2f %6.2f\n"
+
+#: src/prtstat.c:189
+#, c-format
+msgid ""
+"Memory\n"
+"  Vsize:       %-10s\n"
+"  RSS:         %-10s \t\t RSS Limit: %s\n"
+"  Code Start:  %#-10lx\t\t Code Stop:  %#-10lx\n"
+"  Stack Start: %#-10lx\n"
+"  Stack Pointer (ESP): %#10lx\t Inst Pointer (EIP): %#10lx\n"
+msgstr ""
+"Minne\n"
+"  V-storlek:  %-10s\n"
+"  RSS:        %-10s \t\t RSS-begränsning: %s\n"
+"  Kodstart:   %#-10lx\t\t Kodslut:  %#-10lx\n"
+"  Stackstart: %#-10lx\n"
+"  Stackpekare (ESP): %#10lx\t Instr.-pekare (EIP): %#10lx\n"
+
+#: src/prtstat.c:199
+#, c-format
+msgid ""
+"Scheduling\n"
+"  Policy: %s\n"
+"  Nice:   %ld \t\t RT Priority: %ld %s\n"
+msgstr ""
+"Schemaläggning\n"
+"  Policy: %s\n"
+"  Nice:   %ld \t\t RT-prioritet: %ld %s\n"
+
+#: src/prtstat.c:220
+msgid "asprintf in print_stat failed.\n"
+msgstr "asprintf i print_stat misslyckades.\n"
+
+#: src/prtstat.c:225
+#, c-format
+msgid "Process with pid %d does not exist.\n"
+msgstr "Någon process med pid %d finns inte.\n"
+
+#: src/prtstat.c:227
+#, c-format
+msgid "Unable to open stat file for pid %d (%s)\n"
+msgstr "Kan inte öppna stat-fil för pid %d (%s)\n"
+
+#: src/prtstat.c:243
+#, c-format
+msgid "Unable to allocate memory for proc_info\n"
+msgstr ""
+"Kan inte allokera minne för proc_info\n"
+"\n"
+
+#: src/prtstat.c:283
+#, c-format
+msgid "Unable to scan stat file"
+msgstr "Kan inte genomsöka stat-fil"
+
+#: src/prtstat.c:318
+msgid "Invalid option"
+msgstr "Ogiltig flagga"
+
+#: src/prtstat.c:323
+msgid "You must provide at least one PID."
+msgstr "Du måste tillhandahålla minst en PID."
+
+#: src/prtstat.c:327
+#, c-format
+msgid "/proc is not mounted, cannot stat /proc/self/stat.\n"
+msgstr "/proc är inte monterad, kan inte ta status på /proc/self/stat.\n"
+
+#: src/pstree.c:1183
+#, c-format
+msgid "%s is empty (not mounted ?)\n"
+msgstr "%s är tom (inte monterad?)\n"
+
+#: src/pstree.c:1216
+#, c-format
+msgid ""
+"Usage: pstree [-acglpsStTuZ] [ -h | -H PID ] [ -n | -N type ]\n"
+"              [ -A | -G | -U ] [ PID | USER ]\n"
+"   or: pstree -V\n"
+msgstr ""
+"Användning: pstree [-acglpsStTuZ] [ -h | -H PID ] [ -n | -N typ ]\n"
+"              [ -A | -G | -U ] [ PID | ANVÄNDARE ]\n"
+"   eller: pstree -V\n"
+"\n"
+
+#: src/pstree.c:1220
+#, c-format
+msgid ""
+"\n"
+"Display a tree of processes.\n"
+"\n"
+msgstr ""
+"\n"
+"Visa ett träd av processer.\n"
+"\n"
+
+#: src/pstree.c:1223
+#, c-format
+msgid ""
+"  -a, --arguments     show command line arguments\n"
+"  -A, --ascii         use ASCII line drawing characters\n"
+"  -c, --compact-not   don't compact identical subtrees\n"
+msgstr ""
+"  -a, --arguments     visa kommandoradsargument\n"
+"  -A, --ascii         använd ASCII-linjeritningstecken\n"
+"  -c, --compact-not   komprimera inte identiska underträd\n"
+
+#: src/pstree.c:1227
+#, c-format
+msgid ""
+"  -C, --color=TYPE    color process by attribute\n"
+"                      (age)\n"
+msgstr ""
+"  -C, --color=TYP     färglägg process efter attribut\n"
+"                      (ålder)\n"
+
+#: src/pstree.c:1230
+#, c-format
+msgid ""
+"  -g, --show-pgids    show process group ids; implies -c\n"
+"  -G, --vt100         use VT100 line drawing characters\n"
+msgstr ""
+"  -g, --show-pgids    visa processgrupps-ID:n; medför -c\n"
+"  -G, --vt100         använd VT100-linjeritningstecken\n"
+
+#: src/pstree.c:1233
+#, c-format
+msgid ""
+"  -h, --highlight-all highlight current process and its ancestors\n"
+"  -H PID, --highlight-pid=PID\n"
+"                      highlight this process and its ancestors\n"
+"  -l, --long          don't truncate long lines\n"
+msgstr ""
+"  -h, --highlight-all markera aktuell process och dess förfäder\n"
+"  -H PID, --highlight-pid=PID\n"
+"                      markera denna process och dess förfäder\n"
+"  -l, --long          korta inte ner långa rader\n"
+"\n"
+
+#: src/pstree.c:1238
+#, fuzzy, c-format
+msgid ""
+"  -n, --numeric-sort  sort output by PID\n"
+"  -N TYPE, --ns-sort=TYPE\n"
+"                      sort output by this namespace type\n"
+"                              (cgroup, ipc, mnt, net, pid, time, user, uts)\n"
+"  -p, --show-pids     show PIDs; implies -c\n"
+msgstr ""
+"  -n, --numeric-sort  sortera utdata efter PID\n"
+"  -N TYP, --ns-sort=TYP\n"
+"                      sortera utdata efter namnrymd\n"
+"                              (cgroup, ipc, mnt, net, pid, user, uts)\n"
+"  -p, --show-pids     visa PID:ar; medför -c\n"
+
+#: src/pstree.c:1244
+#, c-format
+msgid ""
+"  -s, --show-parents  show parents of the selected process\n"
+"  -S, --ns-changes    show namespace transitions\n"
+"  -t, --thread-names  show full thread names\n"
+"  -T, --hide-threads  hide threads, show only processes\n"
+msgstr ""
+"  -s, --show-parents  visa överordnade processer för vald process\n"
+"  -S, --ns-changes    visa namnrymdsövergångar\n"
+"  -t, --thread-names  visa fullständiga trådnamn\n"
+"  -T, --hide-threads  göm trådar, visa endast processer\n"
+
+#: src/pstree.c:1249
+#, c-format
+msgid ""
+"  -u, --uid-changes   show uid transitions\n"
+"  -U, --unicode       use UTF-8 (Unicode) line drawing characters\n"
+"  -V, --version       display version information\n"
+msgstr ""
+"  -u, --uid-changes   visa uid-övergångar\n"
+"  -U, --unicode       använd UTF-8-linjeritningstecken (Unicode)\n"
+"  -V, --version       visa versionsinformation\n"
+
+#: src/pstree.c:1253
+#, fuzzy, c-format
+msgid ""
+"  -Z, --security-context\n"
+"                      show security attributes\n"
+msgstr ""
+"  -Z, --security-context\n"
+"                      visa SELinux-säkerhetskontexter\n"
+
+#: src/pstree.c:1255
+#, c-format
+msgid ""
+"\n"
+"  PID    start at this PID; default is 1 (init)\n"
+"  USER   show only trees rooted at processes of this user\n"
+"\n"
+msgstr ""
+"\n"
+"  PID    starta vid denna PID; standardvärde är 1 (init)\n"
+"  ANVÄNDARE   visa endast träd med denna användares\n"
+"              processer som rot\n"
+"\n"
+
+#: src/pstree.c:1263
+#, c-format
+msgid "pstree (PSmisc) %s\n"
+msgstr "pstree (PSmisc) %s\n"
+
+#: src/pstree.c:1383
+#, c-format
+msgid "TERM is not set\n"
+msgstr "TERM är inte inställd\n"
+
+#: src/pstree.c:1387
+#, c-format
+msgid "Can't get terminal capabilities\n"
+msgstr "Kan inte ta reda på terminalens förmågor\n"
+
+#: src/pstree.c:1405
+#, c-format
+msgid "procfs file for %s namespace not available\n"
+msgstr "procfs-fil för %s-namnrymd inte tillgänglig\n"
+
+#: src/pstree.c:1452
+#, c-format
+msgid "No such user name: %s\n"
+msgstr "Ingen sådan användare: %s\n"
+
+#: src/pstree.c:1478
+#, c-format
+msgid "No processes found.\n"
+msgstr "Inga processer hittades.\n"
+
+#: src/pstree.c:1486
+#, c-format
+msgid "Press return to close\n"
+msgstr "Tryck Retur för att stänga\n"
+
+#: src/signals.c:84
+#, c-format
+msgid "%s: unknown signal; %s -l lists signals.\n"
+msgstr "%s: okänd signal; %s -l listar signaler.\n"
+
+#, c-format
+#~ msgid ""
+#~ "Usage: killall [ -Z CONTEXT ] [ -u USER ] [ -y TIME ] [ -o TIME ] [ -"
+#~ "eIgiqrvw ]\n"
+#~ "               [ -s SIGNAL | -SIGNAL ] NAME...\n"
+#~ msgstr ""
+#~ "Användning: killall [-Z KONTEXT] [-u ANVÄNDARE] [-y TID] [ -o TID ] [ -"
+#~ "eIgiqrvw ]\n"
+#~ "               [ -s SIGNAL | -SIGNAL ] NAMN...\n"
+
+#, c-format
+#~ msgid ""
+#~ "Usage: pstree [-acglpsStTu] [ -h | -H PID ] [ -n | -N type ]\n"
+#~ "              [ -A | -G | -U ] [ PID | USER ]\n"
+#~ "   or: pstree -V\n"
+#~ msgstr ""
+#~ "Användning: pstree [-acglpsStTu] [ -h | -H PID ] [ -n | -N typ ]\n"
+#~ "              [ -A | -G | -U ] [ PID | ANVÄNDARE ]\n"
+#~ "   eller: pstree -V\n"
+#~ "\n"
+
+#, c-format
+#~ msgid ""
+#~ "Copyright (C) 1993-2019 Werner Almesberger and Craig Small\n"
+#~ "\n"
+#~ msgstr ""
+#~ "Copyright © 1993-2019 Werner Almesberger och Craig Small\n"
+#~ "\n"
+
+#~ msgid ""
+#~ "Usage: pstree [-acglpsStuZ] [ -h | -H PID ] [ -n | -N type ]\n"
+#~ "Usage: pstree [-acglpsStu] [ -h | -H PID ] [ -n | -N type ]\n"
+#~ "              [ -A | -G | -U ] [ PID | USER ]\n"
+#~ "       pstree -V\n"
+#~ "Display a tree of processes.\n"
+#~ "\n"
+#~ "  -a, --arguments     show command line arguments\n"
+#~ "  -A, --ascii         use ASCII line drawing characters\n"
+#~ "  -c, --compact       don't compact identical subtrees\n"
+#~ "  -h, --highlight-all highlight current process and its ancestors\n"
+#~ "  -H PID,\n"
+#~ "  --highlight-pid=PID highlight this process and its ancestors\n"
+#~ "  -g, --show-pgids    show process group ids; implies -c\n"
+#~ "  -G, --vt100         use VT100 line drawing characters\n"
+#~ "  -l, --long          don't truncate long lines\n"
+#~ "  -n, --numeric-sort  sort output by PID\n"
+#~ "  -N type,\n"
+#~ "  --ns-sort=type      sort by namespace type (cgroup, ipc, mnt, net, "
+#~ "pid,\n"
+#~ "                                              user, uts)\n"
+#~ "  -p, --show-pids     show PIDs; implies -c\n"
+#~ "  -s, --show-parents  show parents of the selected process\n"
+#~ "  -S, --ns-changes    show namespace transitions\n"
+#~ "  -t, --thread-names  show full thread names\n"
+#~ "  -T, --hide-threads  hide threads, show only processes\n"
+#~ "  -u, --uid-changes   show uid transitions\n"
+#~ "  -U, --unicode       use UTF-8 (Unicode) line drawing characters\n"
+#~ "  -V, --version       display version information\n"
+#~ msgstr ""
+#~ "Användning: pstree [-acglpsStuZ] [ -h | -H PID ] [ -n | -N typ ]\n"
+#~ "Användning: pstree [-acglpsStu] [ -h | -H PID ] [ -n | -N typ ]\n"
+#~ "              [ -A | -G | -U ] [ PID | ANVÄNDARE ]\n"
+#~ "       pstree -V\n"
+#~ "Visa ett träd av processer.\n"
+#~ "\n"
+#~ "  -a, --arguments     visa kommandoradsargument\n"
+#~ "  -A, --ascii         använd ASCII-linjeritningstecken\n"
+#~ "  -c, --compact       komprimera inte identiska underträd\n"
+#~ "  -h, --highlight-all markera aktuell process och dess förfäder\n"
+#~ "  -H PID,\n"
+#~ "  --highlight-pid=PID markera denna process och dess förfäder\n"
+#~ "  -g, --show-pgids    visa processgrupp ID:n; medför -c\n"
+#~ "  -G, --vt100         använd VT100-linjeritningstecken\n"
+#~ "  -l, --long          korta inte ner långa rader\n"
+#~ "  -n, --numeric-sort  sortera utdata efter PID\n"
+#~ "  -N typ,\n"
+#~ "  --ns-sort=typ       sortera utdata efter namnrymd (cgroup, ipc, mnt, "
+#~ "net,\n"
+#~ "                                                     pid, user, uts)\n"
+#~ "  -p, --show-pids     visa PID:ar; medför -c\n"
+#~ "  -s, --show-parents  visa överordnade processer för vald process\n"
+#~ "  -S, --ns-changes    visa namnrymdsövergångar\n"
+#~ "  -t, --thread-names  visa fullständiga trådnamn\n"
+#~ "  -T, --hide-threads  göm trådar, visa endast processer\n"
+#~ "  -u, --uid-changes   visa uid-övergångar\n"
+#~ "  -U, --unicode       använd UTF-8-linjeritningstecken (Unicode)\n"
+#~ "  -V, --version       visa versionsinformation\n"
+
+#~ msgid ""
+#~ "Copyright (C) 1993-2014 Werner Almesberger and Craig Small\n"
+#~ "\n"
+#~ msgstr ""
+#~ "Copyright © 1993-2014 Werner Almesberger och Craig Small\n"
+#~ "\n"
+
+#~ msgid ""
+#~ "Copyright (C) 1993-2012 Werner Almesberger and Craig Small\n"
+#~ "\n"
+#~ msgstr ""
+#~ "Copyright © 1993-2012 Werner Almesberger och Craig Small\n"
+#~ "\n"
+
+#~ msgid ""
+#~ "Usage: pidof [ -eg ] NAME...\n"
+#~ "       pidof -V\n"
+#~ "\n"
+#~ "    -e      require exact match for very long names;\n"
+#~ "            skip if the command line is unavailable\n"
+#~ "    -g      show process group ID instead of process ID\n"
+#~ "    -V      display version information\n"
+#~ "\n"
+#~ msgstr ""
+#~ "Användning: pidof [-eg] NAMN...\n"
+#~ "       pidof -V\n"
+#~ "\n"
+#~ "    -e      kräv exakt matchning för långa namn;\n"
+#~ "            hoppa över om kommandoraden är otillgänglig\n"
+#~ "    -g      visa processgruppens ID istället för processens ID\n"
+#~ "    -V      visa versionsinformation\n"
+#~ "\n"
+
+#~ msgid ""
+#~ "Copyright (C) 1993-2005 Werner Almesberger and Craig Small\n"
+#~ "\n"
+#~ msgstr ""
+#~ "Copyright © 1993-2005 Werner Almesberger och Craig Small\n"
+#~ "\n"
+
+#~ msgid "You cannot use the mounted and mountpoint flags together"
+#~ msgstr ""
+#~ "Du kan inte använda monterade och monteringspunktflaggorna samtidigt"
+
+#~ msgid "Cannot stat mount point %s: %s\n"
+#~ msgstr "Kan inte ta status på monteringspunkten %s: %s\n"
+
+#~ msgid "Cannot open /etc/mtab: %s\n"
+#~ msgstr "Kan inte öppna /etc/mtab: %s\n"
+
+#~ msgid "Internal error: MAX_DEPTH not big enough.\n"
+#~ msgstr "Internt fel: MAX_DEPTH är inte tillräckligt stor.\n"
+
+#~ msgid "Cannot open protocol file \"%s\": %s"
+#~ msgstr "Kan inte öppna protokollfil \"%s\": %s"

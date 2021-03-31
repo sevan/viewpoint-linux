@@ -1,0 +1,1876 @@
+# Portuguese translations for psmisc package
+# Traduções em português brasileiro para o pacote psmisc
+# Copyright (C) 2021 Free Software Foundation, Inc.
+# This file is distributed under the same license as the psmisc package.
+# Rafael Fontenelle <rafaelff@gnome.org>, 2021.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: psmisc-man 23.4rc1\n"
+"Report-Msgid-Bugs-To: Craig Small <csmall@dropbear.xyz>\n"
+"POT-Creation-Date: 2021-02-06 09:01+1100\n"
+"PO-Revision-Date: 2021-02-03 21:05-0300\n"
+"Last-Translator: Rafael Fontenelle <rafaelff@gnome.org>\n"
+"Language-Team: Brazilian Portuguese <ldpbr-translation@lists.sourceforge."
+"net>\n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Bugs: Report translation errors to the Language-Team address.\n"
+"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"X-Generator: Gtranslator 3.38.0\n"
+
+#. type: TH
+#: ../doc/fuser.1:9
+#, no-wrap
+msgid "FUSER"
+msgstr "FUSER"
+
+#. type: TH
+#: ../doc/fuser.1:9 ../doc/peekfd.1:9 ../doc/pslog.1:9 ../doc/prtstat.1:9
+#, no-wrap
+msgid "2020-09-09"
+msgstr "9 de setembro de 2020"
+
+#. type: TH
+#: ../doc/fuser.1:9 ../doc/killall.1:9 ../doc/peekfd.1:9 ../doc/prtstat.1:9
+#: ../doc/pstree.1:9
+#, no-wrap
+msgid "psmisc"
+msgstr "psmisc"
+
+#. type: TH
+#: ../doc/fuser.1:9 ../doc/killall.1:9 ../doc/peekfd.1:9 ../doc/prtstat.1:9
+#: ../doc/pstree.1:9
+#, no-wrap
+msgid "User Commands"
+msgstr "Comandos de usuário"
+
+#. type: SH
+#: ../doc/fuser.1:10 ../doc/killall.1:10 ../doc/peekfd.1:10 ../doc/pslog.1:10
+#: ../doc/prtstat.1:10 ../doc/pstree.1:10
+#, no-wrap
+msgid "NAME"
+msgstr "NOME"
+
+#. type: Plain text
+#: ../doc/fuser.1:12
+msgid "fuser - identify processes using files or sockets"
+msgstr "fuser - identifica processos usando arquivos ou soquetes"
+
+#. type: SH
+#: ../doc/fuser.1:12 ../doc/killall.1:12 ../doc/peekfd.1:12 ../doc/pslog.1:12
+#: ../doc/prtstat.1:12 ../doc/pstree.1:12
+#, no-wrap
+msgid "SYNOPSIS"
+msgstr "SINOPSE"
+
+#. type: Plain text
+#: ../doc/fuser.1:28
+#, fuzzy
+#| msgid ""
+#| "B<fuser> [B<-fuv>] [B<-a>|B<-s>] [B<-4>|B<-6>] [B<-c>|B<-m>|B<-n> "
+#| "I<space>] [B<\\ -k> [B<-i>] [B<-M>] [B<-w>] [B<->I<SIGNAL>] ] I<name> "
+#| "\\&...\""
+msgid ""
+"B<fuser> [B<-fuv>] [B<-a>|B<-s>] [B<-4>|B<-6>] [B<-c>|B<-m>|B<-n> I<space>] "
+"[B<\\ -k> [B<-i>] [B<-M>] [B<-w>] [B<->I<SIGNAL>] ] I<name> ..."
+msgstr ""
+"B<fuser> [B<-fuv>] [B<-a>|B<-s>] [B<-4>|B<-6>] [B<-c>|B<-m>|B<-n> I<espaço>] "
+"[B<\\ -k> [B<-i>] [B<-M>] [B<-w>] [B<->I<SINAL>] ] I<nome> \\&..."
+
+#. type: Plain text
+#: ../doc/fuser.1:30
+msgid "B<fuser -l>"
+msgstr "B<fuser -l>"
+
+#. type: Plain text
+#: ../doc/fuser.1:32
+msgid "B<fuser -V>"
+msgstr "B<fuser -V>"
+
+#. type: SH
+#: ../doc/fuser.1:33 ../doc/killall.1:45 ../doc/peekfd.1:23 ../doc/pslog.1:19
+#: ../doc/prtstat.1:21 ../doc/pstree.1:36
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr "DESCRIÇÃO"
+
+#. type: Plain text
+#: ../doc/fuser.1:38
+msgid ""
+"B<fuser> displays the PIDs of processes using the specified files or file "
+"systems.  In the default display mode, each file name is followed by a "
+"letter denoting the type of access:"
+msgstr ""
+"B<fuser> exibe os PIDs de processos usando os arquivos ou sistemas de "
+"arquivos especificados. No modo de exibição padrão, cada nome de arquivo é "
+"seguido por uma letra que indica o tipo de acesso:"
+
+#. type: TP
+#: ../doc/fuser.1:41
+#, no-wrap
+msgid "B<c>"
+msgstr "B<c>"
+
+#. type: Plain text
+#: ../doc/fuser.1:44
+msgid "current directory."
+msgstr "diretório atual."
+
+#. type: TP
+#: ../doc/fuser.1:44
+#, no-wrap
+msgid "B<e>"
+msgstr "B<e>"
+
+#. type: Plain text
+#: ../doc/fuser.1:47
+msgid "executable being run."
+msgstr "executável que está em execução."
+
+#. type: TP
+#: ../doc/fuser.1:47
+#, no-wrap
+msgid "B<f>"
+msgstr "B<f>"
+
+#. type: Plain text
+#: ../doc/fuser.1:52
+msgid "open file.  B<f> is omitted in default display mode."
+msgstr "abre um arquivo. B<f> é omitido no modo de exibição padrão."
+
+#. type: TP
+#: ../doc/fuser.1:52
+#, no-wrap
+msgid "B<F>"
+msgstr "B<F>"
+
+#. type: Plain text
+#: ../doc/fuser.1:57
+msgid "open file for writing.  B<F> is omitted in default display mode."
+msgstr "abre arquivo para escrita. B<F> é omitido no modo de exibição padrão."
+
+#. type: TP
+#: ../doc/fuser.1:57
+#, no-wrap
+msgid "B<r>"
+msgstr "B<r>"
+
+#. type: Plain text
+#: ../doc/fuser.1:60
+msgid "root directory."
+msgstr "diretório raiz."
+
+#. type: TP
+#: ../doc/fuser.1:60
+#, no-wrap
+msgid "B<m>"
+msgstr "B<m>"
+
+#. type: Plain text
+#: ../doc/fuser.1:63
+msgid "mmap'ed file or shared library."
+msgstr "biblioteca compartilhada ou arquivo que foram mapeados com mmap."
+
+#. type: TP
+#: ../doc/fuser.1:63
+#, no-wrap
+msgid "B<.>"
+msgstr "B<.>"
+
+#. type: Plain text
+#: ../doc/fuser.1:66
+msgid "Placeholder, omitted in default display mode."
+msgstr "Espaço reservado, omitido no modo de exibição padrão."
+
+#. type: Plain text
+#: ../doc/fuser.1:75
+msgid ""
+"B<fuser> returns a non-zero return code if none of the specified files is "
+"accessed or in case of a fatal error.  If at least one access has been "
+"found, B<fuser> returns zero."
+msgstr ""
+"B<fuser> retorna um código de retorno diferente de zero se nenhum dos "
+"arquivos especificados for acessado ou no caso de um erro fatal. Se pelo "
+"menos um acesso for encontrado, B<fuser> retorna zero."
+
+#. type: Plain text
+#: ../doc/fuser.1:89
+msgid ""
+"In order to look up processes using TCP and UDP sockets, the corresponding "
+"name space has to be selected with the B<-n> option. By default B<fuser> "
+"will look in both IPv6 and IPv4 sockets.  To change the default behavior, "
+"use the B<-4> and B<-6> options.  The socket(s) can be specified by the "
+"local and remote port, and the remote address.  All fields are optional, but "
+"commas in front of missing fields must be present:"
+msgstr ""
+"Para pesquisar processos usando soquetes TCP e UDP, o espaço de nomes "
+"correspondente deve ser selecionado com a opção B<-n>. Por padrão, B<fuser> "
+"procurará nos soquetes IPv6 e IPv4. Para alterar o comportamento padrão, use "
+"as opções B<-4> e B<-6>. Os soquetes podem ser especificados pela porta "
+"local e remota e pelo endereço remoto. Todos os campos são opcionais, mas as "
+"vírgulas na frente dos campos ausentes devem estar presentes:"
+
+#. type: Plain text
+#: ../doc/fuser.1:91
+msgid "[I<lcl_port>][,[I<rmt_host>][,[I<rmt_port>]]]"
+msgstr "[I<porta_lcl>][,[I<host_rmt>][,[I<porta_rmt>]]]"
+
+#. type: Plain text
+#: ../doc/fuser.1:94
+msgid ""
+"Either symbolic or numeric values can be used for IP addresses and port "
+"numbers."
+msgstr ""
+"Valores simbólicos ou numéricos podem ser usados para endereços IP e números "
+"de porta."
+
+#. type: Plain text
+#: ../doc/fuser.1:97
+msgid ""
+"B<fuser> outputs only the PIDs to stdout, everything else is sent to stderr."
+msgstr ""
+"B<fuser> emite apenas os PIDs para stdout, todo o resto é enviado para "
+"stderr."
+
+#. type: SH
+#: ../doc/fuser.1:97 ../doc/killall.1:78 ../doc/peekfd.1:28 ../doc/pslog.1:23
+#: ../doc/prtstat.1:27 ../doc/pstree.1:89
+#, no-wrap
+msgid "OPTIONS"
+msgstr "OPÇÕES"
+
+#. type: TP
+#: ../doc/fuser.1:98
+#, no-wrap
+msgid "B<-a>, B<--all>"
+msgstr "B<-a>, B<--all>"
+
+#. type: Plain text
+#: ../doc/fuser.1:102
+msgid ""
+"Show all files specified on the command line.  By default, only files that "
+"are accessed by at least one process are shown."
+msgstr ""
+"Mostra todos os arquivos especificados na linha de comando. Por padrão, "
+"apenas os arquivos acessados por pelo menos um processo são mostrados."
+
+#. type: IP
+#: ../doc/fuser.1:102 ../doc/pstree.1:97
+#, no-wrap
+msgid "B<-c>"
+msgstr "B<-c>"
+
+#. type: Plain text
+#: ../doc/fuser.1:105
+msgid "Same as B<-m> option, used for POSIX compatibility."
+msgstr "Igual à opção B<-m>, usada para compatibilidade POSIX."
+
+#. type: TP
+#: ../doc/fuser.1:105
+#, no-wrap
+msgid "B<-f>"
+msgstr "B<-f>"
+
+#. type: Plain text
+#: ../doc/fuser.1:108
+msgid "Silently ignored, used for POSIX compatibility."
+msgstr "Ignorado silenciosamente, usado para compatibilidade POSIX."
+
+#. type: TP
+#: ../doc/fuser.1:108
+#, no-wrap
+msgid "B<-k>, B<--kill>"
+msgstr "B<-k>, B<--kill>"
+
+#. type: Plain text
+#: ../doc/fuser.1:120
+msgid ""
+"Kill processes accessing the file.  Unless changed with B<->I<SIGNAL\\/>, "
+"SIGKILL is sent.  An B<fuser> process never kills itself, but may kill other "
+"B<fuser> processes.  The effective user ID of the process executing B<fuser> "
+"is set to its real user ID before attempting to kill."
+msgstr ""
+"Mata os processos que acessam o arquivo. A menos que seja alterado com B<-"
+">I<SIGNAL\\/>, SIGKILL é enviado. Um processo B<fuser> nunca mata a si "
+"próprio, mas pode matar outros processos B<fuser>. O ID de usuário efetivo "
+"do processo que executa B<fuser> é definido com seu ID de usuário real antes "
+"de tentar matar."
+
+#. type: IP
+#: ../doc/fuser.1:120 ../doc/killall.1:99
+#, no-wrap
+msgid "B<-i>, B<--interactive>"
+msgstr "B<-i>, B<--interactive>"
+
+#. type: Plain text
+#: ../doc/fuser.1:127
+msgid ""
+"Ask the user for confirmation before killing a process.  This option is "
+"silently ignored if B<-k> is not present too."
+msgstr ""
+"Peça confirmação ao usuário antes de encerrar um processo. Esta opção é "
+"silenciosamente ignorada se B<-k> também não estiver presente."
+
+#. type: TP
+#: ../doc/fuser.1:127
+#, no-wrap
+msgid "B<-I>, B<--inode>"
+msgstr "B<-I>, B<--inode>"
+
+#. type: Plain text
+#: ../doc/fuser.1:133
+msgid ""
+"For the name space B<file> let all comparisons be based on the inodes of the "
+"specified file(s)  and never on the file names even on network based file "
+"systems."
+msgstr ""
+"Para o espaço de nomes de B<file>, deixa todas as comparações serem baseadas "
+"nos inodes do(s) arquivo(s) especificado(s) e nunca nos nomes dos arquivos, "
+"mesmo em sistemas de arquivos baseados em rede."
+
+#. type: TP
+#: ../doc/fuser.1:133
+#, no-wrap
+msgid "B<-l>, B<--list-signals>"
+msgstr "B<-l>, B<--list-signals>"
+
+#. type: Plain text
+#: ../doc/fuser.1:136 ../doc/killall.1:103
+msgid "List all known signal names."
+msgstr "Lista todos os nomes de sinal conhecidos."
+
+#. type: TP
+#: ../doc/fuser.1:136
+#, fuzzy, no-wrap
+#| msgid "B<-m>I< NAME >, B<--mount >I<NAME>"
+msgid "B<-m>I< NAME>, B<--mount >I<NAME>"
+msgstr "B<-m>I< NOME>, B<--mount >I<NOME>"
+
+#. type: Plain text
+#: ../doc/fuser.1:144
+#, fuzzy
+#| msgid ""
+#| "I<NAME> specifies a file on a mounted file system or a block device that "
+#| "is mounted.  All processes accessing files on that file system are "
+#| "listed.  If a directory is specified, it is automatically changed to "
+#| "I<NAME>/.  to use any file system that might be mounted on that directory."
+msgid ""
+"I<NAME> specifies a file on a mounted file system or a block device that is "
+"mounted.  All processes accessing files on that file system are listed.  If "
+"a directory is specified, it is automatically changed to I<NAME>/ to use any "
+"file system that might be mounted on that directory."
+msgstr ""
+"I<NAME> especifica um arquivo em um sistema de arquivos montado ou um "
+"dispositivo de bloco que está montado. Todos os processos que acessam "
+"arquivos nesse sistema de arquivos são listados. Se um diretório for "
+"especificado, ele será alterado automaticamente para I<NOME>/. para usar "
+"qualquer sistema de arquivos que possa ser montado nesse diretório."
+
+#. type: TP
+#: ../doc/fuser.1:144
+#, no-wrap
+msgid "B<-M>, B<--ismountpoint>"
+msgstr "B<-M>, B<--ismountpoint>"
+
+#. type: Plain text
+#: ../doc/fuser.1:152
+msgid ""
+"Request will be fulfilled only if I<NAME> specifies a mountpoint.  This is "
+"an invaluable seat belt which prevents you from killing the machine if "
+"I<NAME> happens to not be a filesystem."
+msgstr ""
+"A solicitação será atendida apenas se I<NOME> especificar um ponto de "
+"montagem. Este é um cinto de segurança inestimável que o impede de matar a "
+"máquina se I<NOME> não for um sistema de arquivos."
+
+#. type: TP
+#: ../doc/fuser.1:152
+#, no-wrap
+msgid "B<-w>"
+msgstr "B<-w>"
+
+#. type: Plain text
+#: ../doc/fuser.1:158
+msgid ""
+"Kill only processes which have write access.  This option is silently "
+"ignored if B<-k> is not present too."
+msgstr ""
+"Mata apenas os processos que têm acesso de escrita. Esta opção é "
+"silenciosamente ignorada se B<-k> também não estiver presente."
+
+#. type: TP
+#: ../doc/fuser.1:158
+#, no-wrap
+msgid "B<-n>I< NAMESPACE>, B<--namespace >I<NAMESPACE>"
+msgstr "B<-n>I< ESPAÇO\\ DE\\ NOMES>, B<--namespace >I<ESPAÇO\\ DE\\ NOMES>"
+
+#. type: Plain text
+#: ../doc/fuser.1:173
+msgid ""
+"Select a different name space.  The name spaces B<file> (file names, the "
+"default), B<udp> (local UDP ports), and B<tcp> (local TCP ports) are "
+"supported.  For ports, either the port number or the symbolic name can be "
+"specified.  If there is no ambiguity, the shortcut notation I<name>B</"
+">I<space> (e.g., I<80>B</>I<tcp>)  can be used."
+msgstr ""
+"Seleciona um espaço de nome diferente. Os espaços de nomes B<file> (nomes de "
+"arquivo, o padrão), B<udp> (portas UDP locais) e B<tcp> (portas TCP locais) "
+"são suportados. Para portas, o número da porta ou o nome simbólico podem ser "
+"especificados. Se não houver ambiguidade, a notação de atalho I<nome>B</"
+">I<espaço> (por exemplo, I<80>B</>I<tcp>) pode ser usada."
+
+#. type: TP
+#: ../doc/fuser.1:173
+#, no-wrap
+msgid "B<-s>, B<--silent>"
+msgstr "B<-s>, B<--silent>"
+
+#. type: Plain text
+#: ../doc/fuser.1:183
+msgid ""
+"Silent operation.  B<-u> and B<-v> are ignored in this mode.  B<-a> must not "
+"be used with B<-s>."
+msgstr ""
+"Operação silenciosa. B<-u> e B<-v> são ignorados neste modo. B<-a> não deve "
+"ser usado com B<-s>."
+
+#. type: TP
+#: ../doc/fuser.1:183
+#, no-wrap
+msgid "B<->I<SIGNAL>"
+msgstr "B<->I<SINAL>"
+
+#. type: Plain text
+#: ../doc/fuser.1:193
+msgid ""
+"Use the specified signal instead of SIGKILL when killing processes.  Signals "
+"can be specified either by name (e.g., B<-HUP>)  or by number (e.g., "
+"B<-1>).  This option is silently ignored if the B<-k> option is not used."
+msgstr ""
+"Usa o sinal especificado em vez de SIGKILL ao matar processos. Os sinais "
+"podem ser especificados por nome (por exemplo, B<-HUP>) ou por número (por "
+"exemplo, B<-1>). Esta opção é silenciosamente ignorada se a opção B<-k> não "
+"for usada."
+
+#. type: IP
+#: ../doc/fuser.1:193 ../doc/killall.1:118
+#, no-wrap
+msgid "B<-u>, B<--user>"
+msgstr "B<-u>, B<--user>"
+
+#. type: Plain text
+#: ../doc/fuser.1:196
+msgid "Append the user name of the process owner to each PID."
+msgstr "Anexa o nome de usuário do proprietário do processo a cada PID."
+
+#. type: IP
+#: ../doc/fuser.1:196 ../doc/killall.1:121
+#, no-wrap
+msgid "B<-v>, B<--verbose>"
+msgstr "B<-v>, B<--verbose>"
+
+#. type: Plain text
+#: ../doc/fuser.1:207
+msgid ""
+"Verbose mode.  Processes are shown in a B<ps>-like style.  The fields PID, "
+"USER and COMMAND are similar to B<ps>.  ACCESS shows how the process "
+"accesses the file.  Verbose mode will also show when a particular file is "
+"being accessed as a mount point, knfs export or swap file.  In this case "
+"B<kernel> is shown instead of the PID."
+msgstr ""
+"Modo detalhado. Os processos são mostrados no estilo B<ps>. Os campos PID, "
+"USER e COMMAND são semelhantes a B<ps>. ACCESS mostra como o processo acessa "
+"o arquivo. O modo detalhado também mostrará quando um arquivo específico "
+"está sendo acessado como um ponto de montagem, exportação de knfs ou arquivo "
+"de troca. Neste caso, B<kernel> é mostrado em vez do PID."
+
+#. type: IP
+#: ../doc/fuser.1:207 ../doc/killall.1:123
+#, no-wrap
+msgid "B<-V>, B<--version>"
+msgstr "B<-V>, B<--version>"
+
+#. type: Plain text
+#: ../doc/fuser.1:210 ../doc/killall.1:125 ../doc/pslog.1:27
+#: ../doc/pstree.1:167
+msgid "Display version information."
+msgstr "Exibe informação da versão."
+
+#. type: TP
+#: ../doc/fuser.1:210
+#, no-wrap
+msgid "B<-4>, B<--ipv4>"
+msgstr "B<-4>, B<--ipv4>"
+
+#. type: Plain text
+#: ../doc/fuser.1:215
+msgid ""
+"Search only for IPv4 sockets.  This option must not be used with the B<-6> "
+"option and only has an effect with the tcp and udp namespaces."
+msgstr ""
+"Pesquisa apenas soquetes IPv4. Esta opção não deve ser usada com a opção "
+"B<-6> e só tem efeito com os espaços de nomes tcp e udp."
+
+#. type: TP
+#: ../doc/fuser.1:215
+#, no-wrap
+msgid "B<-6>, B<--ipv6>"
+msgstr "B<-6>, B<--ipv6>"
+
+#. type: Plain text
+#: ../doc/fuser.1:220
+msgid ""
+"Search only for IPv6 sockets.  This option must not be used with the B<-4> "
+"option and only has an effect with the tcp and udp namespaces."
+msgstr ""
+"Pesquisa apenas soquetes IPv6. Esta opção não deve ser usada com a opção "
+"B<-4> e só tem efeito com os espaços de nomes tcp e udp."
+
+#. type: IP
+#: ../doc/fuser.1:220
+#, no-wrap
+msgid "B<->"
+msgstr "B<->"
+
+#. type: Plain text
+#: ../doc/fuser.1:222
+msgid "Reset all options and set the signal back to SIGKILL."
+msgstr "Redefine todas as opções e defina o sinal de volta para SIGKILL."
+
+#. type: SH
+#: ../doc/fuser.1:222 ../doc/killall.1:143 ../doc/peekfd.1:43
+#: ../doc/prtstat.1:35 ../doc/pstree.1:170
+#, no-wrap
+msgid "FILES"
+msgstr "ARQUIVOS"
+
+#. type: TP
+#: ../doc/fuser.1:223 ../doc/killall.1:144 ../doc/pstree.1:171
+#, no-wrap
+msgid "/proc"
+msgstr "/proc"
+
+#. type: Plain text
+#: ../doc/fuser.1:226 ../doc/killall.1:147 ../doc/pstree.1:174
+msgid "location of the proc file system"
+msgstr "local do sistema de arquivos proc"
+
+#. type: SH
+#: ../doc/fuser.1:226
+#, no-wrap
+msgid "EXAMPLES"
+msgstr "EXEMPLOS"
+
+#. type: TP
+#: ../doc/fuser.1:227
+#, no-wrap
+msgid "B<fuser -km /home>"
+msgstr "B<fuser -km /home>"
+
+#. type: Plain text
+#: ../doc/fuser.1:230
+msgid "kills all processes accessing the file system /home in any way."
+msgstr ""
+"mata todos os processos que acessam o sistema de arquivos /home de qualquer "
+"forma."
+
+#. type: TP
+#: ../doc/fuser.1:230
+#, no-wrap
+msgid "B<if fuser -s /dev/ttyS1; then :; else >I<command>B<; fi>"
+msgstr "B<if fuser -s /dev/ttyS1; then :; else >I<comando>B<; fi>"
+
+#. type: Plain text
+#: ../doc/fuser.1:235
+msgid "invokes I<command> if no other process is using /dev/ttyS1."
+msgstr "invoca I<comando> se nenhum outro processo estiver usando /dev/ttyS1."
+
+#. type: TP
+#: ../doc/fuser.1:235
+#, no-wrap
+msgid "B<fuser telnet/tcp>"
+msgstr "B<fuser telnet/tcp>"
+
+#. type: Plain text
+#: ../doc/fuser.1:238
+msgid "shows all processes at the (local) TELNET port."
+msgstr "mostra todos os processos na porta TELNET (local)."
+
+#. type: SH
+#: ../doc/fuser.1:238
+#, no-wrap
+msgid "RESTRICTIONS"
+msgstr "RESTRIÇÕES"
+
+#. type: Plain text
+#: ../doc/fuser.1:241
+msgid ""
+"Processes accessing the same file or file system several times in the same "
+"way are only shown once."
+msgstr ""
+"Os processos que acessam o mesmo arquivo ou sistema de arquivos várias vezes "
+"da mesma maneira são mostrados apenas uma vez."
+
+#. type: Plain text
+#: ../doc/fuser.1:244
+msgid ""
+"If the same object is specified several times on the command line, some of "
+"those entries may be ignored."
+msgstr ""
+"Se o mesmo objeto for especificado várias vezes na linha de comando, algumas "
+"dessas entradas podem ser ignoradas."
+
+#. type: Plain text
+#: ../doc/fuser.1:250
+msgid ""
+"B<fuser> may only be able to gather partial information unless run with "
+"privileges.  As a consequence, files opened by processes belonging to other "
+"users may not be listed and executables may be classified as mapped only."
+msgstr ""
+"B<fuser> só pode ser capaz de coletar informações parciais, a menos que seja "
+"executado com privilégios. Como consequência, os arquivos abertos por "
+"processos pertencentes a outros usuários podem não ser listados e os "
+"executáveis podem ser classificados apenas como mapeados."
+
+#. type: Plain text
+#: ../doc/fuser.1:259
+msgid ""
+"B<fuser> cannot report on any processes that it doesn't have permission to "
+"look at the file descriptor table for.  The most common time this problem "
+"occurs is when looking for TCP or UDP sockets when running B<fuser> as a non-"
+"root user.  In this case B<fuser> will report no access."
+msgstr ""
+"B<fuser> não pode relatar sobre nenhum processo para o qual não tenha "
+"permissão para consultar a tabela do descritor de arquivo. O momento mais "
+"comum em que esse problema ocorre é ao procurar soquetes TCP ou UDP ao "
+"executar B<fuser> como um usuário não root. Neste caso, B<fuser> relatará "
+"nenhum acesso."
+
+#. type: Plain text
+#: ../doc/fuser.1:264
+msgid ""
+"Installing B<fuser> SUID root will avoid problems associated with partial "
+"information, but may be undesirable for security and privacy reasons."
+msgstr ""
+"Instalar o B<fuser> com root SUID evitará problemas associados a informações "
+"parciais, mas pode ser indesejável por razões de segurança e privacidade."
+
+#. type: Plain text
+#: ../doc/fuser.1:270
+msgid ""
+"B<udp> and B<tcp> name spaces, and UNIX domain sockets can't be searched "
+"with kernels older than 1.3.78."
+msgstr ""
+"Os espaços de nomes B<udp> e B<tcp> e soquetes de domínio UNIX não podem ser "
+"pesquisados com kernels anteriores a 1.3.78."
+
+#. type: Plain text
+#: ../doc/fuser.1:274
+msgid "Accesses by the kernel are only shown with the B<-v> option."
+msgstr "Os acessos pelo kernel são mostrados apenas com a opção B<-v>."
+
+#. type: Plain text
+#: ../doc/fuser.1:280
+msgid ""
+"The B<-k> option only works on processes.  If the user is the kernel, "
+"B<fuser> will print an advice, but take no action beyond that."
+msgstr ""
+"A opção B<-k> funciona apenas em processos. Se o usuário for o kernel, "
+"B<fuser> imprimirá um conselho, mas não fará nada além disso."
+
+#. type: SH
+#: ../doc/fuser.1:280 ../doc/peekfd.1:56 ../doc/pstree.1:174
+#, no-wrap
+msgid "BUGS"
+msgstr "BUGS"
+
+#. type: Plain text
+#: ../doc/fuser.1:286
+msgid ""
+"B<fuser -m /dev/sgX> will show (or kill with the B<-k> flag) all processes, "
+"even if you don't have that device configured.  There may be other devices "
+"it does this for too."
+msgstr ""
+"B<fuser -m /dev/sgX> vai mostrar (ou matar com o sinalizador B<-k>) todos os "
+"processos, mesmo se você não tiver aquele dispositivo configurado. Pode "
+"haver outros dispositivos para os quais ele também faz isso."
+
+#. type: Plain text
+#: ../doc/fuser.1:290
+msgid ""
+"The mount B<-m> option will match any file within the same device as the "
+"specified file, use the B<-M> option as well if you mean to specify only the "
+"mount point."
+msgstr ""
+"A opção de montagem B<-m> vai corresponder a qualquer arquivo dentro do "
+"mesmo dispositivo que o arquivo especificado, use a opção B<-M> também se "
+"você pretende especificar apenas o ponto de montagem."
+
+#. type: SH
+#: ../doc/fuser.1:290 ../doc/killall.1:170 ../doc/peekfd.1:63 ../doc/pslog.1:27
+#: ../doc/pstree.1:176
+#, no-wrap
+msgid "SEE ALSO"
+msgstr "VEJA TAMBÉM"
+
+#. type: Plain text
+#: ../doc/fuser.1:296
+msgid ""
+"B<kill>(1), B<killall>(1), B<lsof>(8), B<pkill>(1), B<ps>(1), B<kill>(2)."
+msgstr ""
+"B<kill>(1), B<killall>(1), B<lsof>(8), B<pkill>(1), B<ps>(1), B<kill>(2)."
+
+#. type: TH
+#: ../doc/killall.1:9
+#, no-wrap
+msgid "KILLALL"
+msgstr "KILLALL"
+
+#. type: TH
+#: ../doc/killall.1:9
+#, no-wrap
+msgid "2021-01-11"
+msgstr ""
+
+#. type: Plain text
+#: ../doc/killall.1:12
+msgid "killall - kill processes by name"
+msgstr "killall - mata processos por nome"
+
+#. type: Plain text
+#: ../doc/killall.1:38
+#, fuzzy
+#| msgid ""
+#| "B<killall> [B<-Z>,B<\\ --context> I<pattern>] [B<-e>,B<\\ --exact>] [B<-"
+#| "g>,B<\\ --process-group>] [B<-i>,B<\\ --interactive>] [B<-n>,B<\\ --ns> "
+#| "I<PID>] [B<-o>,B<\\ --older-than> I<TIME>] [B<-q>,B<\\ --quiet>] [B<-r>,B<"
+#| "\\ --regexp>] [B<-s>,B<\\ --signal> I<SIGNAL>,\\ I<-SIGNAL>] [B<-u>,B<\\ "
+#| "--user> I<user>] [B<-v>,B<\\ --verbose>] [B<-w>,B<\\ --wait>] [B<-y>,B<\\ "
+#| "--younger-than> I<TIME>] [B<-I>,B<\\ --ignore-case>] [B<-V,>\\ --"
+#| "versionB<]> [B<-->] I<name ...>"
+msgid ""
+"B<killall> [B<-Z>,B<\\ --context> I<pattern>] [B<-e>,B<\\ --exact>] [B<-g>,B<"
+"\\ --process-group>] [B<-i>,B<\\ --interactive>] [B<-n>,B<\\ --ns> I<PID>] "
+"[B<-o>,B<\\ --older-than> I<TIME>] [B<-q>,B<\\ --quiet>] [B<-r>,B<\\ --"
+"regexp>] [B<-s>,B<\\ --signal> I<SIGNAL>,\\ B<->I<SIGNAL>] [B<-u>,B<\\ --"
+"user> I<user>] [B<-v>,B<\\ --verbose>] [B<-w>,B<\\ --wait>] [B<-y>,B<\\ --"
+"younger-than> I<TIME>] [B<-I>,B<\\ --ignore-case>] [B<-V>,B<\\ --version>] "
+"[B<-->] I<name> ..."
+msgstr ""
+"B<killall> [B<-Z>,B<\\ --context> I<padrão>] [B<-e>,B<\\ --exact>] [B<-g>,B<"
+"\\ --process-group>] [B<-i>,B<\\ --interactive>] [B<-n>,B<\\ --ns> I<PID>] "
+"[B<-o>,B<\\ --older-than> I<TEMPO>] [B<-q>,B<\\ --quiet>] [B<-r>,B<\\ --"
+"regexp>] [B<-s>,B<\\ --signal> I<SINAL>,\\ I<-SINAL>] [B<-u>,B<\\ --user> "
+"I<usuário>] [B<-v>,B<\\ --verbose>] [B<-w>,B<\\ --wait>] [B<-y>,B<\\ --"
+"younger-than> I<TEMPO>] [B<-I>,B<\\ --ignore-case>] [B<-V,>\\ --versionB<]> "
+"[B<-->] I<nome ...>"
+
+#. type: Plain text
+#: ../doc/killall.1:41
+msgid "B<killall> -l"
+msgstr "B<killall> -l"
+
+#. type: Plain text
+#: ../doc/killall.1:44
+#, fuzzy
+#| msgid "B<killall> -V,B<\\ --version>"
+msgid "B<killall> B<-V>,B<\\ --version>"
+msgstr "B<killall> -V,B<\\ --version>"
+
+#. type: Plain text
+#: ../doc/killall.1:49
+msgid ""
+"B<killall> sends a signal to all processes running any of the specified "
+"commands.  If no signal name is specified, SIGTERM is sent."
+msgstr ""
+"B<killall> envia um sinal para todos os processos que executam qualquer um "
+"dos comandos especificados. Se nenhum nome de sinal for especificado, "
+"SIGTERM será enviado."
+
+#. type: Plain text
+#: ../doc/killall.1:58
+msgid ""
+"Signals can be specified either by name (e.g.  B<-HUP> or B<-SIGHUP>)  or by "
+"number (e.g.  B<-1>)  or by option B<-s>."
+msgstr ""
+"Os sinais podem ser especificados pelo nome (por exemplo, B<-HUP> ou B<-"
+"SIGHUP>) ou por número (por exemplo, B<-1>) ou pela opção B<-s>."
+
+#. type: Plain text
+#: ../doc/killall.1:65
+msgid ""
+"If the command name is not regular expression (option B<-r>)  and contains a "
+"slash (B</>), processes executing that particular file will be selected for "
+"killing, independent of their name."
+msgstr ""
+"Se o nome do comando não for uma expressão regular (opção B<-r>) e contiver "
+"uma barra (B</>), os processos que executam aquele arquivo específico serão "
+"selecionados para eliminação, independente de seu nome."
+
+#. type: Plain text
+#: ../doc/killall.1:72
+msgid ""
+"B<killall> returns a zero return code if at least one process has been "
+"killed for each listed command, or no commands were listed and at least one "
+"process matched the B<-u> and B<-Z> search criteria.  B<killall> returns non-"
+"zero otherwise."
+msgstr ""
+"B<killall> retorna um código de retorno zero se pelo menos um processo foi "
+"eliminado para cada comando listado, ou nenhum comando foi listado e pelo "
+"menos um processo correspondeu aos critérios de pesquisa B<-u> e B<-Z>. "
+"B<killall> retorna diferente de zero, caso contrário."
+
+#. type: Plain text
+#: ../doc/killall.1:78
+msgid ""
+"A B<killall> process never kills itself (but may kill other B<killall> "
+"processes)."
+msgstr ""
+"Um processo B<killall> nunca se mata (mas pode matar outros processos "
+"B<killall>)."
+
+#. type: IP
+#: ../doc/killall.1:79
+#, no-wrap
+msgid "B<-e>, B<--exact>"
+msgstr "B<-e>, B<--exact>"
+
+#. type: Plain text
+#: ../doc/killall.1:93
+msgid ""
+"Require an exact match for very long names.  If a command name is longer "
+"than 15 characters, the full name may be unavailable (i.e.  it is swapped "
+"out).  In this case, B<killall> will kill everything that matches within the "
+"first 15 characters.  With B<-e>, such entries are skipped.  B<killall> "
+"prints a message for each skipped entry if B<-v> is specified in addition to "
+"B<-e>."
+msgstr ""
+"Requer uma correspondência exata para nomes muito longos. Se um nome de "
+"comando tiver mais de 15 caracteres, o nome completo pode não estar "
+"disponível (ou seja, foi trocado). Nesse caso, B<killall> matará tudo o que "
+"corresponder aos primeiros 15 caracteres. Com B<-e>, essas entradas são "
+"ignoradas. B<killall> imprime uma mensagem para cada entrada ignorada se B<-"
+"v> for especificado além de B<-e>."
+
+#. type: IP
+#: ../doc/killall.1:93
+#, no-wrap
+msgid "B<-I>, B<--ignore-case>"
+msgstr "B<-I>, B<--ignore-case>"
+
+#. type: Plain text
+#: ../doc/killall.1:95
+msgid "Do case insensitive process name match."
+msgstr ""
+"Faz correspondência de nomes de processo sem diferenciar maiusculização de "
+"minúsculo."
+
+#. type: IP
+#: ../doc/killall.1:95
+#, no-wrap
+msgid "B<-g>, B<--process-group>"
+msgstr "B<-g>, B<--process-group>"
+
+#. type: Plain text
+#: ../doc/killall.1:99
+msgid ""
+"Kill the process group to which the process belongs.  The kill signal is "
+"only sent once per group, even if multiple processes belonging to the same "
+"process group were found."
+msgstr ""
+"Mata o grupo de processos ao qual o processo pertence. O sinal de eliminação "
+"é enviado apenas uma vez por grupo, mesmo se vários processos pertencentes "
+"ao mesmo grupo de processos forem encontrados."
+
+#. type: Plain text
+#: ../doc/killall.1:101
+msgid "Interactively ask for confirmation before killing."
+msgstr "Pede confirmação interativamente antes de matar."
+
+#. type: IP
+#: ../doc/killall.1:101
+#, no-wrap
+msgid "B<-l>, B<--list>"
+msgstr "B<-l>, B<--list>"
+
+#. type: IP
+#: ../doc/killall.1:103
+#, no-wrap
+msgid "B<-n>, B<--ns>"
+msgstr "B<-n>, B<--ns>"
+
+#. type: Plain text
+#: ../doc/killall.1:106
+msgid ""
+"Match against the PID namespace of the given PID. The default is to match "
+"against all namespaces."
+msgstr ""
+"Compara com o espaço de nomes do PID ao PID fornecido. O padrão é "
+"corresponder a todos os espaço de nomes."
+
+#. type: IP
+#: ../doc/killall.1:106
+#, no-wrap
+msgid "B<-o>, B<--older-than>"
+msgstr "B<-o>, B<--older-than>"
+
+#. type: Plain text
+#: ../doc/killall.1:111
+msgid ""
+"Match only processes that are older (started before) the time specified.  "
+"The time is specified as a float then a unit.  The units are s,m,h,d,w,M,y "
+"for seconds, minutes, hours, days, weeks, months and years respectively."
+msgstr ""
+"Corresponde apenas aos processos que são mais antigos (iniciados antes) da "
+"hora especificada. O tempo é especificado como um flutuante e depois como "
+"uma unidade. As unidades são s,m,h,d,w,M,y para segundos, minutos, horas, "
+"dias, semanas, meses e anos, respectivamente."
+
+#. type: IP
+#: ../doc/killall.1:111
+#, no-wrap
+msgid "B<-q>, B<--quiet>"
+msgstr "B<-q>, B<--quiet>"
+
+#. type: Plain text
+#: ../doc/killall.1:113
+msgid "Do not complain if no processes were killed."
+msgstr "Não reclama se nenhum processo tiver sido eliminado."
+
+#. type: IP
+#: ../doc/killall.1:113
+#, no-wrap
+msgid "B<-r>, B<--regexp>"
+msgstr "B<-r>, B<--regexp>"
+
+#. type: Plain text
+#: ../doc/killall.1:116
+msgid ""
+"Interpret process name pattern as a POSIX extended regular expression, per "
+"B<regex>(3)."
+msgstr ""
+"Interpreta o padrão do nome do processo como uma expressão regular estendida "
+"POSIX, por B<regex>(3)."
+
+#. type: IP
+#: ../doc/killall.1:116
+#, fuzzy, no-wrap
+#| msgid "B<-s>, B<--signal>, B<-SIGNAL>"
+msgid "B<-s>, B<--signal>, B<->I<SIGNAL>"
+msgstr "B<-s>, B<--signal>, B<-SINAL>"
+
+#. type: Plain text
+#: ../doc/killall.1:118
+msgid "Send this signal instead of SIGTERM."
+msgstr "Envia este sinal ao invés de SIGTERM."
+
+#. type: Plain text
+#: ../doc/killall.1:121
+msgid ""
+"Kill only processes the specified user owns.  Command names are optional."
+msgstr ""
+"Mata apenas os processos que o usuário especificado possui. Os nomes dos "
+"comandos são opcionais."
+
+#. type: Plain text
+#: ../doc/killall.1:123
+msgid "Report if the signal was successfully sent."
+msgstr "Relata se o sinal foi enviado com sucesso."
+
+#. type: IP
+#: ../doc/killall.1:125
+#, no-wrap
+msgid "B<-w>, B<--wait>"
+msgstr "B<-w>, B<--wait>"
+
+#. type: Plain text
+#: ../doc/killall.1:133
+msgid ""
+"Wait for all killed processes to die.  B<killall> checks once per second if "
+"any of the killed processes still exist and only returns if none are left.  "
+"Note that B<killall> may wait forever if the signal was ignored, had no "
+"effect, or if the process stays in zombie state."
+msgstr ""
+"Aguarda todos os processos eliminados morrerem. B<killall> verifica uma vez "
+"a cada segundo se algum dos processos eliminados ainda existe e só retorna "
+"se nenhum sobrar. Observe que B<killall> pode esperar para sempre se o sinal "
+"for ignorado, não tiver efeito ou se o processo permanecer no estado zumbi."
+
+#. type: IP
+#: ../doc/killall.1:133
+#, no-wrap
+msgid "B<-y>, B<--younger-than>"
+msgstr "B<-y>, B<--younger-than>"
+
+#. type: Plain text
+#: ../doc/killall.1:138
+msgid ""
+"Match only processes that are younger (started after) the time specified.  "
+"The time is specified as a float then a unit.  The units are s,m,h,d,w,M,y "
+"for seconds, minutes, hours, days, weeks, Months and years respectively."
+msgstr ""
+"Corresponde apenas aos processos que são mais recentes (iniciados após) o "
+"tempo especificado. O tempo é especificado como um flutuante e depois como "
+"uma unidade. As unidades são s,m,h,d,w,M,y para segundos, minutos, horas, "
+"dias, semanas, meses e anos, respectivamente."
+
+#. type: IP
+#: ../doc/killall.1:138
+#, no-wrap
+msgid "B<-Z>, B<--context>"
+msgstr "B<-Z>, B<--context>"
+
+#. type: Plain text
+#: ../doc/killall.1:143
+#, fuzzy
+#| msgid ""
+#| "(SELinux Only) Specify security context: kill only processes having "
+#| "security context that match with given extended regular expression "
+#| "pattern.  Must precede other arguments on the command line.  Command "
+#| "names are optional."
+msgid ""
+"Specify security context: kill only processes having security context that "
+"match with given extended regular expression pattern.  Must precede other "
+"arguments on the command line.  Command names are optional."
+msgstr ""
+"(Somente SELinux) Especifica o contexto de segurança: mata apenas os "
+"processos com contexto de segurança que corresponda ao padrão de expressão "
+"regular estendida fornecido. Deve preceder outros argumentos na linha de "
+"comando. Os nomes dos comandos são opcionais."
+
+#. type: SH
+#: ../doc/killall.1:147
+#, no-wrap
+msgid "KNOWN BUGS"
+msgstr "BUGS CONHECIDOS"
+
+#. type: Plain text
+#: ../doc/killall.1:150
+msgid ""
+"Killing by file only works for executables that are kept open during "
+"execution, i.e. impure executables can't be killed this way."
+msgstr ""
+"Matar por arquivo só funciona para executáveis que são mantidos abertos "
+"durante a execução, ou seja, executáveis impuros não podem ser matados dessa "
+"maneira."
+
+#. type: Plain text
+#: ../doc/killall.1:156
+msgid ""
+"Be warned that typing B<killall> I<name> may not have the desired effect on "
+"non-Linux systems, especially when done by a privileged user."
+msgstr ""
+"Esteja avisado que digitar B<killall> I<nome> pode não ter o efeito desejado "
+"em sistemas não Linux, especialmente quando feito por um usuário "
+"privilegiado."
+
+#. type: Plain text
+#: ../doc/killall.1:160
+msgid ""
+"B<killall -w> doesn't detect if a process disappears and is replaced by a "
+"new process with the same PID between scans."
+msgstr ""
+"B<killall -w> não detecta se um processo desaparece e é substituído por um "
+"novo processo com o mesmo PID entre as varreduras."
+
+#. type: Plain text
+#: ../doc/killall.1:164
+msgid ""
+"If processes change their name, B<killall> may not be able to match them "
+"correctly."
+msgstr ""
+"Se os processos mudarem de nome, B<killall> pode não ser capaz de "
+"correspondê-los corretamente."
+
+#. type: Plain text
+#: ../doc/killall.1:170
+msgid ""
+"B<killall> has a limit of names that can be specified on the command line.  "
+"This figure is the size of an unsigned long integer multiplied by 8.  For "
+"most 32 bit systems the limit is 32 and similarly for a 64 bit system the "
+"limit is usually 64."
+msgstr ""
+"B<killall> tem um limite de nomes que podem ser especificados na linha de "
+"comando. Este número é o tamanho de um inteiro longo sem sinal multiplicado "
+"por 8. Para a maioria dos sistemas de 32 bits, o limite é 32 e, da mesma "
+"forma, para um sistema de 64 bits, o limite é geralmente 64."
+
+#. type: Plain text
+#: ../doc/killall.1:178
+msgid ""
+"B<kill>(1), B<fuser>(1), B<pgrep>(1), B<pidof>(1), B<pkill>(1), B<ps>(1), "
+"B<kill>(2), B<regex>(3)."
+msgstr ""
+"B<kill>(1), B<fuser>(1), B<pgrep>(1), B<pidof>(1), B<pkill>(1), B<ps>(1), "
+"B<kill>(2), B<regex>(3)."
+
+#. type: TH
+#: ../doc/peekfd.1:9
+#, no-wrap
+msgid "PEEKFD"
+msgstr "PEEKFD"
+
+#. type: Plain text
+#: ../doc/peekfd.1:12
+msgid "peekfd - peek at file descriptors of running processes"
+msgstr ""
+"peekfd - dá uma olhada nos descritores de arquivo dos processos em execução"
+
+#. type: Plain text
+#: ../doc/peekfd.1:23
+#, fuzzy
+#| msgid ""
+#| "B<peekfd> [B<-8>,B<--eight-bit-clean>] [B<-n>,B<--no-headers>] [B<-f>,B<--"
+#| "follow>] [B<-d>,B<--duplicates-removed>] [B<-V>,B<--version>] [B<-h>,B<--"
+#| "help>] I<pid> [I<fd>] [I<fd>] B<...>"
+msgid ""
+"B<peekfd> [B<-8>,B<--eight-bit-clean>] [B<-n>,B<--no-headers>] [B<-f>,B<--"
+"follow>] [B<-d>,B<--duplicates-removed>] [B<-V>,B<--version>] [B<-h>,B<--"
+"help>] I<pid> [I<fd>] [I<fd>] ..."
+msgstr ""
+"B<peekfd> [B<-8>,B<--eight-bit-clean>] [B<-n>,B<--no-headers>] [B<-f>,B<--"
+"follow>] [B<-d>,B<--duplicates-removed>] [B<-V>,B<--version>] [B<-h>,B<--"
+"help>] I<pid> [I<fd>] [I<fd>] B<...>"
+
+#. type: Plain text
+#: ../doc/peekfd.1:28
+msgid ""
+"B<peekfd> attaches to a running process and intercepts all reads and writes "
+"to file descriptors.  You can specify the desired file descriptor numbers or "
+"dump all of them."
+msgstr ""
+"B<peekfd> anexa a um processo em execução e intercepta todas as leituras e "
+"escritas nos descritores de arquivo. Você pode especificar os números do "
+"descritor de arquivo desejados ou despejar todos eles."
+
+#. type: IP
+#: ../doc/peekfd.1:29
+#, no-wrap
+msgid "-8"
+msgstr "-8"
+
+#. type: Plain text
+#: ../doc/peekfd.1:31
+msgid "Do no post-processing on the bytes being read or written."
+msgstr "Não faz pós-processamento nos bytes que estão sendo lidos ou escritos."
+
+#. type: IP
+#: ../doc/peekfd.1:31
+#, no-wrap
+msgid "-n"
+msgstr "-n"
+
+#. type: Plain text
+#: ../doc/peekfd.1:33
+msgid "Do not display headers indicating the source of the bytes dumped."
+msgstr "Não exibe cabeçalhos indicando a origem dos bytes despejados."
+
+#. type: IP
+#: ../doc/peekfd.1:33
+#, no-wrap
+msgid "-c"
+msgstr "-c"
+
+#. type: Plain text
+#: ../doc/peekfd.1:36
+msgid ""
+"Also dump the requested file descriptor activity in any new child processes "
+"that are created."
+msgstr ""
+"Também despeja a atividade do descritor de arquivo solicitada em quaisquer "
+"novos processos filhos criados."
+
+#. type: IP
+#: ../doc/peekfd.1:36
+#, no-wrap
+msgid "-d"
+msgstr "-d"
+
+#. type: Plain text
+#: ../doc/peekfd.1:39
+msgid ""
+"Remove duplicate read/writes from the output.  If you're looking at a tty "
+"with echo, you might want this."
+msgstr ""
+"Remove leituras/escritas duplicadas da saída. Se você está olhando para um "
+"tty com eco, você pode querer isso."
+
+#. type: IP
+#: ../doc/peekfd.1:39
+#, no-wrap
+msgid "-v"
+msgstr "-v"
+
+#. type: Plain text
+#: ../doc/peekfd.1:41
+msgid "Display a version string."
+msgstr "Exibe uma string de versão."
+
+#. type: IP
+#: ../doc/peekfd.1:41
+#, no-wrap
+msgid "-h"
+msgstr "-h"
+
+#. type: Plain text
+#: ../doc/peekfd.1:43
+msgid "Display a help message."
+msgstr "Mostra a mensagem de ajuda."
+
+#. type: Plain text
+#: ../doc/peekfd.1:45
+#, fuzzy
+#| msgid "I</proc/*/fd>"
+msgid "B</proc/>I<*>B</fd>"
+msgstr "I</proc/*/fd>"
+
+#. type: Plain text
+#: ../doc/peekfd.1:48
+msgid ""
+"Not used but useful for the user to look at to get good file descriptor "
+"numbers."
+msgstr ""
+"Não é usado, mas é útil para o usuário olhar para obter bons números do "
+"descritor de arquivo."
+
+#. type: SH
+#: ../doc/peekfd.1:48
+#, no-wrap
+msgid "ENVIRONMENT"
+msgstr "AMBIENTE"
+
+#. type: Plain text
+#: ../doc/peekfd.1:50
+msgid "None."
+msgstr "Nenhum."
+
+#. type: SH
+#: ../doc/peekfd.1:50
+#, no-wrap
+msgid "DIAGNOSTICS"
+msgstr "DIAGNÓSTICOS"
+
+#. type: Plain text
+#: ../doc/peekfd.1:52
+msgid "The following diagnostics may be issued on stderr:"
+msgstr ""
+"Os seguintes diagnósticos podem ser emitidos na stderr (saída de erro):"
+
+#. type: TP
+#: ../doc/peekfd.1:52
+#, fuzzy, no-wrap
+#| msgid "B<Error attaching to pid E<lt>PIDE<gt>>"
+msgid "B<Error attaching to pid >I<E<lt>PIDE<gt>>"
+msgstr "B<Erro ao anexar ao pid E<lt>PIDE<gt>>"
+
+#. type: Plain text
+#: ../doc/peekfd.1:56
+msgid ""
+"An unknown error occurred while attempted to attach to a process, you may "
+"need to be root."
+msgstr ""
+"Ocorreu um erro desconhecido ao tentar anexar a um processo; pode ser "
+"necessário ser root."
+
+#. type: Plain text
+#: ../doc/peekfd.1:59
+msgid ""
+"Probably lots.  Don't be surprised if the process you are monitoring dies."
+msgstr ""
+"Provavelmente muitos. Não se surpreenda se o processo que você está "
+"monitorando morrer."
+
+#. type: SH
+#: ../doc/peekfd.1:59 ../doc/pslog.1:31
+#, no-wrap
+msgid "AUTHOR"
+msgstr "AUTOR"
+
+#. type: Plain text
+#: ../doc/peekfd.1:63
+msgid "E<.MT trent.waddington@gmail.com> Trent Waddington E<.ME>"
+msgstr "E<.MT trent.waddington@gmail.com> Trent Waddington E<.ME>"
+
+#. type: Plain text
+#: ../doc/peekfd.1:64
+msgid "B<ttysnoop>(8)"
+msgstr "B<ttysnoop>(8)"
+
+#. type: TH
+#: ../doc/pslog.1:9
+#, no-wrap
+msgid "PSLOG"
+msgstr "PSLOG"
+
+#. type: TH
+#: ../doc/pslog.1:9
+#, no-wrap
+msgid "Linux\""
+msgstr "Linux\""
+
+#. type: TH
+#: ../doc/pslog.1:9
+#, no-wrap
+msgid "Linux User's Manual"
+msgstr "Manual do Usuário do Linux"
+
+#. type: Plain text
+#: ../doc/pslog.1:12
+#, fuzzy
+#| msgid "pslog- report current logs path of a process"
+msgid "pslog - report current logs path of a process"
+msgstr "pslog - relata o caminho dos registros atuais de um processo"
+
+#. type: Plain text
+#: ../doc/pslog.1:16
+msgid "B<pslog> I<pid> \\&...\""
+msgstr "B<pslog> I<pid> \\&...\""
+
+#. type: Plain text
+#: ../doc/pslog.1:18
+msgid "B<pslog -V>"
+msgstr "B<pslog -V>"
+
+#. type: Plain text
+#: ../doc/pslog.1:23
+msgid "The B<pslog> command reports the current working logs of a process."
+msgstr "O comando B<pslog> relata os logs de trabalho atuais de um processo."
+
+#. type: IP
+#: ../doc/pslog.1:24 ../doc/pstree.1:165
+#, no-wrap
+msgid "B<-V>"
+msgstr "B<-V>"
+
+#. type: Plain text
+#: ../doc/pslog.1:31
+msgid "B<pgrep>(1), B<ps>(1), B<pwdx>(1)."
+msgstr "B<pgrep>(1), B<ps>(1), B<pwdx>(1)."
+
+#. type: Plain text
+#: ../doc/pslog.1:40
+#, fuzzy
+#| msgid ""
+#| "Vito Muleâ E<.MT mulevito@gmail.com> E<.ME> wrote B<pslog> in 2015. "
+#| "Please send bug reports to E<.MT mulevito@gmail.com> E<.ME .>"
+msgid ""
+"Vito Mule\\(cq E<.MT mulevito@gmail.com> E<.ME> wrote B<pslog> in 2015. "
+"Please send bug reports to E<.MT mulevito@gmail.com> E<.ME .>"
+msgstr ""
+"Vito Mule’ E<.MT mulevito@gmail.com> E<.ME> escreveu B<pslog> em 2015. Envie "
+"relatórios de erros para E<.MT mulevito@gmail.com> E<.ME .>"
+
+#. type: TH
+#: ../doc/prtstat.1:9
+#, no-wrap
+msgid "PRTSTAT"
+msgstr "PRTSTAT"
+
+#. type: Plain text
+#: ../doc/prtstat.1:12
+msgid "prtstat - print statistics of a process"
+msgstr "prtstat - exibe informações sobre um processo"
+
+#. type: Plain text
+#: ../doc/prtstat.1:17
+msgid "B<prtstat> [B<-r>|B<--raw>] I<pid>"
+msgstr "B<prtstat> [B<-r>|B<--raw>] I<pid>"
+
+#. type: Plain text
+#: ../doc/prtstat.1:20
+#, fuzzy
+#| msgid "B<prtstat> -VB<|>--version"
+msgid "B<prtstat> B<-V>|B<--version>"
+msgstr "B<prtstat> -VB<|>--version"
+
+#. type: Plain text
+#: ../doc/prtstat.1:27
+#, fuzzy
+#| msgid ""
+#| "B<prtstat> prints the statistics of the specified process.  This "
+#| "information comes from the I</proc/PID/stat> file."
+msgid ""
+"B<prtstat> prints the statistics of the specified process.  This information "
+"comes from the B</proc/>I<pid>B</stat> file."
+msgstr ""
+"B<prtstat> exibe as estatísticas do processo especificado. Essas informações "
+"vêm do arquivo I</proc/PID/stat>."
+
+#. type: TP
+#: ../doc/prtstat.1:28
+#, no-wrap
+msgid "B<-r>,B<\\ --raw>"
+msgstr "B<-r>,B<\\ --raw>"
+
+#. type: Plain text
+#: ../doc/prtstat.1:31
+msgid "Print the information in raw format."
+msgstr "Exibe informações no formato bruto (não tratado)."
+
+#. type: TP
+#: ../doc/prtstat.1:31
+#, no-wrap
+msgid "B<-V>,B<\\ --version>"
+msgstr "B<-V>,B<\\ --version>"
+
+#. type: Plain text
+#: ../doc/prtstat.1:35
+msgid "Show the version information for B<prtstat>."
+msgstr "Exibe as informações de versão para B<prtstat>."
+
+#. type: TP
+#: ../doc/prtstat.1:36
+#, fuzzy, no-wrap
+#| msgid "/proc/E<lt>PIDE<gt>/stat"
+msgid "B</proc/>I<pid>B</stat>"
+msgstr "/proc/E<lt>PIDE<gt>/stat"
+
+#. type: Plain text
+#: ../doc/prtstat.1:40
+msgid "source of the information B<prtstat> uses."
+msgstr "fonte das informações que o B<prtstat> usa."
+
+#. type: TH
+#: ../doc/pstree.1:9
+#, no-wrap
+msgid "PSTREE"
+msgstr "PSTREE"
+
+#. type: TH
+#: ../doc/pstree.1:9
+#, no-wrap
+msgid "2021-01-05"
+msgstr ""
+
+#. type: Plain text
+#: ../doc/pstree.1:12
+msgid "pstree - display a tree of processes"
+msgstr "pstree - exibe uma árvore de processos"
+
+#. type: Plain text
+#: ../doc/pstree.1:32
+#, fuzzy
+#| msgid ""
+#| "B<pstree> [B<-a>,B<\\ --arguments>] [B<-c>,B<\\ --compact-not>] [B<-C>,B<"
+#| "\\ --color\\ >I<attr>] [B<-g>,B<\\ --show-pgids>] [B<-h>,B<\\ --highlight-"
+#| "all>,B<\\ -H>I<pid>B<,>\\ --highlight-pid\\ I<pid>B<]> [B<-l>,B<\\ --"
+#| "long>] [B<-n>,B<\\ --numeric-sort>] [B<-N>,B<\\ --ns-sort\\ >I<ns>] [B<-"
+#| "p>,B<\\ --show-pids>] [B<-s>,B<\\ --show-parents>] [B<-S>,B<\\ --ns-"
+#| "changes>] [B<-t>,B<\\ --thread-names>] [B<-T>,B<\\ --hide-threads>] [B<-"
+#| "u>,B<\\ --uid-changes>] [B<-Z>,B<\\ --security-context>] [B<-A>,B<\\ --"
+#| "ascii>,B<\\ -G>,B<\\ --vt100>,B<\\ -U>,B<\\ --unicode>] [I<pid>,B<\\ "
+#| ">I<user>B<]>"
+msgid ""
+"B<pstree> [B<-a>,B<\\ --arguments>] [B<-c>,B<\\ --compact-not>] [B<-C>,B<\\ "
+"--color\\ >I<attr>] [B<-g>,B<\\ --show-pgids>] [B<-h>,B<\\ --highlight-all>,"
+"B<\\ -H>I<\\ pid>,B<\\ --highlight-pid\\ >I<pid>] [B<-l>,B<\\ --long>] [B<-"
+"n>,B<\\ --numeric-sort>] [B<-N>,B<\\ --ns-sort\\ >I<ns>] [B<-p>,B<\\ --show-"
+"pids>] [B<-s>,B<\\ --show-parents>] [B<-S>,B<\\ --ns-changes>] [B<-t>,B<\\ --"
+"thread-names>] [B<-T>,B<\\ --hide-threads>] [B<-u>,B<\\ --uid-changes>] [B<-"
+"Z>,B<\\ --security-context>] [B<-A>,B<\\ --ascii>,B<\\ -G>,B<\\ --vt100>,B<"
+"\\ -U>,B<\\ --unicode>] [I<pid>,B<\\ >I<user>]"
+msgstr ""
+"B<pstree> [B<-a>,B<\\ --arguments>] [B<-c>,B<\\ --compact-not>] [B<-C>,B<\\ "
+"--color\\ >I<atributo>] [B<-g>,B<\\ --show-pgids>] [B<-h>,B<\\ --highlight-"
+"all>,B<\\ -H>I<pid>B<,>\\ --highlight-pid\\ I<pid>B<]> [B<-l>,B<\\ --long>] "
+"[B<-n>,B<\\ --numeric-sort>] [B<-N>,B<\\ --ns-sort\\ >I<ns>] [B<-p>,B<\\ --"
+"show-pids>] [B<-s>,B<\\ --show-parents>] [B<-S>,B<\\ --ns-changes>] [B<-t>,B<"
+"\\ --thread-names>] [B<-T>,B<\\ --hide-threads>] [B<-u>,B<\\ --uid-changes>] "
+"[B<-Z>,B<\\ --security-context>] [B<-A>,B<\\ --ascii>,B<\\ -G>,B<\\ --vt100>,"
+"B<\\ -U>,B<\\ --unicode>] [I<pid>,B<\\ >I<usuário>B<]>"
+
+#. type: Plain text
+#: ../doc/pstree.1:35
+#, fuzzy
+#| msgid "B<pstree> -VB<,>\\ --version"
+msgid "B<pstree> B<-V>,B<\\ --version>"
+msgstr "B<pstree> -VB<,>\\ --version"
+
+#. type: Plain text
+#: ../doc/pstree.1:46
+msgid ""
+"B<pstree> shows running processes as a tree.  The tree is rooted at either "
+"I<pid> or B<init> if I<pid> is omitted.  If a user name is specified, all "
+"process trees rooted at processes owned by that user are shown."
+msgstr ""
+"B<pstree> mostra os processos em execução como uma árvore. A árvore está "
+"enraizada em I<pid> ou B<init> se I<pid> for omitido. Se um nome de usuário "
+"for especificado, todas as árvores de processo enraizadas em processos "
+"pertencentes a esse usuário serão mostradas."
+
+#. type: Plain text
+#: ../doc/pstree.1:50
+msgid ""
+"B<pstree> visually merges identical branches by putting them in square "
+"brackets and prefixing them with the repetition count, e.g."
+msgstr ""
+"B<pstree> mescla visualmente ramos idênticos colocando-os entre colchetes e "
+"prefixando-os com a contagem de repetição. Por exemplo:"
+
+#. type: Plain text
+#: ../doc/pstree.1:56
+#, no-wrap
+msgid ""
+"    init-+-getty\n"
+"         |-getty\n"
+"         |-getty\n"
+"         `-getty\n"
+msgstr ""
+"    init-+-getty\n"
+"         |-getty\n"
+"         |-getty\n"
+"         `-getty\n"
+
+#. type: Plain text
+#: ../doc/pstree.1:59
+msgid "becomes"
+msgstr "se torna"
+
+#. type: Plain text
+#: ../doc/pstree.1:62
+#, no-wrap
+msgid "    init---4*[getty]\n"
+msgstr "    init---4*[getty]\n"
+
+#. type: Plain text
+#: ../doc/pstree.1:68
+msgid ""
+"Child threads of a process are found under the parent process and are shown "
+"with the process name in curly braces, e.g."
+msgstr ""
+"Threads filhos de um processo são encontrados sob o processo pai e são "
+"mostrados com o nome do processo entre chaves. Por exemplo:"
+
+#. type: Plain text
+#: ../doc/pstree.1:71
+#, no-wrap
+msgid "    icecast2---13*[{icecast2}]\n"
+msgstr "    icecast2---13*[{icecast2}]\n"
+
+#. type: Plain text
+#: ../doc/pstree.1:82
+msgid ""
+"If B<pstree> is called as B<pstree.x11> then it will prompt the user at the "
+"end of the line to press return and will not return until that has "
+"happened.  This is useful for when B<pstree> is run in a xterminal."
+msgstr ""
+"Se B<pstree> for chamado como B<pstree.x11>, ele solicitará que o usuário no "
+"final da linha pressione Enter e não retornará até que isso aconteça. Isso é "
+"útil quando B<pstree> é executado em um xterminal."
+
+#. type: Plain text
+#: ../doc/pstree.1:88
+msgid ""
+"Certain kernel or mount parameters, such as the I<hidepid> option for "
+"procfs, will hide information for some processes. In these situations "
+"B<pstree> will attempt to build the tree without this information, showing "
+"process names as question marks."
+msgstr ""
+"Certos parâmetros do kernel ou de montagem, como a opção I<hidepid> para "
+"procfs, irão ocultar informações para alguns processos. Nessas situações, "
+"B<pstree> tentará construir a árvore sem essas informações, mostrando os "
+"nomes dos processos como pontos de interrogação."
+
+#. type: IP
+#: ../doc/pstree.1:90
+#, no-wrap
+msgid "B<-a>"
+msgstr "B<-a>"
+
+#. type: Plain text
+#: ../doc/pstree.1:95
+msgid ""
+"Show command line arguments.  If the command line of a process is swapped "
+"out, that process is shown in parentheses.  B<-a> implicitly disables "
+"compaction for processes but not threads."
+msgstr ""
+"Mostra os argumentos da linha de comando. Se a linha de comando de um "
+"processo for trocada, esse processo será mostrado entre parênteses. B<-a> "
+"desativa implicitamente a compactação para processos, mas não para threads."
+
+#. type: IP
+#: ../doc/pstree.1:95
+#, no-wrap
+msgid "B<-A>"
+msgstr "B<-A>"
+
+#. type: Plain text
+#: ../doc/pstree.1:97
+msgid "Use ASCII characters to draw the tree."
+msgstr "Usa caracteres ASCII para desenhar a árvore."
+
+#. type: Plain text
+#: ../doc/pstree.1:100
+msgid ""
+"Disable compaction of identical subtrees.  By default, subtrees are "
+"compacted whenever possible."
+msgstr ""
+"Desativa a compactação de subárvores idênticas. Por padrão, as subárvores "
+"são compactadas sempre que possível."
+
+#. type: IP
+#: ../doc/pstree.1:100
+#, no-wrap
+msgid "B<-C>"
+msgstr "B<-C>"
+
+#. type: Plain text
+#: ../doc/pstree.1:105
+#, fuzzy
+#| msgid ""
+#| "Color the process name by given attribute. Currently B<pstree> only "
+#| "accepts I<age> which colors by process age.  Processes newer than 60 "
+#| "seconds are green, newer than an hour yellow and the remaining red."
+msgid ""
+"Color the process name by given attribute. Currently B<pstree> only accepts "
+"the value B<age> which colors by process age.  Processes newer than 60 "
+"seconds are green, newer than an hour yellow and the remaining red."
+msgstr ""
+"Colore o nome do processo por determinado atributo. Atualmente, B<pstree> "
+"aceita apenas I<age> que colore por idade de processo. Processos com mais de "
+"60 segundos são verdes, mais recentes que uma hora são amarelos e o restante "
+"vermelho."
+
+#. type: IP
+#: ../doc/pstree.1:105
+#, no-wrap
+msgid "B<-g>"
+msgstr "B<-g>"
+
+#. type: Plain text
+#: ../doc/pstree.1:111
+msgid ""
+"Show PGIDs.  Process Group IDs are shown as decimal numbers in parentheses "
+"after each process name.  B<-g> implicitly disables compaction.  If both "
+"PIDs and PGIDs are displayed then PIDs are shown first."
+msgstr ""
+"Mostra PGIDs. Os IDs do grupo de processos são mostrados como números "
+"decimais entre parênteses após cada nome de processo. B<-g> desativa "
+"implicitamente a compactação. Se os PIDs e os PGIDs forem exibidos, os PIDs "
+"serão mostrados primeiro."
+
+#. type: IP
+#: ../doc/pstree.1:111
+#, no-wrap
+msgid "B<-G>"
+msgstr "B<-G>"
+
+#. type: Plain text
+#: ../doc/pstree.1:113
+msgid "Use VT100 line drawing characters."
+msgstr "Usa caracteres VT100 no desenho de linhas."
+
+#. type: IP
+#: ../doc/pstree.1:113
+#, no-wrap
+msgid "B<-h>"
+msgstr "B<-h>"
+
+#. type: Plain text
+#: ../doc/pstree.1:117
+msgid ""
+"Highlight the current process and its ancestors.  This is a no-op if the "
+"terminal doesn't support highlighting or if neither the current process nor "
+"any of its ancestors are in the subtree being shown."
+msgstr ""
+"Realça o processo atual e seus ancestrais. Este é um ambiente autônomo se o "
+"terminal não suportar o realce ou se nem o processo atual nem qualquer um de "
+"seus ancestrais estiverem na subárvore sendo exibida."
+
+#. type: IP
+#: ../doc/pstree.1:117
+#, no-wrap
+msgid "B<-H>"
+msgstr "B<-H>"
+
+#. type: Plain text
+#: ../doc/pstree.1:127
+msgid ""
+"Like B<-h>, but highlight the specified process instead.  Unlike with B<-h>, "
+"B<pstree> fails when using B<-H> if highlighting is not available."
+msgstr ""
+"Como B<-h>, mas realça o processo especificado. Ao contrário de B<-h>, "
+"B<pstree> falha ao usar B<-H> se o realce não estiver disponível."
+
+#. type: IP
+#: ../doc/pstree.1:127
+#, no-wrap
+msgid "B<-l>"
+msgstr "B<-l>"
+
+#. type: Plain text
+#: ../doc/pstree.1:131
+msgid ""
+"Display long lines.  By default, lines are truncated to either the COLUMNS "
+"environment variable or the display width.  If neither of these methods "
+"work, the default of 132 columns is used."
+msgstr ""
+"Exibe linhas longas. Por padrão, as linhas são truncadas para a variável de "
+"ambiente COLUMNS ou para a largura da tela. Se nenhum desses métodos "
+"funcionar, o padrão de 132 colunas será usado."
+
+#. type: IP
+#: ../doc/pstree.1:131
+#, no-wrap
+msgid "B<-n>"
+msgstr "B<-n>"
+
+#. type: Plain text
+#: ../doc/pstree.1:134
+msgid ""
+"Sort processes with the same parent by PID instead of by name.  (Numeric "
+"sort.)"
+msgstr ""
+"Classifica processos com o mesmo pai por PID em vez de por nome. "
+"(Classificação numérica.)"
+
+#. type: IP
+#: ../doc/pstree.1:134
+#, no-wrap
+msgid "B<-N>"
+msgstr "B<-N>"
+
+#. type: Plain text
+#: ../doc/pstree.1:141
+msgid ""
+"Show individual trees for each namespace of the type specified.  The "
+"available types are: I<ipc>, I<mnt>, I<net>, I<pid>, I<time>, I<user>, "
+"I<uts>.  Regular users don't have access to other users' processes "
+"information, so the output will be limited."
+msgstr ""
+"Mostra árvores individuais para cada espaço de nomes do tipo especificado. "
+"Os tipos disponíveis são: I<ipc>, I<mnt>, I<net>, I<pid>, I<time>, I<user>, "
+"I<uts>. Os usuários comuns não têm acesso às informações dos processos de "
+"outros usuários, então a saída será limitada."
+
+#. type: IP
+#: ../doc/pstree.1:141
+#, no-wrap
+msgid "B<-p>"
+msgstr "B<-p>"
+
+#. type: Plain text
+#: ../doc/pstree.1:146
+msgid ""
+"Show PIDs.  PIDs are shown as decimal numbers in parentheses after each "
+"process name.  B<-p> implicitly disables compaction."
+msgstr ""
+"Mostra PIDs. Os PIDs são mostrados como números decimais entre parênteses "
+"após cada nome de processo. B<-p> desabilita implicitamente a compactação."
+
+#. type: IP
+#: ../doc/pstree.1:146
+#, no-wrap
+msgid "B<-s>"
+msgstr "B<-s>"
+
+#. type: Plain text
+#: ../doc/pstree.1:148
+msgid "Show parent processes of the specified process."
+msgstr "Mostra processos pais do processo especificado."
+
+#. type: IP
+#: ../doc/pstree.1:148
+#, no-wrap
+msgid "B<-S>"
+msgstr "B<-S>"
+
+#. type: Plain text
+#: ../doc/pstree.1:151
+msgid ""
+"Show namespaces transitions.  Like B<-N>, the output is limited when running "
+"as a regular user."
+msgstr ""
+"Mostra transições de espaços de nomes. Como B<-N>, a saída é limitada quando "
+"executado como um usuário comum."
+
+#. type: IP
+#: ../doc/pstree.1:151
+#, no-wrap
+msgid "B<-t>"
+msgstr "B<-t>"
+
+#. type: Plain text
+#: ../doc/pstree.1:153
+msgid "Show full names for threads when available."
+msgstr "Mostra os nomes completos dos threads quando disponíveis."
+
+#. type: IP
+#: ../doc/pstree.1:153
+#, no-wrap
+msgid "B<-T>"
+msgstr "B<-T>"
+
+#. type: Plain text
+#: ../doc/pstree.1:155
+msgid "Hide threads and only show processes."
+msgstr "Oculta threads e só mostra processos."
+
+#. type: IP
+#: ../doc/pstree.1:155
+#, no-wrap
+msgid "B<-u>"
+msgstr "B<-u>"
+
+#. type: Plain text
+#: ../doc/pstree.1:159
+msgid ""
+"Show uid transitions.  Whenever the uid of a process differs from the uid of "
+"its parent, the new uid is shown in parentheses after the process name."
+msgstr ""
+"Mostra transições de uid. Sempre que o uid de um processo difere do uid de "
+"seu pai, o novo uid é mostrado entre parênteses após o nome do processo."
+
+#. type: IP
+#: ../doc/pstree.1:159
+#, no-wrap
+msgid "B<-U>"
+msgstr "B<-U>"
+
+#. type: Plain text
+#: ../doc/pstree.1:165
+msgid ""
+"Use UTF-8 (Unicode) line drawing characters.  Under Linux 1.1-54 and above, "
+"UTF-8 mode is entered on the console with B<echo -e '\\033%8'> and left with "
+"B<echo -e '\\033%@'>."
+msgstr ""
+"Usa caracteres de desenho de linha UTF-8 (Unicode). No Linux 1.1-54 e "
+"superior, o modo UTF-8 é inserido no console com B<echo -e '\\033%8'> e "
+"deixado com B<echo -e '\\033%@'>."
+
+#. type: IP
+#: ../doc/pstree.1:167
+#, no-wrap
+msgid "B<-Z>"
+msgstr "B<-Z>"
+
+#. type: Plain text
+#: ../doc/pstree.1:170
+msgid ""
+"Show the current security attributes of the process. For SELinux systems "
+"this will be the security context."
+msgstr ""
+
+#. type: Plain text
+#: ../doc/pstree.1:176
+msgid "Some character sets may be incompatible with the VT100 characters."
+msgstr ""
+"Alguns conjuntos de caracteres podem ser incompatíveis com os caracteres "
+"VT100."
+
+#. type: Plain text
+#: ../doc/pstree.1:179
+#, fuzzy
+#| msgid "B<ps>(1), B<top>(1)."
+msgid "B<ps>(1), B<top>(1), B<proc>(5)."
+msgstr "B<ps>(1), B<top>(1)."
+
+#~ msgid ""
+#~ "(SELinux) Show security context for each process.  This flag will only "
+#~ "work if B<pstree> is compiled with SELinux support."
+#~ msgstr ""
+#~ "(SELinux) Mostra o contexto de segurança para cada processo. Este "
+#~ "sinalizador só funcionará se B<pstree> for compilado com suporte SELinux."
