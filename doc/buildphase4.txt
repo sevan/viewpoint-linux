@@ -88,3 +88,20 @@ make prefix=/usr lib=lib64 install
 shadow
 touch /usr/bin/passwd
 configure --sysconf=/etc --with-group-name-max-length=32 --without-nscd
+
+gcc
+configure --prefix=/usr LD=ld --disable-multilib --disable-bootstrap --with-system-zlib --enable-languages=c,c++,lto --libdir=/usr/lib64
+make
+
+testing:
+ulimit -s 32768
+chown -Rv tester . 
+su tester -c "PATH=$PATH make -k check"
+
+make install
+rm -rf /usr/lib64/gcc/$(gcc -dumpmachine)/10.2.0/include-fixed/bits/
+chown -v -R root:root /usr/lib64/gcc/*linux-gnu/10.2.0/include{,-fixed}
+ln -s ../usr/bin/cpp /lib
+mkdir -p /usr/lib64/bfd-plugins
+ln -s ../../libexec/gcc/$(gcc -dumpmachine)/10.2.0/liblto_plugin.so /usr/lib64/bfd-plugins/
+TODO: test if the GDB autoload Python script needs moving as per guide.
