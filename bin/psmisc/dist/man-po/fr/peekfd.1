@@ -1,0 +1,63 @@
+.\"
+.\" Copyright 2007 Trent Waddington <trent.waddington@gmail.com>
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH PEEKFD 1 "29 septembre 2020" psmisc "Commandes de l'utilisateur"
+.SH NOM
+peekfd \- examiner les descripteurs de fichiers des processus en cours
+d'exécution
+.SH SYNOPSIS
+\fBpeekfd\fP [\fB\-8\fP,\fB\-\-eight\-bit\-clean\fP] [\fB\-n\fP,\fB\-\-no\-headers\fP]
+[\fB\-f\fP,\fB\-\-follow\fP] [\fB\-d\fP,\fB\-\-duplicates\-removed\fP] [\fB\-V\fP,\fB\-\-version\fP]
+[\fB\-h\fP,\fB\-\-help\fP] \fIpid\fP [\fIfd\fP] [\fIfd\fP] ...
+.SH DESCRIPTION
+\fBpeekfd\fP s'attache à un processus en cours et intercepte toutes les
+lectures et les écritures dans les descripteurs de fichiers.  Vous pouvez
+spécifier les numéros des descripteurs de fichiers désirés ou les vidanger
+tous.
+.SH OPTIONS
+.IP \-8
+Ne pas effectuer de post\-traitement sur les octets lus ou écrits.
+.IP \-n
+Ne pas afficher d'en\-têtes indiquant l'origine des octets vidangés.
+.IP \-c
+Vidanger aussi les activités des descripteurs de fichiers requis dans tout
+processus enfant qui est créé.
+.IP \-d
+Retirer les lectures/écritures dupliquées de la sortie.  Si vous regardez un
+tty avec écho, vous pourriez avoir besoin de ceci.
+.IP \-v
+Afficher la chaîne de version.
+.IP \-h
+Afficher un message d'aide.
+.SH FICHIERS
+\fB/proc/\fP\fI*\fP\fB/fd\fP
+.RS
+Inutilisé mais utile pour montrer à l'utilisateur les bons numéros de
+descripteurs de fichiers.
+.SH ENVIRONNEMENT
+Aucun.
+.SH DIAGNOSTICS
+Les diagnostiques suivants peuvent être émis sur stderr\ :
+.TP 
+\fBError attaching to pid \fP\fI<PID>\fP
+Une erreur inconnue est survenue en essayant de s'attacher à un processus,
+vous avez peut\-être besoin d'être root.
+.SH BOGUES
+Probablement beaucoup.  Ne soyez pas surpris si le processus surveillé
+meurt.
+.SH AUTEUR
+.MT trent.waddington@gmail.com
+Trent Waddington
+.ME
+.SH "VOIR AUSSI"
+\fBttysnoop\fP(8)

@@ -1,0 +1,63 @@
+.\"
+.\" Copyright 2007 Trent Waddington <trent.waddington@gmail.com>
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH PEEKFD 1 "29. September 2020" psmisc "Dienstprogramme für Benutzer"
+.SH BEZEICHNUNG
+peekfd \- nach Dateideskriptoren laufender Prozesse schauen
+.SH ÜBERSICHT
+\fBpeekfd\fP [\fB\-8\fP,\fB\-\-eight\-bit\-clean\fP] [\fB\-n\fP,\fB\-\-no\-headers\fP]
+[\fB\-f\fP,\fB\-\-follow\fP] [\fB\-d\fP,\fB\-\-duplicates\-removed\fP] [\fB\-V\fP,\fB\-\-version\fP]
+[\fB\-h\fP,\fB\-\-help\fP] \fIpid\fP [\fIfd\fP] [\fIfd\fP] ...
+.SH BESCHREIBUNG
+\fBpeekfd\fP hängt sich an einen laufenden Prozess an und fängt alle Lese\- und
+Schreibvorgänge von und zu Dateideskriptoren ab. Sie können die Nummern der
+gewünschten Dateideskriptoren angeben oder alle ausgeben lassen.
+.SH OPTIONEN
+.IP \-8
+führt keine Nachverarbeitung der gelesenen oder geschriebenen Bytes durch.
+.IP \-n
+zeigt keine Kopfzeilen an, welche die Quelle der ausgegebenen Bytes angeben.
+.IP \-c
+gibt auch die Aktivität des angefragten Dateideskriptors in jeglichen neu
+erstellten Kindprozessen aus.
+.IP \-d
+entfernt Lese\- und Schreibvorgänge aus der Ausgabe, die mehrfach
+erscheinen. Wenn Sie ein TTY mit Echo verwenden, werden Sie dies
+möglicherweise brauchen.
+.IP \-v
+zeigt eine Versionszeichenkette an.
+.IP \-h
+zeigt eine Hilfemeldung an.
+.SH DATEIEN
+\fB/proc/\fP\fI*\fP\fB/fd\fP
+.RS
+Wird nicht verwendet, aber ist für den Benutzer nützlich, um die Nummern der
+gewünschten Dateideskriptoren zu finden.
+.SH UMGEBUNGSVARIABLEN
+Keine.
+.SH DIAGNOSE
+Die folgenden Diagosen können in die Standardfehlerausgabe geschrieben
+werden:
+.TP 
+\fBError attaching to pid \fP\fI<PID>\fP
+Ein unbekannter Fehler ist bei dem Versuch aufgetreten, an einen Prozess
+anzuhängen. Möglicherweise müssen Sie Root sein.
+.SH FEHLER
+Wahrscheinlich viele. Seien Sie nicht überrascht, wenn der von Ihnen
+überwachte Prozess abstürzt.
+.SH AUTOR
+.MT trent.waddington@gmail.com
+Trent Waddington
+.ME
+.SH "SIEHE AUCH"
+\fBttysnoop\fP(8)

@@ -1,0 +1,213 @@
+.\"
+.\" Copyright 1993-2005 Werner Almesberger
+.\"           2005-2020 Craig Small
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH FUSER 1 "9 de setembro de 2020" psmisc "Comandos de usuário"
+.SH NOME
+fuser \- identifica processos usando arquivos ou soquetes
+.SH SINOPSE
+.ad l
+\fBfuser\fP [\fB\-fuv\fP] [\fB\-a\fP|\fB\-s\fP] [\fB\-4\fP|\fB\-6\fP] [\fB\-c\fP|\fB\-m\fP|\fB\-n\fP \fIspace\fP]
+[\fB\ \-k\fP [\fB\-i\fP] [\fB\-M\fP] [\fB\-w\fP] [\fB\-\fP\fISIGNAL\fP] ] \fIname\fP ...
+.br
+\fBfuser \-l\fP
+.br
+\fBfuser \-V\fP
+.ad b
+.SH DESCRIÇÃO
+\fBfuser\fP exibe os PIDs de processos usando os arquivos ou sistemas de
+arquivos especificados. No modo de exibição padrão, cada nome de arquivo é
+seguido por uma letra que indica o tipo de acesso:
+.PP
+.RS
+.PD 0
+.TP 
+\fBc\fP
+diretório atual.
+.TP 
+\fBe\fP
+executável que está em execução.
+.TP 
+\fBf\fP
+abre um arquivo. \fBf\fP é omitido no modo de exibição padrão.
+.TP 
+\fBF\fP
+abre arquivo para escrita. \fBF\fP é omitido no modo de exibição padrão.
+.TP 
+\fBr\fP
+diretório raiz.
+.TP 
+\fBm\fP
+biblioteca compartilhada ou arquivo que foram mapeados com mmap.
+.TP 
+\&\fB.\fP
+Espaço reservado, omitido no modo de exibição padrão.
+.PD
+.RE
+.LP
+\fBfuser\fP retorna um código de retorno diferente de zero se nenhum dos
+arquivos especificados for acessado ou no caso de um erro fatal. Se pelo
+menos um acesso for encontrado, \fBfuser\fP retorna zero.
+.PP
+Para pesquisar processos usando soquetes TCP e UDP, o espaço de nomes
+correspondente deve ser selecionado com a opção \fB\-n\fP. Por padrão, \fBfuser\fP
+procurará nos soquetes IPv6 e IPv4. Para alterar o comportamento padrão, use
+as opções \fB\-4\fP e \fB\-6\fP. Os soquetes podem ser especificados pela porta
+local e remota e pelo endereço remoto. Todos os campos são opcionais, mas as
+vírgulas na frente dos campos ausentes devem estar presentes:
+.PP
+[\fIporta_lcl\fP][,[\fIhost_rmt\fP][,[\fIporta_rmt\fP]]]
+.PP
+Valores simbólicos ou numéricos podem ser usados para endereços IP e números
+de porta.
+.PP
+\fBfuser\fP emite apenas os PIDs para stdout, todo o resto é enviado para
+stderr.
+.SH OPÇÕES
+.TP 
+\fB\-a\fP, \fB\-\-all\fP
+Mostra todos os arquivos especificados na linha de comando. Por padrão,
+apenas os arquivos acessados por pelo menos um processo são mostrados.
+.TP 
+\fB\-c\fP
+Igual à opção \fB\-m\fP, usada para compatibilidade POSIX.
+.TP 
+\fB\-f\fP
+Ignorado silenciosamente, usado para compatibilidade POSIX.
+.TP 
+\fB\-k\fP, \fB\-\-kill\fP
+Mata os processos que acessam o arquivo. A menos que seja alterado com
+\fB\-\fP\fISIGNAL\/\fP, SIGKILL é enviado. Um processo \fBfuser\fP nunca mata a si
+próprio, mas pode matar outros processos \fBfuser\fP. O ID de usuário efetivo
+do processo que executa \fBfuser\fP é definido com seu ID de usuário real antes
+de tentar matar.
+.TP 
+\fB\-i\fP, \fB\-\-interactive\fP
+Peça confirmação ao usuário antes de encerrar um processo. Esta opção é
+silenciosamente ignorada se \fB\-k\fP também não estiver presente.
+.TP 
+\fB\-I\fP, \fB\-\-inode\fP
+Para o espaço de nomes de \fBfile\fP, deixa todas as comparações serem baseadas
+nos inodes do(s) arquivo(s) especificado(s) e nunca nos nomes dos arquivos,
+mesmo em sistemas de arquivos baseados em rede.
+.TP 
+\fB\-l\fP, \fB\-\-list\-signals\fP
+Lista todos os nomes de sinal conhecidos.
+.TP 
+\fB\-m\fP\fI NAME\fP, \fB\-\-mount \fP\fINAME\fP
+\fINAME\fP specifies a file on a mounted file system or a block device that is
+mounted.  All processes accessing files on that file system are listed.  If
+a directory is specified, it is automatically changed to \fINAME\fP/ to use any
+file system that might be mounted on that directory.
+.TP 
+\fB\-M\fP, \fB\-\-ismountpoint\fP
+A solicitação será atendida apenas se \fINOME\fP especificar um ponto de
+montagem. Este é um cinto de segurança inestimável que o impede de matar a
+máquina se \fINOME\fP não for um sistema de arquivos.
+.TP 
+\fB\-w\fP
+Mata apenas os processos que têm acesso de escrita. Esta opção é
+silenciosamente ignorada se \fB\-k\fP também não estiver presente.
+.TP 
+\fB\-n\fP\fI ESPAÇO\ DE\ NOMES\fP, \fB\-\-namespace \fP\fIESPAÇO\ DE\ NOMES\fP
+Seleciona um espaço de nome diferente. Os espaços de nomes \fBfile\fP (nomes de
+arquivo, o padrão), \fBudp\fP (portas UDP locais) e \fBtcp\fP (portas TCP locais)
+são suportados. Para portas, o número da porta ou o nome simbólico podem ser
+especificados. Se não houver ambiguidade, a notação de atalho
+\fInome\fP\fB/\fP\fIespaço\fP (por exemplo, \fI80\fP\fB/\fP\fItcp\fP) pode ser usada.
+.TP 
+\fB\-s\fP, \fB\-\-silent\fP
+Operação silenciosa. \fB\-u\fP e \fB\-v\fP são ignorados neste modo. \fB\-a\fP não deve
+ser usado com \fB\-s\fP.
+.TP 
+\fB\-\fP\fISINAL\fP
+Usa o sinal especificado em vez de SIGKILL ao matar processos. Os sinais
+podem ser especificados por nome (por exemplo, \fB\-HUP\fP) ou por número (por
+exemplo, \fB\-1\fP). Esta opção é silenciosamente ignorada se a opção \fB\-k\fP não
+for usada.
+.TP 
+\fB\-u\fP, \fB\-\-user\fP
+Anexa o nome de usuário do proprietário do processo a cada PID.
+.TP 
+\fB\-v\fP, \fB\-\-verbose\fP
+Modo detalhado. Os processos são mostrados no estilo \fBps\fP. Os campos PID,
+USER e COMMAND são semelhantes a \fBps\fP. ACCESS mostra como o processo acessa
+o arquivo. O modo detalhado também mostrará quando um arquivo específico
+está sendo acessado como um ponto de montagem, exportação de knfs ou arquivo
+de troca. Neste caso, \fBkernel\fP é mostrado em vez do PID.
+.TP 
+\fB\-V\fP, \fB\-\-version\fP
+Exibe informação da versão.
+.TP 
+\fB\-4\fP, \fB\-\-ipv4\fP
+Pesquisa apenas soquetes IPv4. Esta opção não deve ser usada com a opção
+\fB\-6\fP e só tem efeito com os espaços de nomes tcp e udp.
+.TP 
+\fB\-6\fP, \fB\-\-ipv6\fP
+Pesquisa apenas soquetes IPv6. Esta opção não deve ser usada com a opção
+\fB\-4\fP e só tem efeito com os espaços de nomes tcp e udp.
+.IP \fB\-\fP
+Redefine todas as opções e defina o sinal de volta para SIGKILL.
+.SH ARQUIVOS
+.TP 
+/proc
+local do sistema de arquivos proc
+.SH EXEMPLOS
+.TP 
+\fBfuser \-km /home\fP
+mata todos os processos que acessam o sistema de arquivos /home de qualquer
+forma.
+.TP 
+\fBif fuser \-s /dev/ttyS1; then :; else \fP\fIcomando\fP\fB; fi\fP
+invoca \fIcomando\fP se nenhum outro processo estiver usando /dev/ttyS1.
+.TP 
+\fBfuser telnet/tcp\fP
+mostra todos os processos na porta TELNET (local).
+.SH RESTRIÇÕES
+Os processos que acessam o mesmo arquivo ou sistema de arquivos várias vezes
+da mesma maneira são mostrados apenas uma vez.
+.PP
+Se o mesmo objeto for especificado várias vezes na linha de comando, algumas
+dessas entradas podem ser ignoradas.
+.PP
+\fBfuser\fP só pode ser capaz de coletar informações parciais, a menos que seja
+executado com privilégios. Como consequência, os arquivos abertos por
+processos pertencentes a outros usuários podem não ser listados e os
+executáveis podem ser classificados apenas como mapeados.
+.PP
+\fBfuser\fP não pode relatar sobre nenhum processo para o qual não tenha
+permissão para consultar a tabela do descritor de arquivo. O momento mais
+comum em que esse problema ocorre é ao procurar soquetes TCP ou UDP ao
+executar \fBfuser\fP como um usuário não root. Neste caso, \fBfuser\fP relatará
+nenhum acesso.
+.PP
+Instalar o \fBfuser\fP com root SUID evitará problemas associados a informações
+parciais, mas pode ser indesejável por razões de segurança e privacidade.
+.PP
+Os espaços de nomes \fBudp\fP e \fBtcp\fP e soquetes de domínio UNIX não podem ser
+pesquisados com kernels anteriores a 1.3.78.
+.PP
+Os acessos pelo kernel são mostrados apenas com a opção \fB\-v\fP.
+.PP
+A opção \fB\-k\fP funciona apenas em processos. Se o usuário for o kernel,
+\fBfuser\fP imprimirá um conselho, mas não fará nada além disso.
+.SH BUGS
+.PP
+\fBfuser \-m /dev/sgX\fP vai mostrar (ou matar com o sinalizador \fB\-k\fP) todos os
+processos, mesmo se você não tiver aquele dispositivo configurado. Pode
+haver outros dispositivos para os quais ele também faz isso.
+.PP
+A opção de montagem \fB\-m\fP vai corresponder a qualquer arquivo dentro do
+mesmo dispositivo que o arquivo especificado, use a opção \fB\-M\fP também se
+você pretende especificar apenas o ponto de montagem.
+.SH "VEJA TAMBÉM"
+\fBkill\fP(1), \fBkillall\fP(1), \fBlsof\fP(8), \fBpkill\fP(1), \fBps\fP(1), \fBkill\fP(2).

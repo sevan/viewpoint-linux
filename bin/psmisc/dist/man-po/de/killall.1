@@ -1,0 +1,134 @@
+.\"
+.\" Copyright 1993-2002 Werner Almesberger
+.\"           2002-2021 Craig Small
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH KILLALL 1 2021\-01\-11 psmisc "Dienstprogramme für Benutzer"
+.SH BEZEICHNUNG
+killall \- Prozesse anhand des Namens töten
+.SH ÜBERSICHT
+.ad l
+\fBkillall\fP [\fB\-Z\fP,\fB\ \-\-context\fP \fIpattern\fP] [\fB\-e\fP,\fB\ \-\-exact\fP] [\fB\-g\fP,\fB\ \-\-process\-group\fP] [\fB\-i\fP,\fB\ \-\-interactive\fP] [\fB\-n\fP,\fB\ \-\-ns\fP \fIPID\fP]
+[\fB\-o\fP,\fB\ \-\-older\-than\fP \fITIME\fP] [\fB\-q\fP,\fB\ \-\-quiet\fP] [\fB\-r\fP,\fB\ \-\-regexp\fP]
+[\fB\-s\fP,\fB\ \-\-signal\fP \fISIGNAL\fP,\ \fB\-\fP\fISIGNAL\fP] [\fB\-u\fP,\fB\ \-\-user\fP \fIuser\fP]
+[\fB\-v\fP,\fB\ \-\-verbose\fP] [\fB\-w\fP,\fB\ \-\-wait\fP] [\fB\-y\fP,\fB\ \-\-younger\-than\fP
+\fITIME\fP] [\fB\-I\fP,\fB\ \-\-ignore\-case\fP] [\fB\-V\fP,\fB\ \-\-version\fP] [\fB\-\-\fP] \fIname\fP
+\&...
+.br
+\fBkillall\fP \-l
+.br
+\fBkillall\fP \fB\-V\fP,\fB\ \-\-version\fP
+.ad b
+.SH BESCHREIBUNG
+\fBkillall\fP sendet ein Signal an alle Prozesse, die mit dem angegebenen
+Befehl gestartet wurden. Wenn kein Signalname angegeben ist, wird das Signal
+SIGTERM gesendet.
+.PP
+Signale können entweder als Name (zum Beispiel \fB\-HUP\fP oder \fB\-SIGHUP\fP), als
+Nummer (zum Beispiel \fB\-1\fP) oder durch die Option \fB\-s\fP angegeben werden.
+.PP
+Falls der Befehlsname kein regulärer Ausdruck ist (Option \fB\-r\fP) und einen
+Schrägstrich (\fB/\fP) enthält, werden Prozesse, welche diese bestimmte Datei
+ausführen, zum Töten vorgesehen, unabhängig von deren Namen.
+.PP
+\fBkillall\fP gibt den Code 0 zurück, falls für jeden der aufgelisteten Befehle
+mindestens ein Prozess getötet wurde, oder es waren keine Befehle
+aufgelistet und mindestens ein Prozess entsprach den mit \fB\-u\fP und \fB\-Z\fP
+angegebenen Suchkriterien. \fBkillall\fP gibt anderenfalls einen von Null
+verschiedenen Wert zurück.
+.PP
+Ein \fBkillall\fP\-Prozess tötet sich niemals selbst (aber könnte von anderen
+\fBkillall\fP\-Prozessen getötet werden).
+.SH OPTIONEN
+.IP "\fB\-e\fP, \fB\-\-exact\fP"
+verlangt eine exakte Übereinstimmung für sehr lange Namen. Falls der
+Befehlsname länger als 15 Zeichen ist, könnte der vollständige Name nicht
+verfügbar sein (das heißt, er ist ausgelagert). In diesem Fall tötet
+\fBkillall\fP alles, was mit den ersten 15 Zeichen übereinstimmt. Mit \fB\-e\fP
+werden solche Einträge übersprungen. \fBkillall\fP gibt eine Meldung für jeden
+übersprungenen Eintrag aus, falls \fB\-v\fP zusätzlich zu \fB\-e\fP angegeben wird.
+.IP "\fB\-I\fP, \fB\-\-ignore\-case\fP"
+ignoriert bei der Treffersuche die Groß\- oder Kleinschreibung.
+.IP "\fB\-g\fP, \fB\-\-process\-group\fP"
+tötet die Prozessgruppe, zu welcher der Prozess gehört. Das Tötungssignal
+wird nur einmal pro Gruppe gesendet, selbst wenn in der Prozessgruppe
+mehrere Prozesse gefunden wurden.
+.IP "\fB\-i\fP, \fB\-\-interactive\fP"
+bittet vor dem Töten interaktiv um Bestätigung.
+.IP "\fB\-l\fP, \fB\-\-list\fP"
+listet alle bekannten Signalnamen auf.
+.IP "\fB\-n\fP, \fB\-\-ns\fP"
+prüft anhand des PID\-Namensraums der angegebenen PID auf
+Übereinstimmungen. Standardmäßig wird die Überprüfung auf alle Namensräume
+bezogen.
+.IP "\fB\-o\fP, \fB\-\-older\-than\fP"
+prüft nur Prozesse auf Übereinstimmungen, die älter als die angegebene Zeit
+sind, also vorher gestartet wurden. Die Zeit wird als Fließkommazahl mit
+angehängter Einheit angegeben. Die Einheiten sind s, m, h, d, w, M, y für
+Sekunden, Minuten, Stunden, Tage, Wochen, Monate beziehungsweise Jahre.
+.IP "\fB\-q\fP, \fB\-\-quiet\fP"
+beschwert sich nicht, falls keine Prozesse getötet wurden.
+.IP "\fB\-r\fP, \fB\-\-regexp\fP"
+interpretiert das Prozessnamensmuster als erweiterten regulären
+POSIX\-Ausdruck gemäß \fBregex\fP(3).
+.IP "\fB\-s\fP, \fB\-\-signal\fP, \fB\-\fP\fISIGNAL\fP"
+sendet dieses Signal anstelle von SIGTERM.
+.IP "\fB\-u\fP, \fB\-\-user\fP"
+tötet nur Prozesse, die dem angegebenen Benutzer gehören. Befehlsnamen sind
+optional.
+.IP "\fB\-v\fP, \fB\-\-verbose\fP"
+meldet, wenn das Signal erfolgreich gesendet wurde.
+.IP "\fB\-V\fP, \fB\-\-version\fP"
+zeigt Versionsinformationen an.
+.IP "\fB\-w\fP, \fB\-\-wait\fP"
+wartet auf die Beendigung aller getöteten Prozesse. \fBkillall\fP prüft einmal
+pro Sekunde, ob irgendeiner der getöteten Prozesse noch existiert und
+liefert nur ein Ergebnis, falls keine Prozesse mehr verblieben
+sind. Beachten Sie, dass \fBkillall\fP unbegrenzt warten könnte, falls das
+Signal ignoriert wurde, unwirksam war oder der Prozess in einen
+Zombie\-Zustand übergegangen ist.
+.IP "\fB\-y\fP, \fB\-\-younger\-than\fP"
+prüft nur Prozesse auf Übereinstimmungen, die neuer als die angegebene Zeit
+sind, also später gestartet wurden. Die Zeit wird als Fließkommazahl mit
+angehängter Einheit angegeben. Die Einheiten sind s, m, h, d, w, M, y für
+Sekunden, Minuten, Stunden, Tage, Wochen, Monate beziehungsweise Jahre.
+.IP "\fB\-Z\fP, \fB\-\-context\fP"
+Specify security context: kill only processes having security context that
+match with given extended regular expression pattern.  Must precede other
+arguments on the command line.  Command names are optional.
+.SH DATEIEN
+.TP 
+/proc
+Ort des /proc\-Dateisystems
+.SH "BEKANNTE FEHLER"
+Das Töten anhand des Dateinamens funktioniert nur für ausführbare Programme,
+die während der Ausführung offen gehalten werden, das heißt, unsaubere
+ausführbare Programme können auf diese Weise nicht getötet werden.
+.PP
+Seien Sie vorsichtig, wenn Sie \fBkillall\fP \fIName\fP eingeben, weil dies auf
+Nicht\-Linux\-Systemen nicht die gewünschte Wirkung haben könnte, insbesondere
+dann, wenn Sie es als privilegierter Benutzer ausführen.
+.PP
+\fBkillall \-w\fP erkennt in aufeinanderfolgenden Übrprüfungen nicht, ob ein
+Prozess beendet ist und durch einen Prozess mit der gleichen PID ersetzt
+wurde.
+.PP
+Falls Prozesse ihren Namen ändern, könnte \fBkillall\fP diese nicht korrekt
+erkennen.
+.PP
+Für \fBkillall\fP gibt es eine Begrenzung für die Namen, die in der
+Befehlszeile angegeben werden können. Dies ist die Größe einer
+vorzeichenlosen Ganzzahl, multipliziert mit 8. Für die meisten
+32\-Bit\-Systeme ist 32 die Begrenzung, analog dazu ist sie bei
+64\-Bit\-Systemen üblicherweise auf 64 begrenzt.
+.SH "SIEHE AUCH"
+\fBkill\fP(1), \fBfuser\fP(1), \fBpgrep\fP(1), \fBpidof\fP(1), \fBpkill\fP(1), \fBps\fP(1),
+\fBkill\fP(2), \fBregex\fP(3).

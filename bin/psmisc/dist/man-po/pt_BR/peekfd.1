@@ -1,0 +1,61 @@
+.\"
+.\" Copyright 2007 Trent Waddington <trent.waddington@gmail.com>
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH PEEKFD 1 "9 de setembro de 2020" psmisc "Comandos de usuário"
+.SH NOME
+peekfd \- dá uma olhada nos descritores de arquivo dos processos em execução
+.SH SINOPSE
+\fBpeekfd\fP [\fB\-8\fP,\fB\-\-eight\-bit\-clean\fP] [\fB\-n\fP,\fB\-\-no\-headers\fP]
+[\fB\-f\fP,\fB\-\-follow\fP] [\fB\-d\fP,\fB\-\-duplicates\-removed\fP] [\fB\-V\fP,\fB\-\-version\fP]
+[\fB\-h\fP,\fB\-\-help\fP] \fIpid\fP [\fIfd\fP] [\fIfd\fP] ...
+.SH DESCRIÇÃO
+\fBpeekfd\fP anexa a um processo em execução e intercepta todas as leituras e
+escritas nos descritores de arquivo. Você pode especificar os números do
+descritor de arquivo desejados ou despejar todos eles.
+.SH OPÇÕES
+.IP \-8
+Não faz pós\-processamento nos bytes que estão sendo lidos ou escritos.
+.IP \-n
+Não exibe cabeçalhos indicando a origem dos bytes despejados.
+.IP \-c
+Também despeja a atividade do descritor de arquivo solicitada em quaisquer
+novos processos filhos criados.
+.IP \-d
+Remove leituras/escritas duplicadas da saída. Se você está olhando para um
+tty com eco, você pode querer isso.
+.IP \-v
+Exibe uma string de versão.
+.IP \-h
+Mostra a mensagem de ajuda.
+.SH ARQUIVOS
+\fB/proc/\fP\fI*\fP\fB/fd\fP
+.RS
+Não é usado, mas é útil para o usuário olhar para obter bons números do
+descritor de arquivo.
+.SH AMBIENTE
+Nenhum.
+.SH DIAGNÓSTICOS
+Os seguintes diagnósticos podem ser emitidos na stderr (saída de erro):
+.TP 
+\fBError attaching to pid \fP\fI<PID>\fP
+Ocorreu um erro desconhecido ao tentar anexar a um processo; pode ser
+necessário ser root.
+.SH BUGS
+Provavelmente muitos. Não se surpreenda se o processo que você está
+monitorando morrer.
+.SH AUTOR
+.MT trent.waddington@gmail.com
+Trent Waddington
+.ME
+.SH "VEJA TAMBÉM"
+\fBttysnoop\fP(8)
