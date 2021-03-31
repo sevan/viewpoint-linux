@@ -105,3 +105,22 @@ ln -s ../usr/bin/cpp /lib
 mkdir -p /usr/lib64/bfd-plugins
 ln -s ../../libexec/gcc/$(gcc -dumpmachine)/10.2.0/liblto_plugin.so /usr/lib64/bfd-plugins/
 TODO: test if the GDB autoload Python script needs moving as per guide.
+
+pkg-config
+configure --prefix=/osbt --with-internal-glib --disable-host-tool --with-pc-path=/usr/lib/pkgconfig
+As components are built with libdir pointing to /usr/lib64, pkgconfig
+directory ends up there without the ability to control where it ends up, add a
+symlink to smooth things out.
+ln -s ../lib64/pkgconfig /usr/lib/pkgconfig
+
+ncurses
+configure --prefix=/usr --mandir=/usr/share/man --with-shared --without-debug --without-normal --enable-pc-files --enable-widec --libdir=/usr/lib64 --with-pkg-config-libdir=/usr/lib64/pkgconfig
+make
+make install
+for lib in form panel menu ; do
+echo "INPUT(-l${lib}w)" > /usr/lib64/lib${lib}.so
+ln -s ${lib}w.pc        /usr/lib64/pkgconfig/${lib}.pc
+done
+echo "INPUT(-lncursesw)" > /usr/lib64/libcursesw.so
+ln -s libncurses.so      /usr/lib64/libcurses.so
+rm /usr/lib64/libncurses++w.a
