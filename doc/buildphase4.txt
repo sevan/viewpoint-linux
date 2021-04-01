@@ -124,3 +124,6 @@ done
 echo "INPUT(-lncursesw)" > /usr/lib64/libcursesw.so
 ln -s libncurses.so      /usr/lib64/libcurses.so
 rm /usr/lib64/libncurses++w.a
+
+gettext
+configure --prefix=/usr --disable-static --libdir=/usr/lib64
