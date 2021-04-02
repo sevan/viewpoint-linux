@@ -134,3 +134,6 @@ configure --prefix=/osbt
 grep
 Point to bash for the benefit of test stage, otherwise tests fail.
 configure --prefix=/usr --bindir=/bin SHELL=/bin/bash
+
+bash
+configure --prefix=/usr --without-bash-malloc --with-installed-readline --libdir=/usr/lib64
