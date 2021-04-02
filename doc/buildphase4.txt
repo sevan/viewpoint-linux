@@ -127,3 +127,6 @@ rm /usr/lib64/libncurses++w.a
 
 gettext
 configure --prefix=/usr --disable-static --libdir=/usr/lib64
+
+bison
+configure --prefix=/osbt
