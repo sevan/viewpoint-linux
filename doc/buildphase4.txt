@@ -130,3 +130,7 @@ configure --prefix=/usr --disable-static --libdir=/usr/lib64
 
 bison
 configure --prefix=/osbt
+
+grep
+Point to bash for the benefit of test stage, otherwise tests fail.
+configure --prefix=/usr --bindir=/bin SHELL=/bin/bash
