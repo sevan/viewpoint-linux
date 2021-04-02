@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # The DFA matcher would wrongly convert a regular expression like
 # a+a+a to a+a, thus possibly reporting a false match.
 # Introduced in v0.1-2111-g4299106ce
