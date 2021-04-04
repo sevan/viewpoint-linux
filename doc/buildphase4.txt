@@ -155,3 +155,11 @@ make
 make install
 for target in depmod insmod lsmod modinfo modprobe rmmod; do ln -s ../bin/kmod /sbin/$target; done
 ln -s kmod /bin/lsmod
+
+libelf
+configure --prefix=/usr --disable-debuginfod --enable-libdebuginfod=dummy --libdir=/lib64
+make
+make check
+make -C libelf install
+install -vm644 config/libelf.pc /usr/lib64/pkgconfig
+rm /lib64/libelf.a
