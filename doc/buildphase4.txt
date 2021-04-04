@@ -148,3 +148,10 @@ perl
 export BUILD_ZLIB=False
 export BUILD_BZIP2=0
 sh Configure -des -Dprefix=/osbt -Dvendorprefix=/osbt -Dprivlib=/osbt/lib/perl5/5.32/core_perl -Darchlib=/osbt/lib/perl5/5.32/core_perl -Dsitelib=/osbt/lib/perl5/5.32/site_perl -Dsitearch=/osbt/lib/perl5/5.32/site_perl -Dvendorlib=/osbt/lib/perl5/5.32/vendor_perl -Dvendorarch=/osbt/lib/perl5/5.32/vendor_perl -Uinstallusrbinperl -Dman1dir=/osbt/share/man/man1 -Dman3dir=/osbt/share/man/man3 -Dpager="/usr/bin/less -isR" -Duseshrplib -Dusethreads
+
+kmod
+configure --prefix=/usr --bindir=/bin --sysconfdir=/etc --with-rootlibdir=/lib64 --with-xz --with-zstd --with-zlib
+make
+make install
+for target in depmod insmod lsmod modinfo modprobe rmmod; do ln -s ../bin/kmod /sbin/$target; done
+ln -s kmod /bin/lsmod
