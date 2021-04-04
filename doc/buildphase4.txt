@@ -140,3 +140,8 @@ configure --prefix=/usr --without-bash-malloc --with-installed-readline --libdir
 
 inetutils
 configure --prefix=/usr --localstatedir=/var --disable-logger --disable-whois --disable-rcp --disable-rexec --disable-rlogin --disable-rsh --disable-servers --disable-ping --disable-ping6 --disable-ping
+
+perl
+export BUILD_ZLIB=False
+export BUILD_BZIP2=0
+sh Configure -des -Dprefix=/osbt -Dvendorprefix=/osbt -Dprivlib=/osbt/lib/perl5/5.32/core_perl -Darchlib=/osbt/lib/perl5/5.32/core_perl -Dsitelib=/osbt/lib/perl5/5.32/site_perl -Dsitearch=/osbt/lib/perl5/5.32/site_perl -Dvendorlib=/osbt/lib/perl5/5.32/vendor_perl -Dvendorarch=/osbt/lib/perl5/5.32/vendor_perl -Uinstallusrbinperl -Dman1dir=/osbt/share/man/man1 -Dman3dir=/osbt/share/man/man3 -Dpager="/usr/bin/less -isR" -Duseshrplib -Dusethreads
