@@ -138,6 +138,9 @@ configure --prefix=/usr --bindir=/bin SHELL=/bin/bash
 bash
 configure --prefix=/usr --without-bash-malloc --with-installed-readline --libdir=/usr/lib64
 
+gperf
+configure --prefix=/osbt
+
 inetutils
 configure --prefix=/usr --localstatedir=/var --disable-logger --disable-whois --disable-rcp --disable-rexec --disable-rlogin --disable-rsh --disable-servers --disable-ping --disable-ping6 --disable-ping
 
