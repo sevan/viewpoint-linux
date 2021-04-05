@@ -163,3 +163,7 @@ make check
 make -C libelf install
 install -vm644 config/libelf.pc /usr/lib64/pkgconfig
 rm /lib64/libelf.a
+
+libffi
+Target generic 64bit x86 CPU, rather than the build hosts or another.
+configure --prefix=/osbt --disable-static --with-gcc-arch=x86-64
