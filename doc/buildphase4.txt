@@ -200,3 +200,8 @@ sed -i 's/"1"/"8"/' /usr/share/man/man8/chroot.8
 # To reduce changes to pkgsrc/mk/tools/tools.Linux.mk
 mv /usr/bin/hostname /bin
 mv /usr/bin/readlink /bin
+
+diffutils
+configure --prefix=/usr
+make SHELL=/bin/bash check
+make install
