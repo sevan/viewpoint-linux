@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Exercise bugs whereby invalid input could make gzip -d misbehave.
 
 # Copyright (C) 2009-2018 Free Software Foundation, Inc.
