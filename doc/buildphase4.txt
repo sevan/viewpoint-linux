@@ -212,3 +212,6 @@ make
 make check
 make install
 rm /osbt/bin/awk
+
+grub
+configure --prefix=/usr --sbindir=/sbin --sysconfdir=/etc --disable-werror --enable-boot-time --enable-cache-stats
