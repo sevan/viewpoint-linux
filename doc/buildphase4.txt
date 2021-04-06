@@ -170,3 +170,7 @@ configure --prefix=/osbt --disable-static --with-gcc-arch=x86-64
 
 openssl
 config --prefix=/usr --openssldir=/etc/ssl shared zlib-dynamic
+
+python
+configure --prefix=/osbt --enable-shared --with-system-ffi --with-ensurepip=yes --enable-optimizations LDFLAGS="-Wl,-R/osbt/lib64 -L/osbt/lib64 -Wl,-R/osbt/lib -L/osbt/lib"
+Need a resolv.conf setup for test stage as pythontest.net needs to be reached.
