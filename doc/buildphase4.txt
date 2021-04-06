@@ -205,3 +205,10 @@ diffutils
 configure --prefix=/usr
 make SHELL=/bin/bash check
 make install
+
+gawk
+configure --prefix=/osbt
+make
+make check
+make install
+rm /osbt/bin/awk
