@@ -220,3 +220,6 @@ iproute2
 configure
 make
 make install
+
+make
+configure --prefix=/osbt
