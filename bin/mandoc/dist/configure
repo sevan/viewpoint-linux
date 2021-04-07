@@ -41,7 +41,7 @@ OSENUM=
 OSNAME=
 UTF8_LOCALE=
 
-CC=`printf "all:\\n\\t@echo \\\$(CC)\\n" | env -i make -sf -`
+CC=cc
 CFLAGS=
 LDADD=
 LDFLAGS=
