@@ -223,3 +223,9 @@ make install
 
 make
 configure --prefix=/osbt
+
+patch
+configure --prefix=/usr
+make
+make SHELL=/bin/bash check
+make install
