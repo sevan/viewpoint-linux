@@ -6,6 +6,9 @@ configure --prefix=/usr --disable-werror --enable-kernel=3.2 --enable-stack-prot
 zlib
 configure --prefix=/usr --libdir=/usr/lib64
 
+lz4
+make CFLAGS="-fno-omit-frame-pointer -g -O3" PREFIX=/usr LIBDIR=/usr/lib64 install
+
 zstd
 make
 make check
