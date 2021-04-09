@@ -1,0 +1,105 @@
+'\" t
+.TH "SD_BUS_START" "3" "" "systemd 248" "sd_bus_start"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_start \- Initiate a bus connection to the D\-bus broker daemon
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_start('u
+.BI "int sd_bus_start(sd_bus\ *" "bus" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_start()\fR
+connects an existing bus connection object to the D\-Bus broker daemon, usually
+\fBdbus-daemon\fR(1)
+or
+\fBdbus-broker\fR(1)\&. The mechanism to use for the connection must be configured before the call to
+\fBsd_bus_start()\fR, using one of
+\fBsd_bus_set_address\fR(3),
+\fBsd_bus_set_fd\fR(3), or
+\fBsd_bus_set_exec\fR(3)\&.
+\fBsd_bus_start()\fR
+will open the connection socket or spawn the executable as needed, and asynchronously start a
+\fBorg\&.freedesktop\&.DBus\&.Hello()\fR
+call\&. The answer to the Hello call will be processed later from
+\fBsd_bus_process\fR(3)\&. If opening of the connection or queuing of the asynchronous call fail, the connection will be closed with
+\fBsd_bus_close\fR(3)\&.
+.PP
+In most cases, it is better to use
+\fBsd_bus_default_user\fR(3),
+\fBsd_bus_default_system\fR(3)
+or related calls instead of the more low\-level
+\fBsd_bus_new()\fR
+and
+\fBsd_bus_start()\fR\&. The higher\-level functions not only allocate a bus object but also start the connection to a well\-known bus in a single function call\&.
+.SH "RETURN VALUE"
+.PP
+On success, this function returns a non\-negative integer\&. On failure, it returns a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+\fB\-EINVAL\fR
+.RS 4
+The input parameter
+\fIbus\fR
+is
+\fBNULL\fR\&.
+.RE
+.PP
+\fB\-ENOPKG\fR
+.RS 4
+Bus object
+\fIbus\fR
+could not be resolved\&.
+.RE
+.PP
+\fB\-EPERM\fR
+.RS 4
+The input parameter
+\fIbus\fR
+is in a wrong state (\fBsd_bus_start()\fR
+may only be called once on a newly\-created bus object)\&.
+.RE
+.PP
+\fB\-ECHILD\fR
+.RS 4
+The bus object
+\fIbus\fR
+was created in a different process\&.
+.RE
+.PP
+In addition, other connection\-related errors may be returned\&. See
+\fBsd_bus_send\fR(3)\&.
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd_bus_default\fR(3),
+\fBsd_bus_call_async\fR(3)

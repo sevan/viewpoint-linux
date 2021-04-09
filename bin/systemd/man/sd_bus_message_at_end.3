@@ -1,0 +1,78 @@
+'\" t
+.TH "SD_BUS_MESSAGE_AT_END" "3" "" "systemd 248" "sd_bus_message_at_end"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_message_at_end \- Check if a message has been fully read
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_message_at_end('u
+.BI "int sd_bus_message_at_end(sd_bus_message\ *" "m" ", int\ " "complete" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_message_at_end()\fR
+returns whether all data from the currently opened container in
+\fIm\fR
+or all data from all containers in
+\fIm\fR
+has been read\&. If
+\fIcomplete\fR
+is zero, this function returns whether all data from the currently opened container has been read\&. If
+\fIcomplete\fR
+is non\-zero, this function returns whether all data from all containers in
+\fIm\fR
+has been read\&.
+.SH "RETURN VALUE"
+.PP
+If all data from all containers or the current container (depending on the value of
+\fIcomplete\fR) has been read,
+\fBsd_bus_message_at_end()\fR
+returns a positive integer\&. If there is still data left to be read, it returns zero\&. On failure, it returns a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+The
+\fIm\fR
+parameter is
+\fBNULL\fR\&.
+.RE
+.PP
+\fB\-EPERM\fR
+.RS 4
+The message is not sealed\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd_bus_message_read\fR(3)

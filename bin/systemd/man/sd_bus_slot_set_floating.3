@@ -1,0 +1,90 @@
+'\" t
+.TH "SD_BUS_SLOT_SET_FLOATING" "3" "" "systemd 248" "sd_bus_slot_set_floating"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_slot_set_floating, sd_bus_slot_get_floating \- Control whether a bus slot object is "floating"
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_slot_set_floating('u
+.BI "int sd_bus_slot_set_floating(sd_bus_slot\ *" "slot" ", int\ " "b" ");"
+.HP \w'int\ sd_bus_slot_get_floating('u
+.BI "int sd_bus_slot_get_floating(sd_bus_slot\ *" "slot" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_slot_set_floating()\fR
+controls whether the specified bus slot object
+\fIslot\fR
+shall be "floating" or not\&. A floating bus slot object\*(Aqs lifetime is bound to the lifetime of the bus object it is associated with, meaning that it remains allocated as long as the bus object itself and is freed automatically when the bus object is freed\&. Regular (i\&.e\&. non\-floating) bus slot objects keep the bus referenced, hence the bus object remains allocated at least as long as there remains at least one referenced bus slot object around\&. The floating state hence controls the direction of referencing between the bus object and the bus slot objects: if floating the bus pins the bus slot, and otherwise the bus slot pins the bus objects\&. Use
+\fBsd_bus_slot_set_floating()\fR
+to switch between both modes: if the
+\fIb\fR
+parameter is zero, the slot object is considered floating, otherwise it is made a regular (non\-floating) slot object\&.
+.PP
+Bus slot objects may be allocated with calls such as
+\fBsd_bus_add_match\fR(3)\&. If the
+\fIslot\fR
+of these functions is non\-\fBNULL\fR
+the slot object will be of the regular kind (i\&.e\&. non\-floating), otherwise it will be created floating\&. With
+\fBsd_bus_slot_set_floating()\fR
+a bus slot object allocated as regular can be converted into a floating object and back\&. This is particularly useful for creating a bus slot object, then changing parameters of it, and then turning it into a floating object, whose lifecycle is managed by the bus object\&.
+.PP
+\fBsd_bus_slot_get_floating()\fR
+returns the current floating state of the specified bus slot object\&. It returns negative on error, zero if the bus slot object is a regular (non\-floating) object and positive otherwise\&.
+.SH "RETURN VALUE"
+.PP
+On success, these functions return 0 or a positive integer\&. On failure, they return a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+The
+\fIslot\fR
+parameter is
+\fBNULL\fR\&.
+.RE
+.PP
+\fB\-ECHILD\fR
+.RS 4
+The bus connection has been created in a different process\&.
+.RE
+.PP
+\fB\-ESTALE\fR
+.RS 4
+The bus object the specified bus slot object is associated with has already been freed, and hence no change in the floating state can be made anymore\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd_bus_slot_set_destroy_callback\fR(3),
+\fBsd_bus_add_match\fR(3)

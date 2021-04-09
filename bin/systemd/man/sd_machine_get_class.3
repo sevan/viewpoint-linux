@@ -1,0 +1,89 @@
+'\" t
+.TH "SD_MACHINE_GET_CLASS" "3" "" "systemd 248" "sd_machine_get_class"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_machine_get_class, sd_machine_get_ifindices \- Determine the class and network interface indices of a locally running virtual machine or container
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-login\&.h>
+.fi
+.ft
+.HP \w'int\ sd_machine_get_class('u
+.BI "int sd_machine_get_class(const\ char*\ " "machine" ", char\ **" "class" ");"
+.HP \w'int\ sd_machine_get_ifindices('u
+.BI "int sd_machine_get_ifindices(const\ char*\ " "machine" ", int\ **" "ret_ifindices" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_machine_get_class()\fR
+may be used to determine the class of a locally running virtual machine or container that is registered with
+\fBsystemd-machined.service\fR(8)\&. The string returned is either
+"vm"
+or
+"container"\&. The returned string needs to be freed with the libc
+\fBfree\fR(3)
+call after use\&.
+.PP
+\fBsd_machine_get_ifindices()\fR
+may be used to determine the numeric indices of the network interfaces on the host that are pointing towards the specified locally running virtual machine or container\&. The vm or container must be registered with
+\fBsystemd-machined.service\fR(8)\&. The output parameter
+\fIret_ifindices\fR
+may be passed as
+\fBNULL\fR
+when the output value is not needed\&. The returned array needs to be freed with the libc
+\fBfree\fR(3)
+call after use\&.
+.SH "RETURN VALUE"
+.PP
+On success, these functions return a non\-negative integer\&.
+\fBsd_machine_get_ifindices()\fR
+returns the number of the relevant network interfaces\&. On failure, these calls return a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-ENXIO\fR
+.RS 4
+The specified machine does not exist or is currently not running\&.
+.RE
+.PP
+\fB\-EINVAL\fR
+.RS 4
+An input parameter was invalid (out of range, or
+\fBNULL\fR, where that is not accepted)\&.
+.RE
+.PP
+\fB\-ENOMEM\fR
+.RS 4
+Memory allocation failed\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-login\fR(3),
+\fBsystemd-machined.service\fR(8),
+\fBsd_pid_get_machine_name\fR(3)

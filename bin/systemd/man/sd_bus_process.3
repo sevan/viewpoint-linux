@@ -1,0 +1,115 @@
+'\" t
+.TH "SD_BUS_PROCESS" "3" "" "systemd 248" "sd_bus_process"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_process \- Drive the connection
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_process('u
+.BI "int sd_bus_process(sd_bus\ *" "bus" ", sd_bus_message\ **" "ret" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_process()\fR
+drives the connection between the client and the message bus\&. That is, it handles connecting, authentication, and message processing\&. When invoked pending I/O work is executed, and queued incoming messages are dispatched to registered callbacks\&. Each time it is invoked a single operation is executed\&. It returns zero when no operations were pending and positive if a message was processed\&. When zero is returned the caller should synchronously poll for I/O events before calling into
+\fBsd_bus_process()\fR
+again\&. For that either use the simple, synchronous
+\fBsd_bus_wait\fR(3)
+call, or hook up the bus connection object to an external or manual event loop using
+\fBsd_bus_get_fd\fR(3)\&.
+.PP
+\fBsd_bus_process()\fR
+processes at most one incoming message per call\&. If the parameter
+\fIret\fR
+is not
+\fBNULL\fR
+and the call processed a message,
+\fI*ret\fR
+is set to this message\&. The caller owns a reference to this message and should call
+\fBsd_bus_message_unref\fR(3)
+when the message is no longer needed\&. If
+\fIret\fR
+is not
+\fBNULL\fR, progress was made, but no message was processed,
+\fI*ret\fR
+is set to
+\fBNULL\fR\&.
+.PP
+If the bus object is connected to an
+\fBsd-event\fR(3)
+event loop (with
+\fBsd_bus_attach_event\fR(3)), it is not necessary to call
+\fBsd_bus_process()\fR
+directly as it is invoked automatically when necessary\&.
+.SH "RETURN VALUE"
+.PP
+If progress was made, a positive integer is returned\&. If no progress was made, 0 is returned\&. If an error occurs, a negative
+\fIerrno\fR\-style error code is returned\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+An invalid bus object was passed\&.
+.RE
+.PP
+\fB\-ECHILD\fR
+.RS 4
+The bus connection was allocated in a parent process and is being reused in a child process after
+\fBfork()\fR\&.
+.RE
+.PP
+\fB\-ENOTCONN\fR
+.RS 4
+The bus connection has been terminated already\&.
+.RE
+.PP
+\fB\-ECONNRESET\fR
+.RS 4
+The bus connection has been terminated just now\&.
+.RE
+.PP
+\fB\-EBUSY\fR
+.RS 4
+This function is already being called, i\&.e\&.
+\fBsd_bus_process()\fR
+has been called from a callback function that itself was called by
+\fBsd_bus_process()\fR\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd_bus_wait\fR(3),
+\fBsd_bus_get_fd\fR(3),
+\fBsd_bus_message_unref\fR(3),
+\fBsd-event\fR(3),
+\fBsd_bus_attach_event\fR(3)

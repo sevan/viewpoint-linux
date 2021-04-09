@@ -1,0 +1,135 @@
+'\" t
+.TH "SD_BUS_MESSAGE_GET_TYPE" "3" "" "systemd 248" "sd_bus_message_get_type"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_message_get_type, sd_bus_message_get_error, sd_bus_message_get_errno, sd_bus_message_get_creds, sd_bus_message_is_signal, sd_bus_message_is_method_call, sd_bus_message_is_method_error \- Query bus message addressing/credentials metadata
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_message_get_type('u
+.BI "int sd_bus_message_get_type(sd_bus_message\ *" "m" ", uint8_t\ *" "type" ");"
+.HP \w'sd_bus_error*\ sd_bus_message_get_error('u
+.BI "sd_bus_error* sd_bus_message_get_error(sd_bus_message\ *" "m" ");"
+.HP \w'int\ sd_bus_message_get_errno('u
+.BI "int sd_bus_message_get_errno(sd_bus_message\ *" "m" ");"
+.HP \w'sd_bus_creds*\ sd_bus_message_get_creds('u
+.BI "sd_bus_creds* sd_bus_message_get_creds(sd_bus_message\ *" "m" ");"
+.HP \w'int\ sd_bus_message_is_signal('u
+.BI "int sd_bus_message_is_signal(sd_bus_message\ *" "m" ", const\ char\ *" "interface" ", const\ char\ *" "member" ");"
+.HP \w'int\ sd_bus_message_is_method_call('u
+.BI "int sd_bus_message_is_method_call(sd_bus_message\ *" "m" ", const\ char\ *" "interface" ", const\ char\ *" "member" ");"
+.HP \w'int\ sd_bus_message_is_method_error('u
+.BI "int sd_bus_message_is_method_error(sd_bus_message\ *" "m" ", const\ char\ *" "name" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_message_get_type()\fR
+returns the type of a message in the output parameter
+\fItype\fR, one of
+\fBSD_BUS_MESSAGE_METHOD_CALL\fR,
+\fBSD_BUS_MESSAGE_METHOD_RETURN\fR,
+\fBSD_BUS_MESSAGE_METHOD_ERROR\fR,
+\fBSD_BUS_MESSAGE_SIGNAL\fR\&. This type is either specified as a parameter when the message is created using
+\fBsd_bus_message_new\fR(3), or is set automatically when the message is created using
+\fBsd_bus_message_new_signal\fR(3),
+\fBsd_bus_message_new_method_call\fR(3),
+\fBsd_bus_message_new_method_error\fR(3)
+and similar functions\&.
+.PP
+\fBsd_bus_message_get_error()\fR
+returns the error stored in the message
+\fIm\fR, if there is any\&. Otherwise, it returns
+\fBNULL\fR\&.
+\fBsd_bus_message_get_errno()\fR
+returns the error stored in the message
+\fIm\fR
+as a positive errno\-style value, if there is any\&. Otherwise, it returns zero\&. Errors are mapped to errno values according to the default and any additional registered error mappings\&. See
+\fBsd-bus-errors\fR(3)
+and
+\fBsd_bus_error_add_map\fR(3)\&.
+.PP
+\fBsd_bus_message_get_creds()\fR
+returns the message credentials attached to the message
+\fIm\fR\&. If no credentials are attached to the message, it returns
+\fBNULL\fR\&. Ownership of the credentials instance is not transferred to the caller and hence should not be freed\&.
+.PP
+\fBsd_bus_message_is_signal()\fR
+checks if message
+\fIm\fR
+is a signal message\&. If
+\fIinterface\fR
+is non\-null, it also checks if the message has the same interface set\&. If
+\fImember\fR
+is non\-null, it also checks if the message has the same member set\&. Also see
+\fBsd_bus_message_new_signal\fR(3)\&. It returns true when all checks pass\&.
+.PP
+\fBsd_bus_message_is_method_call()\fR
+checks if message
+\fIm\fR
+is a method call message\&. If
+\fIinterface\fR
+is non\-null, it also checks if the message has the same interface set\&. If
+\fImember\fR
+is non\-null, it also checks if the message has the same member set\&. Also see
+\fBsd_bus_message_new_method_call\fR(3)\&. It returns true when all checks pass\&.
+.PP
+\fBsd_bus_message_is_method_error()\fR
+checks if message
+\fIm\fR
+is an error reply message\&. If
+\fIname\fR
+is non\-null, it also checks if the message has the same error identifier set\&. Also see
+\fBsd_bus_message_new_method_error\fR(3)\&. It returns true when all checks pass\&.
+.SH "RETURN VALUE"
+.PP
+On success, these functions (except
+\fBsd_bus_message_get_error()\fR
+and
+\fBsd_bus_message_get_creds()\fR) return a non\-negative integer\&. On failure, they return a negative errno\-style error code\&.
+\fBsd_bus_message_get_errno()\fR
+always returns a non\-negative integer, even on failure\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+The message parameter
+\fIm\fR
+or an output parameter is
+\fBNULL\fR\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd_bus_message_new\fR(3),
+\fBsd_bus_message_set_destination\fR(3),
+\fBsd-bus-errors\fR(3),
+\fBsd_bus_error_add_map\fR(3)

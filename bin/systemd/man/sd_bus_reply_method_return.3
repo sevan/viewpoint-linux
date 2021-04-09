@@ -1,0 +1,103 @@
+'\" t
+.TH "SD_BUS_REPLY_METHOD_RETURN" "3" "" "systemd 248" "sd_bus_reply_method_return"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_reply_method_return, sd_bus_reply_method_returnv \- Reply to a D\-Bus method call
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_reply_method_return('u
+.BI "int sd_bus_reply_method_return(sd_bus_message\ *" "call" ", const\ char\ *" "types" ", \&.\&.\&.);"
+.HP \w'int\ sd_bus_reply_method_returnv('u
+.BI "int sd_bus_reply_method_returnv(sd_bus_message\ *" "call" ", const\ char\ *" "types" ", va_list\ " "ap" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_reply_method_return()\fR
+sends a reply to the
+\fIcall\fR
+message\&. The type string
+\fItypes\fR
+and the arguments that follow it must adhere to the format described in
+\fBsd_bus_message_append\fR(3)\&. If no reply is expected to
+\fIcall\fR, this function succeeds without sending a reply\&.
+.SH "RETURN VALUE"
+.PP
+On success, this function returns a non\-negative integer\&. On failure, it returns a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+The input parameter
+\fIcall\fR
+is
+\fBNULL\fR\&.
+.sp
+Message
+\fIcall\fR
+is not a method call message\&.
+.sp
+Message
+\fIcall\fR
+is not attached to a bus\&.
+.sp
+Message
+\fIm\fR
+is not a method reply message\&.
+.RE
+.PP
+\fB\-EPERM\fR
+.RS 4
+Message
+\fIcall\fR
+has been sealed\&.
+.RE
+.PP
+\fB\-ENOTCONN\fR
+.RS 4
+The bus to which message
+\fIcall\fR
+is attached is not connected\&.
+.RE
+.PP
+\fB\-ENOMEM\fR
+.RS 4
+Memory allocation failed\&.
+.RE
+.PP
+In addition, any error returned by
+\fBsd_bus_send\fR(1)
+may be returned\&.
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd_bus_message_new_method_return\fR(3)

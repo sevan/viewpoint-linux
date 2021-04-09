@@ -1,0 +1,67 @@
+'\" t
+.TH "SYSTEMD\-HIBERNATE\-RESUME\-GENERATOR" "8" "" "systemd 248" "systemd-hibernate-resume-generator"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd-hibernate-resume-generator \- Unit generator for resume= kernel parameter
+.SH "SYNOPSIS"
+.PP
+/usr/lib/systemd/system\-generators/systemd\-hibernate\-resume\-generator
+.SH "DESCRIPTION"
+.PP
+\fBsystemd\-hibernate\-resume\-generator\fR
+is a generator that initiates the procedure to resume the system from hibernation\&. It instantiates the
+\fBsystemd-hibernate-resume@.service\fR(8)
+unit according to the value of
+\fBresume=\fR
+parameter specified on the kernel command line, which will instruct the kernel to resume the system from the hibernation image on that device\&.
+.SH "KERNEL COMMAND LINE"
+.PP
+systemd\-hibernate\-resume\-generator
+understands the following kernel command line parameters:
+.PP
+\fIresume=\fR
+.RS 4
+Takes a path to the resume device\&. Both persistent block device paths like
+/dev/disk/by\-foo/bar
+and
+\fBfstab\fR(5)\-style specifiers like
+"FOO=bar"
+are supported\&.
+.RE
+.PP
+\fIresumeflags=\fR
+.RS 4
+Takes the resume device mount options to use\&. Defaults
+\fIrootflags=\fR
+if not specified\&.
+.RE
+.PP
+\fInoresume\fR
+.RS 4
+Do not try to resume from hibernation\&. If this parameter is present,
+\fIresume=\fR
+is ignored\&.
+.RE
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsystemd-hibernate-resume@.service\fR(8),
+\fBkernel-command-line\fR(7)

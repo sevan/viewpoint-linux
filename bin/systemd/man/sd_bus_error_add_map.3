@@ -1,0 +1,102 @@
+'\" t
+.TH "SD_BUS_ERROR_ADD_MAP" "3" "" "systemd 248" "sd_bus_error_add_map"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_error_add_map, sd_bus_error_map, SD_BUS_ERROR_MAP, SD_BUS_ERROR_END \- Additional sd\-dbus error mappings
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.sp
+.ft B
+.nf
+typedef struct {
+        const char *name;
+        int code;
+        \&...
+} sd_bus_error_map;
+.fi
+.ft
+.PP
+\fBSD_BUS_ERROR_MAP(\fR\fB\fIname\fR\fR\fB, \fR\fB\fIcode\fR\fR\fB)\fR
+.PP
+\fBSD_BUS_ERROR_MAP_END\fR
+.HP \w'int\ sd_bus_error_add_map('u
+.BI "int sd_bus_error_add_map(const\ sd_bus_map\ *" "map" ");"
+.SH "DESCRIPTION"
+.PP
+The
+\fBsd_bus_error_add_map()\fR
+call may be used to register additional mappings for converting D\-Bus errors to Linux
+\fIerrno\fR\-style errors\&. The mappings defined with this call are consulted by calls such as
+\fBsd_bus_error_set\fR(3)
+or
+\fBsd_bus_error_get_errno\fR(3)\&. By default, a number of generic, standardized mappings are known, as documented in
+\fBsd-bus-errors\fR(3)\&. Use this call to add further, application\-specific mappings\&.
+.PP
+The function takes a pointer to an array of
+sd_bus_error_map
+structures\&. A reference to the specified array is added to the lookup tables for error mappings\&. Note that the structure is not copied, and that it is hence essential that the array stays available and constant during the entire remaining runtime of the process\&.
+.PP
+The mapping array should be put together with a series of
+\fBSD_BUS_ERROR_MAP()\fR
+macro invocations that take a literal name string and a (positive)
+\fIerrno\fR\-style error number\&. The last entry of the array should be an invocation of the
+\fBSD_BUS_ERROR_MAP_END\fR
+macro\&. The array should not be put together without use of these two macros\&.
+.PP
+Note that the call is idempotent: it is safe to invoke it multiple times with the parameter, which will only add the passed mapping array once\&.
+.PP
+Note that the memory allocated by this call is not intended to be freed during the lifetime of the process\&. It should not be freed explicitly\&.
+.SH "RETURN VALUE"
+.PP
+\fBsd_bus_error_add_map()\fR
+returns a positive value when the new array was added to the lookup tables\&. It returns zero when the same array was already added before\&. On error, a negative
+\fIerrno\fR\-style error code is returned\&. See below for known error codes\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+The specified mapping array is invalid\&.
+.RE
+.PP
+\fB\-ENOMEM\fR
+.RS 4
+Memory allocation failed\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd_bus_error\fR(3),
+\fBsd-bus-errors\fR(3),
+\fBerrno\fR(3),
+\fBstrerror_r\fR(3)

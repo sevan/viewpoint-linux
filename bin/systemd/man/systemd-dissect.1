@@ -1,0 +1,268 @@
+'\" t
+.TH "SYSTEMD\-DISSECT" "1" "" "systemd 248" "systemd-dissect"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd-dissect \- Dissect file system OS images
+.SH "SYNOPSIS"
+.HP \w'\fBsystemd\-dissect\ \fR\fB[OPTIONS...]\fR\fB\ \fR\fB\fIIMAGE\fR\fR\ 'u
+\fBsystemd\-dissect \fR\fB[OPTIONS...]\fR\fB \fR\fB\fIIMAGE\fR\fR
+.HP \w'\fBsystemd\-dissect\ \fR\fB[OPTIONS...]\fR\fB\ \fR\fB\fB\-\-mount\fR\fR\fB\ \fR\fB\fIIMAGE\fR\fR\fB\ \fR\fB\fIPATH\fR\fR\ 'u
+\fBsystemd\-dissect \fR\fB[OPTIONS...]\fR\fB \fR\fB\fB\-\-mount\fR\fR\fB \fR\fB\fIIMAGE\fR\fR\fB \fR\fB\fIPATH\fR\fR
+.HP \w'\fBsystemd\-dissect\ \fR\fB[OPTIONS...]\fR\fB\ \fR\fB\fB\-\-copy\-from\fR\fR\fB\ \fR\fB\fIIMAGE\fR\fR\fB\ \fR\fB\fIPATH\fR\fR\fB\ \fR\fB[\fITARGET\fR]\fR\ 'u
+\fBsystemd\-dissect \fR\fB[OPTIONS...]\fR\fB \fR\fB\fB\-\-copy\-from\fR\fR\fB \fR\fB\fIIMAGE\fR\fR\fB \fR\fB\fIPATH\fR\fR\fB \fR\fB[\fITARGET\fR]\fR
+.HP \w'\fBsystemd\-dissect\ \fR\fB[OPTIONS...]\fR\fB\ \fR\fB\fB\-\-copy\-to\fR\fR\fB\ \fR\fB\fIIMAGE\fR\fR\fB\ \fR\fB[\fISOURCE\fR]\fR\fB\ \fR\fB\fIPATH\fR\fR\ 'u
+\fBsystemd\-dissect \fR\fB[OPTIONS...]\fR\fB \fR\fB\fB\-\-copy\-to\fR\fR\fB \fR\fB\fIIMAGE\fR\fR\fB \fR\fB[\fISOURCE\fR]\fR\fB \fR\fB\fIPATH\fR\fR
+.SH "DESCRIPTION"
+.PP
+\fBsystemd\-dissect\fR
+is a tool for introspecting and interacting with file system OS disk images\&. It supports four different operations:
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 1.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  1." 4.2
+.\}
+Show general OS image information, including the image\*(Aqs
+\fBos-release\fR(5)
+data, machine ID, partition information and more\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 2.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  2." 4.2
+.\}
+Mount an OS image to a local directory\&. In this mode it will dissect the OS image and mount the included partitions according to their designation onto a directory and possibly sub\-directories\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 3.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  3." 4.2
+.\}
+Copy files and directories in and out of an OS image\&.
+.RE
+.PP
+The tool may operate on three types of OS images:
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 1.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  1." 4.2
+.\}
+OS disk images containing a GPT partition table envelope, with partitions marked according to the
+\m[blue]\fBDiscoverable Partitions Specification\fR\m[]\&\s-2\u[1]\d\s+2\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 2.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  2." 4.2
+.\}
+OS disk images containing just a plain file\-system without an enveloping partition table\&. (This file system is assumed to be the root file system of the OS\&.)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 3.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  3." 4.2
+.\}
+OS disk images containing a GPT or MBR partition table, with a single partition only\&. (This partition is assumed to contain the root file system of the OS\&.)
+.RE
+.PP
+OS images may use any kind of Linux\-supported file systems\&. In addition they may make use of LUKS disk encryption, and contain Verity integrity information\&. Note that qualifying OS images may be booted with
+\fBsystemd-nspawn\fR(1)\*(Aqs
+\fB\-\-image=\fR
+switch, and be used as root file system for system service using the
+\fIRootImage=\fR
+unit file setting, see
+\fBsystemd.exec\fR(5)\&.
+.PP
+Note that the partition table shown when invoked without command switch (as listed below) does not necessarily show all partitions included in the image, but just the partitions that are understood and considered part of an OS disk image\&. Specifically, partitions of unknown types are ignored, as well as duplicate partitions (i\&.e\&. more than one per partition type), as are root and
+/usr/
+partitions of architectures not compatible with the local system\&. In other words: this tool will display what it operates with when mounting the image\&. To display the complete list of partitions use a tool such as
+\fBfdisk\fR(8)\&.
+.SH "COMMANDS"
+.PP
+If neither of the command switches listed below are passed the specified disk image is opened and general information about the image and the contained partitions and their use is shown\&.
+.PP
+\fB\-\-mount\fR, \fB\-m\fR
+.RS 4
+Mount the specified OS image to the specified directory\&. This will dissect the image, determine the OS root file system \(em as well as possibly other partitions \(em and mount them to the specified directory\&. If the OS image contains multiple partitions marked with the
+\m[blue]\fBDiscoverable Partitions Specification\fR\m[]\&\s-2\u[1]\d\s+2
+multiple nested mounts are established\&. This command expects two arguments: a path to an image file and a path to a directory where to mount the image\&.
+.sp
+To unmount an OS image mounted like this use
+\fBumount\fR(8)\*(Aqs
+\fB\-R\fR
+switch (for recursive operation), so that the OS image and all nested partition mounts are unmounted\&.
+.sp
+When the OS image contains LUKS encrypted or Verity integrity protected file systems appropriate volumes are automatically set up and marked for automatic disassembly when the image is unmounted\&.
+.sp
+The OS image may either be specified as path to an OS image stored in a regular file or may refer to block device node (in the latter case the block device must be the "whole" device, i\&.e\&. not a partition device)\&. (The other supported commands described here support this, too\&.)
+.sp
+All mounted file systems are checked with the appropriate
+\fBfsck\fR(8)
+implementation in automatic fixing mode, unless explicitly turned off (\fB\-\-fsck=no\fR) or read\-only operation is requested (\fB\-\-read\-only\fR)\&.
+.RE
+.PP
+\fB\-M\fR
+.RS 4
+This is a shortcut for
+\fB\-\-mount \-\-mkdir\fR\&.
+.RE
+.PP
+\fB\-\-copy\-from\fR, \fB\-x\fR
+.RS 4
+Copies a file or directory from the specified OS image into the specified location on the host file system\&. Expects three arguments: a path to an image file, a source path (relative to the image\*(Aqs root directory) and a destination path (relative to the current working directory, or an absolute path, both outside of the image)\&. If the destination path is omitted or specified as dash ("\-"), the specified file is written to standard output\&. If the source path in the image file system refers to a regular file it is copied to the destination path\&. In this case access mode, extended attributes and timestamps are copied as well, but file ownership is not\&. If the source path in the image refers to a directory, it is copied to the destination path, recursively with all containing files and directories\&. In this case the file ownership is copied too\&.
+.RE
+.PP
+\fB\-\-copy\-to\fR, \fB\-a\fR
+.RS 4
+Copies a file or directory from the specified location in the host file system into the specified OS image\&. Expects three arguments: a path to an image file, a source path (relative to the current working directory, or an absolute path, both outside of the image) and a destination path (relative to the image\*(Aqs root directory)\&. If the source path is omitted or specified as dash ("\-"), the data to write is read from standard input\&. If the source path in the host file system refers to a regular file, it is copied to the destination path\&. In this case access mode, extended attributes and timestamps are copied as well, but file ownership is not\&. If the source path in the host file system refers to a directory it is copied to the destination path, recursively with all containing files and directories\&. In this case the file ownership is copied too\&.
+.sp
+As with
+\fB\-\-mount\fR
+file system checks are implicitly run before the copy operation begins\&.
+.RE
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+Print a short help text and exit\&.
+.RE
+.PP
+\fB\-\-version\fR
+.RS 4
+Print a short version string and exit\&.
+.RE
+.SH "OPTIONS"
+.PP
+The following options are understood:
+.PP
+\fB\-\-read\-only\fR, \fB\-r\fR
+.RS 4
+Operate in read\-only mode\&. By default
+\fB\-\-mount\fR
+will establish writable mount points\&. If this option is specified they are established in read\-only mode instead\&.
+.RE
+.PP
+\fB\-\-fsck=no\fR
+.RS 4
+Turn off automatic file system checking\&. By default when an image is accessed for writing (by
+\fB\-\-mount\fR
+or
+\fB\-\-add\fR) the file systems contained in the OS image are automatically checked using the appropriate
+\fBfsck\fR(8)
+command, in automatic fixing mode\&. This behavior may be switched off using
+\fB\-\-fsck=no\fR\&.
+.RE
+.PP
+\fB\-\-mkdir\fR
+.RS 4
+If combined with
+\fB\-\-mount\fR
+the directory to mount the OS image to is created if it is missing\&. Note that the directory is not automatically removed when the disk image is unmounted again\&.
+.RE
+.PP
+\fB\-\-discard=\fR
+.RS 4
+Takes one of
+"disabled",
+"loop",
+"all",
+"crypto"\&. If
+"disabled"
+the image is accessed with empty block discarding turned off\&. If
+"loop"
+discarding is enabled if operating on a regular file\&. If
+"crypt"
+discarding is enabled even on encrypted file systems\&. If
+"all"
+discarding is unconditionally enabled\&.
+.RE
+.PP
+\fB\-\-root\-hash=\fR, \fB\-\-root\-hash\-sig=\fR, \fB\-\-verity\-data=\fR
+.RS 4
+Configure various aspects of Verity data integrity for the OS image\&. Option
+\fB\-\-root\-hash=\fR
+specifies a hex\-encoded top\-level Verity hash to use for setting up the Verity integrity protection\&. Option
+\fB\-\-root\-hash\-sig=\fR
+specifies the path to a file containing a PKCS#7 signature for the hash\&. This signature is passed to the kernel during activation, which will match it against signature keys available in the kernel keyring\&. Option
+\fB\-\-verity\-data=\fR
+specifies a path to a file with the Verity data to use for the OS image, in case it is stored in a detached file\&. It is recommended to embed the Verity data directly in the image, using the Verity mechanisms in the
+\m[blue]\fBDiscoverable Partitions Specification\fR\m[]\&\s-2\u[1]\d\s+2\&.
+.RE
+.PP
+\fB\-\-no\-pager\fR
+.RS 4
+Do not pipe output into a pager\&.
+.RE
+.PP
+\fB\-\-no\-legend\fR
+.RS 4
+Do not print the legend, i\&.e\&. column headers and the footer with hints\&.
+.RE
+.PP
+\fB\-\-json=\fR\fIMODE\fR
+.RS 4
+Shows output formatted as JSON\&. Expects one of
+"short"
+(for the shortest possible output without any redundant whitespace or line breaks),
+"pretty"
+(for a pretty version of the same, with indentation and line breaks) or
+"off"
+(to turn off JSON output, the default)\&.
+.RE
+.SH "EXIT STATUS"
+.PP
+On success, 0 is returned, a non\-zero failure code otherwise\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsystemd-nspawn\fR(1),
+\fBsystemd.exec\fR(5),
+\m[blue]\fBDiscoverable Partitions Specification\fR\m[]\&\s-2\u[1]\d\s+2,
+\fBumount\fR(8),
+\fBfdisk\fR(8)
+.SH "NOTES"
+.IP " 1." 4
+Discoverable Partitions Specification
+.RS 4
+\%https://systemd.io/DISCOVERABLE_PARTITIONS
+.RE

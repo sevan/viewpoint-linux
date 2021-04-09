@@ -1,0 +1,576 @@
+'\" t
+.TH "ORG\&.FREEDESKTOP\&.PORTABLE1" "5" "" "systemd 248" "org.freedesktop.portable1"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+org.freedesktop.portable1 \- The D\-Bus interface of systemd\-portabled
+.SH "INTRODUCTION"
+.PP
+\fBsystemd-portabled.service\fR(8)
+is a system service that may be used to attach, detach and inspect portable services\&. This page describes the D\-Bus interface\&.
+.SH "THE MANAGER OBJECT"
+.PP
+The service exposes the following interfaces on the Manager object on the bus:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+node /org/freedesktop/portable1 {
+  interface org\&.freedesktop\&.portable1\&.Manager {
+    methods:
+      GetImage(in  s image,
+               out o object);
+      ListImages(out a(ssbtttso) UNNAMED);
+      GetImageOSRelease(in  s image,
+                        out a{ss} os_release);
+      GetImageMetadata(in  s image,
+                       in  as matches,
+                       out s image,
+                       out ay os_release,
+                       out a{say} units);
+      GetImageState(in  s image,
+                    out s state);
+      AttachImage(in  s image,
+                  in  as matches,
+                  in  s profile,
+                  in  b runtime,
+                  in  s copy_mode,
+                  out a(sss) changes);
+      DetachImage(in  s image,
+                  in  b runtime,
+                  out a(sss) changes);
+      ReattachImage(in  s image,
+                    in  as matches,
+                    in  s profile,
+                    in  b runtime,
+                    in  s copy_mode,
+                    out a(sss) changes_removed,
+                    out a(sss) changes_updated);
+      RemoveImage(in  s image);
+      MarkImageReadOnly(in  s image,
+                        in  b read_only);
+      SetImageLimit(in  s image,
+                    in  t limit);
+      SetPoolLimit(in  t limit);
+    properties:
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
+      readonly s PoolPath = \*(Aq\&.\&.\&.\*(Aq;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
+      readonly t PoolUsage = \&.\&.\&.;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
+      readonly t PoolLimit = \&.\&.\&.;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
+      readonly as Profiles = [\*(Aq\&.\&.\&.\*(Aq, \&.\&.\&.];
+  };
+  interface org\&.freedesktop\&.DBus\&.Peer { \&.\&.\&. };
+  interface org\&.freedesktop\&.DBus\&.Introspectable { \&.\&.\&. };
+  interface org\&.freedesktop\&.DBus\&.Properties { \&.\&.\&. };
+};
+    
+.fi
+.if n \{\
+.RE
+.\}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.SS "Methods"
+.PP
+\fBGetImage()\fR
+may be used to get the image object path of the image with the specified name\&.
+.PP
+\fBListImages()\fR
+returns an array of all currently known images\&. The structures in the array consist of the following fields: image name, type, read\-only flag, creation time, modification time, current disk space, usage and image object path\&.
+.PP
+\fBGetImageOSRelease()\fR
+retrieves the OS release information of an image\&. This method returns an array of key value pairs read from the
+\fBos-release\fR(5)
+file in the image and is useful to identify the operating system used in a portable service\&.
+.PP
+\fBGetImageMetadata()\fR
+retrieves metadata associated with an image\&. This method returns the image name, the image\*(Aqs
+\fBos-release\fR(5)
+content in the form of a (streamable) array of bytes, and a list of portable units contained in the image, in the form of a string (unit name) and an array of bytes with the content\&.
+.PP
+\fBGetImageState()\fR
+retrieves the image state as one of the following strings:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+detached
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+attached
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+attached\-runtime
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+enabled
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+enabled\-runtime
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+running
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+running\-runtime
+.RE
+.PP
+\fBAttachImage()\fR
+attaches a portable image to the system\&. This method takes an image path or name, a list of strings that will be used to search for unit files inside the image (partial or complete matches), a string indicating which portable profile to use for the image (see
+\fIProfiles\fR
+property for a list of available profiles), a boolean indicating whether to attach the image only for the current boot session, and a string representing the preferred copy mode (whether to copy the image or to just symlink it) with the following possible values:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+(null)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+copy
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+symlink
+.RE
+.sp
+This method returns the list of changes applied to the system (for example, which unit was added and is now available as a system service)\&. Each change is represented as a triplet of strings: the type of change applied, the path on which it was applied, and the source (if any)\&. The type of change applied will be one of the following possible values:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+copy
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+symlink
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+write
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+mkdir
+.RE
+.sp
+Note that an image cannot be attached if a unit that it contains is already present on the system\&.
+.PP
+\fBDetachImage()\fR
+detaches a portable image from the system\&. This method takes an image path or name, and a boolean indicating whether the image to detach was attached only for the current boot session or persistently\&. This method returns the list of changes applied to the system (for example, which unit was removed and is no longer available as a system service)\&. Each change is represented as a triplet of strings: the type of change applied, the path on which it was applied, and the source (if any)\&. The type of change applied will be one of the following possible values:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+unlink
+.RE
+.sp
+Note that an image cannot be detached if a unit that it contains is running\&.
+.PP
+\fBReattachImage()\fR
+combines the effects of the
+\fBAttachImage()\fR
+method and the
+\fBDetachImage()\fR
+method\&. The difference is that it is allowed to reattach an image while one or more of its units are running\&. The reattach operation will fail if no matching image is attached\&. The input parameters match the
+\fBAttachImage()\fR
+method, and the return parameters are the combination of the return parameters of the
+\fBDetachImage()\fR
+method (first array, units that were removed) and the
+\fBAttachImage()\fR
+method (second array, units that were updated or added)\&.
+.PP
+\fBRemoveImage()\fR
+removes the image with the specified name\&.
+.PP
+\fBMarkImageReadOnly()\fR
+toggles the read\-only flag of an image\&.
+.PP
+\fBSetPoolLimit()\fR
+sets an overall quota limit on the pool of images\&.
+.PP
+\fBSetImageLimit()\fR
+sets a per\-image quota limit\&.
+.SS "Properties"
+.PP
+\fIPoolPath\fR
+specifies the file system path where images are written to\&.
+.PP
+\fIPoolUsage\fR
+specifies the current usage size of the image pool in bytes\&.
+.PP
+\fIPoolLimit\fR
+specifies the size limit of the image pool in bytes\&.
+.PP
+\fIProfiles\fR
+specifies the available runtime profiles for portable services\&.
+.SH "THE IMAGE OBJECT"
+.PP
+The service exposes the following interfaces on the Image object on the bus:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+node /org/freedesktop/portable1 {
+  interface org\&.freedesktop\&.portable1\&.Image {
+    methods:
+      GetOSRelease(out a{ss} UNNAMED);
+      GetMetadata(in  as matches,
+                  out s image,
+                  out ay os_release,
+                  out a{say} units);
+      GetState(out s UNNAMED);
+      Attach(in  as matches,
+             in  s profile,
+             in  b runtime,
+             in  s copy_mode,
+             out a(sss) changes);
+      Detach(in  b runtime,
+             out a(sss) changes);
+      Reattach(in  as matches,
+               in  s profile,
+               in  b runtime,
+               in  s copy_mode,
+               out a(sss) changes_removed,
+               out a(sss) changes_updated);
+      Remove();
+      MarkReadOnly(in  b read_only);
+      SetLimit(in  t limit);
+    properties:
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
+      readonly s Name = \*(Aq\&.\&.\&.\*(Aq;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
+      readonly s Path = \*(Aq\&.\&.\&.\*(Aq;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
+      readonly s Type = \*(Aq\&.\&.\&.\*(Aq;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
+      readonly b ReadOnly = \&.\&.\&.;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
+      readonly t CreationTimestamp = \&.\&.\&.;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
+      readonly t ModificationTimestamp = \&.\&.\&.;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
+      readonly t Usage = \&.\&.\&.;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
+      readonly t Limit = \&.\&.\&.;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
+      readonly t UsageExclusive = \&.\&.\&.;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
+      readonly t LimitExclusive = \&.\&.\&.;
+  };
+  interface org\&.freedesktop\&.DBus\&.Peer { \&.\&.\&. };
+  interface org\&.freedesktop\&.DBus\&.Introspectable { \&.\&.\&. };
+  interface org\&.freedesktop\&.DBus\&.Properties { \&.\&.\&. };
+};
+    
+.fi
+.if n \{\
+.RE
+.\}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.SS "Methods"
+.PP
+The following methods implement the same operation as the respective methods on the
+Manager
+object (see above)\&. However, these methods operate on the image object and hence does not take an image name parameter\&. Invoking the methods directly on the Manager object has the advantage of not requiring a
+\fBGetImage()\fR
+call to get the image object for a specific image name\&. Calling the methods on the Manager object is hence a round trip optimization\&. List of methods:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+GetOSRelease()
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+GetMetadata()
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+GetState()
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Attach()
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Detach()
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Reattach()
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Remove()
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+MarkReadOnly()
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+SetLimit()
+.RE
+.SS "Properties"
+.PP
+\fIName\fR
+specifies the image name\&.
+.PP
+\fIPath\fR
+specifies the file system path where image is stored\&.
+.PP
+\fIType\fR
+specifies the image type\&.
+.PP
+\fIReadOnly\fR
+specifies whether the image is read\-only\&.
+.PP
+\fICreationTimestamp\fR
+specifies the image creation timestamp\&.
+.PP
+\fIModificationTimestamp\fR
+specifies the image modification timestamp\&.
+.PP
+\fIUsage\fR
+specifies the image disk usage\&.
+.PP
+\fILimit\fR
+specifies the image disk usage limit\&.
+.PP
+\fIUsageExclusive\fR
+specifies the image disk usage (exclusive)\&.
+.PP
+\fILimitExclusive\fR
+specifies the image disk usage limit (exclusive)\&.
+.SH "VERSIONING"
+.PP
+These D\-Bus interfaces follow
+\m[blue]\fBthe usual interface versioning guidelines\fR\m[]\&\s-2\u[1]\d\s+2\&.
+.SH "NOTES"
+.IP " 1." 4
+the usual interface versioning guidelines
+.RS 4
+\%http://0pointer.de/blog/projects/versioning-dbus.html
+.RE

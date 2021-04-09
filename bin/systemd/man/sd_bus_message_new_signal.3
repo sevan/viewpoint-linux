@@ -1,0 +1,126 @@
+'\" t
+.TH "SD_BUS_MESSAGE_NEW_SIGNAL" "3" "" "systemd 248" "sd_bus_message_new_signal"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_message_new_signal \- Create a signal message
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_message_new_signal('u
+.BI "int sd_bus_message_new_signal(sd_bus\ *" "bus" ", sd_bus_message\ **" "m" ", const\ char\ *" "path" ", const\ char\ *" "interface" ", const\ char\ *" "member" ");"
+.SH "DESCRIPTION"
+.PP
+The
+\fBsd_bus_message_new_signal()\fR
+function creates a new bus message object that encapsulates a D\-Bus signal, and returns it in the
+\fIm\fR
+output parameter\&. The signal will be sent to path
+\fIpath\fR, on the interface
+\fIinterface\fR, member
+\fImember\fR\&. When this message is sent, no reply is expected\&. See
+\fBsd_bus_message_new_method_call\fR(1)
+for a short description of the meaning of the
+\fIpath\fR,
+\fIinterface\fR, and
+\fImember\fR
+parameters\&.
+.SH "RETURN VALUE"
+.PP
+This function returns 0 if the message object was successfully created, and a negative errno\-style error code otherwise\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+The output parameter
+\fIm\fR
+is
+\fBNULL\fR\&.
+.sp
+The
+\fIpath\fR
+parameter is not a valid D\-Bus path ("/an/object/path"), the
+\fIinterface\fR
+parameter is not a valid D\-Bus interface name ("an\&.interface\&.name"), or the
+\fImember\fR
+parameter is not a valid D\-Bus member ("Name")\&.
+.RE
+.PP
+\fB\-ENOTCONN\fR
+.RS 4
+The bus parameter
+\fIbus\fR
+is
+\fBNULL\fR
+or the bus is not connected\&.
+.RE
+.PP
+\fB\-ENOMEM\fR
+.RS 4
+Memory allocation failed\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "EXAMPLES"
+.PP
+\fBExample\ \&1.\ \&Send a simple signal\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+#include <systemd/sd\-bus\&.h>
+#define _cleanup_(f) __attribute__((cleanup(f)))
+
+int send_unit_files_changed(sd_bus *bus) {
+  _cleanup_(sd_bus_message_unrefp) sd_bus_message *message = NULL;
+  int r;
+
+  r = sd_bus_message_new_signal(bus, &message,
+                                "/org/freedesktop/systemd1",
+                                "org\&.freedesktop\&.systemd1\&.Manager",
+                                "UnitFilesChanged");
+  if (r < 0)
+    return r;
+
+  return sd_bus_send(bus, message, NULL);
+}
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+This function in systemd sources is used to emit the
+"UnitFilesChanged"
+signal when the unit files have been changed\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd_bus_emit_signal\fR(3)

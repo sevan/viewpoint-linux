@@ -1,0 +1,197 @@
+'\" t
+.TH "SD_ID128_GET_MACHINE" "3" "" "systemd 248" "sd_id128_get_machine"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_id128_get_machine, sd_id128_get_machine_app_specific, sd_id128_get_boot, sd_id128_get_boot_app_specific, sd_id128_get_invocation \- Retrieve 128\-bit IDs
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-id128\&.h>
+.fi
+.ft
+.HP \w'int\ sd_id128_get_machine('u
+.BI "int sd_id128_get_machine(sd_id128_t\ *" "ret" ");"
+.HP \w'int\ sd_id128_get_machine_app_specific('u
+.BI "int sd_id128_get_machine_app_specific(sd_id128_t\ " "app_id" ", sd_id128_t\ *" "ret" ");"
+.HP \w'int\ sd_id128_get_boot('u
+.BI "int sd_id128_get_boot(sd_id128_t\ *" "ret" ");"
+.HP \w'int\ sd_id128_get_boot_app_specific('u
+.BI "int sd_id128_get_boot_app_specific(sd_id128_t\ " "app_id" ", sd_id128_t\ *" "ret" ");"
+.HP \w'int\ sd_id128_get_invocation('u
+.BI "int sd_id128_get_invocation(sd_id128_t\ *" "ret" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_id128_get_machine()\fR
+returns the machine ID of the executing host\&. This reads and parses the
+\fBmachine-id\fR(5)
+file\&. This function caches the machine ID internally to make retrieving the machine ID a cheap operation\&. This ID may be used wherever a unique identifier for the local system is needed\&. However, it is recommended to use this ID as\-is only in trusted environments\&. In untrusted environments it is recommended to derive an application specific ID from this machine ID, in an irreversible (cryptographically secure) way\&. To make this easy
+\fBsd_id128_get_machine_app_specific()\fR
+is provided, see below\&.
+.PP
+\fBsd_id128_get_machine_app_specific()\fR
+is similar to
+\fBsd_id128_get_machine()\fR, but retrieves a machine ID that is specific to the application that is identified by the indicated application ID\&. It is recommended to use this function instead of
+\fBsd_id128_get_machine()\fR
+when passing an ID to untrusted environments, in order to make sure that the original machine ID may not be determined externally\&. This way, the ID used by the application remains stable on a given machine, but cannot be easily correlated with IDs used in other applications on the same machine\&. The application\-specific ID should be generated via a tool like
+\fBsystemd\-id128 new\fR, and may be compiled into the application\&. This function will return the same application\-specific ID for each combination of machine ID and application ID\&. Internally, this function calculates HMAC\-SHA256 of the application ID, keyed by the machine ID\&.
+.PP
+\fBsd_id128_get_boot()\fR
+returns the boot ID of the executing kernel\&. This reads and parses the
+/proc/sys/kernel/random/boot_id
+file exposed by the kernel\&. It is randomly generated early at boot and is unique for every running kernel instance\&. See
+\fBrandom\fR(4)
+for more information\&. This function also internally caches the returned ID to make this call a cheap operation\&. It is recommended to use this ID as\-is only in trusted environments\&. In untrusted environments it is recommended to derive an application specific ID using
+\fBsd_id128_get_machine_app_specific()\fR, see below\&.
+.PP
+\fBsd_id128_get_boot_app_specific()\fR
+is analogous to
+\fBsd_id128_get_machine_app_specific()\fR
+but returns an ID that changes between boots\&. Some machines may be used for a long time without rebooting, hence the boot ID may remain constant for a long time, and has properties similar to the machine ID during that time\&.
+.PP
+\fBsd_id128_get_invocation()\fR
+returns the invocation ID of the currently executed service\&. In its current implementation, this reads and parses the
+\fI$INVOCATION_ID\fR
+environment variable that the service manager sets when activating a service, see
+\fBsystemd.exec\fR(5)
+for details\&. The ID is cached internally\&. In future a different mechanism to determine the invocation ID may be added\&.
+.PP
+Note that
+\fBsd_id128_get_machine_app_specific()\fR,
+\fBsd_id128_get_boot()\fR,
+\fBsd_id128_get_boot_app_specific()\fR, and
+\fBsd_id128_get_invocation()\fR
+always return UUID v4 compatible IDs\&.
+\fBsd_id128_get_machine()\fR
+will also return a UUID v4\-compatible ID on new installations but might not on older\&. It is possible to convert the machine ID into a UUID v4\-compatible one\&. For more information, see
+\fBmachine-id\fR(5)\&.
+.PP
+For more information about the
+"sd_id128_t"
+type see
+\fBsd-id128\fR(3)\&.
+.SH "RETURN VALUE"
+.PP
+Those calls return 0 on success (in which case
+\fIret\fR
+is filled in), or a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-ENOENT\fR
+.RS 4
+Returned by
+\fBsd_id128_get_machine()\fR,
+\fBsd_id128_get_machine_app_specific()\fR, and
+\fBsd_id128_get_boot_app_specific()\fR
+when
+/etc/machine\-id
+is missing\&.
+.RE
+.PP
+\fB\-ENOMEDIUM\fR
+.RS 4
+Returned by
+\fBsd_id128_get_machine()\fR,
+\fBsd_id128_get_machine_app_specific()\fR, and
+\fBsd_id128_get_boot_app_specific()\fR
+when
+/etc/machine\-id
+is empty or all zeros\&.
+.RE
+.PP
+\fB\-ENXIO\fR
+.RS 4
+Returned by
+\fBsd_id128_get_invocation()\fR
+if no invocation ID is set\&.
+.RE
+.PP
+\fB\-EIO\fR
+.RS 4
+Returned by any of the functions described here when the configured value has invalid format\&.
+.RE
+.PP
+\fB\-EPERM\fR
+.RS 4
+Requested information could not be retrieved because of insufficient permissions\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "EXAMPLES"
+.PP
+\fBExample\ \&1.\ \&Application\-specific machine ID\fR
+.PP
+First, generate the application ID:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ systemd\-id128 \-p new
+As string:
+c273277323db454ea63bb96e79b53e97
+
+As UUID:
+c2732773\-23db\-454e\-a63b\-b96e79b53e97
+
+As man:sd\-id128(3) macro:
+#define MESSAGE_XYZ SD_ID128_MAKE(c2,73,27,73,23,db,45,4e,a6,3b,b9,6e,79,b5,3e,97)
+\&.\&.\&.
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+Then use the new identifier in an example application:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+#include <stdio\&.h>
+#include <systemd/sd\-id128\&.h>
+
+#define OUR_APPLICATION_ID SD_ID128_MAKE(c2,73,27,73,23,db,45,4e,a6,3b,b9,6e,79,b5,3e,97)
+
+int main(int argc, char *argv[]) {
+  sd_id128_t id;
+  sd_id128_get_machine_app_specific(OUR_APPLICATION_ID, &id);
+  printf("Our application ID: " SD_ID128_FORMAT_STR "\en", SD_ID128_FORMAT_VAL(id));
+  return 0;
+}
+.fi
+.if n \{\
+.RE
+.\}
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsystemd-id128\fR(1),
+\fBsd-id128\fR(3),
+\fBmachine-id\fR(5),
+\fBsystemd.exec\fR(5),
+\fBsd_id128_randomize\fR(3),
+\fBrandom\fR(4)

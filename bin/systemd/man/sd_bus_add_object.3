@@ -1,0 +1,655 @@
+'\" t
+.TH "SD_BUS_ADD_OBJECT" "3" "" "systemd 248" "sd_bus_add_object"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_add_object, sd_bus_add_fallback, sd_bus_add_object_vtable, sd_bus_add_fallback_vtable, sd_bus_add_filter, SD_BUS_VTABLE_START, SD_BUS_VTABLE_END, SD_BUS_METHOD_WITH_NAMES_OFFSET, SD_BUS_METHOD_WITH_NAMES, SD_BUS_METHOD_WITH_OFFSET, SD_BUS_METHOD, SD_BUS_SIGNAL_WITH_NAMES, SD_BUS_SIGNAL, SD_BUS_WRITABLE_PROPERTY, SD_BUS_PROPERTY, SD_BUS_PARAM \- Declare properties and methods for a D\-Bus path
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\-vtable\&.h>
+.fi
+.ft
+.sp
+.HP \w'typedef\ int\ (*sd_bus_message_handler_t)('u
+.BI "typedef int (*sd_bus_message_handler_t)(sd_bus_message\ *" "m" ", void\ *" "userdata" ", sd_bus_error\ *" "ret_error" ");"
+.HP \w'typedef\ int\ (*sd_bus_property_get_t)('u
+.BI "typedef int (*sd_bus_property_get_t)(sd_bus\ *" "bus" ", const\ char\ *" "path" ", const\ char\ *" "interface" ", const\ char\ *" "property" ", sd_bus_message\ *" "reply" ", void\ *" "userdata" ", sd_bus_error\ *" "ret_error" ");"
+.HP \w'typedef\ int\ (*sd_bus_property_set_t)('u
+.BI "typedef int (*sd_bus_property_set_t)(sd_bus\ *" "bus" ", const\ char\ *" "path" ", const\ char\ *" "interface" ", const\ char\ *" "property" ", sd_bus_message\ *" "value" ", void\ *" "userdata" ", sd_bus_error\ *" "ret_error" ");"
+.HP \w'typedef\ int\ (*sd_bus_object_find_t)('u
+.BI "typedef int (*sd_bus_object_find_t)(const\ char\ *" "path" ", const\ char\ *" "interface" ", void\ *" "userdata" ", void\ **" "ret_found" ", sd_bus_error\ *" "ret_error" ");"
+.HP \w'int\ sd_bus_add_object('u
+.BI "int sd_bus_add_object(sd_bus\ *" "bus" ", sd_bus_slot\ **" "slot" ", const\ char\ *" "path" ", sd_bus_message_handler_t\ " "callback" ", void\ *" "userdata" ");"
+.HP \w'int\ sd_bus_add_fallback('u
+.BI "int sd_bus_add_fallback(sd_bus\ *" "bus" ", sd_bus_slot\ **" "slot" ", const\ char\ *" "path" ", sd_bus_message_handler_t\ " "callback" ", void\ *" "userdata" ");"
+.HP \w'int\ sd_bus_add_object_vtable('u
+.BI "int sd_bus_add_object_vtable(sd_bus\ *" "bus" ", sd_bus_slot\ **" "slot" ", const\ char\ *" "path" ", const\ char\ *" "interface" ", const\ sd_bus_vtable\ *" "vtable" ", void\ *" "userdata" ");"
+.HP \w'int\ sd_bus_add_fallback_vtable('u
+.BI "int sd_bus_add_fallback_vtable(sd_bus\ *" "bus" ", sd_bus_slot\ **" "slot" ", const\ char\ *" "prefix" ", const\ char\ *" "interface" ", const\ sd_bus_vtable\ *" "vtable" ", sd_bus_object_find_t\ " "find" ", void\ *" "userdata" ");"
+.HP \w'int\ sd_bus_add_filter('u
+.BI "int sd_bus_add_filter(sd_bus\ *" "bus" ", sd_bus_slot\ **" "slot" ", sd_bus_message_handler_t\ " "callback" ", void\ *" "userdata" ");"
+.PP
+\fBSD_BUS_VTABLE_START(\fR\fB\fIflags\fR\fR\fB)\fR
+.PP
+\fBSD_BUS_VTABLE_END\fR
+.PP
+\fBSD_BUS_METHOD_WITH_ARGS_OFFSET( \fR\fB\fImember\fR\fR\fB, \fR\fB\fIargs\fR\fR\fB, \fR\fB\fIresult\fR\fR\fB, \fR\fB\fIhandler\fR\fR\fB, \fR\fB\fIoffset\fR\fR\fB, \fR\fB\fIflags\fR\fR\fB) \fR
+.PP
+\fBSD_BUS_METHOD_WITH_ARGS( \fR\fB\fImember\fR\fR\fB, \fR\fB\fIargs\fR\fR\fB, \fR\fB\fIresult\fR\fR\fB, \fR\fB\fIhandler\fR\fR\fB, \fR\fB\fIflags\fR\fR\fB) \fR
+.PP
+\fBSD_BUS_METHOD_WITH_NAMES_OFFSET( \fR\fB\fImember\fR\fR\fB, \fR\fB\fIsignature\fR\fR\fB, \fR\fB\fIin_names\fR\fR\fB, \fR\fB\fIresult\fR\fR\fB, \fR\fB\fIout_names\fR\fR\fB, \fR\fB\fIhandler\fR\fR\fB, \fR\fB\fIoffset\fR\fR\fB, \fR\fB\fIflags\fR\fR\fB) \fR
+.PP
+\fBSD_BUS_METHOD_WITH_NAMES( \fR\fB\fImember\fR\fR\fB, \fR\fB\fIsignature\fR\fR\fB, \fR\fB\fIin_names\fR\fR\fB, \fR\fB\fIresult\fR\fR\fB, \fR\fB\fIout_names\fR\fR\fB, \fR\fB\fIhandler\fR\fR\fB, \fR\fB\fIflags\fR\fR\fB) \fR
+.PP
+\fBSD_BUS_METHOD_WITH_OFFSET( \fR\fB\fImember\fR\fR\fB, \fR\fB\fIsignature\fR\fR\fB, \fR\fB\fIresult\fR\fR\fB, \fR\fB\fIhandler\fR\fR\fB, \fR\fB\fIoffset\fR\fR\fB, \fR\fB\fIflags\fR\fR\fB) \fR
+.PP
+\fBSD_BUS_METHOD( \fR\fB\fImember\fR\fR\fB, \fR\fB\fIsignature\fR\fR\fB, \fR\fB\fIresult\fR\fR\fB, \fR\fB\fIhandler\fR\fR\fB, \fR\fB\fIflags\fR\fR\fB) \fR
+.PP
+\fBSD_BUS_SIGNAL_WITH_ARGS( \fR\fB\fImember\fR\fR\fB, \fR\fB\fIargs\fR\fR\fB, \fR\fB\fIflags\fR\fR\fB) \fR
+.PP
+\fBSD_BUS_SIGNAL_WITH_NAMES( \fR\fB\fImember\fR\fR\fB, \fR\fB\fIsignature\fR\fR\fB, \fR\fB\fInames\fR\fR\fB, \fR\fB\fIflags\fR\fR\fB) \fR
+.PP
+\fBSD_BUS_SIGNAL( \fR\fB\fImember\fR\fR\fB, \fR\fB\fIsignature\fR\fR\fB, \fR\fB\fIflags\fR\fR\fB) \fR
+.PP
+\fBSD_BUS_WRITABLE_PROPERTY( \fR\fB\fImember\fR\fR\fB, \fR\fB\fIsignature\fR\fR\fB, \fR\fB\fIget\fR\fR\fB, \fR\fB\fIset\fR\fR\fB, \fR\fB\fIoffset\fR\fR\fB, \fR\fB\fIflags\fR\fR\fB) \fR
+.PP
+\fBSD_BUS_PROPERTY( \fR\fB\fImember\fR\fR\fB, \fR\fB\fIsignature\fR\fR\fB, \fR\fB\fIget\fR\fR\fB, \fR\fB\fIoffset\fR\fR\fB, \fR\fB\fIflags\fR\fR\fB) \fR
+.PP
+\fBSD_BUS_PARAM(\fR\fB\fIname\fR\fR\fB)\fR
+\fBSD_BUS_ARGS(\fR\fB\fI\&.\&.\&.\fR\fR\fB)\fR
+\fBSD_BUS_RESULT(\fR\fB\fI\&.\&.\&.\fR\fR\fB)\fR
+\fBSD_BUS_NO_ARGS\fR
+\fBSD_BUS_NO_RESULT\fR
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_add_object_vtable()\fR
+is used to declare attributes for the object path
+\fIpath\fR
+connected to the bus connection
+\fIbus\fR
+under the interface
+\fIinterface\fR\&. The table
+\fIvtable\fR
+may contain property declarations using
+\fBSD_BUS_PROPERTY()\fR
+or
+\fBSD_BUS_WRITABLE_PROPERTY()\fR, method declarations using
+\fBSD_BUS_METHOD()\fR,
+\fBSD_BUS_METHOD_WITH_NAMES()\fR,
+\fBSD_BUS_METHOD_WITH_OFFSET()\fR, or
+\fBSD_BUS_METHOD_WITH_NAMES_OFFSET()\fR, and signal declarations using
+\fBSD_BUS_SIGNAL_WITH_NAMES()\fR
+or
+\fBSD_BUS_SIGNAL()\fR, see below\&. The
+\fIuserdata\fR
+parameter contains a pointer that will be passed to various callback functions\&. It may be specified as
+\fBNULL\fR
+if no value is necessary\&. An interface can have any number of vtables attached to it\&.
+.PP
+\fBsd_bus_add_fallback_vtable()\fR
+is similar to
+\fBsd_bus_add_object_vtable()\fR, but is used to register "fallback" attributes\&. When looking for an attribute declaration, bus object paths registered with
+\fBsd_bus_add_object_vtable()\fR
+are checked first\&. If no match is found, the fallback vtables are checked for each prefix of the bus object path, i\&.e\&. with the last slash\-separated components successively removed\&. This allows the vtable to be used for an arbitrary number of dynamically created objects\&.
+.PP
+Parameter
+\fIfind\fR
+is a function which is used to locate the target object based on the bus object path
+\fIpath\fR\&. It must return
+\fB1\fR
+and set the
+\fIret_found\fR
+output parameter if the object is found, return
+\fB0\fR
+if the object was not found, and return a negative errno\-style error code or initialize the error structure
+\fIret_error\fR
+on error\&. The pointer passed in
+\fIret_found\fR
+will be used as the
+\fIuserdata\fR
+parameter for the callback functions (offset by the
+\fIoffset\fR
+offsets as specified in the vtable entries)\&.
+.PP
+\fBsd_bus_add_object()\fR
+attaches a callback directly to the object path
+\fIpath\fR\&. An object path can have any number of callbacks attached to it\&. Each callback is prepended to the list of callbacks which are always called in order\&.
+\fBsd_bus_add_fallback()\fR
+is similar to
+\fBsd_bus_add_object()\fR
+but applies to fallback paths instead\&.
+.PP
+\fBsd_bus_add_filter()\fR
+installs a callback that is invoked for each incoming D\-Bus message\&. Filters can be used to handle logic common to all messages received by a service (e\&.g\&. authentication or authorization)\&.
+.PP
+When a request is received, any associated callbacks are called sequentially until a callback returns a non\-zero integer\&. Return zero from a callback to give other callbacks the chance to process the request\&. Callbacks are called in the following order: first, global callbacks installed with
+\fBsd_bus_add_filter()\fR
+are called\&. Second, callbacks attached directly to the request object path are called, followed by any D\-Bus method callbacks attached to the request object path, interface and member\&. Finally, the property callbacks attached to the request object path, interface and member are called\&. If the final callback returns zero, an error reply is sent back to the caller indicating no matching object for the request was found\&.
+.PP
+Note that you can return a positive integer from a
+\fImethod\fR
+callback without immediately sending a reply\&. This informs sd\-bus this callback will take responsibility for replying to the request without forcing the callback to produce a reply immediately\&. This allows a callback to perform any number of asynchronous operations required to construct a reply\&. However, if producing a reply takes too long, the method call will time out at the caller\&. This is only available to methods and not properties\&.
+.PP
+If a callback was invoked to handle a request that expects a reply and the callback returns a negative value, the value is interpreted as a negative errno\-style error code and sent back to the caller as a D\-Bus error as if
+\fBsd_bus_reply_method_errno\fR(3)
+was called\&. Additionally, all callbacks take a
+sd_bus_error
+output parameter that can be used to provide more detailed error information\&. If
+\fIret_error\fR
+is set when the callback finishes, the corresponding D\-Bus error is sent back to the caller as if
+\fBsd_bus_reply_method_error\fR(3)
+was called\&. Any error stored in
+\fIret_error\fR
+takes priority over any negative values returned by the same callback when determining which error to send back to the caller\&. Use
+\fBsd_bus_error_set\fR(3)
+or one of its variants to set
+\fIret_error\fR
+and return a negative integer from a callback with a single function call\&. To send an error reply after a callback has already finished, use
+\fBsd_bus_reply_method_errno\fR(3)
+or one of its variants\&.
+.PP
+For all functions, a match slot is created internally\&. If the output parameter
+\fIslot\fR
+is
+\fBNULL\fR, a "floating" slot object is created, see
+\fBsd_bus_slot_set_floating\fR(3)\&. Otherwise, a pointer to the slot object is returned\&. In that case, the reference to the slot object should be dropped when the vtable is not needed anymore, see
+\fBsd_bus_slot_unref\fR(3)\&.
+.SS "The sd_bus_vtable array"
+.PP
+The array consists of the structures of type
+sd_bus_vtable, but it should never be filled in manually, but through one of the following macros:
+.PP
+\fBSD_BUS_VTABLE_START()\fR, \fBSD_BUS_VTABLE_END\fR
+.RS 4
+Those must always be the first and last element\&.
+.RE
+.PP
+\fBSD_BUS_METHOD_WITH_ARGS_OFFSET()\fR, \fBSD_BUS_METHOD_WITH_ARGS()\fR
+.RS 4
+Declare a D\-Bus method with the name
+\fImember\fR, arguments
+\fIargs\fR
+and result
+\fIresult\fR\&.
+\fIargs\fR
+expects a sequence of argument type/name pairs wrapped in the
+\fBSD_BUS_ARGS()\fR
+macro\&. The elements at even indices in this list describe the types of the method\*(Aqs arguments\&. The method\*(Aqs parameter signature is the concatenation of all the string literals at even indices in
+\fIargs\fR\&. If a method has no parameters, pass
+\fBSD_BUS_NO_ARGS\fR
+to
+\fIargs\fR\&. The elements at uneven indices describe the names of the method\*(Aqs arguments\&.
+\fIresult\fR
+expects a sequence of type/name pairs wrapped in the
+\fBSD_BUS_RESULT()\fR
+macro in the same format as
+\fBSD_BUS_ARGS()\fR\&. The method\*(Aqs result signature is the concatenation of all the string literals at even indices in
+\fIresult\fR\&. If a method has no result, pass
+\fBSD_BUS_NO_RESULT\fR
+to
+\fIresult\fR\&. Note that argument types are expected to be quoted string literals and argument names are expected to be unquoted string literals\&. See below for a complete example\&.
+.sp
+The handler function
+\fIhandler\fR
+must be of type
+\fBsd_bus_message_handler_t\fR\&. It will be called to handle the incoming messages that call this method\&. It receives a pointer that is the
+\fIuserdata\fR
+parameter passed to the registration function offset by
+\fIoffset\fR
+bytes\&. This may be used to pass pointers to different fields in the same data structure to different methods in the same vtable\&. To send a reply from
+\fIhandler\fR, call
+\fBsd_bus_reply_method_return\fR(3)
+with the message the callback was invoked with\&. Parameter
+\fIflags\fR
+is a combination of flags, see below\&.
+.sp
+\fBSD_BUS_METHOD_WITH_ARGS()\fR
+is a shorthand for calling
+\fBSD_BUS_METHOD_WITH_ARGS_OFFSET()\fR
+with an offset of zero\&.
+.RE
+.PP
+\fBSD_BUS_METHOD_WITH_NAMES_OFFSET()\fR, \fBSD_BUS_METHOD_WITH_NAMES()\fR, \fBSD_BUS_METHOD_WITH_OFFSET()\fR, \fBSD_BUS_METHOD()\fR
+.RS 4
+Declare a D\-Bus method with the name
+\fImember\fR, parameter signature
+\fIsignature\fR, result signature
+\fIresult\fR\&. Parameters
+\fIin_names\fR
+and
+\fIout_names\fR
+specify the argument names of the input and output arguments in the function signature\&.
+\fIin_names\fR
+and
+\fIout_names\fR
+should be created using the
+\fBSD_BUS_PARAM()\fR
+macro, see below\&. In all other regards, this macro behaves exactly the same as
+\fBSD_BUS_METHOD_WITH_ARGS_OFFSET()\fR\&.
+.sp
+\fBSD_BUS_METHOD_WITH_NAMES()\fR,
+\fBSD_BUS_METHOD_WITH_OFFSET()\fR, and
+\fBSD_BUS_METHOD()\fR
+are variants which specify zero offset (\fIuserdata\fR
+parameter is passed with no change), leave the names unset (i\&.e\&. no parameter names), or both\&.
+.sp
+Prefer using
+\fBSD_BUS_METHOD_WITH_ARGS_OFFSET()\fR
+and
+\fBSD_BUS_METHOD_WITH_ARGS()\fR
+over these macros as they allow specifying argument types and names next to each other which is less error\-prone than first specifying all argument types followed by specifying all argument names\&.
+.RE
+.PP
+\fBSD_BUS_SIGNAL_WITH_ARGS()\fR
+.RS 4
+Declare a D\-Bus signal with the name
+\fImember\fR
+and arguments
+\fIargs\fR\&.
+\fIargs\fR
+expects a sequence of argument type/name pairs wrapped in the
+\fBSD_BUS_ARGS()\fR
+macro\&. The elements at even indices in this list describe the types of the signal\*(Aqs arguments\&. The signal\*(Aqs parameter signature is the concatenation of all the string literals at even indices in
+\fIargs\fR\&. If a signal has no parameters, pass
+\fBSD_BUS_NO_ARGS\fR
+to
+\fIargs\fR\&. The elements at uneven indices describe the names of the signal\*(Aqs arguments\&. Parameter
+\fIflags\fR
+is a combination of flags\&. See below for a complete example\&.
+.RE
+.PP
+\fBSD_BUS_SIGNAL_WITH_NAMES()\fR, \fBSD_BUS_SIGNAL()\fR
+.RS 4
+Declare a D\-Bus signal with the name
+\fImember\fR, parameter signature
+\fIsignature\fR, and argument names
+\fInames\fR\&.
+\fInames\fR
+should be created using the
+\fBSD_BUS_PARAM()\fR
+macro, see below\&. Parameter
+\fIflags\fR
+is a combination of flags, see below\&.
+.sp
+\fBSD_BUS_SIGNAL()\fR
+is equivalent to
+\fBSD_BUS_SIGNAL_WITH_NAMES()\fR
+with the
+\fInames\fR
+parameter unset (i\&.e\&. no parameter names)\&.
+.sp
+Prefer using
+\fBSD_BUS_SIGNAL_WITH_ARGS()\fR
+over these macros as it allows specifying argument types and names next to each other which is less error\-prone than first specifying all argument types followed by specifying all argument names\&.
+.RE
+.PP
+\fBSD_BUS_WRITABLE_PROPERTY()\fR, \fBSD_BUS_PROPERTY()\fR
+.RS 4
+Declare a D\-Bus property with the name
+\fImember\fR
+and value signature
+\fIsignature\fR\&. Parameters
+\fIget\fR
+and
+\fIset\fR
+are the getter and setter methods\&. They are called with a pointer that is the
+\fIuserdata\fR
+parameter passed to the registration function offset by
+\fIoffset\fR
+bytes\&. This may be used pass pointers to different fields in the same data structure to different setters and getters in the same vtable\&. Parameter
+\fIflags\fR
+is a combination of flags, see below\&.
+.sp
+The setter and getter methods may be omitted (specified as
+\fBNULL\fR), if the property is one of the basic types or
+"as"
+in case of read\-only properties\&. In those cases, the
+\fIuserdata\fR
+and
+\fIoffset\fR
+parameters must together point to a valid variable of the corresponding type\&. A default setter and getter will be provided, which simply copy the argument between this variable and the message\&.
+.sp
+\fBSD_BUS_PROPERTY()\fR
+is used to define a read\-only property\&.
+.RE
+.PP
+\fBSD_BUS_PARAM()\fR
+.RS 4
+Parameter names should be wrapped in this macro, see the example below\&.
+.RE
+.SS "Flags"
+.PP
+The
+\fIflags\fR
+parameter is used to specify a combination of
+\m[blue]\fBD\-Bus annotations\fR\m[]\&\s-2\u[1]\d\s+2\&.
+.PP
+\fBSD_BUS_VTABLE_DEPRECATED\fR
+.RS 4
+Mark this vtable entry as deprecated using the
+\fBorg\&.freedesktop\&.DBus\&.Deprecated\fR
+annotation in introspection data\&. If specified for
+\fBSD_BUS_VTABLE_START()\fR, the annotation is applied to the enclosing interface\&.
+.RE
+.PP
+\fBSD_BUS_VTABLE_HIDDEN\fR
+.RS 4
+Make this vtable entry hidden\&. It will not be shown in introspection data\&. If specified for
+\fBSD_BUS_VTABLE_START()\fR, all entries in the array are hidden\&.
+.RE
+.PP
+\fBSD_BUS_VTABLE_UNPRIVILEGED\fR
+.RS 4
+Mark this vtable entry as unprivileged\&. If not specified, the
+\fBorg\&.freedesktop\&.systemd1\&.Privileged\fR
+annotation with value
+"true"
+will be shown in introspection data\&.
+.RE
+.PP
+\fBSD_BUS_VTABLE_METHOD_NO_REPLY\fR
+.RS 4
+Mark his vtable entry as a method that will not return a reply using the
+\fBorg\&.freedesktop\&.DBus\&.Method\&.NoReply\fR
+annotation in introspection data\&.
+.RE
+.PP
+\fBSD_BUS_VTABLE_PROPERTY_CONST\fR, \fBSD_BUS_VTABLE_PROPERTY_EMITS_CHANGE\fR, \fBSD_BUS_VTABLE_PROPERTY_EMITS_INVALIDATION\fR
+.RS 4
+Those three flags correspond to different values of the
+\fBorg\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal\fR
+annotation, which specifies whether the
+\fBorg\&.freedesktop\&.DBus\&.Properties\&.PropertiesChanged\fR
+signal is emitted whenever the property changes\&.
+\fBSD_BUS_VTABLE_PROPERTY_CONST\fR
+corresponds to
+\fBconst\fR
+and means that the property never changes during the lifetime of the object it belongs to, so no signal needs to be emitted\&.
+\fBSD_BUS_VTABLE_PROPERTY_EMITS_CHANGE\fR
+corresponds to
+\fBtrue\fR
+and means that the signal is emitted\&.
+\fBSD_BUS_VTABLE_PROPERTY_EMITS_INVALIDATION\fR
+corresponds to
+\fBinvalidates\fR
+and means that the signal is emitted, but the value is not included in the signal\&.
+.RE
+.PP
+\fBSD_BUS_VTABLE_PROPERTY_EXPLICIT\fR
+.RS 4
+Mark this vtable property entry as requiring explicit request to for the value to be shown (generally because the value is large or slow to calculate)\&. This entry cannot be combined with
+\fBSD_BUS_VTABLE_PROPERTY_EMITS_CHANGE\fR, and will not be shown in property listings by default (e\&.g\&.
+\fBbusctl introspect\fR)\&. This corresponds to the
+\fBorg\&.freedesktop\&.systemd1\&.Explicit\fR
+annotation in introspection data\&.
+.RE
+.PP
+\fBSD_BUS_VTABLE_SENSITIVE\fR
+.RS 4
+Mark this vtable method entry as processing sensitive data\&. When set, incoming method call messages and their outgoing reply messages are marked as sensitive using
+\fBsd_bus_message_sensitive\fR(3), so that they are erased from memory when freed\&.
+.RE
+.PP
+\fBSD_BUS_VTABLE_ABSOLUTE_OFFSET\fR
+.RS 4
+Mark this vtable method or property entry so that the user data pointer passed to its associated handler functions is determined slightly differently: instead of adding the offset parameter of the entry to the user data pointer specified during vtable registration, the offset is passed directly, converted to a pointer, without taking the user data pointer specified during vtable registration into account\&.
+.RE
+.SH "EXAMPLES"
+.PP
+\fBExample\ \&1.\ \&Create a simple listener on the bus\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+#include <errno\&.h>
+#include <stdbool\&.h>
+#include <stddef\&.h>
+#include <stdlib\&.h>
+#include <stdio\&.h>
+#include <systemd/sd\-bus\&.h>
+
+#define _cleanup_(f) __attribute__((cleanup(f)))
+
+typedef struct object {
+  char *name;
+  uint32_t number;
+} object;
+
+static int method(sd_bus_message *m, void *userdata, sd_bus_error *error) {
+  printf("Got called with userdata=%p\en", userdata);
+  return 1;
+}
+
+static const sd_bus_vtable vtable[] = {
+        SD_BUS_VTABLE_START(0),
+        SD_BUS_METHOD(
+            "Method1", "s", "s", method, 0),
+        SD_BUS_METHOD_WITH_NAMES_OFFSET(
+            "Method2",
+            "so", SD_BUS_PARAM(string) SD_BUS_PARAM(path),
+            "s", SD_BUS_PARAM(returnstring),
+            method, offsetof(object, number),
+            SD_BUS_VTABLE_DEPRECATED),
+        SD_BUS_METHOD_WITH_ARGS_OFFSET(
+            "Method3",
+            SD_BUS_ARGS("s", string, "o", path),
+            SD_BUS_RESULT("s", returnstring),
+            method, offsetof(object, number),
+            SD_BUS_VTABLE_UNPRIVILEGED),
+        SD_BUS_METHOD_WITH_ARGS(
+            "Method4",
+            SD_BUS_NO_ARGS,
+            SD_BUS_NO_RESULT,
+            method,
+            SD_BUS_VTABLE_UNPRIVILEGED),
+        SD_BUS_SIGNAL(
+            "Signal1",
+            "so",
+            0),
+        SD_BUS_SIGNAL_WITH_NAMES(
+            "Signal2",
+            "so", SD_BUS_PARAM(string) SD_BUS_PARAM(path),
+            0),
+        SD_BUS_SIGNAL_WITH_ARGS(
+            "Signal3",
+            SD_BUS_ARGS("s", string, "o", path),
+            0),
+        SD_BUS_WRITABLE_PROPERTY(
+            "AutomaticStringProperty", "s", NULL, NULL,
+            offsetof(object, name),
+            SD_BUS_VTABLE_PROPERTY_EMITS_CHANGE),
+        SD_BUS_WRITABLE_PROPERTY(
+            "AutomaticIntegerProperty", "u", NULL, NULL,
+            offsetof(object, number),
+            SD_BUS_VTABLE_PROPERTY_EMITS_INVALIDATION),
+        SD_BUS_VTABLE_END
+};
+
+#define check(x) ({                             \e
+  int r = x;                                    \e
+  errno = r < 0 ? \-r : 0;                       \e
+  printf(#x ": %m\en");                          \e
+  if (r < 0)                                    \e
+    return EXIT_FAILURE;                        \e
+  })
+
+int main(int argc, char **argv) {
+  _cleanup_(sd_bus_flush_close_unrefp) sd_bus *bus = NULL;
+
+  sd_bus_default(&bus);
+
+  object object = { \&.number = 666 };
+  check((object\&.name = strdup("name")) != NULL);
+
+  check(sd_bus_add_object_vtable(bus, NULL, "/object",
+                                 "org\&.freedesktop\&.systemd\&.VtableExample",
+                                 vtable,
+                                 &object));
+
+  for (;;) {
+    check(sd_bus_wait(bus, UINT64_MAX));
+    check(sd_bus_process(bus, NULL));
+  }
+
+  free(object\&.name);
+
+  return 0;
+}
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+This creates a simple client on the bus (the user bus, when run as normal user)\&. We may use the D\-Bus
+\fBorg\&.freedesktop\&.DBus\&.Introspectable\&.Introspect\fR
+call to acquire the XML description of the interface:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+<!DOCTYPE node PUBLIC "\-//freedesktop//DTD D\-BUS Object Introspection 1\&.0//EN"
+"http://www\&.freedesktop\&.org/standards/dbus/1\&.0/introspect\&.dtd">
+<node>
+ <interface name="org\&.freedesktop\&.DBus\&.Peer">
+  <method name="Ping"/>
+  <method name="GetMachineId">
+   <arg type="s" name="machine_uuid" direction="out"/>
+  </method>
+ </interface>
+ <interface name="org\&.freedesktop\&.DBus\&.Introspectable">
+  <method name="Introspect">
+   <arg name="data" type="s" direction="out"/>
+  </method>
+ </interface>
+ <interface name="org\&.freedesktop\&.DBus\&.Properties">
+  <method name="Get">
+   <arg name="interface" direction="in" type="s"/>
+   <arg name="property" direction="in" type="s"/>
+   <arg name="value" direction="out" type="v"/>
+  </method>
+  <method name="GetAll">
+   <arg name="interface" direction="in" type="s"/>
+   <arg name="properties" direction="out" type="a{sv}"/>
+  </method>
+  <method name="Set">
+   <arg name="interface" direction="in" type="s"/>
+   <arg name="property" direction="in" type="s"/>
+   <arg name="value" direction="in" type="v"/>
+  </method>
+  <signal name="PropertiesChanged">
+   <arg type="s" name="interface"/>
+   <arg type="a{sv}" name="changed_properties"/>
+   <arg type="as" name="invalidated_properties"/>
+  </signal>
+ </interface>
+ <interface name="org\&.freedesktop\&.systemd\&.VtableExample">
+  <method name="Method1">
+   <arg type="s" direction="in"/>
+   <arg type="s" direction="out"/>
+  </method>
+  <method name="Method2">
+   <arg type="s" name="string" direction="in"/>
+   <arg type="o" name="path" direction="in"/>
+   <arg type="s" name="returnstring" direction="out"/>
+   <annotation name="org\&.freedesktop\&.DBus\&.Deprecated" value="true"/>
+  </method>
+  <property name="AutomaticStringProperty" type="s" access="readwrite">
+  </property>
+  <property name="AutomaticIntegerProperty" type="u" access="readwrite">
+   <annotation name="org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal" value="invalidates"/>
+  </property>
+ </interface>
+</node>
+
+.fi
+.if n \{\
+.RE
+.\}
+.SH "RETURN VALUE"
+.PP
+On success,
+\fBsd_bus_add_object_vtable()\fR
+and
+\fBsd_bus_add_fallback_vtable()\fR
+return a non\-negative integer\&. On failure, they return a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+One of the required parameters is
+\fBNULL\fR
+or invalid\&. A reserved D\-Bus interface was passed as the
+\fIinterface\fR
+parameter\&.
+.RE
+.PP
+\fB\-ENOPKG\fR
+.RS 4
+The bus cannot be resolved\&.
+.RE
+.PP
+\fB\-ECHILD\fR
+.RS 4
+The bus was created in a different process\&.
+.RE
+.PP
+\fB\-ENOMEM\fR
+.RS 4
+Memory allocation failed\&.
+.RE
+.PP
+\fB\-EPROTOTYPE\fR
+.RS 4
+\fBsd_bus_add_object_vtable()\fR
+and
+\fBsd_bus_add_fallback_vtable()\fR
+have been both called for the same bus object path, which is not allowed\&.
+.RE
+.PP
+\fB\-EEXIST\fR
+.RS 4
+This vtable has already been registered for this
+\fIinterface\fR
+and
+\fIpath\fR\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsd-bus\fR(3),
+\fBbusctl\fR(1),
+\fBsd_bus_emit_properties_changed\fR(3),
+\fBsd_bus_emit_object_added\fR(3)
+.SH "NOTES"
+.IP " 1." 4
+D-Bus annotations
+.RS 4
+\%https://dbus.freedesktop.org/doc/dbus-specification.html#introspection-format
+.RE

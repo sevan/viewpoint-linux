@@ -1,0 +1,151 @@
+'\" t
+.TH "SD_BUS_SEND" "3" "" "systemd 248" "sd_bus_send"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_send, sd_bus_send_to, sd_bus_message_send \- Queue a D\-Bus message for transfer
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_send('u
+.BI "int sd_bus_send(sd_bus\ *" "bus" ", sd_bus_message\ *" "m" ", uint64_t\ *" "cookie" ");"
+.HP \w'int\ sd_bus_send_to('u
+.BI "int sd_bus_send_to(sd_bus\ *" "bus" ", sd_bus_message\ *" "m" ", const\ char\ *" "destination" ", uint64_t\ *" "cookie" ");"
+.HP \w'int\ sd_bus_message_send('u
+.BI "int sd_bus_message_send(sd_bus_message\ *" "m" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_send()\fR
+queues the bus message object
+\fIm\fR
+for transfer\&. If
+\fIbus\fR
+is
+\fBNULL\fR, the bus that
+\fIm\fR
+is attached to is used\&.
+\fIbus\fR
+only needs to be set when the message is sent to a different bus than the one it\*(Aqs attached to, for example when forwarding messages\&. If the output parameter
+\fIcookie\fR
+is not
+\fBNULL\fR, it is set to the message identifier\&. This value can later be used to match incoming replies to their corresponding messages\&. If
+\fIcookie\fR
+is set to
+\fBNULL\fR
+and the message is not sealed,
+\fBsd_bus_send()\fR
+assumes the message
+\fIm\fR
+doesn\*(Aqt expect a reply and adds the necessary headers to indicate this\&.
+.PP
+Note that in most scenarios,
+\fBsd_bus_send()\fR
+should not be called directly\&. Instead, use higher level functions such as
+\fBsd_bus_call_method\fR(3)
+and
+\fBsd_bus_reply_method_return\fR(3)
+which call
+\fBsd_bus_send()\fR
+internally\&.
+.PP
+\fBsd_bus_send_to()\fR
+is a shorthand for sending a message to a specific destination\&. It\*(Aqs main use case is to simplify sending unicast signal messages (signals that only have a single receiver)\&. It\*(Aqs behavior is similar to calling
+\fBsd_bus_message_set_destination\fR(3)
+followed by calling
+\fBsd_bus_send()\fR\&.
+.PP
+\fBsd_bus_send()\fR/\fBsd_bus_send_to()\fR
+will write the message directly to the underlying transport (e\&.g\&. kernel socket buffer) if possible\&. If the connection is not set up fully yet the message is queued locally\&. If the transport buffers are congested any unwritten message data is queued locally, too\&. If the connection has been closed or is currently being closed the call fails\&.
+\fBsd_bus_process\fR(3)
+should be invoked to write out any queued message data to the transport\&.
+.PP
+\fBsd_bus_message_send()\fR
+is the same as
+\fBsd_bus_send()\fR
+but without the first and last argument\&.
+\fBsd_bus_message_send(m)\fR
+is equivalent to
+\fBsd_bus_send(sd_bus_message_get_bus(m), m, NULL)\fR\&.
+.SH "RETURN VALUE"
+.PP
+On success, these functions return a non\-negative integer\&. On failure, they return a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+The input parameter
+\fIm\fR
+is
+\fBNULL\fR\&.
+.RE
+.PP
+\fB\-EOPNOTSUPP\fR
+.RS 4
+The bus connection does not support sending file descriptors\&.
+.RE
+.PP
+\fB\-ECHILD\fR
+.RS 4
+The bus connection was allocated in a parent process and is being reused in a child process after
+\fBfork()\fR\&.
+.RE
+.PP
+\fB\-ENOBUFS\fR
+.RS 4
+The bus connection\*(Aqs write queue is full\&.
+.RE
+.PP
+\fB\-ENOTCONN\fR
+.RS 4
+The input parameter
+\fIbus\fR
+is
+\fBNULL\fR
+or the bus is not connected\&.
+.RE
+.PP
+\fB\-ECONNRESET\fR
+.RS 4
+The bus connection was closed while waiting for the response\&.
+.RE
+.PP
+\fB\-ENOMEM\fR
+.RS 4
+Memory allocation failed\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd_bus_call_method\fR(3),
+\fBsd_bus_message_set_destination\fR(3),
+\fBsd_bus_reply_method_return\fR(3),
+\fBsd_bus_process\fR(3)

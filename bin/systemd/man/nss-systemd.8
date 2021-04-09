@@ -1,0 +1,164 @@
+'\" t
+.TH "NSS\-SYSTEMD" "8" "" "systemd 248" "nss-systemd"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+nss-systemd, libnss_systemd.so.2 \- UNIX user and group name resolution for user/group lookup via Varlink
+.SH "SYNOPSIS"
+.PP
+libnss_systemd\&.so\&.2
+.SH "DESCRIPTION"
+.PP
+\fBnss\-systemd\fR
+is a plug\-in module for the GNU Name Service Switch (NSS) functionality of the GNU C Library (\fBglibc\fR), providing UNIX user and group name resolution for services implementing the
+\m[blue]\fBUser/Group Record Lookup API via Varlink\fR\m[]\&\s-2\u[1]\d\s+2, such as the system and service manager
+\fBsystemd\fR(1)
+(for its
+\fIDynamicUser=\fR
+feature, see
+\fBsystemd.exec\fR(5)
+for details),
+\fBsystemd-homed.service\fR(8), or
+\fBsystemd-machined.service\fR(8)\&.
+.PP
+This module also ensures that the root and nobody users and groups (i\&.e\&. the users/groups with the UIDs/GIDs 0 and 65534) remain resolvable at all times, even if they aren\*(Aqt listed in
+/etc/passwd
+or
+/etc/group, or if these files are missing\&.
+.PP
+This module preferably utilizes
+\fBsystemd-userdbd.service\fR(8)
+for resolving users and groups, but also works without the service running\&.
+.PP
+To activate the NSS module, add
+"systemd"
+to the lines starting with
+"passwd:"
+and
+"group:"
+in
+/etc/nsswitch\&.conf\&.
+.PP
+It is recommended to place
+"systemd"
+after the
+"files"
+or
+"compat"
+entry of the
+/etc/nsswitch\&.conf
+lines so that
+/etc/passwd
+and
+/etc/group
+based mappings take precedence\&.
+.SH "CONFIGURATION IN /ETC/NSSWITCH\&.CONF"
+.PP
+Here is an example
+/etc/nsswitch\&.conf
+file that enables
+\fBnss\-systemd\fR
+correctly:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+passwd:         compat \fBsystemd\fR
+group:          compat [SUCCESS=merge] \fBsystemd\fR
+shadow:         compat
+
+hosts:          mymachines resolve [!UNAVAIL=return] files myhostname dns
+networks:       files
+
+protocols:      db files
+services:       db files
+ethers:         db files
+rpc:            db files
+
+netgroup:       nis
+.fi
+.if n \{\
+.RE
+.\}
+.SH "EXAMPLE: MAPPINGS PROVIDED BY SYSTEMD\-MACHINED\&.SERVICE"
+.PP
+The container
+"rawhide"
+is spawned using
+\fBsystemd-nspawn\fR(1):
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+# systemd\-nspawn \-M rawhide \-\-boot \-\-network\-veth \-\-private\-users=pick
+Spawning container rawhide on /var/lib/machines/rawhide\&.
+Selected user namespace base 20119552 and range 65536\&.
+\&.\&.\&.
+
+$ machinectl \-\-max\-addresses=3
+MACHINE CLASS     SERVICE        OS     VERSION ADDRESSES
+rawhide container systemd\-nspawn fedora 30      169\&.254\&.40\&.164 fe80::94aa:3aff:fe7b:d4b9
+
+$ getent passwd vu\-rawhide\-0 vu\-rawhide\-81
+vu\-rawhide\-0:*:20119552:65534:vu\-rawhide\-0:/:/usr/sbin/nologin
+vu\-rawhide\-81:*:20119633:65534:vu\-rawhide\-81:/:/usr/sbin/nologin
+
+$ getent group vg\-rawhide\-0 vg\-rawhide\-81
+vg\-rawhide\-0:*:20119552:
+vg\-rawhide\-81:*:20119633:
+
+$ ps \-o user:15,pid,tty,command \-e|grep \*(Aq^vu\-rawhide\*(Aq
+vu\-rawhide\-0      692 ?        /usr/lib/systemd/systemd
+vu\-rawhide\-0      731 ?        /usr/lib/systemd/systemd\-journald
+vu\-rawhide\-192    734 ?        /usr/lib/systemd/systemd\-networkd
+vu\-rawhide\-193    738 ?        /usr/lib/systemd/systemd\-resolved
+vu\-rawhide\-0      742 ?        /usr/lib/systemd/systemd\-logind
+vu\-rawhide\-81     744 ?        /usr/bin/dbus\-daemon \-\-system \-\-address=systemd: \-\-nofork \-\-nopidfile \-\-systemd\-activation \-\-syslog\-only
+vu\-rawhide\-0      746 ?        /usr/sbin/sshd \-D \&.\&.\&.
+vu\-rawhide\-0      752 ?        /usr/lib/systemd/systemd \-\-user
+vu\-rawhide\-0      753 ?        (sd\-pam)
+vu\-rawhide\-0     1628 ?        login \-\- zbyszek
+vu\-rawhide\-1000  1630 ?        /usr/lib/systemd/systemd \-\-user
+vu\-rawhide\-1000  1631 ?        (sd\-pam)
+vu\-rawhide\-1000  1637 pts/8    \-zsh
+.fi
+.if n \{\
+.RE
+.\}
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsystemd.exec\fR(5),
+\fBnss-resolve\fR(8),
+\fBnss-myhostname\fR(8),
+\fBnss-mymachines\fR(8),
+\fBsystemd-userdbd.service\fR(8),
+\fBsystemd-homed.service\fR(8),
+\fBsystemd-machined.service\fR(8),
+\fBnsswitch.conf\fR(5),
+\fBgetent\fR(1)
+.SH "NOTES"
+.IP " 1." 4
+User/Group Record Lookup API via Varlink
+.RS 4
+\%https://systemd.io/USER_GROUP_API
+.RE

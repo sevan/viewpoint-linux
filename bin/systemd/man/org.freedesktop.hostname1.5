@@ -1,0 +1,577 @@
+'\" t
+.TH "ORG\&.FREEDESKTOP\&.HOSTNAME1" "5" "" "systemd 248" "org.freedesktop.hostname1"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+org.freedesktop.hostname1 \- The D\-Bus interface of systemd\-hostnamed
+.SH "INTRODUCTION"
+.PP
+\fBsystemd-hostnamed.service\fR(8)
+is a system service that can be used to control the hostname and related machine metadata from user programs\&. This page describes the hostname semantics and the D\-Bus interface\&.
+.SH "THE D\-BUS API"
+.PP
+The service exposes the following interfaces on the bus:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+node /org/freedesktop/hostname1 {
+  interface org\&.freedesktop\&.hostname1 {
+    methods:
+      SetHostname(in  s hostname,
+                  in  b interactive);
+      SetStaticHostname(in  s hostname,
+                        in  b interactive);
+      SetPrettyHostname(in  s hostname,
+                        in  b interactive);
+      SetIconName(in  s icon,
+                  in  b interactive);
+      SetChassis(in  s chassis,
+                 in  b interactive);
+      SetDeployment(in  s deployment,
+                    in  b interactive);
+      SetLocation(in  s location,
+                  in  b interactive);
+      GetProductUUID(in  b interactive,
+                     out ay uuid);
+    properties:
+      readonly s Hostname = \*(Aq\&.\&.\&.\*(Aq;
+      readonly s StaticHostname = \*(Aq\&.\&.\&.\*(Aq;
+      readonly s PrettyHostname = \*(Aq\&.\&.\&.\*(Aq;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
+      readonly s DefaultHostname = \*(Aq\&.\&.\&.\*(Aq;
+      readonly s HostnameSource = \*(Aq\&.\&.\&.\*(Aq;
+      readonly s IconName = \*(Aq\&.\&.\&.\*(Aq;
+      readonly s Chassis = \*(Aq\&.\&.\&.\*(Aq;
+      readonly s Deployment = \*(Aq\&.\&.\&.\*(Aq;
+      readonly s Location = \*(Aq\&.\&.\&.\*(Aq;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
+      readonly s KernelName = \*(Aq\&.\&.\&.\*(Aq;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
+      readonly s KernelRelease = \*(Aq\&.\&.\&.\*(Aq;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
+      readonly s KernelVersion = \*(Aq\&.\&.\&.\*(Aq;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
+      readonly s OperatingSystemPrettyName = \*(Aq\&.\&.\&.\*(Aq;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
+      readonly s OperatingSystemCPEName = \*(Aq\&.\&.\&.\*(Aq;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
+      readonly s HomeURL = \*(Aq\&.\&.\&.\*(Aq;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
+      readonly s HardwareVendor = \*(Aq\&.\&.\&.\*(Aq;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
+      readonly s HardwareModel = \*(Aq\&.\&.\&.\*(Aq;
+  };
+  interface org\&.freedesktop\&.DBus\&.Peer { \&.\&.\&. };
+  interface org\&.freedesktop\&.DBus\&.Introspectable { \&.\&.\&. };
+  interface org\&.freedesktop\&.DBus\&.Properties { \&.\&.\&. };
+};
+    
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.PP
+Whenever the hostname or other metadata is changed via the daemon,
+\fBPropertyChanged\fR
+signals are sent out to subscribed clients\&. Changing a hostname using this interface is authenticated via
+\m[blue]\fBpolkit\fR\m[]\&\s-2\u[1]\d\s+2\&.
+.SH "SEMANTICS"
+.PP
+The
+\fIStaticHostname\fR
+property exposes the "static" hostname configured in
+/etc/hostname\&. It is not always in sync with the current hostname as returned by the
+\fBgethostname\fR(3)
+system call\&. If no static hostname is configured this property will be the empty string\&.
+.PP
+When
+\fBsystemd\fR(1)
+or
+\fBsystemd-hostnamed.service\fR(8)
+set the hostname, this static hostname
+\fIhas the highest priority\fR\&.
+.PP
+The
+\fIHostname\fR
+property exposes the actual hostname configured in the kernel via
+\fBsethostname\fR(3)\&. It can be different from the static hostname\&. This property is never empty\&.
+.PP
+The
+\fIPrettyHostname\fR
+property exposes the
+\fIpretty hostname\fR
+which is a free\-form UTF\-8 hostname for presentation to the user\&. User interfaces should ensure that the pretty hostname and the static hostname stay in sync\&. E\&.g\&. when the former is
+"Lennart\(cqs Computer"
+the latter should be
+"lennarts\-computer"\&. If no pretty hostname is set this setting will be the empty string\&. Applications should then find a suitable fallback, such as the dynamic hostname\&.
+.PP
+The
+\fIDefaultHostname\fR
+property exposes the default hostname (configured through
+\fBos-release\fR(5), or a fallback set at compilation time)\&.
+.PP
+The
+\fIHostnameSource\fR
+property exposes the origin of the currently configured hostname\&. One of
+"static"
+(set from
+/etc/hostname),
+"transient"
+(a non\-permanent hostname from an external source),
+"default"
+(the value from
+os\-release
+or the the compiled\-in fallback)\&.
+.PP
+The
+\fIIconName\fR
+property exposes the
+\fIicon name\fR
+following the XDG icon naming spec\&. If not set, information such as the chassis type (see below) is used to find a suitable fallback icon name (i\&.e\&.
+"computer\-laptop"
+vs\&.
+"computer\-desktop"
+is picked based on the chassis information)\&. If no such data is available, the empty string is returned\&. In that case an application should fall back to a replacement icon, for example
+"computer"\&. If this property is set to the empty string, the automatic fallback name selection is enabled again\&.
+.PP
+The
+\fIChassis\fR
+property exposes a
+\fIchassis type\fR, one of the currently defined chassis types:
+"desktop",
+"laptop",
+"server",
+"tablet",
+"handset", as well as the special chassis types
+"vm"
+and
+"container"
+for virtualized systems\&. Note that in most cases the chassis type will be determined automatically from DMI/SMBIOS/ACPI firmware information\&. Writing to this setting is hence useful only to override misdetected chassis types, or to configure the chassis type if it could not be auto\-detected\&. Set this property to the empty string to reenable the automatic detection of the chassis type from firmware information\&.
+.PP
+Note that
+systemd\-hostnamed
+starts only on request and terminates after a short idle period\&. This effectively means that
+\fBPropertyChanged\fR
+messages are not sent out for changes made directly on the files (as in: administrator edits the files with vi)\&. This is the intended behavior: manual configuration changes should require manual reloading\&.
+.PP
+The transient (dynamic) hostname exposed by the
+\fIHostname\fR
+property maps directly to the kernel hostname\&. This hostname should be assumed to be highly dynamic, and hence should be watched directly, without depending on
+\fBPropertyChanged\fR
+messages from
+systemd\-hostnamed\&. To accomplish this, open
+/proc/sys/kernel/hostname
+and
+\fBpoll\fR(3)
+for
+\fBSIGHUP\fR
+which is triggered by the kernel every time the hostname changes\&. Again: this is special for the transient (dynamic) hostname, and does not apply to the configured (fixed) hostname\&.
+.PP
+Applications may read the hostname data directly if hostname change notifications are not necessary\&. Use
+\fBgethostname\fR(3),
+/etc/hostname
+(possibly with per\-distribution fallbacks), and
+\fBmachine-info\fR(3)
+for that\&. For more information on these files and syscalls see the respective man pages\&.
+.SS "Methods"
+.PP
+\fBSetHostname()\fR
+sets the transient (dynamic) hostname, which is used if no static hostname is set\&. This value must be an internet\-style hostname, 7\-bit lowercase ASCII, no special chars/spaces\&. An empty string will unset the transient hostname\&.
+.PP
+\fBSetStaticHostname()\fR
+sets the static hostname which is exposed by the
+\fIStaticHostname\fR
+property\&. When called with an empty argument, the static configuration in
+/etc/hostname
+is removed\&. Since the static hostname has the highest priority, calling this function usually affects also the
+\fIHostname\fR
+property and the effective hostname configured in the kernel\&.
+.PP
+\fBSetPrettyHostname()\fR
+sets the pretty hostname which is exposed by the
+\fIPrettyHostname\fR
+property\&.
+.PP
+\fBSetIconName()\fR,
+\fBSetChassis()\fR,
+\fBSetDeployment()\fR, and
+\fBSetLocation()\fR
+set the properties
+\fIIconName\fR
+(the name of the icon representing for the machine),
+\fIChassis\fR
+(the machine form factor),
+\fIDeployment\fR
+(the system deployment environment), and
+\fILocation\fR
+(physical system location), respectively\&.
+.PP
+\fIPrettyHostname\fR,
+\fIIconName\fR,
+\fIChassis\fR,
+\fIDeployment\fR, and
+\fILocation\fR
+are stored in
+/etc/machine\-info\&. See
+\fBmachine-info\fR(5)
+for the semantics of those settings\&.
+.PP
+\fBGetProductUUID()\fR
+returns the "product uuid" as exposed by the kernel based on DMI information in
+/sys/class/dmi/id/product_uuid\&. Reading the file directly requires root privileges, and this method allows access to unprivileged clients through the polkit framework\&.
+.PP
+\fIKernelName\fR,
+\fIKernelRelease\fR, and
+\fIKernelVersion\fR
+expose the kernel name (e\&.g\&.
+"Linux"), release (e\&.g\&.
+"5\&.0\&.0\-11"), and version (i\&.e\&. the build number, e\&.g\&.
+"#11") as reported by
+\fBuname\fR(2)\&.
+\fIOperatingSystemPrettyName\fR,
+\fIOperatingSystemCPEName\fR, and
+\fIHomeURL\fR
+expose the
+\fIPRETTY_NAME=\fR,
+\fICPE_NAME=\fR
+and
+\fIHOME_URL=\fR
+fields from
+\fBos-release\fR(5)\&. The purpose of those properties is to allow remote clients to access this information over D\-Bus\&. Local clients can access the information directly\&.
+.SS "Security"
+.PP
+The
+\fIinteractive\fR
+boolean parameters can be used to control whether polkit should interactively ask the user for authentication credentials if required\&.
+.PP
+The polkit action for
+\fBSetHostname()\fR
+is
+org\&.freedesktop\&.hostname1\&.set\-hostname\&. For
+\fBSetStaticHostname()\fR
+and
+\fBSetPrettyHostname()\fR
+it is
+org\&.freedesktop\&.hostname1\&.set\-static\-hostname\&. For
+\fBSetIconName()\fR,
+\fBSetChassis()\fR,
+\fBSetDeployment()\fR
+and
+\fBSetLocation()\fR
+it is
+org\&.freedesktop\&.hostname1\&.set\-machine\-info\&.
+.SH "RECOMMENDATIONS"
+.PP
+Here are three examples that show how the pretty hostname and the icon name should be used:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+When registering DNS\-SD services: use the pretty hostname in the service name, and pass the icon name in the TXT data, if there is an icon name\&. Browsing clients can then show the server icon on each service\&. This is especially useful for WebDAV applications or UPnP media sharing\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Set the bluetooth name to the pretty hostname\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+When your file browser has a "Computer" icon, replace the name with the pretty hostname if set, and the icon with the icon name, if it is set\&.
+.RE
+.PP
+To properly handle name lookups with changing local hostnames without having to edit
+/etc/hosts, we recommend using
+systemd\-hostnamed
+in combination with
+\fBnss-myhostname\fR(3)\&.
+.PP
+Here are some recommendations to follow when generating a static (internet) hostname from a pretty name:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Generate a single DNS label only, not an FQDN\&. That means no dots allowed\&. Strip them, or replace them with
+"\-"\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+It\*(Aqs probably safer to not use any non\-ASCII chars, even if DNS allows this in some way these days\&. In fact, restrict your charset to
+"a\-zA\-Z0\-9"
+and
+"\-"\&. Strip other chars, or try to replace them in some smart way with chars from this set, for example
+"ä"
+→
+"ae", and use
+"\-"
+as the replacement for all punctuation characters and whitespace\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Try to avoid creating repeated
+"\-", as well as
+"\-"
+as the first or last char\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Limit the hostname to 63 chars, which is the length of a DNS label\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+If after stripping special chars the empty string is the result, you can pass this as\-is to
+systemd\-hostnamed
+in which case it will automatically use a suitable fallback\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Uppercase charaacters should be replaced with their lowercase equivalents\&.
+.RE
+.PP
+Note that while
+systemd\-hostnamed
+applies some checks to the hostname you pass they are much looser than the recommendations above\&. For example,
+systemd\-hostnamed
+will also accept
+"_"
+in the hostname, but we recommend not using this to avoid clashes with DNS\-SD service types\&. Also
+systemd\-hostnamed
+allows longer hostnames, but because of the DNS label limitations, we recommend not making use of this\&.
+.PP
+Here are a couple of example conversions:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+"Lennart\*(Aqs PC"
+→
+"lennarts\-pc"
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+"Müllers Computer"
+→
+"muellers\-computer"
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+"Voran!"
+→
+"voran"
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+"Es war einmal ein Männlein"
+→
+"es\-war\-einmal\-ein\-maennlein"
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+"Jawoll\&. Ist doch wahr!"
+→
+"jawoll\-ist\-doch\-wahr"
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+"レナート"
+→
+"localhost"
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+"\&.\&.\&.zack!!! zack!\&.\&.\&."
+→
+"zack\-zack"
+.RE
+.PP
+Of course, an already valid internet hostname label you enter and pass through this conversion should stay unmodified, so that users have direct control of it, if they want \(em by simply ignoring the fact that the pretty hostname is pretty and just edit it as if it was the normal internet name\&.
+.SH "VERSIONING"
+.PP
+These D\-Bus interfaces follow
+\m[blue]\fBthe usual interface versioning guidelines\fR\m[]\&\s-2\u[2]\d\s+2\&.
+.SH "EXAMPLES"
+.PP
+\fBExample\ \&1.\ \&Introspect org\&.freedesktop\&.hostname1 on the bus\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ gdbus introspect \-\-system \e
+  \-\-dest org\&.freedesktop\&.hostname1 \e
+  \-\-object\-path /org/freedesktop/hostname1
+      
+.fi
+.if n \{\
+.RE
+.\}
+.SH "SEE ALSO"
+.PP
+David Zeuthen\*(Aqs original Fedora
+\m[blue]\fBFeature page about xdg\-hostname\fR\m[]\&\s-2\u[3]\d\s+2
+.SH "NOTES"
+.IP " 1." 4
+polkit
+.RS 4
+\%https://www.freedesktop.org/software/polkit/docs/latest/
+.RE
+.IP " 2." 4
+the usual interface versioning guidelines
+.RS 4
+\%http://0pointer.de/blog/projects/versioning-dbus.html
+.RE
+.IP " 3." 4
+Feature page about xdg-hostname
+.RS 4
+\%https://fedoraproject.org/wiki/Features/BetterHostname
+.RE

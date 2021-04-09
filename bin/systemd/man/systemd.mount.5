@@ -1,0 +1,597 @@
+'\" t
+.TH "SYSTEMD\&.MOUNT" "5" "" "systemd 248" "systemd.mount"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd.mount \- Mount unit configuration
+.SH "SYNOPSIS"
+.PP
+\fImount\fR\&.mount
+.SH "DESCRIPTION"
+.PP
+A unit configuration file whose name ends in
+"\&.mount"
+encodes information about a file system mount point controlled and supervised by systemd\&.
+.PP
+This man page lists the configuration options specific to this unit type\&. See
+\fBsystemd.unit\fR(5)
+for the common options of all unit configuration files\&. The common configuration items are configured in the generic [Unit] and [Install] sections\&. The mount specific configuration options are configured in the [Mount] section\&.
+.PP
+Additional options are listed in
+\fBsystemd.exec\fR(5), which define the execution environment the
+\fBmount\fR(8)
+program is executed in, and in
+\fBsystemd.kill\fR(5), which define the way the processes are terminated, and in
+\fBsystemd.resource-control\fR(5), which configure resource control settings for the processes of the service\&.
+.PP
+Note that the options
+\fIUser=\fR
+and
+\fIGroup=\fR
+are not useful for mount units\&. systemd passes two parameters to
+\fBmount\fR(8); the values of
+\fIWhat=\fR
+and
+\fIWhere=\fR\&. When invoked in this way,
+\fBmount\fR(8)
+does not read any options from
+/etc/fstab, and must be run as UID 0\&.
+.PP
+Mount units must be named after the mount point directories they control\&. Example: the mount point
+/home/lennart
+must be configured in a unit file
+home\-lennart\&.mount\&. For details about the escaping logic used to convert a file system path to a unit name, see
+\fBsystemd.unit\fR(5)\&. Note that mount units cannot be templated, nor is possible to add multiple names to a mount unit by creating additional symlinks to it\&.
+.PP
+Optionally, a mount unit may be accompanied by an automount unit, to allow on\-demand or parallelized mounting\&. See
+\fBsystemd.automount\fR(5)\&.
+.PP
+Mount points created at runtime (independently of unit files or
+/etc/fstab) will be monitored by systemd and appear like any other mount unit in systemd\&. See
+/proc/self/mountinfo
+description in
+\fBproc\fR(5)\&.
+.PP
+Some file systems have special semantics as API file systems for kernel\-to\-userspace and userspace\-to\-userspace interfaces\&. Some of them may not be changed via mount units, and cannot be disabled\&. For a longer discussion see
+\m[blue]\fBAPI File Systems\fR\m[]\&\s-2\u[1]\d\s+2\&.
+.PP
+The
+\fBsystemd-mount\fR(1)
+command allows creating
+\&.mount
+and
+\&.automount
+units dynamically and transiently from the command line\&.
+.SH "AUTOMATIC DEPENDENCIES"
+.SS "Implicit Dependencies"
+.PP
+The following dependencies are implicitly added:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+If a mount unit is beneath another mount unit in the file system hierarchy, both a requirement dependency and an ordering dependency between both units are created automatically\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Block device backed file systems automatically gain
+\fIBindsTo=\fR
+and
+\fIAfter=\fR
+type dependencies on the device unit encapsulating the block device (see below)\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+If traditional file system quota is enabled for a mount unit, automatic
+\fIWants=\fR
+and
+\fIBefore=\fR
+dependencies on
+systemd\-quotacheck\&.service
+and
+quotaon\&.service
+are added\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Additional implicit dependencies may be added as result of execution and resource control parameters as documented in
+\fBsystemd.exec\fR(5)
+and
+\fBsystemd.resource-control\fR(5)\&.
+.RE
+.SS "Default Dependencies"
+.PP
+The following dependencies are added unless
+\fIDefaultDependencies=no\fR
+is set:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+All mount units acquire automatic
+\fIBefore=\fR
+and
+\fIConflicts=\fR
+on
+umount\&.target
+in order to be stopped during shutdown\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Mount units referring to local file systems automatically gain an
+\fIAfter=\fR
+dependency on
+local\-fs\-pre\&.target, and a
+\fIBefore=\fR
+dependency on
+local\-fs\&.target
+unless
+\fBnofail\fR
+mount option is set\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Network mount units automatically acquire
+\fIAfter=\fR
+dependencies on
+remote\-fs\-pre\&.target,
+network\&.target
+and
+network\-online\&.target, and gain a
+\fIBefore=\fR
+dependency on
+remote\-fs\&.target
+unless
+\fBnofail\fR
+mount option is set\&. Towards the latter a
+\fIWants=\fR
+unit is added as well\&.
+.RE
+.PP
+Mount units referring to local and network file systems are distinguished by their file system type specification\&. In some cases this is not sufficient (for example network block device based mounts, such as iSCSI), in which case
+\fB_netdev\fR
+may be added to the mount option string of the unit, which forces systemd to consider the mount unit a network mount\&.
+.SH "FSTAB"
+.PP
+Mount units may either be configured via unit files, or via
+/etc/fstab
+(see
+\fBfstab\fR(5)
+for details)\&. Mounts listed in
+/etc/fstab
+will be converted into native units dynamically at boot and when the configuration of the system manager is reloaded\&. In general, configuring mount points through
+/etc/fstab
+is the preferred approach\&. See
+\fBsystemd-fstab-generator\fR(8)
+for details about the conversion\&.
+.PP
+The NFS mount option
+\fBbg\fR
+for NFS background mounts as documented in
+\fBnfs\fR(5)
+is detected by
+\fBsystemd\-fstab\-generator\fR
+and the options are transformed so that systemd fulfills the job\-control implications of that option\&. Specifically
+\fBsystemd\-fstab\-generator\fR
+acts as though
+"x\-systemd\&.mount\-timeout=infinity,retry=10000"
+was prepended to the option list, and
+"fg,nofail"
+was appended\&. Depending on specific requirements, it may be appropriate to provide some of these options explicitly, or to make use of the
+"x\-systemd\&.automount"
+option described below instead of using
+"bg"\&.
+.PP
+When reading
+/etc/fstab
+a few special mount options are understood by systemd which influence how dependencies are created for mount points\&. systemd will create a dependency of type
+\fIWants=\fR
+or
+\fBRequires=\fR
+(see option
+\fBnofail\fR
+below), from either
+local\-fs\&.target
+or
+remote\-fs\&.target, depending whether the file system is local or remote\&.
+.PP
+\fBx\-systemd\&.requires=\fR
+.RS 4
+Configures a
+\fIRequires=\fR
+and an
+\fIAfter=\fR
+dependency between the created mount unit and another systemd unit, such as a device or mount unit\&. The argument should be a unit name, or an absolute path to a device node or mount point\&. This option may be specified more than once\&. This option is particularly useful for mount point declarations that need an additional device to be around (such as an external journal device for journal file systems) or an additional mount to be in place (such as an overlay file system that merges multiple mount points)\&. See
+\fIAfter=\fR
+and
+\fIRequires=\fR
+in
+\fBsystemd.unit\fR(5)
+for details\&.
+.sp
+Note that this option always applies to the created mount unit only regardless whether
+\fBx\-systemd\&.automount\fR
+has been specified\&.
+.RE
+.PP
+\fBx\-systemd\&.before=\fR, \fBx\-systemd\&.after=\fR
+.RS 4
+In the created mount unit, configures a
+\fIBefore=\fR
+or
+\fIAfter=\fR
+dependency on another systemd unit, such as a mount unit\&. The argument should be a unit name or an absolute path to a mount point\&. This option may be specified more than once\&. This option is particularly useful for mount point declarations with
+\fBnofail\fR
+option that are mounted asynchronously but need to be mounted before or after some unit start, for example, before
+local\-fs\&.target
+unit\&. See
+\fIBefore=\fR
+and
+\fIAfter=\fR
+in
+\fBsystemd.unit\fR(5)
+for details\&.
+.sp
+Note that these options always apply to the created mount unit only regardless whether
+\fBx\-systemd\&.automount\fR
+has been specified\&.
+.RE
+.PP
+\fBx\-systemd\&.wanted\-by=\fR, \fBx\-systemd\&.required\-by=\fR
+.RS 4
+In the created mount unit, configures a
+\fIWantedBy=\fR
+or
+\fIRequiredBy=\fR
+dependency on another unit\&. This option may be specified more than once\&. If this is specified, the normal automatic dependencies on the created mount unit, e\&.g\&.,
+local\-fs\&.target, are not automatically created\&. See
+\fIWantedBy=\fR
+and
+\fIRequiredBy=\fR
+in
+\fBsystemd.unit\fR(5)
+for details\&.
+.RE
+.PP
+\fBx\-systemd\&.requires\-mounts\-for=\fR
+.RS 4
+Configures a
+\fIRequiresMountsFor=\fR
+dependency between the created mount unit and other mount units\&. The argument must be an absolute path\&. This option may be specified more than once\&. See
+\fIRequiresMountsFor=\fR
+in
+\fBsystemd.unit\fR(5)
+for details\&.
+.RE
+.PP
+\fBx\-systemd\&.device\-bound\fR
+.RS 4
+The block device backed file system will be upgraded to
+\fIBindsTo=\fR
+dependency\&. This option is only useful when mounting file systems manually with
+\fBmount\fR(8)
+as the default dependency in this case is
+\fIRequires=\fR\&. This option is already implied by entries in
+/etc/fstab
+or by mount units\&.
+.RE
+.PP
+\fBx\-systemd\&.automount\fR
+.RS 4
+An automount unit will be created for the file system\&. See
+\fBsystemd.automount\fR(5)
+for details\&.
+.RE
+.PP
+\fBx\-systemd\&.idle\-timeout=\fR
+.RS 4
+Configures the idle timeout of the automount unit\&. See
+\fITimeoutIdleSec=\fR
+in
+\fBsystemd.automount\fR(5)
+for details\&.
+.RE
+.PP
+\fBx\-systemd\&.device\-timeout=\fR
+.RS 4
+Configure how long systemd should wait for a device to show up before giving up on an entry from
+/etc/fstab\&. Specify a time in seconds or explicitly append a unit such as
+"s",
+"min",
+"h",
+"ms"\&.
+.sp
+Note that this option can only be used in
+/etc/fstab, and will be ignored when part of the
+\fIOptions=\fR
+setting in a unit file\&.
+.RE
+.PP
+\fBx\-systemd\&.mount\-timeout=\fR
+.RS 4
+Configure how long systemd should wait for the mount command to finish before giving up on an entry from
+/etc/fstab\&. Specify a time in seconds or explicitly append a unit such as
+"s",
+"min",
+"h",
+"ms"\&.
+.sp
+Note that this option can only be used in
+/etc/fstab, and will be ignored when part of the
+\fIOptions=\fR
+setting in a unit file\&.
+.sp
+See
+\fITimeoutSec=\fR
+below for details\&.
+.RE
+.PP
+\fBx\-systemd\&.makefs\fR
+.RS 4
+The file system will be initialized on the device\&. If the device is not "empty", i\&.e\&. it contains any signature, the operation will be skipped\&. It is hence expected that this option remains set even after the device has been initialized\&.
+.sp
+Note that this option can only be used in
+/etc/fstab, and will be ignored when part of the
+\fIOptions=\fR
+setting in a unit file\&.
+.sp
+See
+\fBsystemd-makefs@.service\fR(8)\&.
+.sp
+\fBwipefs\fR(8)
+may be used to remove any signatures from a block device to force
+\fBx\-systemd\&.makefs\fR
+to reinitialize the device\&.
+.RE
+.PP
+\fBx\-systemd\&.growfs\fR
+.RS 4
+The file system will be grown to occupy the full block device\&. If the file system is already at maximum size, no action will be performed\&. It is hence expected that this option remains set even after the file system has been grown\&. Only certain file system types are supported, see
+\fBsystemd-makefs@.service\fR(8)
+for details\&.
+.sp
+Note that this option can only be used in
+/etc/fstab, and will be ignored when part of the
+\fIOptions=\fR
+setting in a unit file\&.
+.RE
+.PP
+\fBx\-systemd\&.rw\-only\fR
+.RS 4
+If a mount operation fails to mount the file system read\-write, it normally tries mounting the file system read\-only instead\&. This option disables that behaviour, and causes the mount to fail immediately instead\&. This option is translated into the
+\fIReadWriteOnly=\fR
+setting in a unit file\&.
+.RE
+.PP
+\fB_netdev\fR
+.RS 4
+Normally the file system type is used to determine if a mount is a "network mount", i\&.e\&. if it should only be started after the network is available\&. Using this option overrides this detection and specifies that the mount requires network\&.
+.sp
+Network mount units are ordered between
+remote\-fs\-pre\&.target
+and
+remote\-fs\&.target, instead of
+local\-fs\-pre\&.target
+and
+local\-fs\&.target\&. They also pull in
+network\-online\&.target
+and are ordered after it and
+network\&.target\&.
+.RE
+.PP
+\fBnoauto\fR, \fBauto\fR
+.RS 4
+With
+\fBnoauto\fR, the mount unit will not be added as a dependency for
+local\-fs\&.target
+or
+remote\-fs\&.target\&. This means that it will not be mounted automatically during boot, unless it is pulled in by some other unit\&. The
+\fBauto\fR
+option has the opposite meaning and is the default\&. Note that the
+\fBnoauto\fR
+option has an effect on the mount unit itself only \(em if
+\fBx\-systemd\&.automount\fR
+is used (see above), then the matching automount unit will still be pulled in by these targets\&.
+.RE
+.PP
+\fBnofail\fR
+.RS 4
+With
+\fBnofail\fR, this mount will be only wanted, not required, by
+local\-fs\&.target
+or
+remote\-fs\&.target\&. Moreover the mount unit is not ordered before these target units\&. This means that the boot will continue without waiting for the mount unit and regardless whether the mount point can be mounted successfully\&.
+.RE
+.PP
+\fBx\-initrd\&.mount\fR
+.RS 4
+An additional filesystem to be mounted in the initramfs\&. See
+initrd\-fs\&.target
+description in
+\fBsystemd.special\fR(7)\&.
+.RE
+.PP
+If a mount point is configured in both
+/etc/fstab
+and a unit file that is stored below
+/usr/, the former will take precedence\&. If the unit file is stored below
+/etc/, it will take precedence\&. This means: native unit files take precedence over traditional configuration files, but this is superseded by the rule that configuration in
+/etc/
+will always take precedence over configuration in
+/usr/\&.
+.SH "OPTIONS"
+.PP
+Mount files must include a [Mount] section, which carries information about the file system mount points it supervises\&. A number of options that may be used in this section are shared with other unit types\&. These options are documented in
+\fBsystemd.exec\fR(5)
+and
+\fBsystemd.kill\fR(5)\&. The options specific to the [Mount] section of mount units are the following:
+.PP
+\fIWhat=\fR
+.RS 4
+Takes an absolute path of a device node, file or other resource to mount\&. See
+\fBmount\fR(8)
+for details\&. If this refers to a device node, a dependency on the respective device unit is automatically created\&. (See
+\fBsystemd.device\fR(5)
+for more information\&.) This option is mandatory\&. Note that the usual specifier expansion is applied to this setting, literal percent characters should hence be written as
+"%%"\&. If this mount is a bind mount and the specified path does not exist yet it is created as directory\&.
+.RE
+.PP
+\fIWhere=\fR
+.RS 4
+Takes an absolute path of a file or directory for the mount point; in particular, the destination cannot be a symbolic link\&. If the mount point does not exist at the time of mounting, it is created as directory\&. This string must be reflected in the unit filename\&. (See above\&.) This option is mandatory\&.
+.RE
+.PP
+\fIType=\fR
+.RS 4
+Takes a string for the file system type\&. See
+\fBmount\fR(8)
+for details\&. This setting is optional\&.
+.RE
+.PP
+\fIOptions=\fR
+.RS 4
+Mount options to use when mounting\&. This takes a comma\-separated list of options\&. This setting is optional\&. Note that the usual specifier expansion is applied to this setting, literal percent characters should hence be written as
+"%%"\&.
+.RE
+.PP
+\fISloppyOptions=\fR
+.RS 4
+Takes a boolean argument\&. If true, parsing of the options specified in
+\fIOptions=\fR
+is relaxed, and unknown mount options are tolerated\&. This corresponds with
+\fBmount\fR(8)\*(Aqs
+\fI\-s\fR
+switch\&. Defaults to off\&.
+.RE
+.PP
+\fILazyUnmount=\fR
+.RS 4
+Takes a boolean argument\&. If true, detach the filesystem from the filesystem hierarchy at time of the unmount operation, and clean up all references to the filesystem as soon as they are not busy anymore\&. This corresponds with
+\fBumount\fR(8)\*(Aqs
+\fI\-l\fR
+switch\&. Defaults to off\&.
+.RE
+.PP
+\fIReadWriteOnly=\fR
+.RS 4
+Takes a boolean argument\&. If false, a mount point that shall be mounted read\-write but cannot be mounted so is retried to be mounted read\-only\&. If true the operation will fail immediately after the read\-write mount attempt did not succeed\&. This corresponds with
+\fBmount\fR(8)\*(Aqs
+\fI\-w\fR
+switch\&. Defaults to off\&.
+.RE
+.PP
+\fIForceUnmount=\fR
+.RS 4
+Takes a boolean argument\&. If true, force an unmount (in case of an unreachable NFS system)\&. This corresponds with
+\fBumount\fR(8)\*(Aqs
+\fI\-f\fR
+switch\&. Defaults to off\&.
+.RE
+.PP
+\fIDirectoryMode=\fR
+.RS 4
+Directories of mount points (and any parent directories) are automatically created if needed\&. This option specifies the file system access mode used when creating these directories\&. Takes an access mode in octal notation\&. Defaults to 0755\&.
+.RE
+.PP
+\fITimeoutSec=\fR
+.RS 4
+Configures the time to wait for the mount command to finish\&. If a command does not exit within the configured time, the mount will be considered failed and be shut down again\&. All commands still running will be terminated forcibly via
+\fBSIGTERM\fR, and after another delay of this time with
+\fBSIGKILL\fR\&. (See
+\fBKillMode=\fR
+in
+\fBsystemd.kill\fR(5)\&.) Takes a unit\-less value in seconds, or a time span value such as "5min 20s"\&. Pass 0 to disable the timeout logic\&. The default value is set from
+\fIDefaultTimeoutStartSec=\fR
+option in
+\fBsystemd-system.conf\fR(5)\&.
+.RE
+.PP
+Check
+\fBsystemd.exec\fR(5)
+and
+\fBsystemd.kill\fR(5)
+for more settings\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsystemctl\fR(1),
+\fBsystemd-system.conf\fR(5),
+\fBsystemd.unit\fR(5),
+\fBsystemd.exec\fR(5),
+\fBsystemd.kill\fR(5),
+\fBsystemd.resource-control\fR(5),
+\fBsystemd.service\fR(5),
+\fBsystemd.device\fR(5),
+\fBproc\fR(5),
+\fBmount\fR(8),
+\fBsystemd-fstab-generator\fR(8),
+\fBsystemd.directives\fR(7),
+\fBsystemd-mount\fR(1)
+.SH "NOTES"
+.IP " 1." 4
+API File Systems
+.RS 4
+\%https://www.freedesktop.org/wiki/Software/systemd/APIFileSystems
+.RE

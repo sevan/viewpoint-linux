@@ -1,0 +1,297 @@
+'\" t
+.TH "SYSTEMD\-DETECT\-VIRT" "1" "" "systemd 248" "systemd-detect-virt"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd-detect-virt \- Detect execution in a virtualized environment
+.SH "SYNOPSIS"
+.HP \w'\fBsystemd\-detect\-virt\fR\ 'u
+\fBsystemd\-detect\-virt\fR [OPTIONS...]
+.SH "DESCRIPTION"
+.PP
+\fBsystemd\-detect\-virt\fR
+detects execution in a virtualized environment\&. It identifies the virtualization technology and can distinguish full machine virtualization from container virtualization\&.
+systemd\-detect\-virt
+exits with a return value of 0 (success) if a virtualization technology is detected, and non\-zero (error) otherwise\&. By default, any type of virtualization is detected, and the options
+\fB\-\-container\fR
+and
+\fB\-\-vm\fR
+can be used to limit what types of virtualization are detected\&.
+.PP
+When executed without
+\fB\-\-quiet\fR
+will print a short identifier for the detected virtualization technology\&. The following technologies are currently identified:
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+.B Table\ \&1.\ \&Known virtualization technologies (both VM, i\&.e\&. full hardware virtualization, and container, i\&.e\&. shared kernel virtualization)
+.TS
+allbox tab(:);
+lB lB lB.
+T{
+Type
+T}:T{
+ID
+T}:T{
+Product
+T}
+.T&
+lt l l
+^ l l
+^ l l
+^ l l
+^ l l
+^ l l
+^ l l
+^ l l
+^ l l
+^ l l
+^ l l
+^ l l
+^ l l
+^ l l
+lt l l
+^ l l
+^ l l
+^ l l
+^ l l
+^ l l
+^ l l
+^ l l
+^ l l
+^ l l.
+T{
+VM
+T}:T{
+\fIqemu\fR
+T}:T{
+QEMU software virtualization, without KVM
+T}
+:T{
+\fIkvm\fR
+T}:T{
+Linux KVM kernel virtual machine, with whatever software, except Oracle Virtualbox
+T}
+:T{
+\fIzvm\fR
+T}:T{
+s390 z/VM
+T}
+:T{
+\fIvmware\fR
+T}:T{
+VMware Workstation or Server, and related products
+T}
+:T{
+\fImicrosoft\fR
+T}:T{
+Hyper\-V, also known as Viridian or Windows Server Virtualization
+T}
+:T{
+\fIoracle\fR
+T}:T{
+Oracle VM VirtualBox (historically marketed by innotek and Sun Microsystems), for legacy and KVM hypervisor
+T}
+:T{
+\fIpowervm\fR
+T}:T{
+IBM PowerVM hypervisor \(em comes as firmware with some IBM POWER servers
+T}
+:T{
+\fIxen\fR
+T}:T{
+Xen hypervisor (only domU, not dom0)
+T}
+:T{
+\fIbochs\fR
+T}:T{
+Bochs Emulator
+T}
+:T{
+\fIuml\fR
+T}:T{
+User\-mode Linux
+T}
+:T{
+\fIparallels\fR
+T}:T{
+Parallels Desktop, Parallels Server
+T}
+:T{
+\fIbhyve\fR
+T}:T{
+bhyve, FreeBSD hypervisor
+T}
+:T{
+\fIqnx\fR
+T}:T{
+QNX hypervisor
+T}
+:T{
+\fIacrn\fR
+T}:T{
+\m[blue]\fBACRN hypervisor\fR\m[]\&\s-2\u[1]\d\s+2
+T}
+T{
+Container
+T}:T{
+\fIopenvz\fR
+T}:T{
+OpenVZ/Virtuozzo
+T}
+:T{
+\fIlxc\fR
+T}:T{
+Linux container implementation by LXC
+T}
+:T{
+\fIlxc\-libvirt\fR
+T}:T{
+Linux container implementation by libvirt
+T}
+:T{
+\fIsystemd\-nspawn\fR
+T}:T{
+systemd\*(Aqs minimal container implementation, see \fBsystemd-nspawn\fR(1)
+T}
+:T{
+\fIdocker\fR
+T}:T{
+Docker container manager
+T}
+:T{
+\fIpodman\fR
+T}:T{
+\m[blue]\fBPodman\fR\m[]\&\s-2\u[2]\d\s+2 container manager
+T}
+:T{
+\fIrkt\fR
+T}:T{
+rkt app container runtime
+T}
+:T{
+\fIwsl\fR
+T}:T{
+\m[blue]\fBWindows Subsystem for Linux\fR\m[]\&\s-2\u[3]\d\s+2
+T}
+:T{
+\fIproot\fR
+T}:T{
+\m[blue]\fBproot\fR\m[]\&\s-2\u[4]\d\s+2 userspace chroot/bind mount emulation
+T}
+:T{
+\fIpouch\fR
+T}:T{
+\m[blue]\fBPouch\fR\m[]\&\s-2\u[5]\d\s+2 Container Engine
+T}
+.TE
+.sp 1
+.PP
+If multiple virtualization solutions are used, only the "innermost" is detected and identified\&. That means if both machine and container virtualization are used in conjunction, only the latter will be identified (unless
+\fB\-\-vm\fR
+is passed)\&.
+.PP
+Windows Subsystem for Linux is not a Linux container, but an environment for running Linux userspace applications on top of the Windows kernel using a Linux\-compatible interface\&. WSL is categorized as a container for practical purposes\&. Multiple WSL environments share the same kernel and services should generally behave like when being run in a container\&.
+.SH "OPTIONS"
+.PP
+The following options are understood:
+.PP
+\fB\-c\fR, \fB\-\-container\fR
+.RS 4
+Only detects container virtualization (i\&.e\&. shared kernel virtualization)\&.
+.RE
+.PP
+\fB\-v\fR, \fB\-\-vm\fR
+.RS 4
+Only detects hardware virtualization\&.
+.RE
+.PP
+\fB\-r\fR, \fB\-\-chroot\fR
+.RS 4
+Detect whether invoked in a
+\fBchroot\fR(2)
+environment\&. In this mode, no output is written, but the return value indicates whether the process was invoked in a
+\fBchroot()\fR
+environment or not\&.
+.RE
+.PP
+\fB\-\-private\-users\fR
+.RS 4
+Detect whether invoked in a user namespace\&. In this mode, no output is written, but the return value indicates whether the process was invoked inside of a user namespace or not\&. See
+\fBuser_namespaces\fR(7)
+for more information\&.
+.RE
+.PP
+\fB\-q\fR, \fB\-\-quiet\fR
+.RS 4
+Suppress output of the virtualization technology identifier\&.
+.RE
+.PP
+\fB\-\-list\fR
+.RS 4
+Output all currently known and detectable container and VM environments\&.
+.RE
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+Print a short help text and exit\&.
+.RE
+.PP
+\fB\-\-version\fR
+.RS 4
+Print a short version string and exit\&.
+.RE
+.SH "EXIT STATUS"
+.PP
+If a virtualization technology is detected, 0 is returned, a non\-zero code otherwise\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsystemd-nspawn\fR(1),
+\fBchroot\fR(2),
+\fBnamespaces\fR(7)
+.SH "NOTES"
+.IP " 1." 4
+ACRN hypervisor
+.RS 4
+\%https://projectacrn.org
+.RE
+.IP " 2." 4
+Podman
+.RS 4
+\%https://podman.io
+.RE
+.IP " 3." 4
+Windows Subsystem for Linux
+.RS 4
+\%https://docs.microsoft.com/en-us/windows/wsl/about
+.RE
+.IP " 4." 4
+proot
+.RS 4
+\%https://proot-me.github.io/
+.RE
+.IP " 5." 4
+Pouch
+.RS 4
+\%https://github.com/alibaba/pouch
+.RE

@@ -1,0 +1,117 @@
+'\" t
+.TH "SD_EVENT_EXIT" "3" "" "systemd 248" "sd_event_exit"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_event_exit, sd_event_get_exit_code \- Ask the event loop to exit
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-event\&.h>
+.fi
+.ft
+.HP \w'int\ sd_event_exit('u
+.BI "int sd_event_exit(sd_event\ *" "event" ", int\ " "code" ");"
+.HP \w'int\ sd_event_get_exit_code('u
+.BI "int sd_event_get_exit_code(sd_event\ *" "event" ", int\ *" "code" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_event_exit()\fR
+requests the event loop specified in the
+\fIevent\fR
+event loop object to exit\&. The
+\fIcode\fR
+parameter may be any integer value and is returned as\-is by
+\fBsd_event_loop\fR(3)
+after the last event loop iteration\&. It may also be queried using
+\fBsd_event_get_exit_code()\fR, see below\&.
+.PP
+When exiting is requested the event loop will stop listening for and dispatching regular event sources\&. Instead it will proceed with executing only event sources registered with
+\fBsd_event_add_exit\fR(3)
+in the order defined by their priority\&. After all exit event sources have been dispatched the event loop is terminated\&.
+.PP
+If
+\fBsd_event_exit()\fR
+is invoked a second time while the event loop is still processing exit event sources, the exit code stored in the event loop object is updated, but otherwise no further operation is executed\&.
+.PP
+\fBsd_event_get_exit_code()\fR
+may be used to query the exit code passed into
+\fBsd_event_exit()\fR
+earlier\&.
+.PP
+While the full positive and negative integer ranges may be used for the exit code, care should be taken not pick exit codes that conflict with regular exit codes returned by
+\fBsd_event_loop()\fR, if these exit codes shall be distinguishable\&.
+.PP
+Note that for most event source types passing the callback pointer as
+\fBNULL\fR
+in the respective constructor call (i\&.e\&. in
+\fBsd_event_add_time\fR(3),
+\fBsd_event_add_signal\fR(3), \&...) has the effect of
+\fBsd_event_exit()\fR
+being invoked once the event source triggers, with the specified userdata pointer cast to an integer as the exit code parameter\&. This is useful to automatically terminate an event loop after some condition, such as a time\-out or reception of
+\fBSIGTERM\fR
+or similar\&. See the documentation for the respective constructor call for details\&.
+.SH "RETURN VALUE"
+.PP
+On success,
+\fBsd_event_exit()\fR
+and
+\fBsd_event_get_exit_code()\fR
+return 0 or a positive integer\&. On failure, they return a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+The event loop object or error code pointer are invalid\&.
+.RE
+.PP
+\fB\-ECHILD\fR
+.RS 4
+The event loop was created in a different process\&.
+.RE
+.PP
+\fB\-ESTALE\fR
+.RS 4
+The event loop has exited already and all exit handlers are already processed\&.
+.RE
+.PP
+\fB\-ENODATA\fR
+.RS 4
+The event loop has not been requested to exit yet\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-event\fR(3),
+\fBsd_event_new\fR(3),
+\fBsd_event_add_exit\fR(3),
+\fBsd_event_add_time\fR(3),
+\fBsd_event_add_signal\fR(3),
+\fBsd_event_add_io\fR(3),
+\fBsd_event_add_defer\fR(3),
+\fBsd_event_add_inotify\fR(3)

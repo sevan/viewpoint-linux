@@ -1,0 +1,90 @@
+'\" t
+.TH "SD_BUS_MESSAGE_SEAL" "3" "" "systemd 248" "sd_bus_message_seal"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_message_seal \- Prepare a D\-Bus message for transmission
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_message_seal('u
+.BI "int sd_bus_message_seal(sd_bus_message\ *" "m" ", uint64_t\ " "cookie" ", uint64_t\ " "timeout_usec" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_message_seal()\fR
+finishes the message
+\fIm\fR
+and prepares it for transmission using
+\fBsd_bus_send\fR(3)\&.
+\fIcookie\fR
+specifies the identifier used to match the message reply to its corresponding request\&.
+\fItimeout_usec\fR
+specifies the maximum time in microseconds to wait for a reply to arrive\&.
+.PP
+Note that in most scenarios, it\*(Aqs not necessary to call this function directly\&.
+\fBsd_bus_call\fR(3),
+\fBsd_bus_call_async\fR(3)
+and
+\fBsd_bus_send\fR(3)
+will seal any given messages if they have not been sealed yet\&.
+.SH "RETURN VALUE"
+.PP
+On success, this function returns a non\-negative integer\&. On failure, it returns a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+The
+\fIm\fR
+parameter is
+\fBNULL\fR\&.
+.RE
+.PP
+\fB\-EBADMSG\fR
+.RS 4
+The D\-Bus message
+\fIm\fR
+has open containers\&.
+.RE
+.PP
+\fB\-ENOMSG\fR
+.RS 4
+The D\-Bus message
+\fIm\fR
+is a reply but its type signature does not match the return type signature of its corresponding member in the object vtable\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd_bus_call\fR(3),
+\fBsd_bus_call_async\fR(3),
+\fBsd_bus_send\fR(3)

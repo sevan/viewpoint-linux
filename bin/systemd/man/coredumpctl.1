@@ -1,0 +1,340 @@
+'\" t
+.TH "COREDUMPCTL" "1" "" "systemd 248" "coredumpctl"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+coredumpctl \- Retrieve and process saved core dumps and metadata
+.SH "SYNOPSIS"
+.HP \w'\fBcoredumpctl\fR\ 'u
+\fBcoredumpctl\fR [OPTIONS...] {COMMAND} [PID|COMM|EXE|MATCH...]
+.SH "DESCRIPTION"
+.PP
+\fBcoredumpctl\fR
+is a tool that can be used to retrieve and process core dumps and metadata which were saved by
+\fBsystemd-coredump\fR(8)\&.
+.SH "COMMANDS"
+.PP
+The following commands are understood:
+.PP
+\fBlist\fR
+.RS 4
+List core dumps captured in the journal matching specified characteristics\&. If no command is specified, this is the implied default\&.
+.sp
+The output is designed to be human readable and contains a table with the following columns:
+.PP
+TIME
+.RS 4
+The timestamp of the crash, as reported by the kernel\&.
+.RE
+.PP
+PID
+.RS 4
+The identifier of the process that crashed\&.
+.RE
+.PP
+UID, GID
+.RS 4
+The user and group identifiers of the process that crashed\&.
+.RE
+.PP
+SIGNAL
+.RS 4
+The signal that caused the process to crash, when applicable\&.
+.RE
+.PP
+COREFILE
+.RS 4
+Information whether the coredump was stored, and whether it is still accessible:
+"none"
+means the core was not stored,
+"\-"
+means that it was not available (for example because the process was not terminated by a signal),
+"present"
+means that the core file is accessible by the current user,
+"journal"
+means that the core was stored in the
+"journal",
+"truncated"
+is the same as one of the previous two, but the core was too large and was not stored in its entirety,
+"error"
+means that the core file cannot be accessed, most likely because of insufficient permissions, and
+"missing"
+means that the core was stored in a file, but this file has since been removed\&.
+.RE
+.PP
+EXE
+.RS 4
+The full path to the executable\&. For backtraces of scripts this is the name of the interpreter\&.
+.RE
+.sp
+It\*(Aqs worth noting that different restrictions apply to data saved in the journal and core dump files saved in
+/var/lib/systemd/coredump, see overview in
+\fBsystemd-coredump\fR(8)\&. Thus it may very well happen that a particular core dump is still listed in the journal while its corresponding core dump file has already been removed\&.
+.RE
+.PP
+\fBinfo\fR
+.RS 4
+Show detailed information about the last core dump or core dumps matching specified characteristics captured in the journal\&.
+.RE
+.PP
+\fBdump\fR
+.RS 4
+Extract the last core dump matching specified characteristics\&. The core dump will be written on standard output, unless an output file is specified with
+\fB\-\-output=\fR\&.
+.RE
+.PP
+\fBdebug\fR
+.RS 4
+Invoke a debugger on the last core dump matching specified characteristics\&. By default,
+\fBgdb\fR(1)
+will be used\&. This may be changed using the
+\fB\-\-debugger=\fR
+option or the
+\fI$SYSTEMD_DEBUGGER\fR
+environment variable\&. Use the
+\fB\-\-debugger\-arguments=\fR
+option to pass extra command line arguments to the debugger\&.
+.RE
+.SH "OPTIONS"
+.PP
+The following options are understood:
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+Print a short help text and exit\&.
+.RE
+.PP
+\fB\-\-version\fR
+.RS 4
+Print a short version string and exit\&.
+.RE
+.PP
+\fB\-\-no\-pager\fR
+.RS 4
+Do not pipe output into a pager\&.
+.RE
+.PP
+\fB\-\-no\-legend\fR
+.RS 4
+Do not print the legend, i\&.e\&. column headers and the footer with hints\&.
+.RE
+.PP
+\fB\-\-json=\fR\fIMODE\fR
+.RS 4
+Shows output formatted as JSON\&. Expects one of
+"short"
+(for the shortest possible output without any redundant whitespace or line breaks),
+"pretty"
+(for a pretty version of the same, with indentation and line breaks) or
+"off"
+(to turn off JSON output, the default)\&.
+.RE
+.PP
+\fB\-1\fR
+.RS 4
+Show information of the most recent core dump only, instead of listing all known core dumps\&. (Equivalent to
+\fB\-\-reverse \-n 1\fR
+.RE
+.PP
+\fB\-n\fR \fIINT\fR
+.RS 4
+Show at most the specified number of entries\&. The specified parameter must be an integer greater or equal to 1\&.
+.RE
+.PP
+\fB\-S\fR, \fB\-\-since\fR
+.RS 4
+Only print entries which are since the specified date\&.
+.RE
+.PP
+\fB\-U\fR, \fB\-\-until\fR
+.RS 4
+Only print entries which are until the specified date\&.
+.RE
+.PP
+\fB\-r\fR, \fB\-\-reverse\fR
+.RS 4
+Reverse output so that the newest entries are displayed first\&.
+.RE
+.PP
+\fB\-F\fR \fIFIELD\fR, \fB\-\-field=\fR\fIFIELD\fR
+.RS 4
+Print all possible data values the specified field takes in matching core dump entries of the journal\&.
+.RE
+.PP
+\fB\-o\fR \fIFILE\fR, \fB\-\-output=\fR\fIFILE\fR
+.RS 4
+Write the core to
+\fBFILE\fR\&.
+.RE
+.PP
+\fB\-\-debugger=\fR\fIDEBUGGER\fR
+.RS 4
+Use the given debugger for the
+\fBdebug\fR
+command\&. If not given and
+\fI$SYSTEMD_DEBUGGER\fR
+is unset, then
+\fBgdb\fR(1)
+will be used\&.
+.RE
+.PP
+\fB\-A\fR \fIARGS\fR, \fB\-\-debugger\-arguments=\fR\fIARGS\fR
+.RS 4
+Pass the given
+\fIARGS\fR
+as extra command line arguments to the debugger\&. Quote as appropriate when
+\fIARGS\fR
+contain whitespace\&. (See Examples\&.)
+.RE
+.PP
+\fB\-\-file=\fR\fB\fIGLOB\fR\fR
+.RS 4
+Takes a file glob as an argument\&. If specified, coredumpctl will operate on the specified journal files matching
+\fIGLOB\fR
+instead of the default runtime and system journal paths\&. May be specified multiple times, in which case files will be suitably interleaved\&.
+.RE
+.PP
+\fB\-D\fR \fIDIR\fR, \fB\-\-directory=\fR\fIDIR\fR
+.RS 4
+Use the journal files in the specified
+\fBDIR\fR\&.
+.RE
+.PP
+\fB\-q\fR, \fB\-\-quiet\fR
+.RS 4
+Suppresses informational messages about lack of access to journal files and possible in\-flight coredumps\&.
+.RE
+.SH "MATCHING"
+.PP
+A match can be:
+.PP
+\fIPID\fR
+.RS 4
+Process ID of the process that dumped core\&. An integer\&.
+.RE
+.PP
+\fICOMM\fR
+.RS 4
+Name of the executable (matches
+\fBCOREDUMP_COMM=\fR)\&. Must not contain slashes\&.
+.RE
+.PP
+\fIEXE\fR
+.RS 4
+Path to the executable (matches
+\fBCOREDUMP_EXE=\fR)\&. Must contain at least one slash\&.
+.RE
+.PP
+\fIMATCH\fR
+.RS 4
+General journalctl match filter, must contain an equals sign ("=")\&. See
+\fBjournalctl\fR(1)\&.
+.RE
+.SH "EXIT STATUS"
+.PP
+On success, 0 is returned; otherwise, a non\-zero failure code is returned\&. Not finding any matching core dumps is treated as failure\&.
+.SH "ENVIRONMENT"
+.PP
+\fI$SYSTEMD_DEBUGGER\fR
+.RS 4
+Use the given debugger for the
+\fBdebug\fR
+command\&. See the
+\fB\-\-debugger=\fR
+option\&.
+.RE
+.SH "EXAMPLES"
+.PP
+\fBExample\ \&1.\ \&List all the core dumps of a program\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ coredumpctl list /usr/lib64/firefox/firefox
+TIME     PID  UID  GID SIG     COREFILE EXE                         SIZE
+Tue \&...   8018 1000 1000 SIGSEGV missing  /usr/lib64/firefox/firefox   n/a
+Wed \&... 251609 1000 1000 SIGTRAP missing  /usr/lib64/firefox/firefox   n/a
+Fri \&... 552351 1000 1000 SIGSEGV present  /usr/lib64/firefox/firefox 28\&.7M
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+The journal has three entries pertaining to
+/usr/lib64/firefox/firefox, and only the last entry still has an available core file (in external storage on disk)\&.
+.PP
+Note that
+coredumpctl
+needs access to the journal files to retrieve the relevant entries from the journal\&. Thus, an unprivileged user will normally only see information about crashing programs of this user\&.
+.PP
+\fBExample\ \&2.\ \&Invoke gdb on the last core dump\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ coredumpctl debug
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBExample\ \&3.\ \&Use gdb to display full register info from the last core dump\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ coredumpctl debug \-\-debugger\-arguments="\-batch \-ex \*(Aqinfo all\-registers\*(Aq"
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBExample\ \&4.\ \&Show information about a process that dumped core, matching by its PID 6654\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ coredumpctl info 6654
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBExample\ \&5.\ \&Extract the last core dump of /usr/bin/bar to a file named bar\&.coredump\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ coredumpctl \-o bar\&.coredump dump /usr/bin/bar
+.fi
+.if n \{\
+.RE
+.\}
+.SH "SEE ALSO"
+.PP
+\fBsystemd-coredump\fR(8),
+\fBcoredump.conf\fR(5),
+\fBsystemd-journald.service\fR(8),
+\fBgdb\fR(1)

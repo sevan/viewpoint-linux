@@ -1,0 +1,490 @@
+'\" t
+.TH "SD_BUS_MESSAGE_APPEND" "3" "" "systemd 248" "sd_bus_message_append"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_message_append, sd_bus_message_appendv \- Attach fields to a D\-Bus message based on a type string
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_message_append('u
+.BI "int sd_bus_message_append(sd_bus_message\ *" "m" ", const\ char\ *" "types" ", \&...);"
+.HP \w'int\ sd_bus_message_appendv('u
+.BI "int sd_bus_message_appendv(sd_bus_message\ *" "m" ", const\ char\ *" "types" ", va_list\ " "ap" ");"
+.SH "DESCRIPTION"
+.PP
+The
+\fBsd_bus_message_append()\fR
+function appends a sequence of fields to the D\-Bus message object
+\fIm\fR\&. The type string
+\fItypes\fR
+describes the types of the field arguments that follow\&. For each type specified in the type string, one or more arguments need to be specified, in the same order as declared in the type string\&.
+.PP
+The type string is composed of the elements shown in the table below\&. It contains zero or more single "complete types"\&. Each complete type may be one of the basic types or a fully described container type\&. A container type may be a structure with the contained types, a variant, an array with its element type, or a dictionary entry with the contained types\&. The type string is
+\fBNUL\fR\-terminated\&.
+.PP
+In case of a basic type, one argument of the corresponding type is expected\&.
+.PP
+A structure is denoted by a sequence of complete types between
+"("
+and
+")"\&. This sequence cannot be empty \(em it must contain at least one type\&. Arguments corresponding to this nested sequence follow the same rules as if they were not nested\&.
+.PP
+A variant is denoted by
+"v"\&. Corresponding arguments must begin with a type string denoting a complete type, and following that, arguments corresponding to the specified type\&.
+.PP
+An array is denoted by
+"a"
+followed by a complete type\&. Corresponding arguments must begin with the number of entries in the array, followed by the entries themselves, matching the element type of the array\&.
+.PP
+A dictionary is an array of dictionary entries, denoted by
+"a"
+followed by a pair of complete types between
+"{"
+and
+"}"\&. The first of those types must be a basic type\&. Corresponding arguments must begin with the number of dictionary entries, followed by a pair of values for each entry matching the element type of the dictionary entries\&.
+.PP
+\fBsd_bus_message_appendv()\fR
+is equivalent to
+\fBsd_bus_message_append()\fR, except that it is called with a
+"va_list"
+instead of a variable number of arguments\&. This function does not call the
+\fBva_end()\fR
+macro\&. Because it invokes the
+\fBva_arg()\fR
+macro, the value of
+\fIap\fR
+is undefined after the call\&.
+.PP
+For further details on the D\-Bus type system, please consult the
+\m[blue]\fBD\-Bus Specification\fR\m[]\&\s-2\u[1]\d\s+2\&.
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+.B Table\ \&1.\ \&Item type specifiers
+.TS
+allbox tab(:);
+lB lB lB lB lB.
+T{
+Specifier
+T}:T{
+Constant
+T}:T{
+Description
+T}:T{
+Size
+T}:T{
+Expected C Type
+T}
+.T&
+l l l l l
+l l l l l
+l l l l l
+l l l l l
+l l l l l
+l l l l l
+l l l l l
+l l l l l
+l l l l l
+l l l l l
+l l l l l
+l l l l l
+l l l l l
+l l l l l
+l l l l l
+l l l l l
+l l l ^ ^
+l l l l l
+l l l ^ ^.
+T{
+"y"
+T}:T{
+\fBSD_BUS_TYPE_BYTE\fR
+T}:T{
+unsigned integer
+T}:T{
+1 byte
+T}:T{
+uint8_t
+T}
+T{
+"b"
+T}:T{
+\fBSD_BUS_TYPE_BOOLEAN\fR
+T}:T{
+boolean
+T}:T{
+4 bytes
+T}:T{
+int
+T}
+T{
+"n"
+T}:T{
+\fBSD_BUS_TYPE_INT16\fR
+T}:T{
+signed integer
+T}:T{
+2 bytes
+T}:T{
+int16_t
+T}
+T{
+"q"
+T}:T{
+\fBSD_BUS_TYPE_UINT16\fR
+T}:T{
+unsigned integer
+T}:T{
+2 bytes
+T}:T{
+uint16_t
+T}
+T{
+"i"
+T}:T{
+\fBSD_BUS_TYPE_INT32\fR
+T}:T{
+signed integer
+T}:T{
+4 bytes
+T}:T{
+int32_t
+T}
+T{
+"u"
+T}:T{
+\fBSD_BUS_TYPE_UINT32\fR
+T}:T{
+unsigned integer
+T}:T{
+4 bytes
+T}:T{
+uint32_t
+T}
+T{
+"x"
+T}:T{
+\fBSD_BUS_TYPE_INT64\fR
+T}:T{
+signed integer
+T}:T{
+8 bytes
+T}:T{
+int64_t
+T}
+T{
+"t"
+T}:T{
+\fBSD_BUS_TYPE_UINT64\fR
+T}:T{
+unsigned integer
+T}:T{
+8 bytes
+T}:T{
+uint64_t
+T}
+T{
+"d"
+T}:T{
+\fBSD_BUS_TYPE_DOUBLE\fR
+T}:T{
+floating\-point
+T}:T{
+8 bytes
+T}:T{
+double
+T}
+T{
+"s"
+T}:T{
+\fBSD_BUS_TYPE_STRING\fR
+T}:T{
+Unicode string
+T}:T{
+variable
+T}:T{
+char[]
+T}
+T{
+"o"
+T}:T{
+\fBSD_BUS_TYPE_OBJECT_PATH\fR
+T}:T{
+object path
+T}:T{
+variable
+T}:T{
+char[]
+T}
+T{
+"g"
+T}:T{
+\fBSD_BUS_TYPE_SIGNATURE\fR
+T}:T{
+signature
+T}:T{
+variable
+T}:T{
+char[]
+T}
+T{
+"h"
+T}:T{
+\fBSD_BUS_TYPE_UNIX_FD\fR
+T}:T{
+UNIX file descriptor
+T}:T{
+4 bytes
+T}:T{
+int
+T}
+T{
+"a"
+T}:T{
+\fBSD_BUS_TYPE_ARRAY\fR
+T}:T{
+array
+T}:T{
+determined by array type and size
+T}:T{
+int, followed by array contents
+T}
+T{
+"v"
+T}:T{
+\fBSD_BUS_TYPE_VARIANT\fR
+T}:T{
+variant
+T}:T{
+determined by the type argument
+T}:T{
+signature string, followed by variant contents
+T}
+T{
+"("
+T}:T{
+\fBSD_BUS_TYPE_STRUCT_BEGIN\fR
+T}:T{
+array start
+T}:T{
+determined by the nested types
+T}:T{
+structure contents
+T}
+T{
+")"
+T}:T{
+\fBSD_BUS_TYPE_STRUCT_END\fR
+T}:T{
+array end
+T}::
+T{
+"{"
+T}:T{
+\fBSD_BUS_TYPE_DICT_ENTRY_BEGIN\fR
+T}:T{
+dictionary entry start
+T}:T{
+determined by the nested types
+T}:T{
+dictionary contents
+T}
+T{
+"}"
+T}:T{
+\fBSD_BUS_TYPE_DICT_ENTRY_END\fR
+T}:T{
+dictionary entry end
+T}::
+.TE
+.sp 1
+.PP
+For types
+"s"
+and
+"g"
+(unicode string or signature), the pointer may be
+\fBNULL\fR, which is equivalent to an empty string\&. For
+"h"
+(UNIX file descriptor), the descriptor is duplicated by this call and the passed descriptor stays in possession of the caller\&. See
+\fBsd_bus_message_append_basic\fR(3)
+for the precise interpretation of those and other types\&.
+.SH "TYPES STRING GRAMMAR"
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+types ::= complete_type*
+complete_type ::= basic_type | variant | structure | array | dictionary
+basic_type ::= "y" | "n" | "q" | "u" | "i" | "x" | "t" | "d" |
+               "b" | "h" |
+               "s" | "o" | "g"
+variant ::= "v"
+structure ::= "(" complete_type+ ")"
+array ::= "a" complete_type
+dictionary ::= "a" "{" basic_type complete_type "}"
+.fi
+.if n \{\
+.RE
+.\}
+.SH "EXAMPLES"
+.PP
+Append a single basic type (the string
+"a string"):
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+sd_bus_message *m;
+\&...
+sd_bus_message_append(m, "s", "a string");
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+Append all types of integers:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+uint8_t y = 1;
+int16_t n = 2;
+uint16_t q = 3;
+int32_t i = 4;
+uint32_t u = 5;
+int32_t x = 6;
+uint32_t t = 7;
+double d = 8\&.0;
+sd_bus_message_append(m, "ynqiuxtd", y, n, q, i, u, x, t, d);
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+Append a structure composed of a string and a D\-Bus path:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+sd_bus_message_append(m, "(so)", "a string", "/a/path");
+    
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+Append an array of UNIX file descriptors:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+sd_bus_message_append(m, "ah", 3, STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO);
+    
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+Append a variant, with the real type "g" (signature), and value "sdbusisgood":
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+sd_bus_message_append(m, "v", "g", "sdbusisgood");
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+Append a dictionary containing the mapping {1=>"a", 2=>"b", 3=>""}:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+sd_bus_message_append(m, "a{is}", 3, 1, "a", 2, "b", 3, NULL);
+     
+.fi
+.if n \{\
+.RE
+.\}
+.SH "RETURN VALUE"
+.PP
+On success, these functions return a non\-negative integer\&. On failure, they return a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+Specified parameter is invalid\&.
+.RE
+.PP
+\fB\-EPERM\fR
+.RS 4
+Message has been sealed\&.
+.RE
+.PP
+\fB\-ESTALE\fR
+.RS 4
+Message is in invalid state\&.
+.RE
+.PP
+\fB\-ENXIO\fR
+.RS 4
+Message cannot be appended to\&.
+.RE
+.PP
+\fB\-ENOMEM\fR
+.RS 4
+Memory allocation failed\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd_bus_message_append_basic\fR(3),
+\fBsd_bus_message_append_array\fR(3),
+\fBsd_bus_message_open_container\fR(3)
+.SH "NOTES"
+.IP " 1." 4
+D-Bus Specification
+.RS 4
+\%http://dbus.freedesktop.org/doc/dbus-specification.html#type-system
+.RE

@@ -1,0 +1,77 @@
+'\" t
+.TH "SYSTEMD\-NETWORK\-GENERATOR\&.SERVICE" "8" "" "systemd 248" "systemd-network-generator.service"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd-network-generator.service, systemd-network-generator \- Generate network configuration from the kernel command line
+.SH "SYNOPSIS"
+.PP
+systemd\-network\-generator\&.service
+.PP
+/usr/lib/systemd/systemd\-network\-generator
+.SH "DESCRIPTION"
+.PP
+systemd\-network\-generator\&.service
+is a system service that translates
+\fIip=\fR
+and the related settings on the kernel command line (see below) into
+\fBsystemd.network\fR(5),
+\fBsystemd.netdev\fR(5), and
+\fBsystemd.link\fR(5)
+configuration files understood by
+\fBsystemd-networkd.service\fR(8)
+and
+\fBsystemd-udevd.service\fR(8)\&.
+.PP
+Files are generated in
+/run/systemd/network/\&.
+.SH "KERNEL COMMAND LINE OPTIONS"
+.PP
+This tool understands the following options:
+.PP
+\fIip=\fR, \fIrd\&.route=\fR, \fIrd\&.peerdns=\fR
+.RS 4
+\(em translated into
+\fBsystemd.network\fR(5)
+files\&.
+.RE
+.PP
+\fIifname=\fR
+.RS 4
+\(em translated into
+\fBsystemd.link\fR(5)
+files\&.
+.RE
+.PP
+\fIvlan=\fR, \fIbond=\fR, \fIbridge=\fR, \fIbootdev=\fR
+.RS 4
+\(em translated into
+\fBsystemd.netdev\fR(5)
+files\&.
+.RE
+.PP
+See
+\fBdracut.kernel\fR(7)
+for option syntax and details\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsystemd-networkd.service\fR(8),
+\fBdracut\fR(8)

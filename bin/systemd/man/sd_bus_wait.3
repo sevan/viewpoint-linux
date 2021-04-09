@@ -1,0 +1,94 @@
+'\" t
+.TH "SD_BUS_WAIT" "3" "" "systemd 248" "sd_bus_wait"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_wait \- Wait for I/O on a bus connection
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_wait('u
+.BI "int sd_bus_wait(sd_bus\ *" "bus" ", uint64_t\ " "timeout_usec" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_wait()\fR
+synchronously waits for I/O on the specified bus connection object\&. This function is supposed to be called whenever
+\fBsd_bus_process\fR(3)
+returns zero, indicating that no work is pending on the connection\&. Internally, this call invokes
+\fBppoll\fR(2), to wait for I/O on the bus connection\&. If the
+\fItimeout_sec\fR
+parameter is specified, the call will block at most for the specified amount of time in \(mcs\&. Pass
+\fBUINT64_MAX\fR
+to permit it to sleep indefinitely\&.
+.PP
+After each invocation of
+\fBsd_bus_wait()\fR
+the
+\fBsd_bus_process()\fR
+call should be invoked in order to process any now pending I/O work\&.
+.PP
+Note that
+\fBsd_bus_wait()\fR
+is suitable only for simple programs as it does not permit waiting for other I/O events\&. For more complex programs either connect the bus connection object to an external event loop using
+\fBsd_bus_get_fd\fR(3)
+or to an
+\fBsd-event\fR(3)
+event loop using
+\fBsd_bus_attach_event\fR(3)\&.
+.SH "RETURN VALUE"
+.PP
+If any I/O was seen, a positive value is returned, zero otherwise\&. If an error occurs, a negative
+\fIerrno\fR\-style error code is returned\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+An invalid bus object was passed\&.
+.RE
+.PP
+\fB\-ECHILD\fR
+.RS 4
+The bus connection was allocated in a parent process and is being reused in a child process after
+\fBfork()\fR\&.
+.RE
+.PP
+\fB\-ENOTCONN\fR
+.RS 4
+The bus connection has been terminated already\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd_bus_process\fR(3),
+\fBsd_bus_get_fd\fR(3),
+\fBsd-event\fR(3),
+\fBsd_bus_attach_event\fR(3)

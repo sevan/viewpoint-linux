@@ -1,0 +1,169 @@
+'\" t
+.TH "SYSTEMD\-UDEVD\&.SERVICE" "8" "" "systemd 248" "systemd-udevd.service"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd-udevd.service, systemd-udevd-control.socket, systemd-udevd-kernel.socket, systemd-udevd \- Device event managing daemon
+.SH "SYNOPSIS"
+.PP
+systemd\-udevd\&.service
+.PP
+systemd\-udevd\-control\&.socket
+.PP
+systemd\-udevd\-kernel\&.socket
+.HP \w'\fB/usr/lib/systemd/systemd\-udevd\fR\ 'u
+\fB/usr/lib/systemd/systemd\-udevd\fR [\fB\-\-daemon\fR] [\fB\-\-debug\fR] [\fB\-\-children\-max=\fR] [\fB\-\-exec\-delay=\fR] [\fB\-\-event\-timeout=\fR] [\fB\-\-resolve\-names=early|late|never\fR] [\fB\-\-version\fR] [\fB\-\-help\fR]
+.SH "DESCRIPTION"
+.PP
+\fBsystemd\-udevd\fR
+listens to kernel uevents\&. For every event, systemd\-udevd executes matching instructions specified in udev rules\&. See
+\fBudev\fR(7)\&.
+.PP
+The behavior of the daemon can be configured using
+\fBudev.conf\fR(5), its command line options, environment variables, and on the kernel command line, or changed dynamically with
+\fBudevadm control\fR\&.
+.SH "OPTIONS"
+.PP
+\fB\-d\fR, \fB\-\-daemon\fR
+.RS 4
+Detach and run in the background\&.
+.RE
+.PP
+\fB\-D\fR, \fB\-\-debug\fR
+.RS 4
+Print debug messages to standard error\&.
+.RE
+.PP
+\fB\-c\fR, \fB\-\-children\-max=\fR
+.RS 4
+Limit the number of events executed in parallel\&.
+.RE
+.PP
+\fB\-e\fR, \fB\-\-exec\-delay=\fR
+.RS 4
+Delay the execution of
+\fIRUN\fR
+instructions by the given number of seconds\&. This option might be useful when debugging system crashes during coldplug caused by loading non\-working kernel modules\&.
+.RE
+.PP
+\fB\-t\fR, \fB\-\-event\-timeout=\fR
+.RS 4
+Set the number of seconds to wait for events to finish\&. After this time, the event will be terminated\&. The default is 180 seconds\&.
+.RE
+.PP
+\fB\-s\fR, \fB\-\-timeout\-signal=\fR
+.RS 4
+Set the signal which
+systemd\-udevd
+will send to forked off processes after reaching event timeout\&. The setting can be overridden at boot time with the kernel command line option
+\fIudev\&.timeout_signal=\fR\&. Setting to
+\fBSIGABRT\fR
+may be helpful in order to debug worker timeouts\&. Defaults to
+\fBSIGKILL\fR\&. Note that setting the option on the command line overrides the setting from the configuration file\&.
+.RE
+.PP
+\fB\-N\fR, \fB\-\-resolve\-names=\fR
+.RS 4
+Specify when systemd\-udevd should resolve names of users and groups\&. When set to
+\fBearly\fR
+(the default), names will be resolved when the rules are parsed\&. When set to
+\fBlate\fR, names will be resolved for every event\&. When set to
+\fBnever\fR, names will never be resolved and all devices will be owned by root\&.
+.RE
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+Print a short help text and exit\&.
+.RE
+.PP
+\fB\-\-version\fR
+.RS 4
+Print a short version string and exit\&.
+.RE
+.SH "KERNEL COMMAND LINE"
+.PP
+Parameters prefixed with "rd\&." will be read when
+\fBsystemd\-udevd\fR
+is used in an initrd, those without will be processed both in the initrd and on the host\&.
+.PP
+\fIudev\&.log_level=\fR, \fIrd\&.udev\&.log_level=\fR
+.RS 4
+Set the log level\&.
+.RE
+.PP
+\fIudev\&.children_max=\fR, \fIrd\&.udev\&.children_max=\fR
+.RS 4
+Limit the number of events executed in parallel\&.
+.RE
+.PP
+\fIudev\&.exec_delay=\fR, \fIrd\&.udev\&.exec_delay=\fR
+.RS 4
+Delay the execution of
+\fIRUN\fR
+instructions by the given number of seconds\&. This option might be useful when debugging system crashes during coldplug caused by loading non\-working kernel modules\&.
+.RE
+.PP
+\fIudev\&.event_timeout=\fR, \fIrd\&.udev\&.event_timeout=\fR
+.RS 4
+Wait for events to finish up to the given number of seconds\&. This option might be useful if events are terminated due to kernel drivers taking too long to initialize\&.
+.RE
+.PP
+\fIudev\&.timeout_signal=\fR, \fIrd\&.udev\&.timeout_signal=\fR
+.RS 4
+Specifies a signal that
+systemd\-udevd
+will send to workers on timeout\&. Note that kernel command line option overrides both the setting in the configuration file and the one on the program command line\&.
+.RE
+.PP
+\fIudev\&.blockdev_read_only\fR, \fIrd\&.udev\&.blockdev_read_only\fR
+.RS 4
+If specified, mark all physical block devices read\-only as they appear\&. Synthetic block devices (such as loopback block devices or device mapper devices) are left as they are\&. This is useful to guarantee that the contents of physical block devices remains unmodified during runtime, for example to implement fully stateless systems, for testing or for recovery situations where corrupted file systems shall not be corrupted further through accidental modification\&.
+.sp
+A block device may be marked writable again by issuing the
+\fBblockdev \-\-setrw\fR
+command, see
+\fBblockdev\fR(8)
+for details\&.
+.RE
+.PP
+\fInet\&.ifnames=\fR
+.RS 4
+Network interfaces are renamed to give them predictable names when possible\&. It is enabled by default; specifying 0 disables it\&.
+.RE
+.PP
+\fInet\&.naming\-scheme=\fR
+.RS 4
+Network interfaces are renamed to give them predictable names when possible (unless
+\fInet\&.ifnames=0\fR
+is specified, see above)\&. With this kernel command line option it is possible to pick a specific version of this algorithm and override the default chosen at compilation time\&. Expects one of the naming scheme identifiers listed in
+\fBsystemd.net-naming-scheme\fR(7), or
+"latest"
+to select the latest scheme known (to this particular version of
+systemd\-udevd\&.service)\&.
+.sp
+Note that selecting a specific scheme is not sufficient to fully stabilize interface naming: the naming is generally derived from driver attributes exposed by the kernel\&. As the kernel is updated, previously missing attributes
+systemd\-udevd\&.service
+is checking might appear, which affects older name derivation algorithms, too\&.
+.RE
+.SH "SEE ALSO"
+.PP
+\fBudev.conf\fR(5),
+\fBudev\fR(7),
+\fBudevadm\fR(8)

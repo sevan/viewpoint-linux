@@ -1,0 +1,115 @@
+'\" t
+.TH "SD_BUS_MESSAGE_SET_DESTINATION" "3" "" "systemd 248" "sd_bus_message_set_destination"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_message_set_destination, sd_bus_message_get_destination, sd_bus_message_get_path, sd_bus_message_get_interface, sd_bus_message_get_member, sd_bus_message_set_sender, sd_bus_message_get_sender \- Set and query bus message addressing information
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_message_set_destination('u
+.BI "int sd_bus_message_set_destination(sd_bus_message\ *" "message" ", const\ char\ *" "destination" ");"
+.HP \w'const\ char*\ sd_bus_message_get_destination('u
+.BI "const char* sd_bus_message_get_destination(sd_bus_message\ *" "message" ");"
+.HP \w'const\ char*\ sd_bus_message_get_path('u
+.BI "const char* sd_bus_message_get_path(sd_bus_message\ *" "message" ");"
+.HP \w'const\ char*\ sd_bus_message_get_interface('u
+.BI "const char* sd_bus_message_get_interface(sd_bus_message\ *" "message" ");"
+.HP \w'const\ char*\ sd_bus_message_get_member('u
+.BI "const char* sd_bus_message_get_member(sd_bus_message\ *" "message" ");"
+.HP \w'int\ sd_bus_message_set_sender('u
+.BI "int sd_bus_message_set_sender(sd_bus_message\ *" "message" ", const\ char\ *" "sender" ");"
+.HP \w'const\ char*\ sd_bus_message_get_sender('u
+.BI "const char* sd_bus_message_get_sender(sd_bus_message\ *" "message" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_message_set_destination()\fR
+sets the destination service name for the specified bus message object\&. The specified name must be a valid unique or well\-known service name\&.
+.PP
+\fBsd_bus_message_get_destination()\fR,
+\fBsd_bus_message_get_path()\fR,
+\fBsd_bus_message_get_interface()\fR, and
+\fBsd_bus_message_get_member()\fR
+return the destination, path, interface, and member fields from
+\fImessage\fR
+header\&. The return value will be
+\fBNULL\fR
+is
+\fImessage\fR
+is
+\fBNULL\fR
+or the message is of a type that doesn\*(Aqt use those fields or the message doesn\*(Aqt have them set\&. See
+\fBsd_bus_message_new_method_call\fR(3)
+and
+\fBsd_bus_message_set_destination\fR(3)
+for more discussion of those values\&.
+.PP
+\fBsd_bus_message_set_sender()\fR
+sets the sender service name for the specified bus message object\&. The specified name must be a valid unique or well\-known service name\&. This function is useful only for messages to send on direct connections as for connections to bus brokers the broker will fill in the destination field anyway, and the sender field set by original sender is ignored\&.
+.PP
+\fBsd_bus_message_get_sender()\fR
+returns the sender field from
+\fImessage\fR\&.
+.PP
+When a string is returned, it is a pointer to internal storage, and may not be modified or freed\&. It is only valid as long as the
+\fImessage\fR
+remains referenced and this field hasn\*(Aqt been changed by a different call\&.
+.SH "RETURN VALUE"
+.PP
+On success, these calls return 0 or a positive integer\&. On failure, these calls return a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+The
+\fImessage\fR
+parameter or the output parameter are
+\fBNULL\fR\&.
+.RE
+.PP
+\fB\-EPERM\fR
+.RS 4
+For
+\fBsd_bus_message_set_destination()\fR
+and
+\fBsd_bus_message_set_sender()\fR, the message is already sealed\&.
+.RE
+.PP
+\fB\-EEXIST\fR
+.RS 4
+The message already has a destination or sender field set\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd_bus_new\fR(3),
+\fBsd_bus_set_sender\fR(3)

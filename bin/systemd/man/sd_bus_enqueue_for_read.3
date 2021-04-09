@@ -1,0 +1,59 @@
+'\" t
+.TH "SD_BUS_ENQUEUE_FOR_READ" "3" "" "systemd 248" "sd_bus_enqueue_for_read"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_enqueue_for_read \- Re\-enqueue a bus message on a bus connection, for reading
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_enqueue_for_read('u
+.BI "int sd_bus_enqueue_for_read(sd_bus\ *" "bus" ", sd_bus_message\ *" "message" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_enqueue_for_read()\fR
+may be used to re\-enqueue an incoming bus message on the local read queue, so that it is processed and dispatched locally again, similar to how an incoming message from the peer is processed\&. Takes a bus connection object and the message to enqueue\&. A reference is taken of the message and the caller\*(Aqs reference thus remains in possession of the caller\&. The message is enqueued at the end of the queue, thus will be dispatched after all other already queued messages are dispatched\&.
+.PP
+This call is primarily useful for dealing with incoming method calls that may be processed only after an additional asynchronous operation completes\&. One example are PolicyKit authorization requests that are determined to be necessary to authorize a newly incoming method call: when the PolicyKit response is received the original method call may be re\-enqueued to process it again, this time with the authorization result known\&.
+.SH "RETURN VALUE"
+.PP
+On success, this function return 0 or a positive integer\&. On failure, it returns a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-ECHILD\fR
+.RS 4
+The bus connection has been created in a different process\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd_bus_send\fR(3),

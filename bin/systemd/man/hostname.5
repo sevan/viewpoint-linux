@@ -1,0 +1,130 @@
+'\" t
+.TH "HOSTNAME" "5" "" "systemd 248" "hostname"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+hostname \- Local hostname configuration file
+.SH "SYNOPSIS"
+.PP
+/etc/hostname
+.SH "DESCRIPTION"
+.PP
+The
+/etc/hostname
+file configures the name of the local system\&. Unless overridden as described in the next section,
+\fBsystemd\fR(1)
+will set this hostname during boot using the
+\fBsethostname\fR(2)
+system call\&.
+.PP
+The file should contain a single newline\-terminated hostname string\&. Comments (lines starting with a
+"#") are ignored\&. The hostname should be composed of up to 64 7\-bit ASCII lower\-case alphanumeric characters or hyphens forming a valid DNS domain name\&. It is recommended that this name contains only a single label, i\&.e\&. without any dots\&. Invalid characters will be filtered out in an attempt to make the name valid, but obviously it is recommended to use a valid name and not rely on this filtering\&.
+.PP
+You may use
+\fBhostnamectl\fR(1)
+to change the value of this file during runtime from the command line\&. Use
+\fBsystemd-firstboot\fR(1)
+to initialize it on mounted (but not booted) system images\&.
+.SH "HOSTNAME SEMANTICS"
+.PP
+\fBsystemd\fR(1)
+and the associated tools will obtain the hostname in the following ways:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+If the kernel commandline parameter
+\fIsystemd\&.hostname=\fR
+specifies a valid hostname,
+\fBsystemd\fR(1)
+will use it to set the hostname during early boot, see
+\fBkernel-command-line\fR(7),
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Otherwise, the "static" hostname specified by
+/etc/hostname
+as described above will be used\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Otherwise, a transient hostname may be set during runtime, for example based on information in a DHCP lease, see
+\fBsystemd-hostnamed.service\fR(8)\&. Both
+\m[blue]\fBNetworkManager\fR\m[]\&\s-2\u[1]\d\s+2
+and
+\fBsystemd-networkd.service\fR(8)
+allow this\&. Note that
+\fBsystemd-hostnamed.service\fR(8)
+gives higher priority to the static hostname, so the transient hostname will only be used if the static hostname is not configured\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Otherwise, a fallback hostname configured at compilation time will be used ("localhost")\&.
+.RE
+.PP
+Effectively, the static hostname has higher priority than a transient hostname, which has higher priority than the fallback hostname\&. Transient hostnames are equivalent, so setting a new transient hostname causes the previous transient hostname to be forgotten\&. The hostname specified on the kernel command line is like a transient hostname, with the exception that it has higher priority when the machine boots\&. Also note that those are the semantics implemented by systemd tools, but other programs may also set the hostname\&.
+.SH "HISTORY"
+.PP
+The simple configuration file format of
+/etc/hostname
+originates from Debian GNU/Linux\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsethostname\fR(2),
+\fBhostname\fR(1),
+\fBhostname\fR(7),
+\fBmachine-id\fR(5),
+\fBmachine-info\fR(5),
+\fBhostnamectl\fR(1),
+\fBsystemd-hostnamed.service\fR(8),
+\fBsystemd-firstboot\fR(1)
+.SH "NOTES"
+.IP " 1." 4
+NetworkManager
+.RS 4
+\%https://developer.gnome.org/NetworkManager/stable/
+.RE

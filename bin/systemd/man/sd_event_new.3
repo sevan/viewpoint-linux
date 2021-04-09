@@ -1,0 +1,177 @@
+'\" t
+.TH "SD_EVENT_NEW" "3" "" "systemd 248" "sd_event_new"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_event_new, sd_event_default, sd_event_ref, sd_event_unref, sd_event_unrefp, sd_event_get_tid, sd_event \- Acquire and release an event loop object
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-event\&.h>
+.fi
+.ft
+.sp
+.ft B
+.nf
+typedef struct sd_event sd_event;
+.fi
+.ft
+.HP \w'int\ sd_event_new('u
+.BI "int sd_event_new(sd_event\ **" "event" ");"
+.HP \w'int\ sd_event_default('u
+.BI "int sd_event_default(sd_event\ **" "event" ");"
+.HP \w'sd_event\ *sd_event_ref('u
+.BI "sd_event *sd_event_ref(sd_event\ *" "event" ");"
+.HP \w'sd_event\ *sd_event_unref('u
+.BI "sd_event *sd_event_unref(sd_event\ *" "event" ");"
+.HP \w'void\ sd_event_unrefp('u
+.BI "void sd_event_unrefp(sd_event\ **" "event" ");"
+.HP \w'int\ sd_event_get_tid('u
+.BI "int sd_event_get_tid(sd_event\ *" "event" ", pid_t\ *" "tid" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_event_new()\fR
+allocates a new event loop object\&. The event loop object is returned in the
+\fIevent\fR
+parameter\&. After use, drop the returned reference with
+\fBsd_event_unref()\fR\&. When the last reference is dropped, the object is freed\&.
+.PP
+\fBsd_event_default()\fR
+acquires a reference to the default event loop object of the calling thread, possibly allocating a new object if no default event loop object has been allocated yet for the thread\&. After use, drop the returned reference with
+\fBsd_event_unref()\fR\&. When the last reference is dropped, the event loop is freed\&. If this function is called while the object returned from a previous call from the same thread is still referenced, the same object is returned again, but the reference is increased by one\&. It is recommended to use this call instead of
+\fBsd_event_new()\fR
+in order to share event loop objects between various components that are dispatched in the same thread\&. All threads have exactly either zero or one default event loop objects associated, but never more\&.
+.PP
+After allocating an event loop object, add event sources to it with
+\fBsd_event_add_io\fR(3),
+\fBsd_event_add_time\fR(3),
+\fBsd_event_add_signal\fR(3),
+\fBsd_event_add_child\fR(3),
+\fBsd_event_add_inotify\fR(3),
+\fBsd_event_add_defer\fR(3),
+\fBsd_event_add_post\fR(3)
+or
+\fBsd_event_add_exit\fR(3), and then execute the event loop using
+\fBsd_event_loop\fR(3)\&.
+.PP
+\fBsd_event_ref()\fR
+increases the reference count of the specified event loop object by one\&.
+.PP
+\fBsd_event_unref()\fR
+decreases the reference count of the specified event loop object by one\&. If the count hits zero, the object is freed\&. Note that it is freed regardless of whether it is the default event loop object for a thread or not\&. This means that allocating an event loop with
+\fBsd_event_default()\fR, then releasing it, and then acquiring a new one with
+\fBsd_event_default()\fR
+will result in two distinct objects\&. Note that, in order to free an event loop object, all remaining event sources of the event loop also need to be freed as each keeps a reference to it\&.
+.PP
+\fBsd_event_unrefp()\fR
+is similar to
+\fBsd_event_unref()\fR
+but takes a pointer to a pointer to an
+\fBsd_event\fR
+object\&. This call is useful in conjunction with GCC\*(Aqs and LLVM\*(Aqs
+\m[blue]\fBClean\-up Variable Attribute\fR\m[]\&\s-2\u[1]\d\s+2\&. Note that this function is defined as inline function\&. Use a declaration like the following, in order to allocate an event loop object that is freed automatically as the code block is left:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+{
+        __attribute__((cleanup(sd_event_unrefp))) sd_event *event = NULL;
+        int r;
+        \&...
+        r = sd_event_default(&event);
+        if (r < 0)
+                fprintf(stderr, "Failed to allocate event loop: %s\en", strerror(\-r));
+        \&...
+}
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBsd_event_ref()\fR,
+\fBsd_event_unref()\fR
+and
+\fBsd_event_unrefp()\fR
+execute no operation if the passed in event loop object is
+\fBNULL\fR\&.
+.PP
+\fBsd_event_get_tid()\fR
+retrieves the thread identifier ("TID") of the thread the specified event loop object is associated with\&. This call is only supported for event loops allocated with
+\fBsd_event_default()\fR, and returns the identifier for the thread the event loop is the default event loop of\&. See
+\fBgettid\fR(2)
+for more information on thread identifiers\&.
+.SH "RETURN VALUE"
+.PP
+On success,
+\fBsd_event_new()\fR,
+\fBsd_event_default()\fR
+and
+\fBsd_event_get_tid()\fR
+return 0 or a positive integer\&. On failure, they return a negative errno\-style error code\&.
+\fBsd_event_ref()\fR
+always returns a pointer to the event loop object passed in\&.
+\fBsd_event_unref()\fR
+always returns
+\fBNULL\fR\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-ENOMEM\fR
+.RS 4
+Not enough memory to allocate the object\&.
+.RE
+.PP
+\fB\-EMFILE\fR
+.RS 4
+The maximum number of event loops has been allocated\&.
+.RE
+.PP
+\fB\-ENXIO\fR
+.RS 4
+\fBsd_event_get_tid()\fR
+was invoked on an event loop object that was not allocated with
+\fBsd_event_default()\fR\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-event\fR(3),
+\fBsd_event_add_io\fR(3),
+\fBsd_event_add_time\fR(3),
+\fBsd_event_add_signal\fR(3),
+\fBsd_event_add_child\fR(3),
+\fBsd_event_add_inotify\fR(3),
+\fBsd_event_add_defer\fR(3),
+\fBsd_event_run\fR(3),
+\fBgettid\fR(2)
+.SH "NOTES"
+.IP " 1." 4
+Clean-up Variable Attribute
+.RS 4
+\%https://gcc.gnu.org/onlinedocs/gcc/Common-Variable-Attributes.html
+.RE

@@ -1,0 +1,99 @@
+'\" t
+.TH "SD_BUS_SLOT_REF" "3" "" "systemd 248" "sd_bus_slot_ref"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_slot_ref, sd_bus_slot_unref, sd_bus_slot_unrefp \- Create and destroy references to a bus slot object
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'sd_bus_slot\ *sd_bus_slot_ref('u
+.BI "sd_bus_slot *sd_bus_slot_ref(sd_bus_slot\ *" "slot" ");"
+.HP \w'sd_bus_slot\ *sd_bus_slot_unref('u
+.BI "sd_bus_slot *sd_bus_slot_unref(sd_bus_slot\ *" "slot" ");"
+.HP \w'void\ sd_bus_slot_unrefp('u
+.BI "void sd_bus_slot_unrefp(sd_bus_slot\ **" "slotp" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_slot_ref()\fR
+increases the reference counter of
+\fIslot\fR
+by one\&.
+.PP
+\fBsd_bus_slot_unref()\fR
+decreases the reference counter of
+\fIslot\fR
+by one\&. Once the reference count has dropped to zero, slot object is destroyed and cannot be used anymore, so further calls to
+\fBsd_bus_slot_ref()\fR
+or
+\fBsd_bus_slot_unref()\fR
+are illegal\&.
+.PP
+\fBsd_bus_slot_unrefp()\fR
+is similar to
+\fBsd_bus_slot_unref()\fR
+but takes a pointer to a pointer to an
+\fBsd_bus_slot\fR
+object\&. This call is useful in conjunction with GCC\*(Aqs and LLVM\*(Aqs
+\m[blue]\fBClean\-up Variable Attribute\fR\m[]\&\s-2\u[1]\d\s+2\&. See
+\fBsd_bus_new\fR(3)
+for an example how to use the cleanup attribute\&.
+.PP
+\fBsd_bus_slot_ref()\fR
+and
+\fBsd_bus_slot_unref()\fR
+execute no operation if the passed in bus object address is
+\fBNULL\fR\&.
+\fBsd_bus_slot_unrefp()\fR
+will first dereference its argument, which must not be
+\fBNULL\fR, and will execute no operation if
+\fIthat\fR
+is
+\fBNULL\fR\&.
+.SH "RETURN VALUE"
+.PP
+\fBsd_bus_slot_ref()\fR
+always returns the argument\&.
+.PP
+\fBsd_bus_slot_unref()\fR
+always returns
+\fBNULL\fR\&.
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd_bus_new\fR(3),
+\fBsd_bus_message_new\fR(3),
+\fBsd_bus_call_method_async\fR(3)
+.SH "NOTES"
+.IP " 1." 4
+Clean-up Variable Attribute
+.RS 4
+\%https://gcc.gnu.org/onlinedocs/gcc/Common-Variable-Attributes.html
+.RE

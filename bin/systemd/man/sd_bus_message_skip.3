@@ -1,0 +1,90 @@
+'\" t
+.TH "SD_BUS_MESSAGE_SKIP" "3" "" "systemd 248" "sd_bus_message_skip"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_message_skip \- Skip elements in a bus message
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_message_skip('u
+.BI "int sd_bus_message_skip(sd_bus_message\ *" "m" ", const\ char*\ " "types" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_message_skip()\fR
+is somewhat similar to
+\fBsd_bus_message_read\fR(3), but instead of reading the contents of the message, it only moves the "read pointer"\&. Subsequent read operations will read the elements that are after the elements that were skipped\&.
+.PP
+The
+\fItypes\fR
+argument has the same meaning as in
+\fBsd_bus_message_read()\fR\&. It may also be
+\fBNULL\fR, to skip a single element of any type\&.
+.SH "RETURN VALUE"
+.PP
+On success,
+\fBsd_bus_message_skip()\fR
+returns 0 or a positive integer\&. On failure, it returns a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+The
+\fIm\fR
+parameter is
+\fBNULL\fR\&.
+.RE
+.PP
+\fB\-EBADMSG\fR
+.RS 4
+The message cannot be parsed\&.
+.RE
+.PP
+\fB\-EPERM\fR
+.RS 4
+The message is not sealed\&.
+.RE
+.PP
+\fB\-ENXIO\fR
+.RS 4
+The message end has been reached and the requested elements cannot be read\&.
+.RE
+.PP
+\fB\-ENOMEM\fR
+.RS 4
+Memory allocation failed\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd_bus_message_read\fR(3),
+\fBsd_bus_message_read_basic\fR(3)

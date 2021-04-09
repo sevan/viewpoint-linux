@@ -1,0 +1,102 @@
+'\" t
+.TH "SD_HWDB_NEW" "3" "" "systemd 248" "sd_hwdb_new"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_hwdb_new, sd_hwdb_ref, sd_hwdb_unref \- Create a new hwdb object and create or destroy references to it
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-hwdb\&.h>
+.fi
+.ft
+.HP \w'int\ sd_hwdb_new('u
+.BI "int sd_hwdb_new(sd_hwdb\ **" "hwdb" ");"
+.HP \w'sd_hwdb*\ sd_hwdb_ref('u
+.BI "sd_hwdb* sd_hwdb_ref(sd_hwdb\ *" "hwdb" ");"
+.HP \w'sd_hwdb*\ sd_hwdb_unref('u
+.BI "sd_hwdb* sd_hwdb_unref(sd_hwdb\ *" "hwdb" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_hwdb_new()\fR
+creates a new hwdb object to access the binary hwdb database\&. Upon initialization, the file containing the binary representation of the hardware database is located and opened\&. The new object is returned in
+\fIhwdb\fR\&.
+.PP
+The
+\fIhwdb\fR
+object is reference counted\&.
+\fBsd_hwdb_ref()\fR
+and
+\fBsd_hwdb_unref()\fR
+may be used to get a new reference or destroy an existing reference to an object\&. The caller must dispose of the reference acquired with
+\fBsd_hwdb_new()\fR
+by calling
+\fBsd_hwdb_unref()\fR
+when done with the object\&.
+.PP
+Use
+\fBsd_hwdb_seek\fR(3),
+\fBsd_hwdb_get\fR(3), and
+\fBsd_hwdb_enumerate\fR(3)
+to access entries\&.
+.SH "RETURN VALUE"
+.PP
+On success,
+\fBsd_hwdb_new()\fR
+returns a non\-negative integer\&. On failure, it returns a negative errno\-style error code\&.
+.PP
+\fBsd_hwdb_ref()\fR
+always returns the argument\&.
+.PP
+\fBsd_hwdb_unref()\fR
+always returns
+\fBNULL\fR\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-ENOENT\fR
+.RS 4
+The binary hardware database file could not be located\&. See
+\fBsystemd-hwdb\fR(8)
+for more information\&.
+.RE
+.PP
+\fB\-EINVAL\fR
+.RS 4
+The located binary hardware database file is in an incompatible format\&.
+.RE
+.PP
+\fB\-ENOMEM\fR
+.RS 4
+Memory allocation failed\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsystemd-udevd.service\fR(8),
+\fBsd-hwdb\fR(3),
+\fBsystemd-hwdb\fR(3)

@@ -1,0 +1,73 @@
+'\" t
+.TH "SD_EVENT_SOURCE_SET_USERDATA" "3" "" "systemd 248" "sd_event_source_set_userdata"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_event_source_set_userdata, sd_event_source_get_userdata \- Set or retrieve user data pointer of event sources
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-event\&.h>
+.fi
+.ft
+.HP \w'void*\ sd_event_source_set_userdata('u
+.BI "void* sd_event_source_set_userdata(sd_event_source\ *" "source" ", void\ *" "userdata" ");"
+.HP \w'void*\ sd_event_source_get_userdata('u
+.BI "void* sd_event_source_get_userdata(sd_event_source\ *" "source" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_event_source_set_userdata()\fR
+may be used to set an arbitrary user data pointer for the event source object specified as
+\fIsource\fR\&. The user data pointer is usually specified when creating an event source object with calls such as
+\fBsd_event_add_io\fR(3)
+or
+\fBsd_event_add_time\fR(3), and may be updated with this call\&. The user data pointer is also passed to all handler callback functions associated with the event source\&. The
+\fIuserdata\fR
+parameter specifies the new user data pointer to set, the function returns the previous user data pointer\&. Note that
+\fBNULL\fR
+is a valid user data pointer\&.
+.PP
+\fBsd_event_source_get_userdata()\fR
+may be used to query the current user data pointer assigned to the event source object
+\fIsource\fR\&.
+.SH "RETURN VALUE"
+.PP
+On success,
+\fBsd_event_source_set_userdata()\fR
+and
+\fBsd_event_source_get_userdata()\fR
+return the previously set user data pointer\&. On failure, they return
+\fBNULL\fR\&.
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsd-event\fR(3),
+\fBsd_event_add_io\fR(3),
+\fBsd_event_add_time\fR(3),
+\fBsd_event_add_signal\fR(3),
+\fBsd_event_add_child\fR(3),
+\fBsd_event_add_inotify\fR(3),
+\fBsd_event_add_defer\fR(3),
+\fBsd_event_source_set_description\fR(3)

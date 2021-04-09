@@ -1,0 +1,82 @@
+'\" t
+.TH "SD_EVENT_SOURCE_SET_EXIT_ON_FAILURE" "3" "" "systemd 248" "sd_event_source_set_exit_on_failure"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_event_source_set_exit_on_failure, sd_event_source_get_exit_on_failure \- Set or retrieve the exit\-on\-failure feature of event sources
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-event\&.h>
+.fi
+.ft
+.HP \w'int\ sd_event_source_set_exit_on_failure('u
+.BI "int sd_event_source_set_exit_on_failure(sd_event_source\ *" "source" ", int\ " "b" ");"
+.HP \w'int\ sd_event_source_get_exit_on_failure('u
+.BI "int sd_event_source_get_exit_on_failure(sd_event_source\ *" "source" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_event_source_set_exit_on_failure()\fR
+may be used to set/unset the exit\-on\-failure flag of the event source object specified as
+\fIsource\fR\&. The flag defaults to off\&. If on and the callback function set for the event source returns a failure code (i\&.e\&. a negative value) the event loop is exited too, using the callback return code as the exit code for
+\fBsd_event_exit\fR(3)\&. If off, the event source is disabled but the event loop continues to run\&. Setting this flag is useful for "dominant" event sources that define the purpose and reason for the event loop, and whose failure hence should propagate to the event loop itself \(em as opposed to "auxiliary" event sources whose failures should remain local and affect the event source, but not propagate further\&.
+.PP
+\fBsd_event_source_get_exit_on_failure()\fR
+may be used to query the flag currently set for the event source object
+\fIsource\fR\&.
+.SH "RETURN VALUE"
+.PP
+On success,
+\fBsd_event_source_set_exit_on_failure()\fR
+returns a non\-negative integer\&.
+\fBsd_event_source_get_exit_on_failure()\fR
+returns 0 if the flag is off, > 0 if the flag is on\&. On failure, both return a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+\fIsource\fR
+is not a valid pointer to an
+sd_event_source
+object\&.
+.RE
+.PP
+\fB\-EDOM\fR
+.RS 4
+The event source refers to an exit event source (as created with
+\fBsd_event_add_exit\fR(3)), for which this functionality is not supported\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsd-event\fR(3),
+\fBsd_event_add_io\fR(3),
+\fBsd_event_add_time\fR(3),
+\fBsd_event_add_signal\fR(3),
+\fBsd_event_add_child\fR(3),
+\fBsd_event_add_inotify\fR(3),
+\fBsd_event_add_defer\fR(3)

@@ -1,0 +1,92 @@
+'\" t
+.TH "SYSTEMD\-PSTORE\&.SERVICE" "8" "" "systemd 248" "systemd-pstore.service"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd-pstore.service, systemd-pstore \- A service to archive contents of pstore
+.SH "SYNOPSIS"
+.PP
+/usr/lib/systemd/systemd\-pstore
+.PP
+systemd\-pstore\&.service
+.SH "DESCRIPTION"
+.PP
+systemd\-pstore\&.service
+is a system service that archives the contents of the Linux persistent storage filesystem, pstore, to other storage, thus preserving the existing information contained in the pstore, and clearing pstore storage for future error events\&.
+.PP
+Linux provides a persistent storage file system, pstore, that can store error records when the kernel dies (or reboots or powers\-off)\&. These records in turn can be referenced to debug kernel problems (currently the kernel stores the tail of the kernel log, which also contains a stack backtrace, into pstore)\&.
+.PP
+The pstore file system supports a variety of backends that map onto persistent storage, such as the ACPI ERST and UEFI variables\&. The pstore backends typically offer a relatively small amount of persistent storage, e\&.g\&. 64KiB, which can quickly fill up and thus prevent subsequent kernel crashes from recording errors\&. Thus there is a need to monitor and extract the pstore contents so that future kernel problems can also record information in the pstore\&.
+.PP
+The pstore service is independent of the kdump service\&. In cloud environments specifically, host and guest filesystems are on remote filesystems (e\&.g\&. iSCSI or NFS), thus kdump relies (implicitly and/or explicitly) upon proper operation of networking software *and* hardware *and* infrastructure\&. Thus it may not be possible to capture a kernel coredump to a file since writes over the network may not be possible\&.
+.PP
+The pstore backend, on the other hand, is completely local and provides a path to store error records which will survive a reboot and aid in post\-mortem debugging\&.
+.PP
+The
+\fBsystemd\-pstore\fR
+executable does the actual work\&. Upon starting, the
+pstore\&.conf
+file is read and the
+/sys/fs/pstore/
+directory contents are processed according to the options\&. Pstore files are written to the journal, and optionally saved into
+/var/lib/systemd/pstore/\&.
+.SH "CONFIGURATION"
+.PP
+The behavior of
+\fBsystemd\-pstore\fR
+is configured through the configuration file
+/etc/systemd/pstore\&.conf
+and corresponding snippets
+/etc/systemd/pstore\&.conf\&.d/*\&.conf, see
+\fBpstore.conf\fR(5)\&.
+.SS "Disabling pstore processing"
+.PP
+To disable pstore processing by
+\fBsystemd\-pstore\fR, set
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+Storage=none
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+in
+\fBpstore.conf\fR(5)\&.
+.SS "Kernel parameters"
+.PP
+The kernel has two parameters,
+/sys/module/kernel/parameters/crash_kexec_post_notifiers
+and
+/sys/module/printk/parameters/always_kmsg_dump, that control writes into pstore\&. The first enables storing of the kernel log (including stack trace) into pstore upon a panic or crash, and the second enables storing of the kernel log upon a normal shutdown (shutdown, reboot, halt)\&. These parameters can be managed via the
+\fBtmpfiles.d\fR(5)
+mechanism, specifically the file
+/usr/lib/tmpfiles/systemd\-pstore\&.conf\&.
+.SH "USAGE"
+.PP
+Data stored in the journal can be viewed with
+\fBjournalctl\fR(1)
+as usual\&.
+.SH "SEE ALSO"
+.PP
+\fBpstore.conf\fR(5)

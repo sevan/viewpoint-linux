@@ -1,0 +1,1127 @@
+'\" t
+.TH "JOURNALCTL" "1" "" "systemd 248" "journalctl"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+journalctl \- Query the systemd journal
+.SH "SYNOPSIS"
+.HP \w'\fBjournalctl\fR\ 'u
+\fBjournalctl\fR [OPTIONS...] [MATCHES...]
+.SH "DESCRIPTION"
+.PP
+\fBjournalctl\fR
+may be used to query the contents of the
+\fBsystemd\fR(1)
+journal as written by
+\fBsystemd-journald.service\fR(8)\&.
+.PP
+If called without parameters, it will show the full contents of the journal, starting with the oldest entry collected\&.
+.PP
+If one or more match arguments are passed, the output is filtered accordingly\&. A match is in the format
+"FIELD=VALUE", e\&.g\&.
+"_SYSTEMD_UNIT=httpd\&.service", referring to the components of a structured journal entry\&. See
+\fBsystemd.journal-fields\fR(7)
+for a list of well\-known fields\&. If multiple matches are specified matching different fields, the log entries are filtered by both, i\&.e\&. the resulting output will show only entries matching all the specified matches of this kind\&. If two matches apply to the same field, then they are automatically matched as alternatives, i\&.e\&. the resulting output will show entries matching any of the specified matches for the same field\&. Finally, the character
+"+"
+may appear as a separate word between other terms on the command line\&. This causes all matches before and after to be combined in a disjunction (i\&.e\&. logical OR)\&.
+.PP
+It is also possible to filter the entries by specifying an absolute file path as an argument\&. The file path may be a file or a symbolic link and the file must exist at the time of the query\&. If a file path refers to an executable binary, an
+"_EXE="
+match for the canonicalized binary path is added to the query\&. If a file path refers to an executable script, a
+"_COMM="
+match for the script name is added to the query\&. If a file path refers to a device node,
+"_KERNEL_DEVICE="
+matches for the kernel name of the device and for each of its ancestor devices is added to the query\&. Symbolic links are dereferenced, kernel names are synthesized, and parent devices are identified from the environment at the time of the query\&. In general, a device node is the best proxy for an actual device, as log entries do not usually contain fields that identify an actual device\&. For the resulting log entries to be correct for the actual device, the relevant parts of the environment at the time the entry was logged, in particular the actual device corresponding to the device node, must have been the same as those at the time of the query\&. Because device nodes generally change their corresponding devices across reboots, specifying a device node path causes the resulting entries to be restricted to those from the current boot\&.
+.PP
+Additional constraints may be added using options
+\fB\-\-boot\fR,
+\fB\-\-unit=\fR, etc\&., to further limit what entries will be shown (logical AND)\&.
+.PP
+Output is interleaved from all accessible journal files, whether they are rotated or currently being written, and regardless of whether they belong to the system itself or are accessible user journals\&.
+.PP
+The set of journal files which will be used can be modified using the
+\fB\-\-user\fR,
+\fB\-\-system\fR,
+\fB\-\-directory\fR, and
+\fB\-\-file\fR
+options, see below\&.
+.PP
+All users are granted access to their private per\-user journals\&. However, by default, only root and users who are members of a few special groups are granted access to the system journal and the journals of other users\&. Members of the groups
+"systemd\-journal",
+"adm", and
+"wheel"
+can read all journal files\&. Note that the two latter groups traditionally have additional privileges specified by the distribution\&. Members of the
+"wheel"
+group can often perform administrative tasks\&.
+.PP
+The output is paged through
+\fBless\fR
+by default, and long lines are "truncated" to screen width\&. The hidden part can be viewed by using the left\-arrow and right\-arrow keys\&. Paging can be disabled; see the
+\fB\-\-no\-pager\fR
+option and the "Environment" section below\&.
+.PP
+When outputting to a tty, lines are colored according to priority: lines of level ERROR and higher are colored red; lines of level NOTICE and higher are highlighted; lines of level DEBUG are colored lighter grey; other lines are displayed normally\&.
+.SH "OPTIONS"
+.PP
+The following options are understood:
+.PP
+\fB\-\-no\-full\fR, \fB\-\-full\fR, \fB\-l\fR
+.RS 4
+Ellipsize fields when they do not fit in available columns\&. The default is to show full fields, allowing them to wrap or be truncated by the pager, if one is used\&.
+.sp
+The old options
+\fB\-l\fR/\fB\-\-full\fR
+are not useful anymore, except to undo
+\fB\-\-no\-full\fR\&.
+.RE
+.PP
+\fB\-a\fR, \fB\-\-all\fR
+.RS 4
+Show all fields in full, even if they include unprintable characters or are very long\&. By default, fields with unprintable characters are abbreviated as "blob data"\&. (Note that the pager may escape unprintable characters again\&.)
+.RE
+.PP
+\fB\-f\fR, \fB\-\-follow\fR
+.RS 4
+Show only the most recent journal entries, and continuously print new entries as they are appended to the journal\&.
+.RE
+.PP
+\fB\-e\fR, \fB\-\-pager\-end\fR
+.RS 4
+Immediately jump to the end of the journal inside the implied pager tool\&. This implies
+\fB\-n1000\fR
+to guarantee that the pager will not buffer logs of unbounded size\&. This may be overridden with an explicit
+\fB\-n\fR
+with some other numeric value, while
+\fB\-nall\fR
+will disable this cap\&. Note that this option is only supported for the
+\fBless\fR(1)
+pager\&.
+.RE
+.PP
+\fB\-n\fR, \fB\-\-lines=\fR
+.RS 4
+Show the most recent journal events and limit the number of events shown\&. If
+\fB\-\-follow\fR
+is used, this option is implied\&. The argument is a positive integer or
+"all"
+to disable line limiting\&. The default value is 10 if no argument is given\&.
+.RE
+.PP
+\fB\-\-no\-tail\fR
+.RS 4
+Show all stored output lines, even in follow mode\&. Undoes the effect of
+\fB\-\-lines=\fR\&.
+.RE
+.PP
+\fB\-r\fR, \fB\-\-reverse\fR
+.RS 4
+Reverse output so that the newest entries are displayed first\&.
+.RE
+.PP
+\fB\-o\fR, \fB\-\-output=\fR
+.RS 4
+Controls the formatting of the journal entries that are shown\&. Takes one of the following options:
+.PP
+\fBshort\fR
+.RS 4
+is the default and generates an output that is mostly identical to the formatting of classic syslog files, showing one line per journal entry\&.
+.RE
+.PP
+\fBshort\-full\fR
+.RS 4
+is very similar, but shows timestamps in the format the
+\fB\-\-since=\fR
+and
+\fB\-\-until=\fR
+options accept\&. Unlike the timestamp information shown in
+\fBshort\fR
+output mode this mode includes weekday, year and timezone information in the output, and is locale\-independent\&.
+.RE
+.PP
+\fBshort\-iso\fR
+.RS 4
+is very similar, but shows ISO 8601 wallclock timestamps\&.
+.RE
+.PP
+\fBshort\-iso\-precise\fR
+.RS 4
+as for
+\fBshort\-iso\fR
+but includes full microsecond precision\&.
+.RE
+.PP
+\fBshort\-precise\fR
+.RS 4
+is very similar, but shows classic syslog timestamps with full microsecond precision\&.
+.RE
+.PP
+\fBshort\-monotonic\fR
+.RS 4
+is very similar, but shows monotonic timestamps instead of wallclock timestamps\&.
+.RE
+.PP
+\fBshort\-unix\fR
+.RS 4
+is very similar, but shows seconds passed since January 1st 1970 UTC instead of wallclock timestamps ("UNIX time")\&. The time is shown with microsecond accuracy\&.
+.RE
+.PP
+\fBverbose\fR
+.RS 4
+shows the full\-structured entry items with all fields\&.
+.RE
+.PP
+\fBexport\fR
+.RS 4
+serializes the journal into a binary (but mostly text\-based) stream suitable for backups and network transfer (see
+\m[blue]\fBJournal Export Format\fR\m[]\&\s-2\u[1]\d\s+2
+for more information)\&. To import the binary stream back into native journald format use
+\fBsystemd-journal-remote\fR(8)\&.
+.RE
+.PP
+\fBjson\fR
+.RS 4
+formats entries as JSON objects, separated by newline characters (see
+\m[blue]\fBJournal JSON Format\fR\m[]\&\s-2\u[2]\d\s+2
+for more information)\&. Field values are generally encoded as JSON strings, with three exceptions:
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 1.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  1." 4.2
+.\}
+Fields larger than 4096 bytes are encoded as
+\fBnull\fR
+values\&. (This may be turned off by passing
+\fB\-\-all\fR, but be aware that this may allocate overly long JSON objects\&.)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 2.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  2." 4.2
+.\}
+Journal entries permit non\-unique fields within the same log entry\&. JSON does not allow non\-unique fields within objects\&. Due to this, if a non\-unique field is encountered a JSON array is used as field value, listing all field values as elements\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 3.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  3." 4.2
+.\}
+Fields containing non\-printable or non\-UTF8 bytes are encoded as arrays containing the raw bytes individually formatted as unsigned numbers\&.
+.RE
+.sp
+Note that this encoding is reversible (with the exception of the size limit)\&.
+.RE
+.PP
+\fBjson\-pretty\fR
+.RS 4
+formats entries as JSON data structures, but formats them in multiple lines in order to make them more readable by humans\&.
+.RE
+.PP
+\fBjson\-sse\fR
+.RS 4
+formats entries as JSON data structures, but wraps them in a format suitable for
+\m[blue]\fBServer\-Sent Events\fR\m[]\&\s-2\u[3]\d\s+2\&.
+.RE
+.PP
+\fBjson\-seq\fR
+.RS 4
+formats entries as JSON data structures, but prefixes them with an ASCII Record Separator character (0x1E) and suffixes them with an ASCII Line Feed character (0x0A), in accordance with
+\m[blue]\fBJavaScript Object Notation (JSON) Text Sequences\fR\m[]\&\s-2\u[4]\d\s+2
+("application/json\-seq")\&.
+.RE
+.PP
+\fBcat\fR
+.RS 4
+generates a very terse output, only showing the actual message of each journal entry with no metadata, not even a timestamp\&. If combined with the
+\fB\-\-output\-fields=\fR
+option will output the listed fields for each log record, instead of the message\&.
+.RE
+.PP
+\fBwith\-unit\fR
+.RS 4
+similar to short\-full, but prefixes the unit and user unit names instead of the traditional syslog identifier\&. Useful when using templated instances, as it will include the arguments in the unit names\&.
+.RE
+.RE
+.PP
+\fB\-\-output\-fields=\fR
+.RS 4
+A comma separated list of the fields which should be included in the output\&. This has an effect only for the output modes which would normally show all fields (\fBverbose\fR,
+\fBexport\fR,
+\fBjson\fR,
+\fBjson\-pretty\fR,
+\fBjson\-sse\fR
+and
+\fBjson\-seq\fR), as well as on
+\fBcat\fR\&. For the former, the
+"__CURSOR",
+"__REALTIME_TIMESTAMP",
+"__MONOTONIC_TIMESTAMP", and
+"_BOOT_ID"
+fields are always printed\&.
+.RE
+.PP
+\fB\-\-utc\fR
+.RS 4
+Express time in Coordinated Universal Time (UTC)\&.
+.RE
+.PP
+\fB\-\-no\-hostname\fR
+.RS 4
+Don\*(Aqt show the hostname field of log messages originating from the local host\&. This switch has an effect only on the
+\fBshort\fR
+family of output modes (see above)\&.
+.sp
+Note: this option does not remove occurrences of the hostname from log entries themselves, so it does not prevent the hostname from being visible in the logs\&.
+.RE
+.PP
+\fB\-x\fR, \fB\-\-catalog\fR
+.RS 4
+Augment log lines with explanation texts from the message catalog\&. This will add explanatory help texts to log messages in the output where this is available\&. These short help texts will explain the context of an error or log event, possible solutions, as well as pointers to support forums, developer documentation, and any other relevant manuals\&. Note that help texts are not available for all messages, but only for selected ones\&. For more information on the message catalog, please refer to the
+\m[blue]\fBMessage Catalog Developer Documentation\fR\m[]\&\s-2\u[5]\d\s+2\&.
+.sp
+Note: when attaching
+\fBjournalctl\fR
+output to bug reports, please do
+\fInot\fR
+use
+\fB\-x\fR\&.
+.RE
+.PP
+\fB\-q\fR, \fB\-\-quiet\fR
+.RS 4
+Suppresses all informational messages (i\&.e\&. "\-\- Journal begins at \&...", "\-\- Reboot \-\-"), any warning messages regarding inaccessible system journals when run as a normal user\&.
+.RE
+.PP
+\fB\-m\fR, \fB\-\-merge\fR
+.RS 4
+Show entries interleaved from all available journals, including remote ones\&.
+.RE
+.PP
+\fB\-b \fR\fB[[\fIID\fR][\fI\(+-offset\fR]|\fBall\fR]\fR, \fB\-\-boot\fR\fB[=[\fIID\fR][\fI\(+-offset\fR]|\fBall\fR]\fR
+.RS 4
+Show messages from a specific boot\&. This will add a match for
+"_BOOT_ID="\&.
+.sp
+The argument may be empty, in which case logs for the current boot will be shown\&.
+.sp
+If the boot ID is omitted, a positive
+\fIoffset\fR
+will look up the boots starting from the beginning of the journal, and an equal\-or\-less\-than zero
+\fIoffset\fR
+will look up boots starting from the end of the journal\&. Thus,
+\fB1\fR
+means the first boot found in the journal in chronological order,
+\fB2\fR
+the second and so on; while
+\fB\-0\fR
+is the last boot,
+\fB\-1\fR
+the boot before last, and so on\&. An empty
+\fIoffset\fR
+is equivalent to specifying
+\fB\-0\fR, except when the current boot is not the last boot (e\&.g\&. because
+\fB\-\-directory\fR
+was specified to look at logs from a different machine)\&.
+.sp
+If the 32\-character
+\fIID\fR
+is specified, it may optionally be followed by
+\fIoffset\fR
+which identifies the boot relative to the one given by boot
+\fIID\fR\&. Negative values mean earlier boots and positive values mean later boots\&. If
+\fIoffset\fR
+is not specified, a value of zero is assumed, and the logs for the boot given by
+\fIID\fR
+are shown\&.
+.sp
+The special argument
+\fBall\fR
+can be used to negate the effect of an earlier use of
+\fB\-b\fR\&.
+.RE
+.PP
+\fB\-\-list\-boots\fR
+.RS 4
+Show a tabular list of boot numbers (relative to the current boot), their IDs, and the timestamps of the first and last message pertaining to the boot\&.
+.RE
+.PP
+\fB\-k\fR, \fB\-\-dmesg\fR
+.RS 4
+Show only kernel messages\&. This implies
+\fB\-b\fR
+and adds the match
+"_TRANSPORT=kernel"\&.
+.RE
+.PP
+\fB\-t\fR, \fB\-\-identifier=\fR\fB\fISYSLOG_IDENTIFIER\fR\fR
+.RS 4
+Show messages for the specified syslog identifier
+\fISYSLOG_IDENTIFIER\fR\&.
+.sp
+This parameter can be specified multiple times\&.
+.RE
+.PP
+\fB\-u\fR, \fB\-\-unit=\fR\fB\fIUNIT\fR\fR\fB|\fR\fB\fIPATTERN\fR\fR
+.RS 4
+Show messages for the specified systemd unit
+\fIUNIT\fR
+(such as a service unit), or for any of the units matched by
+\fIPATTERN\fR\&. If a pattern is specified, a list of unit names found in the journal is compared with the specified pattern and all that match are used\&. For each unit name, a match is added for messages from the unit ("_SYSTEMD_UNIT=\fIUNIT\fR"), along with additional matches for messages from systemd and messages about coredumps for the specified unit\&. A match is also added for
+"_SYSTEMD_SLICE=\fIUNIT\fR", such that if the provided
+\fIUNIT\fR
+is a
+\fBsystemd.slice\fR(5)
+unit, all logs of children of the slice will be shown\&.
+.sp
+This parameter can be specified multiple times\&.
+.RE
+.PP
+\fB\-\-user\-unit=\fR
+.RS 4
+Show messages for the specified user session unit\&. This will add a match for messages from the unit ("_SYSTEMD_USER_UNIT="
+and
+"_UID=") and additional matches for messages from session systemd and messages about coredumps for the specified unit\&. A match is also added for
+"_SYSTEMD_USER_SLICE=\fIUNIT\fR", such that if the provided
+\fIUNIT\fR
+is a
+\fBsystemd.slice\fR(5)
+unit, all logs of children of the unit will be shown\&.
+.sp
+This parameter can be specified multiple times\&.
+.RE
+.PP
+\fB\-p\fR, \fB\-\-priority=\fR
+.RS 4
+Filter output by message priorities or priority ranges\&. Takes either a single numeric or textual log level (i\&.e\&. between 0/"emerg"
+and 7/"debug"), or a range of numeric/text log levels in the form FROM\&.\&.TO\&. The log levels are the usual syslog log levels as documented in
+\fBsyslog\fR(3), i\&.e\&.
+"emerg"\ \&(0),
+"alert"\ \&(1),
+"crit"\ \&(2),
+"err"\ \&(3),
+"warning"\ \&(4),
+"notice"\ \&(5),
+"info"\ \&(6),
+"debug"\ \&(7)\&. If a single log level is specified, all messages with this log level or a lower (hence more important) log level are shown\&. If a range is specified, all messages within the range are shown, including both the start and the end value of the range\&. This will add
+"PRIORITY="
+matches for the specified priorities\&.
+.RE
+.PP
+\fB\-\-facility=\fR
+.RS 4
+Filter output by syslog facility\&. Takes a comma\-separated list of numbers or facility names\&. The names are the usual syslog facilities as documented in
+\fBsyslog\fR(3)\&.
+\fB\-\-facility=help\fR
+may be used to display a list of known facility names and exit\&.
+.RE
+.PP
+\fB\-g\fR, \fB\-\-grep=\fR
+.RS 4
+Filter output to entries where the
+\fIMESSAGE=\fR
+field matches the specified regular expression\&. PERL\-compatible regular expressions are used, see
+\fBpcre2pattern\fR(3)
+for a detailed description of the syntax\&.
+.sp
+If the pattern is all lowercase, matching is case insensitive\&. Otherwise, matching is case sensitive\&. This can be overridden with the
+\fB\-\-case\-sensitive\fR
+option, see below\&.
+.RE
+.PP
+\fB\-\-case\-sensitive\fR\fB[=BOOLEAN]\fR
+.RS 4
+Make pattern matching case sensitive or case insensitive\&.
+.RE
+.PP
+\fB\-c\fR, \fB\-\-cursor=\fR
+.RS 4
+Start showing entries from the location in the journal specified by the passed cursor\&.
+.RE
+.PP
+\fB\-\-cursor\-file=\fR\fB\fIFILE\fR\fR
+.RS 4
+If
+\fIFILE\fR
+exists and contains a cursor, start showing entries
+\fIafter\fR
+this location\&. Otherwise the show entries according the other given options\&. At the end, write the cursor of the last entry to
+\fIFILE\fR\&. Use this option to continually read the journal by sequentially calling
+\fBjournalctl\fR\&.
+.RE
+.PP
+\fB\-\-after\-cursor=\fR
+.RS 4
+Start showing entries from the location in the journal
+\fIafter\fR
+the location specified by the passed cursor\&. The cursor is shown when the
+\fB\-\-show\-cursor\fR
+option is used\&.
+.RE
+.PP
+\fB\-\-show\-cursor\fR
+.RS 4
+The cursor is shown after the last entry after two dashes:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+\-\- cursor: s=0639\&...
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+The format of the cursor is private and subject to change\&.
+.RE
+.PP
+\fB\-S\fR, \fB\-\-since=\fR, \fB\-U\fR, \fB\-\-until=\fR
+.RS 4
+Start showing entries on or newer than the specified date, or on or older than the specified date, respectively\&. Date specifications should be of the format
+"2012\-10\-30 18:17:16"\&. If the time part is omitted,
+"00:00:00"
+is assumed\&. If only the seconds component is omitted,
+":00"
+is assumed\&. If the date component is omitted, the current day is assumed\&. Alternatively the strings
+"yesterday",
+"today",
+"tomorrow"
+are understood, which refer to 00:00:00 of the day before the current day, the current day, or the day after the current day, respectively\&.
+"now"
+refers to the current time\&. Finally, relative times may be specified, prefixed with
+"\-"
+or
+"+", referring to times before or after the current time, respectively\&. For complete time and date specification, see
+\fBsystemd.time\fR(7)\&. Note that
+\fB\-\-output=short\-full\fR
+prints timestamps that follow precisely this format\&.
+.RE
+.PP
+\fB\-F\fR, \fB\-\-field=\fR
+.RS 4
+Print all possible data values the specified field can take in all entries of the journal\&.
+.RE
+.PP
+\fB\-N\fR, \fB\-\-fields\fR
+.RS 4
+Print all field names currently used in all entries of the journal\&.
+.RE
+.PP
+\fB\-\-system\fR, \fB\-\-user\fR
+.RS 4
+Show messages from system services and the kernel (with
+\fB\-\-system\fR)\&. Show messages from service of current user (with
+\fB\-\-user\fR)\&. If neither is specified, show all messages that the user can see\&.
+.RE
+.PP
+\fB\-M\fR, \fB\-\-machine=\fR
+.RS 4
+Show messages from a running, local container\&. Specify a container name to connect to\&.
+.RE
+.PP
+\fB\-D \fR\fB\fIDIR\fR\fR, \fB\-\-directory=\fR\fB\fIDIR\fR\fR
+.RS 4
+Takes a directory path as argument\&. If specified, journalctl will operate on the specified journal directory
+\fIDIR\fR
+instead of the default runtime and system journal paths\&.
+.RE
+.PP
+\fB\-\-file=\fR\fB\fIGLOB\fR\fR
+.RS 4
+Takes a file glob as an argument\&. If specified, journalctl will operate on the specified journal files matching
+\fIGLOB\fR
+instead of the default runtime and system journal paths\&. May be specified multiple times, in which case files will be suitably interleaved\&.
+.RE
+.PP
+\fB\-\-root=\fR\fB\fIROOT\fR\fR
+.RS 4
+Takes a directory path as an argument\&. If specified,
+\fBjournalctl\fR
+will operate on journal directories and catalog file hierarchy underneath the specified directory instead of the root directory (e\&.g\&.
+\fB\-\-update\-catalog\fR
+will create
+\fIROOT\fR/var/lib/systemd/catalog/database, and journal files under
+\fIROOT\fR/run/journal/
+or
+\fIROOT\fR/var/log/journal/
+will be displayed)\&.
+.RE
+.PP
+\fB\-\-image=\fR\fB\fIIMAGE\fR\fR
+.RS 4
+Takes a path to a disk image file or block device node\&. If specified,
+\fBjournalctl\fR
+will operate on the file system in the indicated disk image\&. This is similar to
+\fB\-\-root=\fR
+but operates on file systems stored in disk images or block devices, thus providing an easy way to extract log data from disk images\&. The disk image should either contain just a file system or a set of file systems within a GPT partition table, following the
+\m[blue]\fBDiscoverable Partitions Specification\fR\m[]\&\s-2\u[6]\d\s+2\&. For further information on supported disk images, see
+\fBsystemd-nspawn\fR(1)\*(Aqs switch of the same name\&.
+.RE
+.PP
+\fB\-\-namespace=\fR\fB\fINAMESPACE\fR\fR
+.RS 4
+Takes a journal namespace identifier string as argument\&. If not specified the data collected by the default namespace is shown\&. If specified shows the log data of the specified namespace instead\&. If the namespace is specified as
+"*"
+data from all namespaces is shown, interleaved\&. If the namespace identifier is prefixed with
+"+"
+data from the specified namespace and the default namespace is shown, interleaved, but no other\&. For details about journal namespaces see
+\fBsystemd-journald.service\fR(8)\&.
+.RE
+.PP
+\fB\-\-header\fR
+.RS 4
+Instead of showing journal contents, show internal header information of the journal fields accessed\&.
+.RE
+.PP
+\fB\-\-disk\-usage\fR
+.RS 4
+Shows the current disk usage of all journal files\&. This shows the sum of the disk usage of all archived and active journal files\&.
+.RE
+.PP
+\fB\-\-vacuum\-size=\fR, \fB\-\-vacuum\-time=\fR, \fB\-\-vacuum\-files=\fR
+.RS 4
+Removes the oldest archived journal files until the disk space they use falls below the specified size (specified with the usual
+"K",
+"M",
+"G"
+and
+"T"
+suffixes), or all archived journal files contain no data older than the specified timespan (specified with the usual
+"s",
+"m",
+"h",
+"days",
+"months",
+"weeks"
+and
+"years"
+suffixes), or no more than the specified number of separate journal files remain\&. Note that running
+\fB\-\-vacuum\-size=\fR
+has only an indirect effect on the output shown by
+\fB\-\-disk\-usage\fR, as the latter includes active journal files, while the vacuuming operation only operates on archived journal files\&. Similarly,
+\fB\-\-vacuum\-files=\fR
+might not actually reduce the number of journal files to below the specified number, as it will not remove active journal files\&.
+.sp
+\fB\-\-vacuum\-size=\fR,
+\fB\-\-vacuum\-time=\fR
+and
+\fB\-\-vacuum\-files=\fR
+may be combined in a single invocation to enforce any combination of a size, a time and a number of files limit on the archived journal files\&. Specifying any of these three parameters as zero is equivalent to not enforcing the specific limit, and is thus redundant\&.
+.sp
+These three switches may also be combined with
+\fB\-\-rotate\fR
+into one command\&. If so, all active files are rotated first, and the requested vacuuming operation is executed right after\&. The rotation has the effect that all currently active files are archived (and potentially new, empty journal files opened as replacement), and hence the vacuuming operation has the greatest effect as it can take all log data written so far into account\&.
+.RE
+.PP
+\fB\-\-list\-catalog \fR\fB[\fI128\-bit\-ID\&...\fR]\fR\fB \fR
+.RS 4
+List the contents of the message catalog as a table of message IDs, plus their short description strings\&.
+.sp
+If any
+\fI128\-bit\-ID\fRs are specified, only those entries are shown\&.
+.RE
+.PP
+\fB\-\-dump\-catalog \fR\fB[\fI128\-bit\-ID\&...\fR]\fR\fB \fR
+.RS 4
+Show the contents of the message catalog, with entries separated by a line consisting of two dashes and the ID (the format is the same as
+\&.catalog
+files)\&.
+.sp
+If any
+\fI128\-bit\-ID\fRs are specified, only those entries are shown\&.
+.RE
+.PP
+\fB\-\-update\-catalog\fR
+.RS 4
+Update the message catalog index\&. This command needs to be executed each time new catalog files are installed, removed, or updated to rebuild the binary catalog index\&.
+.RE
+.PP
+\fB\-\-setup\-keys\fR
+.RS 4
+Instead of showing journal contents, generate a new key pair for Forward Secure Sealing (FSS)\&. This will generate a sealing key and a verification key\&. The sealing key is stored in the journal data directory and shall remain on the host\&. The verification key should be stored externally\&. Refer to the
+\fBSeal=\fR
+option in
+\fBjournald.conf\fR(5)
+for information on Forward Secure Sealing and for a link to a refereed scholarly paper detailing the cryptographic theory it is based on\&.
+.RE
+.PP
+\fB\-\-force\fR
+.RS 4
+When
+\fB\-\-setup\-keys\fR
+is passed and Forward Secure Sealing (FSS) has already been configured, recreate FSS keys\&.
+.RE
+.PP
+\fB\-\-interval=\fR
+.RS 4
+Specifies the change interval for the sealing key when generating an FSS key pair with
+\fB\-\-setup\-keys\fR\&. Shorter intervals increase CPU consumption but shorten the time range of undetectable journal alterations\&. Defaults to 15min\&.
+.RE
+.PP
+\fB\-\-verify\fR
+.RS 4
+Check the journal file for internal consistency\&. If the file has been generated with FSS enabled and the FSS verification key has been specified with
+\fB\-\-verify\-key=\fR, authenticity of the journal file is verified\&.
+.RE
+.PP
+\fB\-\-verify\-key=\fR
+.RS 4
+Specifies the FSS verification key to use for the
+\fB\-\-verify\fR
+operation\&.
+.RE
+.PP
+\fB\-\-sync\fR
+.RS 4
+Asks the journal daemon to write all yet unwritten journal data to the backing file system and synchronize all journals\&. This call does not return until the synchronization operation is complete\&. This command guarantees that any log messages written before its invocation are safely stored on disk at the time it returns\&.
+.RE
+.PP
+\fB\-\-flush\fR
+.RS 4
+Asks the journal daemon to flush any log data stored in
+/run/log/journal/
+into
+/var/log/journal/, if persistent storage is enabled\&. This call does not return until the operation is complete\&. Note that this call is idempotent: the data is only flushed from
+/run/log/journal/
+into
+/var/log/journal/
+once during system runtime (but see
+\fB\-\-relinquish\-var\fR
+below), and this command exits cleanly without executing any operation if this has already happened\&. This command effectively guarantees that all data is flushed to
+/var/log/journal/
+at the time it returns\&.
+.RE
+.PP
+\fB\-\-relinquish\-var\fR
+.RS 4
+Asks the journal daemon for the reverse operation to
+\fB\-\-flush\fR: if requested the daemon will write further log data to
+/run/log/journal/
+and stops writing to
+/var/log/journal/\&. A subsequent call to
+\fB\-\-flush\fR
+causes the log output to switch back to
+/var/log/journal/, see above\&.
+.RE
+.PP
+\fB\-\-smart\-relinquish\-var\fR
+.RS 4
+Similar to
+\fB\-\-relinquish\-var\fR
+but executes no operation if the root file system and
+/var/lib/journal/
+reside on the same mount point\&. This operation is used during system shutdown in order to make the journal daemon stop writing data to
+/var/log/journal/
+in case that directory is located on a mount point that needs to be unmounted\&.
+.RE
+.PP
+\fB\-\-rotate\fR
+.RS 4
+Asks the journal daemon to rotate journal files\&. This call does not return until the rotation operation is complete\&. Journal file rotation has the effect that all currently active journal files are marked as archived and renamed, so that they are never written to in future\&. New (empty) journal files are then created in their place\&. This operation may be combined with
+\fB\-\-vacuum\-size=\fR,
+\fB\-\-vacuum\-time=\fR
+and
+\fB\-\-vacuum\-file=\fR
+into a single command, see above\&.
+.RE
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+Print a short help text and exit\&.
+.RE
+.PP
+\fB\-\-version\fR
+.RS 4
+Print a short version string and exit\&.
+.RE
+.PP
+\fB\-\-no\-pager\fR
+.RS 4
+Do not pipe output into a pager\&.
+.RE
+.SH "EXIT STATUS"
+.PP
+On success, 0 is returned; otherwise, a non\-zero failure code is returned\&.
+.SH "ENVIRONMENT"
+.PP
+\fI$SYSTEMD_LOG_LEVEL\fR
+.RS 4
+The maximum log level of emitted messages (messages with a higher log level, i\&.e\&. less important ones, will be suppressed)\&. Either one of (in order of decreasing importance)
+\fBemerg\fR,
+\fBalert\fR,
+\fBcrit\fR,
+\fBerr\fR,
+\fBwarning\fR,
+\fBnotice\fR,
+\fBinfo\fR,
+\fBdebug\fR, or an integer in the range 0\&...7\&. See
+\fBsyslog\fR(3)
+for more information\&.
+.RE
+.PP
+\fI$SYSTEMD_LOG_COLOR\fR
+.RS 4
+A boolean\&. If true, messages written to the tty will be colored according to priority\&.
+.sp
+This setting is only useful when messages are written directly to the terminal, because
+\fBjournalctl\fR(1)
+and other tools that display logs will color messages based on the log level on their own\&.
+.RE
+.PP
+\fI$SYSTEMD_LOG_TIME\fR
+.RS 4
+A boolean\&. If true, log messages will be prefixed with a timestamp\&.
+.sp
+This setting is only useful when messages are written directly to the terminal or a file, because
+\fBjournalctl\fR(1)
+and other tools that display logs will attach timestamps based on the entry metadata on their own\&.
+.RE
+.PP
+\fI$SYSTEMD_LOG_LOCATION\fR
+.RS 4
+A boolean\&. If true, messages will be prefixed with a filename and line number in the source code where the message originates\&.
+.sp
+Note that the log location is often attached as metadata to journal entries anyway\&. Including it directly in the message text can nevertheless be convenient when debugging programs\&.
+.RE
+.PP
+\fI$SYSTEMD_LOG_TID\fR
+.RS 4
+A boolean\&. If true, messages will be prefixed with the current numerical thread ID (TID)\&.
+.sp
+Note that the this information is attached as metadata to journal entries anyway\&. Including it directly in the message text can nevertheless be convenient when debugging programs\&.
+.RE
+.PP
+\fI$SYSTEMD_LOG_TARGET\fR
+.RS 4
+The destination for log messages\&. One of
+\fBconsole\fR
+(log to the attached tty),
+\fBconsole\-prefixed\fR
+(log to the attached tty but with prefixes encoding the log level and "facility", see
+\fBsyslog\fR(3),
+\fBkmsg\fR
+(log to the kernel circular log buffer),
+\fBjournal\fR
+(log to the journal),
+\fBjournal\-or\-kmsg\fR
+(log to the journal if available, and to kmsg otherwise),
+\fBauto\fR
+(determine the appropriate log target automatically, the default),
+\fBnull\fR
+(disable log output)\&.
+.RE
+.PP
+\fI$SYSTEMD_PAGER\fR
+.RS 4
+Pager to use when
+\fB\-\-no\-pager\fR
+is not given; overrides
+\fI$PAGER\fR\&. If neither
+\fI$SYSTEMD_PAGER\fR
+nor
+\fI$PAGER\fR
+are set, a set of well\-known pager implementations are tried in turn, including
+\fBless\fR(1)
+and
+\fBmore\fR(1), until one is found\&. If no pager implementation is discovered no pager is invoked\&. Setting this environment variable to an empty string or the value
+"cat"
+is equivalent to passing
+\fB\-\-no\-pager\fR\&.
+.RE
+.PP
+\fI$SYSTEMD_LESS\fR
+.RS 4
+Override the options passed to
+\fBless\fR
+(by default
+"FRSXMK")\&.
+.sp
+Users might want to change two options in particular:
+.PP
+\fBK\fR
+.RS 4
+This option instructs the pager to exit immediately when
+Ctrl+C
+is pressed\&. To allow
+\fBless\fR
+to handle
+Ctrl+C
+itself to switch back to the pager command prompt, unset this option\&.
+.sp
+If the value of
+\fI$SYSTEMD_LESS\fR
+does not include
+"K", and the pager that is invoked is
+\fBless\fR,
+Ctrl+C
+will be ignored by the executable, and needs to be handled by the pager\&.
+.RE
+.PP
+\fBX\fR
+.RS 4
+This option instructs the pager to not send termcap initialization and deinitialization strings to the terminal\&. It is set by default to allow command output to remain visible in the terminal even after the pager exits\&. Nevertheless, this prevents some pager functionality from working, in particular paged output cannot be scrolled with the mouse\&.
+.RE
+.sp
+See
+\fBless\fR(1)
+for more discussion\&.
+.RE
+.PP
+\fI$SYSTEMD_LESSCHARSET\fR
+.RS 4
+Override the charset passed to
+\fBless\fR
+(by default
+"utf\-8", if the invoking terminal is determined to be UTF\-8 compatible)\&.
+.RE
+.PP
+\fI$SYSTEMD_PAGERSECURE\fR
+.RS 4
+Takes a boolean argument\&. When true, the "secure" mode of the pager is enabled; if false, disabled\&. If
+\fI$SYSTEMD_PAGERSECURE\fR
+is not set at all, secure mode is enabled if the effective UID is not the same as the owner of the login session, see
+\fBgeteuid\fR(2)
+and
+\fBsd_pid_get_owner_uid\fR(3)\&. In secure mode,
+\fBLESSSECURE=1\fR
+will be set when invoking the pager, and the pager shall disable commands that open or create new files or start new subprocesses\&. When
+\fI$SYSTEMD_PAGERSECURE\fR
+is not set at all, pagers which are not known to implement secure mode will not be used\&. (Currently only
+\fBless\fR(1)
+implements secure mode\&.)
+.sp
+Note: when commands are invoked with elevated privileges, for example under
+\fBsudo\fR(8)
+or
+\fBpkexec\fR(1), care must be taken to ensure that unintended interactive features are not enabled\&. "Secure" mode for the pager may be enabled automatically as describe above\&. Setting
+\fISYSTEMD_PAGERSECURE=0\fR
+or not removing it from the inherited environment allows the user to invoke arbitrary commands\&. Note that if the
+\fI$SYSTEMD_PAGER\fR
+or
+\fI$PAGER\fR
+variables are to be honoured,
+\fI$SYSTEMD_PAGERSECURE\fR
+must be set too\&. It might be reasonable to completely disable the pager using
+\fB\-\-no\-pager\fR
+instead\&.
+.RE
+.PP
+\fI$SYSTEMD_COLORS\fR
+.RS 4
+Takes a boolean argument\&. When true,
+\fBsystemd\fR
+and related utilities will use colors in their output, otherwise the output will be monochrome\&. Additionally, the variable can take one of the following special values:
+"16",
+"256"
+to restrict the use of colors to the base 16 or 256 ANSI colors, respectively\&. This can be specified to override the automatic decision based on
+\fI$TERM\fR
+and what the console is connected to\&.
+.RE
+.PP
+\fI$SYSTEMD_URLIFY\fR
+.RS 4
+The value must be a boolean\&. Controls whether clickable links should be generated in the output for terminal emulators supporting this\&. This can be specified to override the decision that
+\fBsystemd\fR
+makes based on
+\fI$TERM\fR
+and other conditions\&.
+.RE
+.SH "EXAMPLES"
+.PP
+Without arguments, all collected logs are shown unfiltered:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+journalctl
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+With one match specified, all entries with a field matching the expression are shown:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+journalctl _SYSTEMD_UNIT=avahi\-daemon\&.service
+journalctl _SYSTEMD_CGROUP=/user\&.slice/user\-42\&.slice/session\-c1\&.scope
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+If two different fields are matched, only entries matching both expressions at the same time are shown:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+journalctl _SYSTEMD_UNIT=avahi\-daemon\&.service _PID=28097
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+If two matches refer to the same field, all entries matching either expression are shown:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+journalctl _SYSTEMD_UNIT=avahi\-daemon\&.service _SYSTEMD_UNIT=dbus\&.service
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+If the separator
+"+"
+is used, two expressions may be combined in a logical OR\&. The following will show all messages from the Avahi service process with the PID 28097 plus all messages from the D\-Bus service (from any of its processes):
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+journalctl _SYSTEMD_UNIT=avahi\-daemon\&.service _PID=28097 + _SYSTEMD_UNIT=dbus\&.service
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+To show all fields emitted
+\fIby\fR
+a unit and
+\fIabout\fR
+the unit, option
+\fB\-u\fR/\fB\-\-unit=\fR
+should be used\&.
+\fBjournalctl \-u \fR\fB\fIname\fR\fR
+expands to a complex filter similar to
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+_SYSTEMD_UNIT=\fIname\fR\&.service
+  + UNIT=\fIname\fR\&.service _PID=1
+  + OBJECT_SYSTEMD_UNIT=\fIname\fR\&.service _UID=0
+  + COREDUMP_UNIT=\fIname\fR\&.service _UID=0 MESSAGE_ID=fc2e22bc6ee647b6b90729ab34a250b1
+    
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+(see
+\fBsystemd.journal-fields\fR(7)
+for an explanation of those patterns)\&.
+.PP
+Show all logs generated by the D\-Bus executable:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+journalctl /usr/bin/dbus\-daemon
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+Show all kernel logs from previous boot:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+journalctl \-k \-b \-1
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+Show a live log display from a system service
+apache\&.service:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+journalctl \-f \-u apache
+.fi
+.if n \{\
+.RE
+.\}
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsystemd-journald.service\fR(8),
+\fBsystemctl\fR(1),
+\fBcoredumpctl\fR(1),
+\fBsystemd.journal-fields\fR(7),
+\fBjournald.conf\fR(5),
+\fBsystemd.time\fR(7),
+\fBsystemd-journal-remote.service\fR(8),
+\fBsystemd-journal-upload.service\fR(8)
+.SH "NOTES"
+.IP " 1." 4
+Journal Export Format
+.RS 4
+\%https://www.freedesktop.org/wiki/Software/systemd/export
+.RE
+.IP " 2." 4
+Journal JSON Format
+.RS 4
+\%https://www.freedesktop.org/wiki/Software/systemd/json
+.RE
+.IP " 3." 4
+Server-Sent Events
+.RS 4
+\%https://developer.mozilla.org/en-US/docs/Server-sent_events/Using_server-sent_events
+.RE
+.IP " 4." 4
+JavaScript Object Notation (JSON) Text Sequences
+.RS 4
+\%https://tools.ietf.org/html/rfc7464
+.RE
+.IP " 5." 4
+Message Catalog Developer Documentation
+.RS 4
+\%https://www.freedesktop.org/wiki/Software/systemd/catalog
+.RE
+.IP " 6." 4
+Discoverable Partitions Specification
+.RS 4
+\%https://systemd.io/DISCOVERABLE_PARTITIONS
+.RE

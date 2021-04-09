@@ -1,0 +1,488 @@
+'\" t
+.TH "SD_BUS_MESSAGE_READ" "3" "" "systemd 248" "sd_bus_message_read"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_message_read, sd_bus_message_readv, sd_bus_message_peek_type \- Read a sequence of values from a message
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_message_read('u
+.BI "int sd_bus_message_read(sd_bus_message\ *" "m" ", const\ char\ *" "types" ", \&.\&.\&.);"
+.HP \w'int\ sd_bus_message_readv('u
+.BI "int sd_bus_message_readv(sd_bus_message\ *" "m" ", const\ char\ *" "types" ", va_list\ " "ap" ");"
+.HP \w'int\ sd_bus_message_peek_type('u
+.BI "int sd_bus_message_peek_type(sd_bus_message\ *" "m" ", char\ *" "type" ", const\ char\ **" "contents" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_message_read()\fR
+reads a sequence of fields from the D\-Bus message object
+\fIm\fR
+and advances the read position in the message\&. The type string
+\fItypes\fR
+describes the types of items expected in the message and the field arguments that follow\&. The type string may be
+\fBNULL\fR
+or empty, in which case nothing is read\&.
+.PP
+The type string is composed of the elements described in
+\fBsd_bus_message_append\fR(3), i\&.e\&. basic and container types\&. It must contain zero or more single "complete types"\&. The type string is
+\fBNUL\fR\-terminated\&.
+.PP
+For each type specified in the type string, one or more arguments need to be specified after the
+\fItypes\fR
+parameter, in the same order\&. The arguments must be pointers to appropriate types (a pointer to
+\fBint8_t\fR
+for a
+"y"
+in the type string, a pointer to
+\fBint32_t\fR
+for an
+"i", a pointer to
+\fBconst char*\fR
+for an
+"s", \&.\&.\&.) which are set based on the values in the message\&. As an exception, in case of array and variant types, the first argument is an "input" argument that further specifies how the message should be read\&. See the table below for a complete list of allowed arguments and their types\&. Note that, if the basic type is a pointer (e\&.g\&.,
+\fBconst char *\fR
+in the case of a string), the argument is a pointer to a pointer, and also the pointer value that is written is only borrowed and the contents must be copied if they are to be used after the end of the message\*(Aqs lifetime\&. If the type is
+"h"
+(UNIX file descriptor), the descriptor is not duplicated by this call and the returned descriptor remains in possession of the message object, and needs to be duplicated by the caller in order to keep an open reference to it after the message object is freed\&.
+.PP
+Each argument may also be
+\fBNULL\fR, in which case the value is read and ignored\&.
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+.B Table\ \&1.\ \&Item type specifiers
+.TS
+allbox tab(:);
+lB lB lB lB lB.
+T{
+Specifier
+T}:T{
+Constant
+T}:T{
+Description
+T}:T{
+Type of the first argument
+T}:T{
+Types of the subsequent arguments, if any
+T}
+.T&
+l l l l l
+l l l l l
+l l l l l
+l l l l l
+l l l l l
+l l l l l
+l l l l l
+l l l l l
+l l l l l
+l l l l l
+l l l l l
+l l l l l
+l l l l l
+l l l l l
+l l l l l
+l l l l s
+l l l ^ ^
+l l l l l
+l l l ^ ^.
+T{
+"y"
+T}:T{
+\fBSD_BUS_TYPE_BYTE\fR
+T}:T{
+8bit unsigned integer
+T}:T{
+\fBuint8_t *\fR
+T}:T{
+\ \&
+T}
+T{
+"b"
+T}:T{
+\fBSD_BUS_TYPE_BOOLEAN\fR
+T}:T{
+boolean
+T}:T{
+\fBint *\fR (NB: not \fBbool *\fR)
+T}:T{
+\ \&
+T}
+T{
+"n"
+T}:T{
+\fBSD_BUS_TYPE_INT16\fR
+T}:T{
+16bit signed integer
+T}:T{
+\fBint16_t *\fR
+T}:T{
+\ \&
+T}
+T{
+"q"
+T}:T{
+\fBSD_BUS_TYPE_UINT16\fR
+T}:T{
+16bit unsigned integer
+T}:T{
+\fBuint16_t *\fR
+T}:T{
+\ \&
+T}
+T{
+"i"
+T}:T{
+\fBSD_BUS_TYPE_INT32\fR
+T}:T{
+32bit signed integer
+T}:T{
+\fBint32_t *\fR
+T}:T{
+\ \&
+T}
+T{
+"u"
+T}:T{
+\fBSD_BUS_TYPE_UINT32\fR
+T}:T{
+32bit unsigned integer
+T}:T{
+\fBuint32_t *\fR
+T}:T{
+\ \&
+T}
+T{
+"x"
+T}:T{
+\fBSD_BUS_TYPE_INT64\fR
+T}:T{
+64bit signed integer
+T}:T{
+\fBint64_t *\fR
+T}:T{
+\ \&
+T}
+T{
+"t"
+T}:T{
+\fBSD_BUS_TYPE_UINT64\fR
+T}:T{
+64bit unsigned integer
+T}:T{
+\fBuint64_t *\fR
+T}:T{
+\ \&
+T}
+T{
+"d"
+T}:T{
+\fBSD_BUS_TYPE_DOUBLE\fR
+T}:T{
+IEEE 754 double precision floating\-point
+T}:T{
+\fBdouble *\fR
+T}:T{
+\ \&
+T}
+T{
+"s"
+T}:T{
+\fBSD_BUS_TYPE_STRING\fR
+T}:T{
+UTF\-8 string
+T}:T{
+\fBconst char **\fR
+T}:T{
+\ \&
+T}
+T{
+"o"
+T}:T{
+\fBSD_BUS_TYPE_OBJECT_PATH\fR
+T}:T{
+D\-Bus object path string
+T}:T{
+\fBconst char **\fR
+T}:T{
+\ \&
+T}
+T{
+"g"
+T}:T{
+\fBSD_BUS_TYPE_SIGNATURE\fR
+T}:T{
+D\-Bus signature string
+T}:T{
+\fBconst char **\fR
+T}:T{
+\ \&
+T}
+T{
+"h"
+T}:T{
+\fBSD_BUS_TYPE_UNIX_FD\fR
+T}:T{
+UNIX file descriptor
+T}:T{
+\fBint *\fR
+T}:T{
+\ \&
+T}
+T{
+"a"
+T}:T{
+\fBSD_BUS_TYPE_ARRAY\fR
+T}:T{
+array
+T}:T{
+\fBint\fR, which specifies the expected length \fIn\fR of the array
+T}:T{
+\fIn\fR sets of arguments appropriate for the array element type
+T}
+T{
+"v"
+T}:T{
+\fBSD_BUS_TYPE_VARIANT\fR
+T}:T{
+variant
+T}:T{
+signature string
+T}:T{
+arguments appropriate for the types specified by the signature
+T}
+T{
+"("
+T}:T{
+\fBSD_BUS_TYPE_STRUCT_BEGIN\fR
+T}:T{
+array start
+T}:T{
+arguments appropriate for the structure elements
+T}
+T{
+")"
+T}:T{
+\fBSD_BUS_TYPE_STRUCT_END\fR
+T}:T{
+array end
+T}::
+T{
+"{"
+T}:T{
+\fBSD_BUS_TYPE_DICT_ENTRY_BEGIN\fR
+T}:T{
+dictionary entry start
+T}:T{
+arguments appropriate for the first type in the pair
+T}:T{
+arguments appropriate for the second type in the pair
+T}
+T{
+"}"
+T}:T{
+\fBSD_BUS_TYPE_DICT_ENTRY_END\fR
+T}:T{
+dictionary entry end
+T}::
+.TE
+.sp 1
+.PP
+If objects of the specified types are not present at the current position in the message, an error is returned\&.
+.PP
+The
+\fBsd_bus_message_readv()\fR
+is equivalent to the
+\fBsd_bus_message_read()\fR, except that it is called with a
+"va_list"
+instead of a variable number of arguments\&. This function does not call the
+\fBva_end()\fR
+macro\&. Because it invokes the
+\fBva_arg()\fR
+macro, the value of
+\fIap\fR
+is undefined after the call\&.
+.PP
+\fBsd_bus_message_peek_type()\fR
+determines the type of the next element in
+\fIm\fR
+to be read by
+\fBsd_bus_message_read()\fR
+or similar functions\&. On success, the type is stored in
+\fItype\fR, if it is not
+\fBNULL\fR\&. If the type is a container type, the type of its elements is stored in
+\fIcontents\fR, if it is not
+\fBNULL\fR\&. If this function successfully determines the type of the next element in
+\fIm\fR, it returns a positive integer\&. If there are no more elements to be read, it returns zero\&.
+.SH "RETURN VALUE"
+.PP
+On success, these functions return a non\-negative integer\&. On failure, they return a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+Specified type string is invalid or the message parameter is
+\fBNULL\fR\&.
+.RE
+.PP
+\fB\-ENXIO\fR
+.RS 4
+The message does not contain the specified type at current position\&.
+.RE
+.PP
+\fB\-EBADMSG\fR
+.RS 4
+The message cannot be parsed\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "EXAMPLES"
+.PP
+Read a single basic type (a 64\-bit integer):
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+sd_bus_message *m;
+int64_t x;
+
+sd_bus_message_read(m, "x", &x);
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+Read a boolean value:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+sd_bus_message *m;
+int x; /* Do not use C99 \*(Aqbool\*(Aq type here, it\*(Aqs typically smaller
+          in memory and would cause memory corruption */
+
+sd_bus_message_read(m, "b", &x);
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+Read all types of integers:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+uint8_t y;
+int16_t n;
+uint16_t q;
+int32_t i;
+uint32_t u;
+int32_t x;
+uint32_t t;
+double d;
+
+sd_bus_message_read(m, "ynqiuxtd", &y, &n, &q, &i, &u, &x, &t, &d);
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+Read a structure composed of a string and a D\-Bus path:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+const char *s, *p;
+
+sd_bus_message_read(m, "(so)", &s, &p);
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+Read a variant, with the real type "gt" (signature, unsigned integer):
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+const char *s;
+uint64_t *v;
+
+sd_bus_message_read(m, "v", "gt", &s, &v);
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+Read a dictionary containing three pairs of type {integer=>string}:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+int i, j, k;
+const char *s, *t, *u;
+
+sd_bus_message_read(m, "a{is}", 3, &i, &s, &j, &t, &k, &u);
+     
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+Read a single file descriptor, and duplicate it in order to keep it open after the message is freed\&.
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+sd_bus_message *m;
+int fd, fd_copy;
+
+sd_bus_message_read(m, "h", &fd);
+fd_copy = fcntl(fd, FD_DUPFD_CLOEXEC, 3);
+.fi
+.if n \{\
+.RE
+.\}
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd_bus_message_read_basic\fR(3),
+\fBsd_bus_message_skip\fR(3),
+\fBsd_bus_message_append\fR(3),
+\fBsd_bus_message_enter_container\fR(3)

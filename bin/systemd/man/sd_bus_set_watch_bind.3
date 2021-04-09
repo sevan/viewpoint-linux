@@ -1,0 +1,88 @@
+'\" t
+.TH "SD_BUS_SET_WATCH_BIND" "3" "" "systemd 248" "sd_bus_set_watch_bind"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_set_watch_bind, sd_bus_get_watch_bind \- Control socket binding watching on bus connections
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_set_watch_bind('u
+.BI "int sd_bus_set_watch_bind(sd_bus\ *" "bus" ", int\ " "b" ");"
+.HP \w'int\ sd_bus_get_watch_bind('u
+.BI "int sd_bus_get_watch_bind(sd_bus\ *" "bus" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_set_watch_bind()\fR
+may be used to enable or disable client\-side watching of server socket binding for a bus connection object\&. If the
+\fIb\fR
+is true, the feature is enabled, otherwise disabled (which is the default)\&. When enabled, and the selected bus address refers to an
+AF_UNIX
+socket in the file system which does not exist while the connection attempt is made an
+\fBinotify\fR(7)
+watch is installed on it, waiting for the socket to appear\&. As soon as the socket appears the connection is made\&. This functionality is useful in particular in early\-boot programs that need to run before the system bus is available, but want to connect to it the instant it may be connected to\&.
+.PP
+\fBsd_bus_get_watch_bind()\fR
+may be used to query the current setting of this feature\&. It returns zero when the feature is disabled, and positive if enabled\&.
+.PP
+Note that no timeout is applied while we wait for the socket to appear\&. This means that any synchronous remote operation (such as
+\fBsd_bus_call\fR(3),
+\fBsd_bus_add_match\fR(3)
+or
+\fBsd_bus_request_name\fR(3)), that is used on a connection with this feature enabled that hasn\*(Aqt been established yet, might block forever if the socket is never created\&. However, asynchronous remote operations (such as
+\fBsd_bus_send\fR(3),
+\fBsd_bus_call_async\fR(3),
+\fBsd_bus_add_match_async\fR(3)) do not block in this case, and safely enqueue the requested operations to be dispatched the instant the connection is set up\&.
+.PP
+Use
+\fBsd_bus_is_ready\fR(3)
+to determine whether the connection is fully established, i\&.e\&. whether the peer socket has been bound, connected to and authenticated\&. Use
+\fBsd_bus_set_connected_signal\fR(3)
+to be notified when the connection is fully established\&.
+.SH "RETURN VALUE"
+.PP
+On success, these functions return 0 or a positive integer\&. On failure, they return a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-ECHILD\fR
+.RS 4
+The bus connection has been created in a different process\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBinotify\fR(7),
+\fBsd_bus_call\fR(3),
+\fBsd_bus_add_match\fR(3),
+\fBsd_bus_request_name\fR(3),
+\fBsd_bus_is_ready\fR(3),
+\fBsd_bus_set_connected_signal\fR(3)

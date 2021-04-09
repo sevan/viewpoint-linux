@@ -1,0 +1,738 @@
+'\" t
+.TH "REPART\&.D" "5" "" "systemd 248" "repart.d"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+repart.d \- Partition Definition Files for Automatic Boot\-Time Repartitioning
+.SH "SYNOPSIS"
+.PP
+.nf
+/etc/repart\&.d/*\&.conf
+/run/repart\&.d/*\&.conf
+/usr/lib/repart\&.d/*\&.conf
+    
+.fi
+.SH "DESCRIPTION"
+.PP
+repart\&.d/*\&.conf
+files describe basic properties of partitions of block devices of the local system\&. They may be used to declare types, names and sizes of partitions that shall exist\&. The
+\fBsystemd-repart\fR(8)
+service reads these files and attempts to add new partitions currently missing and enlarge existing partitions according to these definitions\&. Operation is generally incremental, i\&.e\&. when applied, what exists already is left intact, and partitions are never shrunk, moved or deleted\&.
+.PP
+These definition files are useful for implementing operating system images that are prepared and delivered with minimally sized images (for example lacking any state or swap partitions), and which on first boot automatically take possession of any remaining disk space following a few basic rules\&.
+.PP
+Currently, support for partition definition files is only implemented for GPT partitition tables\&.
+.PP
+Partition files are generally matched against any partitions already existing on disk in a simple algorithm: the partition files are sorted by their filename (ignoring the directory prefix), and then compared in order against existing partitions matching the same partition type UUID\&. Specifically, the first existing partition with a specific partition type UUID is assigned the first definition file with the same partition type UUID, and the second existing partition with a specific type UUID the second partition file with the same type UUID, and so on\&. Any left\-over partition files that have no matching existing partition are assumed to define new partition that shall be created\&. Such partitions are appended to the end of the partition table, in the order defined by their names utilizing the first partition slot greater than the highest slot number currently in use\&. Any existing partitions that have no matching partition file are left as they are\&.
+.PP
+Note that these definitions may only be used to created and initialize new partitions or grow existing ones\&. In the latter case it will not grow the contained files systems however; separate mechanisms, such as
+\fBsystemd-growfs\fR(8)
+may be used to grow the file systems inside of these partitions\&.
+.SH "[PARTITION] SECTION OPTIONS"
+.PP
+\fIType=\fR
+.RS 4
+The GPT partition type UUID to match\&. This may be a GPT partition type UUID such as
+\fB4f68bce3\-e8cd\-4db1\-96e7\-fbcaf984b709\fR, or one of the following special identifiers:
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+.B Table\ \&1.\ \&GPT partition type identifiers
+.TS
+allbox tab(:);
+lB lB.
+T{
+Identifier
+T}:T{
+Explanation
+T}
+.T&
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l.
+T{
+\fBesp\fR
+T}:T{
+EFI System Partition
+T}
+T{
+\fBxbootldr\fR
+T}:T{
+Extended Boot Loader Partition
+T}
+T{
+\fBswap\fR
+T}:T{
+Swap partition
+T}
+T{
+\fBhome\fR
+T}:T{
+Home (/home/) partition
+T}
+T{
+\fBsrv\fR
+T}:T{
+Server data (/srv/) partition
+T}
+T{
+\fBvar\fR
+T}:T{
+Variable data (/var/) partition
+T}
+T{
+\fBtmp\fR
+T}:T{
+Temporary data (/var/tmp/) partition
+T}
+T{
+\fBlinux\-generic\fR
+T}:T{
+Generic Linux file system partition
+T}
+T{
+\fBroot\fR
+T}:T{
+Root file system partition type appropriate for the local architecture (an alias for an architecture root file system partition type listed below, e\&.g\&. \fBroot\-x86\-64\fR)
+T}
+T{
+\fBroot\-verity\fR
+T}:T{
+Verity data for the root file system partition for the local architecture
+T}
+T{
+\fBroot\-secondary\fR
+T}:T{
+Root file system partition of the secondary architecture of the local architecture (usually the matching 32bit architecture for the local 64bit architecture)
+T}
+T{
+\fBroot\-secondary\-verity\fR
+T}:T{
+Verity data for the root file system partition of the secondary architecture
+T}
+T{
+\fBroot\-x86\fR
+T}:T{
+Root file system partition for the x86 (32bit, aka i386) architecture
+T}
+T{
+\fBroot\-x86\-verity\fR
+T}:T{
+Verity data for the x86 (32bit) root file system partition
+T}
+T{
+\fBroot\-x86\-64\fR
+T}:T{
+Root file system partition for the x86_64 (64bit, aka amd64) architecture
+T}
+T{
+\fBroot\-x86\-64\-verity\fR
+T}:T{
+Verity data for the x86_64 (64bit) root file system partition
+T}
+T{
+\fBroot\-arm\fR
+T}:T{
+Root file system partition for the ARM (32bit) architecture
+T}
+T{
+\fBroot\-arm\-verity\fR
+T}:T{
+Verity data for the ARM (32bit) root file system partition
+T}
+T{
+\fBroot\-arm64\fR
+T}:T{
+Root file system partition for the ARM (64bit, aka aarch64) architecture
+T}
+T{
+\fBroot\-arm64\-verity\fR
+T}:T{
+Verity data for the ARM (64bit, aka aarch64) root file system partition
+T}
+T{
+\fBroot\-ia64\fR
+T}:T{
+Root file system partition for the ia64 architecture
+T}
+T{
+\fBroot\-ia64\-verity\fR
+T}:T{
+Verity data for the ia64 root file system partition
+T}
+T{
+\fBroot\-riscv32\fR
+T}:T{
+Root file system partition for the RISC\-V 32\-bit architecture
+T}
+T{
+\fBroot\-riscv32\-verity\fR
+T}:T{
+Verity data for the RISC\-V 32\-bit root file system partition
+T}
+T{
+\fBroot\-riscv64\fR
+T}:T{
+Root file system partition for the RISC\-V 64\-bit architecture
+T}
+T{
+\fBroot\-riscv64\-verity\fR
+T}:T{
+Verity data for the RISC\-V 64\-bit root file system partition
+T}
+T{
+\fBusr\fR
+T}:T{
+/usr/ file system partition type appropriate for the local architecture (an alias for an architecture /usr/ file system partition type listed below, e\&.g\&. \fBusr\-x86\-64\fR)
+T}
+T{
+\fBusr\-verity\fR
+T}:T{
+Verity data for the /usr/ file system partition for the local architecture
+T}
+T{
+\fBusr\-secondary\fR
+T}:T{
+/usr/ file system partition of the secondary architecture of the local architecture (usually the matching 32bit architecture for the local 64bit architecture)
+T}
+T{
+\fBusr\-secondary\-verity\fR
+T}:T{
+Verity data for the /usr/ file system partition of the secondary architecture
+T}
+T{
+\fBusr\-x86\fR
+T}:T{
+/usr/ file system partition for the x86 (32bit, aka i386) architecture
+T}
+T{
+\fBusr\-x86\-verity\fR
+T}:T{
+Verity data for the x86 (32bit) /usr/ file system partition
+T}
+T{
+\fBusr\-x86\-64\fR
+T}:T{
+/usr/ file system partition for the x86_64 (64bit, aka amd64) architecture
+T}
+T{
+\fBusr\-x86\-64\-verity\fR
+T}:T{
+Verity data for the x86_64 (64bit) /usr/ file system partition
+T}
+T{
+\fBusr\-arm\fR
+T}:T{
+/usr/ file system partition for the ARM (32bit) architecture
+T}
+T{
+\fBusr\-arm\-verity\fR
+T}:T{
+Verity data for the ARM (32bit) /usr/ file system partition
+T}
+T{
+\fBusr\-arm64\fR
+T}:T{
+/usr/ file system partition for the ARM (64bit, aka aarch64) architecture
+T}
+T{
+\fBusr\-arm64\-verity\fR
+T}:T{
+Verity data for the ARM (64bit, aka aarch64) /usr/ file system partition
+T}
+T{
+\fBusr\-ia64\fR
+T}:T{
+/usr/ file system partition for the ia64 architecture
+T}
+T{
+\fBusr\-ia64\-verity\fR
+T}:T{
+Verity data for the ia64 /usr/ file system partition
+T}
+T{
+\fBusr\-riscv32\fR
+T}:T{
+/usr/ file system partition for the RISC\-V 32\-bit architecture
+T}
+T{
+\fBusr\-riscv32\-verity\fR
+T}:T{
+Verity data for the RISC\-V 32\-bit /usr/ file system partition
+T}
+T{
+\fBusr\-riscv64\fR
+T}:T{
+/usr/ file system partition for the RISC\-V 64\-bit architecture
+T}
+T{
+\fBusr\-riscv64\-verity\fR
+T}:T{
+Verity data for the RISC\-V 64\-bit /usr/ file system partition
+T}
+.TE
+.sp 1
+This setting defaults to
+\fBlinux\-generic\fR\&.
+.sp
+Most of the partition type UUIDs listed above are defined in the
+\m[blue]\fBDiscoverable Partitions Specification\fR\m[]\&\s-2\u[1]\d\s+2\&.
+.RE
+.PP
+\fILabel=\fR
+.RS 4
+The textual label to assign to the partition if none is assigned yet\&. Note that this setting is not used for matching\&. It is also not used when a label is already set for an existing partition\&. It is thus only used when a partition is newly created or when an existing one had a no label set (that is: an empty label)\&. If not specified a label derived from the partition type is automatically used\&. Simple specifier expansion is supported, see below\&.
+.RE
+.PP
+\fIUUID=\fR
+.RS 4
+The UUID to assign to the partition if none is assigned yet\&. Note that this setting is not used for matching\&. It is also not used when a UUID is already set for an existing partition\&. It is thus only used when a partition is newly created or when an existing one had a all\-zero UUID set\&. If not specified a UUID derived from the partition type is automatically used\&.
+.RE
+.PP
+\fIPriority=\fR
+.RS 4
+A numeric priority to assign to this partition, in the range \-2147483648\&...2147483647, with smaller values indicating higher priority, and higher values indicating smaller priority\&. This priority is used in case the configured size constraints on the defined partitions do not permit fitting all partitions onto the available disk space\&. If the partitions do not fit, the highest numeric partition priority of all defined partitions is determined, and all defined partitions with this priority are removed from the list of new partitions to create (which may be multiple, if the same priority is used for multiple partitions)\&. The fitting algorithm is then tried again\&. If the partitions still do not fit, the now highest numeric partition priority is determined, and the matching partitions removed too, and so on\&. Partitions of a priority of 0 or lower are never removed\&. If all partitions with a priority above 0 are removed and the partitions still do not fit on the device the operation fails\&. Note that this priority has no effect on ordering partitions, for that use the alphabetical order of the filenames of the partition definition files\&. Defaults to 0\&.
+.RE
+.PP
+\fIWeight=\fR
+.RS 4
+A numeric weight to assign to this partition in the range 0\&...1000000\&. Available disk space is assigned the defined partitions according to their relative weights (subject to the size constraints configured with
+\fISizeMinBytes=\fR,
+\fISizeMaxBytes=\fR), so that a partition with weight 2000 gets double the space as one with weight 1000, and a partition with weight 333 a third of that\&. Defaults to 1000\&.
+.sp
+The
+\fIWeight=\fR
+setting is used to distribute available disk space in an "elastic" fashion, based on the disk size and existing partitions\&. If a partition shall have a fixed size use both
+\fISizeMinBytes=\fR
+and
+\fISizeMaxBytes=\fR
+with the same value in order to fixate the size to one value, in which case the weight has no effect\&.
+.RE
+.PP
+\fIPaddingWeight=\fR
+.RS 4
+Similar to
+\fIWeight=\fR
+but sets a weight for the free space after the partition (the "padding")\&. When distributing available space the weights of all partitions and all defined padding is summed, and then each partition and padding gets the fraction defined by its weight\&. Defaults to 0, i\&.e\&. by default no padding is applied\&.
+.sp
+Padding is useful if empty space shall be left for later additions or a safety margin at the end of the device or between partitions\&.
+.RE
+.PP
+\fISizeMinBytes=\fR, \fISizeMaxBytes=\fR
+.RS 4
+Specifies minimum and maximum size constraints in bytes\&. Takes the usual K, M, G, T, \&... suffixes (to the base of 1024)\&. If
+\fISizeMinBytes=\fR
+is specified the partition is created at or grown to at least the specified size\&. If
+\fISizeMaxBytes=\fR
+is specified the partition is created at or grown to at most the specified size\&. The precise size is determined through the weight value value configured with
+\fIWeight=\fR, see above\&. When
+\fISizeMinBytes=\fR
+is set equal to
+\fISizeMaxBytes=\fR
+the configured weight has no effect as the partition is explicitly sized to the specified fixed value\&. Note that partitions are never created smaller than 4096 bytes, and since partitions are never shrunk the previous size of the partition (in case the partition already exists) is also enforced as lower bound for the new size\&. The values should be specified as multiples of 4096 bytes, and are rounded upwards (in case of
+\fISizeMinBytes=\fR) or downwards (in case of
+\fISizeMaxBytes=\fR) otherwise\&. If the backing device does not provide enough space to fulfill the constraints placing the partition will fail\&. For partitions that shall be created, depending on the setting of
+\fIPriority=\fR
+(see above) the partition might be dropped and the placing algorithm restarted\&. By default a minimum size constraint of 10M and no maximum size constraint is set\&.
+.RE
+.PP
+\fIPaddingMinBytes=\fR, \fIPaddingMaxBytes=\fR
+.RS 4
+Specifies minimum and maximum size constraints in bytes for the free space after the partition (the "padding")\&. Semantics are similar to
+\fISizeMinBytes=\fR
+and
+\fISizeMaxBytes=\fR, except that unlike partition sizes free space can be shrunk and can be as small as zero\&. By default no size constraints on padding are set, so that only
+\fIPaddingWeight=\fR
+determines the size of the padding applied\&.
+.RE
+.PP
+\fICopyBlocks=\fR
+.RS 4
+Takes a path to a regular file, block device node or directory\&. If specified and the partition is newly created the data from the specified path is written to the newly created partition, on the block level\&. If a directory is specified the backing block device of the file system the directory is on is determined and the data read directly from that\&. This option is useful to efficiently replicate existing file systems on the block level on a new partition, for example to build a simple OS installer or OS image builder\&.
+.sp
+The file specified here must have a size that is a multiple of the basic block size 512 and not be empty\&. If this option is used, the size allocation algorithm is slightly altered: the partition is created as least as big as required to fit the data in, i\&.e\&. the data size is an additional minimum size value taken into consideration for the allocation algorithm, similar to and in addition to the
+\fISizeMin=\fR
+value configured above\&.
+.sp
+This option has no effect if the partition it is declared for already exists, i\&.e\&. existing data is never overwritten\&. Note that the data is copied in before the partition table is updated, i\&.e\&. before the partition actually is persistently created\&. This provides robustness: it is guaranteed that the partition either doesn\*(Aqt exist or exists fully populated; it is not possible that the partition exists but is not or only partially populated\&.
+.sp
+This option cannot be combined with
+\fIFormat=\fR
+or
+\fICopyFiles=\fR\&.
+.RE
+.PP
+\fIFormat=\fR
+.RS 4
+Takes a file system name, such as
+"ext4",
+"btrfs",
+"xfs"
+or
+"vfat", or the special value
+"swap"\&. If specified and the partition is newly created it is formatted with the specified file system (or as swap device)\&. The file system UUID and label are automatically derived from the partition UUID and label\&. If this option is used, the size allocation algorithm is slightly altered: the partition is created as least as big as required for the minimal file system of the specified type (or 4KiB if the minimal size is not known)\&.
+.sp
+This option has no effect if the partition already exists\&.
+.sp
+Similar to the behaviour of
+\fICopyBlocks=\fR
+the file system is formatted before the partition is created, ensuring that the partition only ever exists with a fully initialized file system\&.
+.sp
+This option cannot be combined with
+\fICopyBlocks=\fR\&.
+.RE
+.PP
+\fICopyFiles=\fR
+.RS 4
+Takes a pair of colon separated absolute file system paths\&. The first path refers to a source file or directory on the host, the second path refers to a target in the file system of the newly created partition and formatted file system\&. This setting may be used to copy files or directories from the host into the file system that is created due to the
+\fIFormat=\fR
+option\&. If
+\fICopyFiles=\fR
+is used without
+\fIFormat=\fR
+specified explicitly,
+"Format="
+with a suitable default is implied (currently
+"ext4", but this may change in the future)\&. This option may be used multiple times to copy multiple files or directories from host into the newly formatted file system\&. The colon and second path may be omitted in which case the source path is also used as the target path (relative to the root of the newly created file system)\&. If the source path refers to a directory it is copied recursively\&.
+.sp
+This option has no effect if the partition already exists: it cannot be used to copy additional files into an existing partition, it may only be used to populate a file system created anew\&.
+.sp
+The copy operation is executed before the file system is registered in the partition table, thus ensuring that a file system populated this way only ever exists fully initialized\&.
+.sp
+This option cannot be combined with
+\fICopyBlocks=\fR\&.
+.RE
+.PP
+\fIEncrypt=\fR
+.RS 4
+Takes one of
+"off",
+"key\-file",
+"tpm2"
+and
+"key\-file+tpm2"
+(alternatively, also accepts a boolean value, which is mapped to
+"off"
+when false, and
+"key\-file"
+when true)\&. Defaults to
+"off"\&. If not
+"off"
+the partition will be formatted with a LUKS2 superblock, before the blocks configured with
+\fICopyBlocks=\fR
+are copied in or the file system configured with
+\fIFormat=\fR
+is created\&.
+.sp
+The LUKS2 UUID is automatically derived from the partition UUID in a stable fashion\&. If
+"key\-file"
+or
+"key\-file+tpm2"
+is used a key is added to the LUKS2 superblock, configurable with the
+\fB\-\-key\-file=\fR
+switch to
+\fBsystemd\-repart\fR\&. If
+"tpm2"
+or
+"key\-file+tpm2"
+is used a key is added to the LUKS2 superblock that is enrolled to the local TPM2 chip, as configured with the
+\fB\-\-tpm2\-device=\fR
+and
+\fB\-\-tpm2\-pcrs=\fR
+options to
+\fBsystemd\-repart\fR\&.
+.sp
+When used this slightly alters the size allocation logic as the implicit, minimal size limits of
+\fIFormat=\fR
+and
+\fICopyBlocks=\fR
+are increased by the space necessary for the LUKS2 superblock (see above)\&.
+.sp
+This option has no effect if the partition already exists\&.
+.RE
+.PP
+\fIFactoryReset=\fR
+.RS 4
+Takes a boolean argument\&. If specified the partition is marked for removal during a factory reset operation\&. This functionality is useful to implement schemes where images can be reset into their original state by removing partitions and creating them anew\&. Defaults to off\&.
+.RE
+.SH "SPECIFIERS"
+.PP
+Specifiers may be used in the
+\fILabel=\fR
+setting\&. The following expansions are understood:
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+.B Table\ \&2.\ \&Specifiers available
+.TS
+allbox tab(:);
+lB lB lB.
+T{
+Specifier
+T}:T{
+Meaning
+T}:T{
+Details
+T}
+.T&
+l l l
+l l l
+l l l
+l l l
+l l l
+l l l
+l l l
+l l l
+l l l
+l l l
+l l l.
+T{
+"%a"
+T}:T{
+Architecture
+T}:T{
+A short string identifying the architecture of the local system\&. A string such as \fBx86\fR, \fBx86\-64\fR or \fBarm64\fR\&. See the architectures defined for \fIConditionArchitecture=\fR in \fBsystemd.unit\fR(5) for a full list\&.
+T}
+T{
+"%b"
+T}:T{
+Boot ID
+T}:T{
+The boot ID of the running system, formatted as string\&. See \fBrandom\fR(4) for more information\&.
+T}
+T{
+"%B"
+T}:T{
+Operating system build ID
+T}:T{
+The operating system build identifier of the running system, as read from the \fIBUILD_ID=\fR field of /etc/os\-release\&. If not set, resolves to an empty string\&. See \fBos-release\fR(5) for more information\&.
+T}
+T{
+"%H"
+T}:T{
+Host name
+T}:T{
+The hostname of the running system\&.
+T}
+T{
+"%l"
+T}:T{
+Short host name
+T}:T{
+The hostname of the running system, truncated at the first dot to remove any domain component\&.
+T}
+T{
+"%m"
+T}:T{
+Machine ID
+T}:T{
+The machine ID of the running system, formatted as string\&. See \fBmachine-id\fR(5) for more information\&.
+T}
+T{
+"%o"
+T}:T{
+Operating system ID
+T}:T{
+The operating system identifier of the running system, as read from the \fIID=\fR field of /etc/os\-release\&. See \fBos-release\fR(5) for more information\&.
+T}
+T{
+"%v"
+T}:T{
+Kernel release
+T}:T{
+Identical to \fBuname \-r\fR output\&.
+T}
+T{
+"%w"
+T}:T{
+Operating system version ID
+T}:T{
+The operating system version identifier of the running system, as read from the \fIVERSION_ID=\fR field of /etc/os\-release\&. If not set, resolves to an empty string\&. See \fBos-release\fR(5) for more information\&.
+T}
+T{
+"%W"
+T}:T{
+Operating system variant ID
+T}:T{
+The operating system variant identifier of the running system, as read from the \fIVARIANT_ID=\fR field of /etc/os\-release\&. If not set, resolves to an empty string\&. See \fBos-release\fR(5) for more information\&.
+T}
+T{
+"%%"
+T}:T{
+Single percent sign
+T}:T{
+Use "%%" in place of "%" to specify a single percent sign\&.
+T}
+.TE
+.sp 1
+.SH "EXAMPLES"
+.PP
+\fBExample\ \&1.\ \&Grow the root partition to the full disk size at first boot\fR
+.PP
+With the following file the root partition is automatically grown to the full disk if possible during boot\&.
+.PP
+.if n \{\
+.RS 4
+.\}
+.nf
+# /usr/lib/repart\&.d/50\-root\&.conf
+[Partition]
+Type=root
+.fi
+.if n \{\
+.RE
+.\}
+
+.PP
+\fBExample\ \&2.\ \&Create a swap and home partition automatically on boot, if missing\fR
+.PP
+The home partition gets all available disk space while the swap partition gets 1G at most and 64M at least\&. We set a priority > 0 on the swap partition to ensure the swap partition is not used if not enough space is available\&. For every three bytes assigned to the home partition the swap partition gets assigned one\&.
+.PP
+.if n \{\
+.RS 4
+.\}
+.nf
+# /usr/lib/repart\&.d/60\-home\&.conf
+[Partition]
+Type=home
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+.if n \{\
+.RS 4
+.\}
+.nf
+# /usr/lib/repart\&.d/70\-swap\&.conf
+[Partition]
+Type=swap
+SizeMinBytes=64M
+SizeMaxBytes=1G
+Priority=1
+Weight=333
+.fi
+.if n \{\
+.RE
+.\}
+
+.PP
+\fBExample\ \&3.\ \&Create B partitions in an A/B Verity setup, if missing\fR
+.PP
+Let\*(Aqs say the vendor intends to update OS images in an A/B setup, i\&.e\&. with two root partitions (and two matching Verity partitions) that shall be used alternatingly during upgrades\&. To minimize image sizes the original image is shipped only with one root and one Verity partition (the "A" set), and the second root and Verity partitions (the "B" set) shall be created on first boot on the free space on the medium\&.
+.PP
+.if n \{\
+.RS 4
+.\}
+.nf
+# /usr/lib/repart\&.d/50\-root\&.conf
+[Partition]
+Type=root
+SizeMinBytes=512M
+SizeMaxBytes=512M
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+.if n \{\
+.RS 4
+.\}
+.nf
+# /usr/lib/repart\&.d/60\-root\-verity\&.conf
+[Partition]
+Type=root\-verity
+SizeMinBytes=64M
+SizeMaxBytes=64M
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+The definitions above cover the "A" set of root partition (of a fixed 512M size) and Verity partition for the root partition (of a fixed 64M size)\&. Let\*(Aqs use symlinks to create the "B" set of partitions, since after all they shall have the same properties and sizes as the "A" set\&.
+.PP
+.if n \{\
+.RS 4
+.\}
+.nf
+# ln \-s 50\-root\&.conf /usr/lib/repart\&.d/70\-root\-b\&.conf
+# ln \-s 60\-root\-verity\&.conf /usr/lib/repart\&.d/80\-root\-verity\-b\&.conf
+.fi
+.if n \{\
+.RE
+.\}
+
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsystemd-repart\fR(8),
+\fBsfdisk\fR(8),
+\fBsystemd-cryptenroll\fR(1)
+.SH "NOTES"
+.IP " 1." 4
+Discoverable Partitions Specification
+.RS 4
+\%https://systemd.io/DISCOVERABLE_PARTITIONS
+.RE

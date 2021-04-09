@@ -1,0 +1,50 @@
+'\" t
+.TH "SYSTEMD\-VOLATILE\-ROOT\&.SERVICE" "8" "" "systemd 248" "systemd-volatile-root.service"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd-volatile-root.service, systemd-volatile-root \- Make the root file system volatile
+.SH "SYNOPSIS"
+.PP
+systemd\-volatile\-root\&.service
+.PP
+/usr/lib/systemd/systemd\-volatile\-root
+.SH "DESCRIPTION"
+.PP
+systemd\-volatile\-root\&.service
+is a service that replaces the root directory with a volatile memory file system ("tmpfs"), mounting the original (non\-volatile)
+/usr/
+inside it read\-only\&. This way, vendor data from
+/usr/
+is available as usual, but all configuration data in
+/etc/, all state data in
+/var/
+and all other resources stored directly under the root directory are reset on boot and lost at shutdown, enabling fully stateless systems\&.
+.PP
+This service is only enabled if full volatile mode is selected, for example by specifying
+"systemd\&.volatile=yes"
+on the kernel command line\&. This service runs only in the initial RAM disk ("initrd"), before the system transitions to the host\*(Aqs root directory\&. Note that this service is not used if
+"systemd\&.volatile=state"
+is used, as in that mode the root directory is non\-volatile\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsystemd-fstab-generator\fR(8),
+\fBkernel-command-line\fR(7)

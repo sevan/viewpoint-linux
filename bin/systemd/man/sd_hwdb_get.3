@@ -1,0 +1,168 @@
+'\" t
+.TH "SD_HWDB_GET" "3" "" "systemd 248" "sd_hwdb_get"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_hwdb_get, sd_hwdb_seek, sd_hwdb_enumerate, SD_HWDB_FOREACH_PROPERTY \- Seek to a location in hwdb or access entries
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-hwdb\&.h>
+.fi
+.ft
+.HP \w'int\ sd_hwdb_get('u
+.BI "int sd_hwdb_get(sd_hwdb\ *" "hwdb" ", const\ char\ *" "modalias" ", const\ char\ *" "key" ", const\ char\ **" "value" ");"
+.HP \w'int\ sd_hwdb_seek('u
+.BI "int sd_hwdb_seek(sd_hwdb\ *" "hwdb" ", const\ char\ *" "modalias" ");"
+.HP \w'int\ sd_hwdb_enumerate('u
+.BI "int sd_hwdb_enumerate(sd_hwdb\ *" "hwdb" ", const\ char\ **" "key" ", const\ char\ **" "value" ");"
+.HP \w'SD_HWDB_FOREACH_PROPERTY('u
+.BI "SD_HWDB_FOREACH_PROPERTY(hwdb, modalias, key, value);"
+.SH "DESCRIPTION"
+.PP
+\fBsd_hwdb_get()\fR
+queries the
+\fIhwdb\fR
+object created earlier with
+\fBsd_hwdb_new\fR(3)
+for entries matching the specified string
+\fImodalias\fR, and returns the value corresponding to the key
+\fIkey\fR\&. The value is returned as a
+\fBNUL\fR\-terminated string in
+\fIvalue\fR\&. It must not be modified by the caller and is valid as long as a reference to
+\fIhwdb\fR
+is kept\&. When multiple patterns in the database match
+\fImodalias\fR, the one with the highest priority is used\&. See
+\fBhwdb\fR(7)
+for details\&.
+.PP
+\fBsd_hwdb_seek()\fR
+selects entries matching the specified string
+\fImodalias\fR\&. Subsequent queries with
+\fBsd_hwdb_enumerate()\fR
+will access the key\-value pairs for that string\&.
+.PP
+\fBsd_hwdb_enumerate()\fR
+returns (in turn) all the key\-value pairs defined for the string used with
+\fBsd_hwdb_seek()\fR\&. Each pair is returned as
+\fBNUL\fR\-terminated strings in
+\fIkey\fR
+and
+\fIvalue\fR\&. The strings must not be modified by the caller and are valid as long as a reference to
+\fIhwdb\fR
+is kept\&. When multiple patterns in the database match
+\fImodalias\fR, the combination of all matching key\-value pairs is used\&. See
+\fBhwdb\fR(7)
+for details\&.
+.PP
+The
+\fBSD_HWDB_FOREACH_PROPERTY()\fR
+macro combines
+\fBsd_hwdb_seek()\fR
+and
+\fBsd_hwdb_enumerate()\fR\&. No error handling is performed and iteration simply stops on error\&. See the example below\&.
+.SH "RETURN VALUE"
+.PP
+On success,
+\fBsd_hwdb_get()\fR
+and
+\fBsd_hwdb_seek()\fR
+return a non\-negative integer\&. On failure, they return a negative errno\-style error code\&.
+.PP
+\fBsd_hwdb_enumerate()\fR
+returns a positive integer if another key\-value pair was found or zero if all entries have already been enumerated\&. On failure, it returns a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+A parameter is
+\fBNULL\fR\&.
+.RE
+.PP
+\fB\-ENOENT\fR
+.RS 4
+An entry for the specified
+\fImodalias\fR
+was not found\&.
+.RE
+.PP
+\fB\-EAGAIN\fR
+.RS 4
+\fBsd_hwdb_seek()\fR
+was not called before
+\fBsd_hwdb_enumerate()\fR\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "EXAMPLES"
+.PP
+\fBExample\ \&1.\ \&Look up hwdb entries for a USB device\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+#include <stdio\&.h>
+#include <stdint\&.h>
+#include <sd\-hwdb\&.h>
+
+int print_usb_properties(uint16_t vid, uint16_t pid) {
+  char match[15];
+  sd_hwdb *hwdb;
+  const char *key, *value;
+  int r;
+
+  /* Match this USB vendor and product ID combination */
+  snprintf(match, sizeof match, "usb:v%04Xp%04X", vid, pid);
+
+  r = sd_hwdb_new(&hwdb);
+  if (r < 0)
+    return r;
+
+  SD_HWDB_FOREACH_PROPERTY(hwdb, match, key, value)
+    printf("%s: \e"%s\e" → \e"%s\e"\en", match, key, value);
+
+  sd_hwdb_unref(hwdb);
+  return 0;
+}
+
+int main(int argc, char **argv) {
+  print_usb_properties(0x046D, 0xC534);
+  return 0;
+}
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+The effect is similar to calling
+\fBsystemd\-hwdb query usb:v046DpC534\fR\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsystemd-udevd.service\fR(8),
+\fBsd-hwdb\fR(3),
+\fBsystemd-hwdb\fR(8)

@@ -1,0 +1,100 @@
+'\" t
+.TH "SD_BUS_ATTACH_EVENT" "3" "" "systemd 248" "sd_bus_attach_event"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_attach_event, sd_bus_detach_event, sd_bus_get_event \- Attach a bus connection object to an event loop
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_attach_event('u
+.BI "int sd_bus_attach_event(sd_bus\ *" "bus" ", sd_event\ *" "e" ", int\ " "priority" ");"
+.HP \w'int\ sd_bus_detach_event('u
+.BI "int sd_bus_detach_event(sd_bus\ *" "bus" ");"
+.HP \w'sd_event\ *sd_bus_get_event('u
+.BI "sd_event *sd_bus_get_event(sd_bus\ *" "bus" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_attach_event()\fR
+attaches the specified bus connection object to an
+\fBsd-event\fR(3)
+event loop object at the specified priority (see
+\fBsd_event_source_set_priority\fR(3)
+for details on event loop priorities)\&. When a bus connection object is attached to an event loop incoming messages will be automatically read and processed, and outgoing messages written, whenever the event loop is run\&. When the event loop is about to terminate, the bus connection is automatically flushed and closed (see
+\fBsd_bus_set_close_on_exit\fR(3)
+for details on this)\&. By default bus connection objects are not attached to any event loop\&. When a bus connection object is attached to one it is not necessary to invoke
+\fBsd_bus_wait\fR(3)
+or
+\fBsd_bus_process\fR(3)
+as this functionality is handled automatically by the event loop\&.
+.PP
+\fBsd_bus_detach_event()\fR
+detaches a bus object from its event loop\&.
+.PP
+The
+\fBsd_bus_get_event()\fR
+returns the event loop object the specified bus object is currently attached to, or
+\fBNULL\fR
+if it is currently not attached to any\&.
+.PP
+Note that
+\fBsd_bus_attach_event()\fR
+is only one of three supported ways to implement I/O event handling for bus connections\&. Alternatively use
+\fBsd_bus_get_fd\fR(3)
+for hooking up a bus connection object with external or manual event loops\&. Or use
+\fBsd_bus_wait\fR(3)
+as a simple synchronous, blocking I/O waiting call\&.
+.SH "RETURN VALUE"
+.PP
+On success,
+\fBsd_bus_attach_event()\fR
+and
+\fBsd_bus_detach_event()\fR
+return 0 or a positive integer\&. On failure, they return a negative errno\-style error code\&.
+.PP
+\fBsd_bus_get_event()\fR
+returns an event loop object or
+\fBNULL\fR\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-ECHILD\fR
+.RS 4
+The bus connection has been created in a different process\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd-event\fR(3),
+\fBsd_event_source_set_priority\fR(3),
+\fBsd_bus_set_close_on_exit\fR(3),
+\fBsd_bus_wait\fR(3),
+\fBsd_bus_get_fd\fR(3)

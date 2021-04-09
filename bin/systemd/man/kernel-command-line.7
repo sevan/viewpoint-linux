@@ -1,0 +1,333 @@
+'\" t
+.TH "KERNEL\-COMMAND\-LINE" "7" "" "systemd 248" "kernel-command-line"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+kernel-command-line \- Kernel command line parameters
+.SH "SYNOPSIS"
+.PP
+/proc/cmdline
+.SH "DESCRIPTION"
+.PP
+The kernel, the initial RAM disk (initrd) and basic userspace functionality may be configured at boot via kernel command line arguments\&. In addition, various systemd tools look at the EFI variable
+"SystemdOptions"
+(if available)\&. Both sources are combined, but the kernel command line has higher priority\&. Please note that
+\fIthe EFI variable is only used by systemd tools, and is ignored by the kernel and other user space tools\fR, so it is not a replacement for the kernel command line\&.
+.PP
+For command line parameters understood by the kernel, please see
+\m[blue]\fBkernel\-parameters\&.html\fR\m[]\&\s-2\u[1]\d\s+2
+and
+\fBbootparam\fR(7)\&.
+.PP
+For command line parameters understood by the initial RAM disk, please see
+\fBdracut.cmdline\fR(7), or the documentation of the specific initrd implementation of your installation\&.
+.SH "CORE OS COMMAND LINE ARGUMENTS"
+.PP
+\fIsystemd\&.unit=\fR, \fIrd\&.systemd\&.unit=\fR, \fIsystemd\&.dump_core\fR, \fIsystemd\&.early_core_pattern=\fR, \fIsystemd\&.crash_chvt\fR, \fIsystemd\&.crash_shell\fR, \fIsystemd\&.crash_reboot\fR, \fIsystemd\&.confirm_spawn\fR, \fIsystemd\&.service_watchdogs\fR, \fIsystemd\&.show_status\fR, \fIsystemd\&.status_unit_format=\fR, \fIsystemd\&.log_target=\fR, \fIsystemd\&.log_level=\fR, \fIsystemd\&.log_location=\fR, \fIsystemd\&.log_color\fR, \fIsystemd\&.default_standard_output=\fR, \fIsystemd\&.default_standard_error=\fR, \fIsystemd\&.setenv=\fR, \fIsystemd\&.machine_id=\fR, \fIsystemd\&.unified_cgroup_hierarchy\fR, \fIsystemd\&.legacy_systemd_cgroup_controller\fR
+.RS 4
+Parameters understood by the system and service manager to control system behavior\&. For details, see
+\fBsystemd\fR(1)\&.
+.RE
+.PP
+\fIsystemd\&.mask=\fR, \fIsystemd\&.wants=\fR, \fIsystemd\&.debug_shell\fR
+.RS 4
+Additional parameters understood by
+\fBsystemd-debug-generator\fR(8), to mask or start specific units at boot, or invoke a debug shell on tty9\&.
+.RE
+.PP
+\fIsystemd\&.run=\fR, \fIsystemd\&.run_success_action=\fR, \fIsystemd\&.run_failure_action=\fR
+.RS 4
+Additional parameters understood by
+\fBsystemd-run-generator\fR(8), to run a command line specified on the kernel command line as system service after booting up\&.
+.RE
+.PP
+\fIsystemd\&.early_core_pattern=\fR
+.RS 4
+During early boot, the generation of core dump files is disabled until a core dump handler (if any) takes over\&. This parameter allows specifying an absolute path where core dump files should be stored until a handler is installed\&. The path should be absolute and may contain specifiers, see
+\fBcore\fR(5)
+for details\&.
+.RE
+.PP
+\fIsystemd\&.restore_state=\fR
+.RS 4
+This parameter is understood by several system tools to control whether or not they should restore system state from the previous boot\&. For details, see
+\fBsystemd-backlight@.service\fR(8)
+and
+\fBsystemd-rfkill.service\fR(8)\&.
+.RE
+.PP
+\fIsystemd\&.volatile=\fR
+.RS 4
+This parameter controls whether the system shall boot up in volatile mode\&. Takes a boolean argument, or the special value
+"state"\&. If false (the default), normal boot mode is selected, the root directory and
+/var/
+are mounted as specified on the kernel command line or
+/etc/fstab, or otherwise configured\&. If true, full state\-less boot mode is selected\&. In this case the root directory is mounted as volatile memory file system ("tmpfs"), and only
+/usr/
+is mounted from the file system configured as root device, in read\-only mode\&. This enables fully state\-less boots were the vendor\-supplied OS is used as shipped, with only default configuration and no stored state in effect, as
+/etc/
+and
+/var/
+(as well as all other resources shipped in the root file system) are reset at boot and lost on shutdown\&. If this setting is set to
+"state"
+the root file system is mounted read\-only, however
+/var/
+is mounted as a volatile memory file system ("tmpfs"), so that the system boots up with the normal configuration applied, but all state reset at boot and lost at shutdown\&. If this setting is set to
+"overlay"
+the root file system is set up as
+"overlayfs"
+mount combining the read\-only root directory with a writable
+"tmpfs", so that no modifications are made to disk, but the file system may be modified nonetheless with all changes being lost at reboot\&. For details, see
+\fBsystemd-volatile-root.service\fR(8)
+and
+\fBsystemd-fstab-generator\fR(8)\&.
+.RE
+.PP
+\fIquiet\fR
+.RS 4
+Parameter understood by both the kernel and the system and service manager to control console log verbosity\&. For details, see
+\fBsystemd\fR(1)\&.
+.RE
+.PP
+\fIdebug\fR
+.RS 4
+Parameter understood by both the kernel and the system and service manager to control console log verbosity\&. For details, see
+\fBsystemd\fR(1)\&.
+.RE
+.PP
+\fI\-b\fR, \fIrd\&.emergency\fR, \fIemergency\fR, \fIrd\&.rescue\fR, \fIrescue\fR, \fIsingle\fR, \fIs\fR, \fIS\fR, \fI1\fR, \fI2\fR, \fI3\fR, \fI4\fR, \fI5\fR
+.RS 4
+Parameters understood by the system and service manager, as compatibility and convenience options\&. For details, see
+\fBsystemd\fR(1)\&.
+.RE
+.PP
+\fIlocale\&.LANG=\fR, \fIlocale\&.LANGUAGE=\fR, \fIlocale\&.LC_CTYPE=\fR, \fIlocale\&.LC_NUMERIC=\fR, \fIlocale\&.LC_TIME=\fR, \fIlocale\&.LC_COLLATE=\fR, \fIlocale\&.LC_MONETARY=\fR, \fIlocale\&.LC_MESSAGES=\fR, \fIlocale\&.LC_PAPER=\fR, \fIlocale\&.LC_NAME=\fR, \fIlocale\&.LC_ADDRESS=\fR, \fIlocale\&.LC_TELEPHONE=\fR, \fIlocale\&.LC_MEASUREMENT=\fR, \fIlocale\&.LC_IDENTIFICATION=\fR
+.RS 4
+Parameters understood by the system and service manager to control locale and language settings\&. For details, see
+\fBsystemd\fR(1)\&.
+.RE
+.PP
+\fIfsck\&.mode=\fR, \fIfsck\&.repair=\fR
+.RS 4
+Parameters understood by the file system checker services\&. For details, see
+\fBsystemd-fsck@.service\fR(8)\&.
+.RE
+.PP
+\fIquotacheck\&.mode=\fR
+.RS 4
+Parameter understood by the file quota checker service\&. For details, see
+\fBsystemd-quotacheck.service\fR(8)\&.
+.RE
+.PP
+\fIsystemd\&.journald\&.forward_to_syslog=\fR, \fIsystemd\&.journald\&.forward_to_kmsg=\fR, \fIsystemd\&.journald\&.forward_to_console=\fR, \fIsystemd\&.journald\&.forward_to_wall=\fR
+.RS 4
+Parameters understood by the journal service\&. For details, see
+\fBsystemd-journald.service\fR(8)\&.
+.RE
+.PP
+\fIvconsole\&.keymap=\fR, \fIvconsole\&.keymap_toggle=\fR, \fIvconsole\&.font=\fR, \fIvconsole\&.font_map=\fR, \fIvconsole\&.font_unimap=\fR
+.RS 4
+Parameters understood by the virtual console setup logic\&. For details, see
+\fBvconsole.conf\fR(5)\&.
+.RE
+.PP
+\fIudev\&.log_level=\fR, \fIrd\&.udev\&.log_level=\fR, \fIudev\&.children_max=\fR, \fIrd\&.udev\&.children_max=\fR, \fIudev\&.exec_delay=\fR, \fIrd\&.udev\&.exec_delay=\fR, \fIudev\&.event_timeout=\fR, \fIrd\&.udev\&.event_timeout=\fR, \fIudev\&.timeout_signal=\fR, \fIrd\&.udev\&.timeout_signal=\fR, \fIudev\&.blockdev_read_only\fR, \fIrd\&.udev\&.blockdev_read_only\fR, \fInet\&.ifnames=\fR, \fInet\&.naming\-scheme=\fR
+.RS 4
+Parameters understood by the device event managing daemon\&. For details, see
+\fBsystemd-udevd.service\fR(8)\&.
+.RE
+.PP
+\fIplymouth\&.enable=\fR
+.RS 4
+May be used to disable the Plymouth boot splash\&. For details, see
+\fBplymouth\fR(8)\&.
+.RE
+.PP
+\fIluks=\fR, \fIrd\&.luks=\fR, \fIluks\&.crypttab=\fR, \fIrd\&.luks\&.crypttab=\fR, \fIluks\&.name=\fR, \fIrd\&.luks\&.name=\fR, \fIluks\&.uuid=\fR, \fIrd\&.luks\&.uuid=\fR, \fIluks\&.options=\fR, \fIrd\&.luks\&.options=\fR, \fIluks\&.key=\fR, \fIrd\&.luks\&.key=\fR
+.RS 4
+Configures the LUKS full\-disk encryption logic at boot\&. For details, see
+\fBsystemd-cryptsetup-generator\fR(8)\&.
+.RE
+.PP
+\fIfstab=\fR, \fIrd\&.fstab=\fR
+.RS 4
+Configures the
+/etc/fstab
+logic at boot\&. For details, see
+\fBsystemd-fstab-generator\fR(8)\&.
+.RE
+.PP
+\fIroot=\fR, \fIrootfstype=\fR, \fIrootflags=\fR, \fIro\fR, \fIrw\fR
+.RS 4
+Configures the root file system and its file system type and mount options, as well as whether it shall be mounted read\-only or read\-write initially\&. For details, see
+\fBsystemd-fstab-generator\fR(8)\&.
+.RE
+.PP
+\fImount\&.usr=\fR, \fImount\&.usrfstype=\fR, \fImount\&.usrflags=\fR
+.RS 4
+Configures the /usr file system (if required) and its file system type and mount options\&. For details, see
+\fBsystemd-fstab-generator\fR(8)\&.
+.RE
+.PP
+\fIveritytab=\fR, \fIrd\&.veritytab=\fR, \fIroothash=\fR, \fIsystemd\&.verity=\fR, \fIrd\&.systemd\&.verity=\fR, \fIsystemd\&.verity_root_data=\fR, \fIsystemd\&.verity_root_hash=\fR, \fIsystemd\&.verity\&.root_options=\fR
+.RS 4
+Configures the integrity protection root hash for the root file system, and other related parameters\&. For details, see
+\fBsystemd-veritysetup-generator\fR(8)\&.
+.RE
+.PP
+\fIsystemd\&.gpt_auto=\fR, \fIrd\&.systemd\&.gpt_auto=\fR
+.RS 4
+Configures whether GPT based partition auto\-discovery shall be attempted\&. For details, see
+\fBsystemd-gpt-auto-generator\fR(8)\&.
+.RE
+.PP
+\fIsystemd\&.default_timeout_start_sec=\fR
+.RS 4
+Overwrites the default start job timeout
+\fIDefaultTimeoutStartSec=\fR
+at boot\&. For details, see
+\fBsystemd-system.conf\fR(5)\&.
+.RE
+.PP
+\fIsystemd\&.watchdog_device=\fR
+.RS 4
+Overwrites the watchdog device path
+\fIWatchdogDevice=\fR\&. For details, see
+\fBsystemd-system.conf\fR(5)\&.
+.RE
+.PP
+\fIsystemd\&.cpu_affinity=\fR
+.RS 4
+Overrides the CPU affinity mask for the service manager and the default for all child processes it forks\&. This takes precedence over
+\fICPUAffinity=\fR, see
+\fBsystemd-system.conf\fR(5)
+for details\&.
+.RE
+.PP
+\fImodules_load=\fR, \fIrd\&.modules_load=\fR
+.RS 4
+Load a specific kernel module early at boot\&. For details, see
+\fBsystemd-modules-load.service\fR(8)\&.
+.RE
+.PP
+\fIresume=\fR, \fIresumeflags=\fR
+.RS 4
+Enables resume from hibernation using the specified device and mount options\&. All
+\fBfstab\fR(5)\-like paths are supported\&. For details, see
+\fBsystemd-hibernate-resume-generator\fR(8)\&.
+.RE
+.PP
+\fIsystemd\&.firstboot=\fR
+.RS 4
+Takes a boolean argument, defaults to on\&. If off,
+\fBsystemd-firstboot.service\fR(8)
+will not query the user for basic system settings, even if the system boots up for the first time and the relevant settings are not initialized yet\&. Not to be confused with
+\fIsystemd\&.condition\-first\-boot=\fR
+(see below), which overrides the result of the
+\fIConditionFirstBoot=\fR
+unit file condition, and thus controls more than just
+systemd\-firstboot\&.service
+behaviour\&.
+.RE
+.PP
+\fIsystemd\&.condition\-needs\-update=\fR
+.RS 4
+Takes a boolean argument\&. If specified, overrides the result of
+\fIConditionNeedsUpdate=\fR
+unit condition checks\&. See
+\fBsystemd.unit\fR(5)
+for details\&.
+.RE
+.PP
+\fIsystemd\&.condition\-first\-boot=\fR
+.RS 4
+Takes a boolean argument\&. If specified, overrides the result of
+\fIConditionFirstBoot=\fR
+unit condition checks\&. See
+\fBsystemd.unit\fR(5)
+for details\&. Not to be confused with
+\fIsystemd\&.firstboot=\fR
+which only controls behaviour of the
+systemd\-firstboot\&.service
+system service but has no effect on the condition check (see above)\&.
+.RE
+.PP
+\fIsystemd\&.clock\-usec=\fR
+.RS 4
+Takes a decimal, numeric timestamp in \(mcs since January 1st 1970, 00:00am, to set the system clock to\&. The system time is set to the specified timestamp early during boot\&. It is not propagated to the hardware clock (RTC)\&.
+.RE
+.PP
+\fIsystemd\&.random\-seed=\fR
+.RS 4
+Takes a base64 encoded random seed value to credit with full entropy to the kernel\*(Aqs random pool during early service manager initialization\&. This option is useful in testing environments where delays due to random pool initialization in entropy starved virtual machines shall be avoided\&.
+.sp
+Note that if this option is used the seed is accessible to unprivileged programs from
+/proc/cmdline\&. This option is hence a security risk when used outside of test systems, since the (possibly) only seed used for initialization of the kernel\*(Aqs entropy pool might be easily acquired by unprivileged programs\&.
+.sp
+It is recommended to pass 512 bytes of randomized data (as that matches the Linux kernel pool size), which may be generated with a command like the following:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+dd if=/dev/urandom bs=512 count=1 status=none | base64 \-w 0
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+Again: do not use this option outside of testing environments, it\*(Aqs a security risk elsewhere, as secret key material derived from the entropy pool can possibly be reconstructed by unprivileged programs\&.
+.RE
+.PP
+\fIsystemd\&.hostname=\fR
+.RS 4
+Accepts a hostname to set during early boot\&. If specified takes precedence over what is set in
+/etc/hostname\&. Note that this does not bar later runtime changes to the hostname, it simply controls the initial hostname set during early boot\&.
+.RE
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsystemd-system.conf\fR(5),
+\fBbootparam\fR(7),
+\fBdracut.cmdline\fR(7),
+\fBsystemd-debug-generator\fR(8),
+\fBsystemd-fsck@.service\fR(8),
+\fBsystemd-quotacheck.service\fR(8),
+\fBsystemd-journald.service\fR(8),
+\fBsystemd-vconsole-setup.service\fR(8),
+\fBsystemd-udevd.service\fR(8),
+\fBplymouth\fR(8),
+\fBsystemd-cryptsetup-generator\fR(8),
+\fBsystemd-veritysetup-generator\fR(8),
+\fBsystemd-fstab-generator\fR(8),
+\fBsystemd-gpt-auto-generator\fR(8),
+\fBsystemd-volatile-root.service\fR(8),
+\fBsystemd-modules-load.service\fR(8),
+\fBsystemd-backlight@.service\fR(8),
+\fBsystemd-rfkill.service\fR(8),
+\fBsystemd-hibernate-resume-generator\fR(8),
+\fBsystemd-firstboot.service\fR(8),
+\fBbootctl\fR(1)
+.SH "NOTES"
+.IP " 1." 4
+kernel-parameters.html
+.RS 4
+\%https://www.kernel.org/doc/html/latest/admin-guide/kernel-parameters.html
+.RE

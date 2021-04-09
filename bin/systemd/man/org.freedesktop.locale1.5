@@ -1,0 +1,202 @@
+'\" t
+.TH "ORG\&.FREEDESKTOP\&.LOCALE1" "5" "" "systemd 248" "org.freedesktop.locale1"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+org.freedesktop.locale1 \- The D\-Bus interface of systemd\-localed
+.SH "INTRODUCTION"
+.PP
+\fBsystemd-localed.service\fR(8)
+is a system service that can be used to control the system locale and keyboard mapping from user programs\&. This page describes the D\-Bus interface\&.
+.SH "THE D\-BUS API"
+.PP
+The service exposes the following interfaces on the bus:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+node /org/freedesktop/locale1 {
+  interface org\&.freedesktop\&.locale1 {
+    methods:
+      SetLocale(in  as locale,
+                in  b interactive);
+      SetVConsoleKeyboard(in  s keymap,
+                          in  s keymap_toggle,
+                          in  b convert,
+                          in  b interactive);
+      SetX11Keyboard(in  s layout,
+                     in  s model,
+                     in  s variant,
+                     in  s options,
+                     in  b convert,
+                     in  b interactive);
+    properties:
+      readonly as Locale = [\*(Aq\&.\&.\&.\*(Aq, \&.\&.\&.];
+      readonly s X11Layout = \*(Aq\&.\&.\&.\*(Aq;
+      readonly s X11Model = \*(Aq\&.\&.\&.\*(Aq;
+      readonly s X11Variant = \*(Aq\&.\&.\&.\*(Aq;
+      readonly s X11Options = \*(Aq\&.\&.\&.\*(Aq;
+      readonly s VConsoleKeymap = \*(Aq\&.\&.\&.\*(Aq;
+      readonly s VConsoleKeymapToggle = \*(Aq\&.\&.\&.\*(Aq;
+  };
+  interface org\&.freedesktop\&.DBus\&.Peer { \&.\&.\&. };
+  interface org\&.freedesktop\&.DBus\&.Introspectable { \&.\&.\&. };
+  interface org\&.freedesktop\&.DBus\&.Properties { \&.\&.\&. };
+};
+    
+.fi
+.if n \{\
+.RE
+.\}
+
+
+
+
+
+
+
+
+
+
+
+.SS "Methods"
+.PP
+If you set a new system locale all old system locale settings will be dropped and the new settings will be saved to disk\&. The locale will also be passed to the system manager, and subsequently started daemons will inherit the new system locale\&. Note that already running daemons will not learn about the new value\&.
+.PP
+The
+\fBSetVConsoleKeyboard()\fR
+method may be used to set the key mapping for the virtual console\&. Similarly,
+\fBSetX11Keyboard()\fR
+may be used to set the default key mapping of any X11 servers\&.
+.PP
+Note that
+\fBSetVConsoleKeyboard()\fR
+instantly applies the new key mapping to the console, while
+\fBSetX11Keyboard()\fR
+simply sets a default that may be used by later sessions\&.
+.PP
+The boolean argument
+\fIconvert\fR
+may be set to optionally convert the console keyboard configuration to X11 keyboard mappings and vice versa\&. If true and
+\fBSetVConsoleKeyboard()\fR
+is used, the nearest X11 keyboard setting for the chosen console setting is set\&. If true and
+\fBSetX11Keyboard()\fR
+is used, the nearest console keyboard setting for the chosen X11 setting is set\&. Hence, it is usually sufficient to call only one of the two functions\&.
+.PP
+For graphical UIs that need to set the system keyboard mapping simply invoke
+\fBSetX11Keyboard()\fR, set
+\fIconvert=true\fR
+and ignore
+\fBSetVConsoleKeyboard()\fR\&.
+.PP
+Use the empty string for the keymap parameters you wish not to set\&.
+.PP
+The
+\fIinteractive\fR
+boolean parameters can be used to control whether
+\m[blue]\fBpolkit\fR\m[]\&\s-2\u[1]\d\s+2
+should interactively ask the user for authentication credentials if required\&.
+.SS "Signals"
+.PP
+Whenever the system locale or keymap is changed via the daemon,
+\fBPropertyChanged\fR
+signals are sent out to which clients can subscribe\&.
+.SS "Properties"
+.PP
+The system locale is shown in the
+\fILocale\fR
+property\&. It is an array containing environment\-variable\-assignment\-like strings\&. The following strings are known:
+\fILANG=\fR,
+\fILC_CTYPE=\fR,
+\fILC_NUMERIC=\fR,
+\fILC_TIME=\fR,
+\fILC_COLLATE=\fR,
+\fILC_MONETARY=\fR,
+\fILC_MESSAGES=\fR,
+\fILC_PAPER=\fR,
+\fILC_NAME=\fR,
+\fILC_ADDRESS=\fR,
+\fILC_TELEPHONE=\fR,
+\fILC_MEASUREMENT=\fR,
+\fILC_IDENTIFICATION=\fR\&.
+.PP
+The
+\fIX11Layout\fR,
+\fIX11Model\fR,
+\fIX11Variant\fR, and
+\fIX11Options\fR
+properties show values configurable with
+\fBSetX11Keyboard()\fR
+described above (or
+\fBSetVConsoleKeyboard()\fR
+with
+\fIconvert=true\fR)\&. The
+\fIVConsoleKeymap\fR
+and
+\fIVConsoleKeymapToggle\fR
+properties show values configurable with
+\fBSetVConsoleKeyboard()\fR
+(or
+\fBSetX11Keyboard()\fR
+with
+\fIconvert=true\fR)\&.
+.SS "Security"
+.PP
+Changing the system locale or keymap using this interface is authenticated via polkit\&. The polkit action for
+\fBSetLocale()\fR
+is
+\fBorg\&.freedesktop\&.locale1\&.set\-locale\fR\&. The polkit action for
+\fBSetX11Keyboard()\fR
+and
+\fBSetVConsoleKeyboard()\fR
+is
+\fBorg\&.freedesktop\&.locale1\&.set\-keyboard\fR\&.
+.SH "EXAMPLES"
+.PP
+\fBExample\ \&1.\ \&Introspect org\&.freedesktop\&.locale1 on the bus\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ gdbus introspect \-\-system \e
+  \-\-dest org\&.freedesktop\&.locale1 \e
+  \-\-object\-path /org/freedesktop/locale1
+      
+.fi
+.if n \{\
+.RE
+.\}
+.SH "VERSIONING"
+.PP
+These D\-Bus interfaces follow
+\m[blue]\fBthe usual interface versioning guidelines\fR\m[]\&\s-2\u[2]\d\s+2\&.
+.SH "NOTES"
+.IP " 1." 4
+polkit
+.RS 4
+\%https://www.freedesktop.org/software/polkit/docs/latest/
+.RE
+.IP " 2." 4
+the usual interface versioning guidelines
+.RS 4
+\%http://0pointer.de/blog/projects/versioning-dbus.html
+.RE

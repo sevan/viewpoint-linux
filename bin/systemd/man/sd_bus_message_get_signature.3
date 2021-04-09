@@ -1,0 +1,94 @@
+'\" t
+.TH "SD_BUS_MESSAGE_GET_SIGNATURE" "3" "" "systemd 248" "sd_bus_message_get_signature"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_message_get_signature, sd_bus_message_is_empty, sd_bus_message_has_signature \- Query bus message signature
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'const\ char*\ sd_bus_message_get_signature('u
+.BI "const char* sd_bus_message_get_signature(sd_bus_message\ *" "message" ", int\ " "complete" ");"
+.HP \w'int\ sd_bus_message_is_empty('u
+.BI "int sd_bus_message_is_empty(sd_bus_message\ *" "message" ");"
+.HP \w'int\ sd_bus_message_has_signature('u
+.BI "int sd_bus_message_has_signature(sd_bus_message\ *" "message" ", const\ char\ *" "signature" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_message_get_signature()\fR
+returns the signature of message
+\fImessage\fR\&. If
+\fIcomplete\fR
+is true, the signature of the whole message is returned, and just the signature of the currently open container otherwise\&.
+.PP
+\fBsd_bus_message_is_empty()\fR
+returns true if the message is empty, i\&.e\&. when its signature is empty\&.
+.PP
+\fBsd_bus_message_has_signature()\fR
+returns true if the signature of the message
+\fImessage\fR
+matches given
+\fIsignature\fR\&. Parameter
+\fIsignature\fR
+may be
+\fBNULL\fR, this is treated the same as an empty string, which is equivalent to calling
+\fBsd_bus_message_is_empty()\fR\&.
+.SH "RETURN VALUE"
+.PP
+On success,
+\fBsd_bus_message_get_signature()\fR
+returns the signature, and
+\fBNULL\fR
+on error\&.
+.PP
+The other functions return 0 or a positive integer on success\&. On failure, they return a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+The
+\fImessage\fR
+parameter is
+\fBNULL\fR\&.
+.RE
+.PP
+\fBNULL\fR
+.RS 4
+The
+\fImessage\fR
+parameter is
+\fBNULL\fR\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd_bus_message_new\fR(3)

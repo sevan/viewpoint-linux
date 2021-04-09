@@ -1,0 +1,208 @@
+'\" t
+.TH "SD_BUS_SET_DESCRIPTION" "3" "" "systemd 248" "sd_bus_set_description"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_set_description, sd_bus_get_description, sd_bus_set_anonymous, sd_bus_is_anonymous, sd_bus_set_trusted, sd_bus_is_trusted, sd_bus_set_allow_interactive_authorization, sd_bus_get_allow_interactive_authorization, sd_bus_get_scope, sd_bus_get_tid, sd_bus_get_unique_name \- Set or query properties of a bus object
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_set_description('u
+.BI "int sd_bus_set_description(sd_bus\ *" "bus" ", const\ char\ *" "description" ");"
+.HP \w'int\ sd_bus_get_description('u
+.BI "int sd_bus_get_description(sd_bus\ *" "bus" ", const\ char\ **" "description" ");"
+.HP \w'int\ sd_bus_set_anonymous('u
+.BI "int sd_bus_set_anonymous(sd_bus\ *" "bus" ", int\ " "b" ");"
+.HP \w'int\ sd_bus_is_anonymous('u
+.BI "int sd_bus_is_anonymous(sd_bus\ *" "bus" ");"
+.HP \w'int\ sd_bus_set_trusted('u
+.BI "int sd_bus_set_trusted(sd_bus\ *" "bus" ", int\ " "b" ");"
+.HP \w'int\ sd_bus_is_trusted('u
+.BI "int sd_bus_is_trusted(sd_bus\ *" "bus" ");"
+.HP \w'int\ sd_bus_set_allow_interactive_authorization('u
+.BI "int sd_bus_set_allow_interactive_authorization(sd_bus\ *" "bus" ", int\ " "b" ");"
+.HP \w'int\ sd_bus_get_allow_interactive_authorization('u
+.BI "int sd_bus_get_allow_interactive_authorization(sd_bus\ *" "bus" ");"
+.HP \w'int\ sd_bus_get_scope('u
+.BI "int sd_bus_get_scope(sd_bus\ *" "bus" ", const\ char\ **" "scope" ");"
+.HP \w'int\ sd_bus_get_tid('u
+.BI "int sd_bus_get_tid(sd_bus\ *" "bus" ", pid_t\ *" "tid" ");"
+.HP \w'int\ sd_bus_get_unique_name('u
+.BI "int sd_bus_get_unique_name(sd_bus\ *" "bus" ", const\ char\ **" "unique" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_set_description()\fR
+sets the description string that is used in logging to the specified string\&. The string is copied internally and freed when the bus object is deallocated\&. The
+\fIdescription\fR
+argument may be
+\fBNULL\fR, in which case the description is unset\&. This function must be called before the bus is started\&.
+.PP
+\fBsd_bus_get_description()\fR
+returns a description string in
+\fIdescription\fR\&. This string may have been previously set with
+\fBsd_bus_set_description()\fR
+or
+\fBsd_bus_open_with_description\fR(3)
+or similar\&. If not set this way, a default string like
+"system"
+or
+"user"
+will be returned for the system or user buses, and
+\fBNULL\fR
+otherwise\&.
+.PP
+\fBsd_bus_set_anonymous()\fR
+enables or disables "anonymous authentication", i\&.e\&. lack of authentication, of the bus peer\&. This function must be called before the bus is started\&. See the
+\m[blue]\fBAuthentication Mechanisms\fR\m[]\&\s-2\u[1]\d\s+2
+section of the D\-Bus specification for details\&.
+.PP
+\fBsd_bus_is_anonymous()\fR
+returns true if the bus connection allows anonymous authentication (in the sense described in previous paragraph)\&.
+.PP
+\fBsd_bus_set_trusted()\fR
+sets the "trusted" state on the
+\fIbus\fR
+object\&. If true, all connections on the bus are trusted and access to all privileged and unprivileged methods is granted\&. This function must be called before the bus is started\&.
+.PP
+\fBsd_bus_is_trusted()\fR
+returns true if the bus connection is trusted (in the sense described in previous paragraph)\&.
+.PP
+\fBsd_bus_set_allow_interactive_authorization()\fR
+enables or disables interactive authorization for method calls\&. If true, messages are marked with the
+\fBALLOW_INTERACTIVE_AUTHORIZATION\fR
+flag specified by the
+\m[blue]\fBD\-Bus\fR\m[]\&\s-2\u[2]\d\s+2
+specification, informing the receiving side that the caller is prepared to wait for interactive authorization, which might take a considerable time to complete\&. If this flag is set, the user may be queried for passwords or confirmation via
+\m[blue]\fBpolkit\fR\m[]\&\s-2\u[3]\d\s+2
+or a similar framework\&.
+.PP
+\fBsd_bus_get_allow_interactive_authorization()\fR
+returns true if interactive authorization is allowed and false if not\&.
+.PP
+\fBsd_bus_get_scope()\fR
+stores the scope of the given bus object in
+\fIscope\fR\&. The scope of the system bus is
+"system"\&. The scope of a user session bus is
+"user"\&. If the given bus object is not the system or a user session bus,
+\fBsd_bus_get_scope()\fR
+returns an error\&.
+.PP
+\fBsd_bus_get_tid()\fR
+stores the kernel thread id of the thread associated with the given bus object in
+\fItid\fR\&. If
+\fIbus\fR
+is a default bus object obtained by calling one of the functions of the
+\fBsd_bus_default\fR(3)
+family of functions, it stores the thread id of the thread the bus object was created in\&. Otherwise, if the bus object is attached to an event loop, it stores the thread id of the thread the event loop object was created in\&. If
+\fIbus\fR
+is not a default bus object and is not attached to an event loop,
+\fBsd_bus_get_tid()\fR
+returns an error\&.
+.PP
+\fBsd_bus_get_unique_name()\fR
+stores the unique name of the bus object on the bus in
+\fIunique\fR\&. See
+\m[blue]\fBThe D\-Bus specification\fR\m[]\&\s-2\u[4]\d\s+2
+for more information on bus names\&. Note that the caller does not own the string stored in
+\fIunique\fR
+and should not free it\&.
+.SH "RETURN VALUE"
+.PP
+On success, these functions return a non\-negative integer\&. On failure, they return a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+An argument is invalid\&.
+.RE
+.PP
+\fB\-ENOPKG\fR
+.RS 4
+The bus cannot be resolved\&.
+.RE
+.PP
+\fB\-EPERM\fR
+.RS 4
+The bus has already been started\&.
+.RE
+.PP
+\fB\-ECHILD\fR
+.RS 4
+The bus was created in a different process\&.
+.RE
+.PP
+\fB\-ENOMEM\fR
+.RS 4
+Memory allocation failed\&.
+.RE
+.PP
+\fB\-ENODATA\fR
+.RS 4
+The bus object passed to
+\fBsd_bus_get_scope()\fR
+was not a system or user session bus\&.
+.RE
+.PP
+\fB\-ENXIO\fR
+.RS 4
+The bus object passed to
+\fBsd_bus_get_tid()\fR
+was not a default bus object and is not attached to an event loop\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd_bus_default_user\fR(3),
+\fBsd_bus_default_system\fR(3),
+\fBsd_bus_open_user\fR(3),
+\fBsd_bus_open_system\fR(3)
+.SH "NOTES"
+.IP " 1." 4
+Authentication Mechanisms
+.RS 4
+\%view-source:https://dbus.freedesktop.org/doc/dbus-specification.html#auth-mechanisms
+.RE
+.IP " 2." 4
+D-Bus
+.RS 4
+\%view-source:https://dbus.freedesktop.org/doc/dbus-specification.html
+.RE
+.IP " 3." 4
+polkit
+.RS 4
+\%http://www.freedesktop.org/wiki/Software/polkit
+.RE
+.IP " 4." 4
+The D-Bus specification
+.RS 4
+\%https://dbus.freedesktop.org/doc/dbus-specification.html#message-protocol-names-bus
+.RE

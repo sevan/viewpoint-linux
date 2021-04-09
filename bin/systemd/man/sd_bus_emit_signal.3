@@ -1,0 +1,179 @@
+'\" t
+.TH "SD_BUS_EMIT_SIGNAL" "3" "" "systemd 248" "sd_bus_emit_signal"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_emit_signal, sd_bus_emit_signalv, sd_bus_emit_interfaces_added, sd_bus_emit_interfaces_added_strv, sd_bus_emit_interfaces_removed, sd_bus_emit_interfaces_removed_strv, sd_bus_emit_properties_changed, sd_bus_emit_properties_changed_strv, sd_bus_emit_object_added, sd_bus_emit_object_removed \- Convenience functions for emitting (standard) D\-Bus signals
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\-vtable\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_emit_signal('u
+.BI "int sd_bus_emit_signal(sd_bus\ *" "bus" ", const\ char\ *" "path" ", const\ char\ *" "interface" ", const\ char\ *" "member" ", const\ char\ *" "types" ", \&.\&.\&.);"
+.HP \w'int\ sd_bus_emit_signalv('u
+.BI "int sd_bus_emit_signalv(sd_bus\ *" "bus" ", const\ char\ *" "path" ", const\ char\ *" "interface" ", const\ char\ *" "member" ", const\ char\ *" "types" ", va_list\ " "ap" ");"
+.HP \w'int\ sd_bus_emit_interfaces_added('u
+.BI "int sd_bus_emit_interfaces_added(sd_bus\ *" "bus" ", const\ char\ *" "path" ", const\ char\ *" "interface" ", \&.\&.\&.);"
+.HP \w'int\ sd_bus_emit_interfaces_added_strv('u
+.BI "int sd_bus_emit_interfaces_added_strv(sd_bus\ *" "bus" ", const\ char\ *" "path" ", const\ char\ **" "interfaces" ");"
+.HP \w'int\ sd_bus_emit_interfaces_removed('u
+.BI "int sd_bus_emit_interfaces_removed(sd_bus\ *" "bus" ", const\ char\ *" "path" ", const\ char\ *" "interface" ", \&.\&.\&.);"
+.HP \w'int\ sd_bus_emit_interfaces_removed_strv('u
+.BI "int sd_bus_emit_interfaces_removed_strv(sd_bus\ *" "bus" ", const\ char\ *" "path" ", const\ char\ **" "interfaces" ");"
+.HP \w'int\ sd_bus_emit_properties_changed('u
+.BI "int sd_bus_emit_properties_changed(sd_bus\ *" "bus" ", const\ char\ *" "path" ", const\ char\ *" "interface" ", const\ char\ *" "name" ", \&.\&.\&.);"
+.HP \w'int\ sd_bus_emit_properties_changed_strv('u
+.BI "int sd_bus_emit_properties_changed_strv(sd_bus\ *" "bus" ", const\ char\ *" "path" ", const\ char\ *" "interface" ", const\ char\ **" "names" ");"
+.HP \w'int\ sd_bus_emit_object_added('u
+.BI "int sd_bus_emit_object_added(sd_bus\ *" "bus" ", const\ char\ *" "path" ");"
+.HP \w'int\ sd_bus_emit_object_removed('u
+.BI "int sd_bus_emit_object_removed(sd_bus\ *" "bus" ", const\ char\ *" "path" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_emit_signal()\fR
+is a convenience function for initializing a bus message object and emitting the corresponding D\-Bus signal\&. It combines the
+\fBsd_bus_message_new_signal\fR(3),
+\fBsd_bus_message_append\fR(3)
+and
+\fBsd_bus_send\fR(3)
+functions into a single function call\&.
+\fBsd_bus_emit_signalv()\fR
+is equivalent to
+\fBsd_bus_message_append()\fR, except that it is called with a
+"va_list"
+instead of a variable number of arguments\&.
+.PP
+\fBsd_bus_emit_interfaces_added()\fR
+and
+\fBsd_bus_emit_interfaces_removed()\fR
+are used to implement the
+\fBInterfacesAdded\fR
+and
+\fBInterfacesRemoved\fR
+signals of the
+\fBorg\&.freedesktop\&.DBus\&.ObjectManager\fR
+interface\&. They take a path whose interfaces have been modified as an argument and a variable list of interfaces that have been added or removed, respectively\&. The final argument passed to
+\fBsd_bus_emit_interfaces_added()\fR
+and
+\fBsd_bus_emit_interfaces_removed()\fR
+\fImust\fR
+be
+\fBNULL\fR\&. This allows both functions to safely determine the number of passed interface arguments\&.
+\fBsd_bus_emit_interfaces_added_strv()\fR
+and
+\fBsd_bus_emit_interfaces_removed_strv()\fR
+are identical to their respective counterparts but both take the list of interfaces as a single argument instead of a variable number of arguments\&.
+.PP
+\fBsd_bus_emit_properties_changed()\fR
+is used to implement the
+\fBPropertiesChanged\fR
+signal of the
+\fBorg\&.freedesktop\&.DBus\&.Properties\fR
+interface\&. It takes an object path, interface and a variable list of property names as its arguments\&. The final argument passed to
+\fBsd_bus_emit_properties_changed()\fR
+\fImust\fR
+be
+\fBNULL\fR\&. This allows it to safely determine the number of passed property names\&.
+\fBsd_bus_emit_properties_changed_strv()\fR
+is identical to
+\fBsd_bus_emit_properties_changed()\fR
+but takes the list of property names as a single argument instead of a variable number of arguments\&.
+.PP
+\fBsd_bus_emit_object_added()\fR
+and
+\fBsd_bus_emit_object_removed()\fR
+are convenience functions for emitting the
+\fBInterfacesAdded\fR
+or
+\fBInterfacesRemoved\fR
+signals for all interfaces registered on a specific object path, respectively\&. This includes any parent fallback vtables if they are not overridden by a more applicable child vtable\&. It also includes all the standard D\-Bus interfaces implemented by sd\-bus itself on any registered object\&.
+.PP
+Note that
+\fBsd_bus_emit_interfaces_added()\fR,
+\fBsd_bus_emit_interfaces_removed()\fR,
+\fBsd_bus_emit_object_added()\fR
+and
+\fBsd_bus_emit_object_removed()\fR
+require an object manager to have been registered on the given object path or one of its parent object paths using
+\fBsd_bus_add_object_manager\fR(3)\&.
+.SH "RETURN VALUE"
+.PP
+On success, these functions return a non\-negative integer\&. On failure, they return a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+One of the required parameters is
+\fBNULL\fR
+or invalid\&. A reserved D\-Bus interface was passed as the
+\fIinterface\fR
+parameter\&.
+.RE
+.PP
+\fB\-ENOPKG\fR
+.RS 4
+The bus cannot be resolved\&.
+.RE
+.PP
+\fB\-ECHILD\fR
+.RS 4
+The bus was created in a different process\&.
+.RE
+.PP
+\fB\-ENOMEM\fR
+.RS 4
+Memory allocation failed\&.
+.RE
+.PP
+\fB\-ESRCH\fR
+.RS 4
+One of
+\fBsd_bus_emit_interfaces_added()\fR,
+\fBsd_bus_emit_interfaces_removed()\fR,
+\fBsd_bus_emit_object_added()\fR
+or
+\fBsd_bus_emit_object_removed()\fR
+was called on an object without an object manager registered on its own object path or one of its parent object paths\&.
+.RE
+.PP
+See the man pages of
+\fBsd_bus_message_new_signal\fR(3),
+\fBsd_bus_message_append\fR(3)
+and
+\fBsd_bus_send\fR(3)
+for more possible errors\&.
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsd-bus\fR(3),
+\fBbusctl\fR(1),
+\fBsd_bus_message_new_signal\fR(3),
+\fBsd_bus_message_append\fR(3),
+\fBsd_bus_send\fR(3),
+\fBsd_bus_call_method\fR(3)

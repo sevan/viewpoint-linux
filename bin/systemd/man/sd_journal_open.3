@@ -1,0 +1,174 @@
+'\" t
+.TH "SD_JOURNAL_OPEN" "3" "" "systemd 248" "sd_journal_open"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_journal_open, sd_journal_open_directory, sd_journal_open_directory_fd, sd_journal_open_files, sd_journal_open_files_fd, sd_journal_open_namespace, sd_journal_close, sd_journal, SD_JOURNAL_LOCAL_ONLY, SD_JOURNAL_RUNTIME_ONLY, SD_JOURNAL_SYSTEM, SD_JOURNAL_CURRENT_USER, SD_JOURNAL_OS_ROOT, SD_JOURNAL_ALL_NAMESPACES, SD_JOURNAL_INCLUDE_DEFAULT_NAMESPACE \- Open the system journal for reading
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-journal\&.h>
+.fi
+.ft
+.HP \w'int\ sd_journal_open('u
+.BI "int sd_journal_open(sd_journal\ **" "ret" ", int\ " "flags" ");"
+.HP \w'int\ sd_journal_open_namespace('u
+.BI "int sd_journal_open_namespace(sd_journal\ **" "ret" ", const\ char\ *" "namespace" ", int\ " "flags" ");"
+.HP \w'int\ sd_journal_open_directory('u
+.BI "int sd_journal_open_directory(sd_journal\ **" "ret" ", const\ char\ *" "path" ", int\ " "flags" ");"
+.HP \w'int\ sd_journal_open_directory_fd('u
+.BI "int sd_journal_open_directory_fd(sd_journal\ **" "ret" ", int\ " "fd" ", int\ " "flags" ");"
+.HP \w'int\ sd_journal_open_files('u
+.BI "int sd_journal_open_files(sd_journal\ **" "ret" ", const\ char\ **" "paths" ", int\ " "flags" ");"
+.HP \w'int\ sd_journal_open_files_fd('u
+.BI "int sd_journal_open_files_fd(sd_journal\ **" "ret" ", int\ " "fds[]" ", unsigned\ " "n_fds" ", int\ " "flags" ");"
+.HP \w'void\ sd_journal_close('u
+.BI "void sd_journal_close(sd_journal\ *" "j" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_journal_open()\fR
+opens the log journal for reading\&. It will find all journal files automatically and interleave them automatically when reading\&. As first argument it takes a pointer to a
+\fIsd_journal\fR
+pointer, which, on success, will contain a journal context object\&. The second argument is a flags field, which may consist of the following flags ORed together:
+\fBSD_JOURNAL_LOCAL_ONLY\fR
+makes sure only journal files generated on the local machine will be opened\&.
+\fBSD_JOURNAL_RUNTIME_ONLY\fR
+makes sure only volatile journal files will be opened, excluding those which are stored on persistent storage\&.
+\fBSD_JOURNAL_SYSTEM\fR
+will cause journal files of system services and the kernel (in opposition to user session processes) to be opened\&.
+\fBSD_JOURNAL_CURRENT_USER\fR
+will cause journal files of the current user to be opened\&. If neither
+\fBSD_JOURNAL_SYSTEM\fR
+nor
+\fBSD_JOURNAL_CURRENT_USER\fR
+are specified, all journal file types will be opened\&.
+.PP
+\fBsd_journal_open_namespace()\fR
+is similar to
+\fBsd_journal_open()\fR
+but takes an additional
+\fInamespace\fR
+parameter that specifies which journal namespace to operate on\&. If specified as
+\fBNULL\fR
+the call is identical to
+\fBsd_journal_open()\fR\&. If non\-\fBNULL\fR
+only data from the namespace identified by the specified parameter is accessed\&. This call understands two additional flags: if
+\fBSD_JOURNAL_ALL_NAMESPACES\fR
+is specified the
+\fInamespace\fR
+parameter is ignored and all defined namespaces are accessed simultaneously; if
+\fBSD_JOURNAL_INCLUDE_DEFAULT_NAMESPACE\fR
+the specified namespace and the default namespace are accessed but no others (this flag has no effect when
+\fInamespace\fR
+is passed as
+\fBNULL\fR)\&. For details about journal namespaces see
+\fBsystemd-journald.service\fR(8)\&.
+.PP
+\fBsd_journal_open_directory()\fR
+is similar to
+\fBsd_journal_open()\fR
+but takes an absolute directory path as argument\&. All journal files in this directory will be opened and interleaved automatically\&. This call also takes a flags argument\&. The flags parameters accepted by this call are
+\fBSD_JOURNAL_OS_ROOT\fR,
+\fBSD_JOURNAL_SYSTEM\fR, and
+\fBSD_JOURNAL_CURRENT_USER\fR\&. If
+\fBSD_JOURNAL_OS_ROOT\fR
+is specified, journal files are searched for below the usual
+/var/log/journal
+and
+/run/log/journal
+relative to the specified path, instead of directly beneath it\&. The other two flags limit which files are opened, the same as for
+\fBsd_journal_open()\fR\&.
+.PP
+\fBsd_journal_open_directory_fd()\fR
+is similar to
+\fBsd_journal_open_directory()\fR, but takes a file descriptor referencing a directory in the file system instead of an absolute file system path\&.
+.PP
+\fBsd_journal_open_files()\fR
+is similar to
+\fBsd_journal_open()\fR
+but takes a
+\fBNULL\fR\-terminated list of file paths to open\&. All files will be opened and interleaved automatically\&. This call also takes a flags argument, but it must be passed as 0 as no flags are currently understood for this call\&. Please note that in the case of a live journal, this function is only useful for debugging, because individual journal files can be rotated at any moment, and the opening of specific files is inherently racy\&.
+.PP
+\fBsd_journal_open_files_fd()\fR
+is similar to
+\fBsd_journal_open_files()\fR
+but takes an array of open file descriptors that must reference journal files, instead of an array of file system paths\&. Pass the array of file descriptors as second argument, and the number of array entries in the third\&. The flags parameter must be passed as 0\&.
+.PP
+\fIsd_journal\fR
+objects cannot be used in the child after a fork\&. Functions which take a journal object as an argument (\fBsd_journal_next()\fR
+and others) will return
+\fB\-ECHILD\fR
+after a fork\&.
+.PP
+\fBsd_journal_close()\fR
+will close the journal context allocated with
+\fBsd_journal_open()\fR
+or
+\fBsd_journal_open_directory()\fR
+and free its resources\&.
+.PP
+When opening the journal only journal files accessible to the calling user will be opened\&. If journal files are not accessible to the caller, this will be silently ignored\&.
+.PP
+See
+\fBsd_journal_next\fR(3)
+for an example of how to iterate through the journal after opening it with
+\fBsd_journal_open()\fR\&.
+.PP
+A journal context object returned by
+\fBsd_journal_open()\fR
+references a specific journal entry as
+\fIcurrent\fR
+entry, similar to a file seek index in a classic file system file, but without absolute positions\&. It may be altered with
+\fBsd_journal_next\fR(3)
+and
+\fBsd_journal_seek_head\fR(3)
+and related calls\&. The current entry position may be exported in
+\fIcursor\fR
+strings, as accessible via
+\fBsd_journal_get_cursor\fR(3)\&. Cursor strings may be used to globally identify a specific journal entry in a stable way and then later to seek to it (or if the specific entry is not available locally, to its closest entry in time)
+\fBsd_journal_seek_cursor\fR(3)\&.
+.PP
+Notification of journal changes is available via
+\fBsd_journal_get_fd()\fR
+and related calls\&.
+.SH "RETURN VALUE"
+.PP
+The
+\fBsd_journal_open()\fR,
+\fBsd_journal_open_directory()\fR, and
+\fBsd_journal_open_files()\fR
+calls return 0 on success or a negative errno\-style error code\&.
+\fBsd_journal_close()\fR
+returns nothing\&.
+.SH "NOTES"
+.PP
+All functions listed here are thread\-agnostic and only a single specific thread may operate on a given object during its entire lifetime\&. It\*(Aqs safe to allocate multiple independent objects and use each from a specific thread in parallel\&. However, it\*(Aqs not safe to allocate such an object in one thread, and operate or free it from any other, even if locking is used to ensure these threads don\*(Aqt operate on it at the very same time\&.
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-journal\fR(3),
+\fBsystemd-journald.service\fR(8),
+\fBsd_journal_next\fR(3),
+\fBsd_journal_get_data\fR(3)

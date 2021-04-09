@@ -1,0 +1,71 @@
+'\" t
+.TH "SYSTEMD\-REMOUNT\-FS\&.SERVICE" "8" "" "systemd 248" "systemd-remount-fs.service"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd-remount-fs.service, systemd-remount-fs \- Remount root and kernel file systems
+.SH "SYNOPSIS"
+.PP
+systemd\-remount\-fs\&.service
+.PP
+/usr/lib/systemd/systemd\-remount\-fs
+.SH "DESCRIPTION"
+.PP
+systemd\-remount\-fs\&.service
+is an early boot service that applies mount options listed in
+\fBfstab\fR(5), or gathered from the partition table (when
+\fBsystemd-gpt-auto-generator\fR(8)
+is active) to the root file system, the
+/usr/
+file system, and the kernel API file systems\&. This is required so that the mount options of these file systems \(em which are pre\-mounted by the kernel, the initial RAM disk, container environments or system manager code \(em are updated to those configured in
+/etc/fstab
+and the other sources\&. This service ignores normal file systems and only changes the root file system (i\&.e\&.
+/),
+/usr/, and the virtual kernel API file systems such as
+/proc/,
+/sys/
+or
+/dev/\&. This service executes no operation if no configuration is found (/etc/fstab
+does not exist or lists no entries for the mentioned file systems, or the partition table does not contain relevant entries)\&.
+.PP
+For a longer discussion of kernel API file systems see
+\m[blue]\fBAPI File Systems\fR\m[]\&\s-2\u[1]\d\s+2\&.
+.PP
+Note:
+systemd\-remount\-fs\&.service
+is usually pulled in by
+\fBsystemd-fstab-generator\fR(8), hence it is also affected by the kernel command line option
+\fIfstab=\fR, which may be used to disable the generator\&. It may also pulled in by
+\fBsystemd-gpt-auto-generator\fR(8), which is affected by
+\fIsystemd\&.gpt_auto\fR
+and other options\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBfstab\fR(5),
+\fBmount\fR(8),
+\fBsystemd-fstab-generator\fR(8),
+\fBsystemd-gpt-auto-generator\fR(8)
+.SH "NOTES"
+.IP " 1." 4
+API File Systems
+.RS 4
+\%https://www.freedesktop.org/wiki/Software/systemd/APIFileSystems
+.RE

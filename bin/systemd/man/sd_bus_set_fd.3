@@ -1,0 +1,95 @@
+'\" t
+.TH "SD_BUS_SET_FD" "3" "" "systemd 248" "sd_bus_set_fd"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_set_fd \- Set the file descriptors to use for bus communication
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_set_fd('u
+.BI "int sd_bus_set_fd(sd_bus\ *" "bus" ", int\ " "input_fd" ", int\ " "output_fd" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_set_fd()\fR
+sets the file descriptors used to communicate by a bus connection object\&. Both
+\fIinput_fd\fR
+and
+\fIoutput_fd\fR
+must be valid file descriptors, referring to stream\-based file objects (e\&.g\&. a stream socket, a pair of pipes or FIFOs, or a even a TTY device)\&.
+\fIinput_fd\fR
+must be readable, and
+\fIoutput_fd\fR
+must be writable\&. The same file descriptor may be used (and typically is used) as both the input and the output file descriptor\&. This function must be called before the bus connection is started via
+\fBsd_bus_start\fR(3)\&.
+.PP
+The bus connection object will take possession of the passed file descriptors and will close them automatically when it is freed\&. Use
+\fBsd_bus_set_close_on_exit\fR(3)
+to turn off this behaviour\&.
+.SH "RETURN VALUE"
+.PP
+On success,
+\fBsd_bus_set_fd()\fR
+returns a non\-negative integer\&. On failure, it returns a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+An invalid bus object was passed\&.
+.RE
+.PP
+\fB\-ECHILD\fR
+.RS 4
+The bus connection was allocated in a parent process and is being reused in a child process after
+\fBfork()\fR\&.
+.RE
+.PP
+\fB\-EBADF\fR
+.RS 4
+An invalid file descriptor was passed to
+\fBsd_bus_set_fd()\fR\&.
+.RE
+.PP
+\fB\-ENOPKG\fR
+.RS 4
+The bus cannot be resolved\&.
+.RE
+.PP
+\fB\-EPERM\fR
+.RS 4
+The bus connection has already been started\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd_bus_get_fd\fR(3),
+\fBsd_bus_start\fR(3)

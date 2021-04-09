@@ -1,0 +1,99 @@
+'\" t
+.TH "SD_BUS_MESSAGE_DUMP" "3" "" "systemd 248" "sd_bus_message_dump"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_message_dump \- Produce a string representation of a message for debugging purposes
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_message_dump('u
+.BI "int sd_bus_message_dump(sd_bus_message\ *" "m" ", FILE\ *" "f" ", uint64_t\ " "flags" ");"
+.PP
+\fBSD_BUS_MESSAGE_DUMP_WITH_HEADER\fR,
+\fBSD_BUS_MESSAGE_DUMP_SUBTREE_ONLY\fR
+.SH "DESCRIPTION"
+.PP
+The
+\fBsd_bus_message_dump()\fR
+function writes a textual representation of the message
+\fIm\fR
+to the stream
+\fIf\fR\&. This function is intended to be used for debugging purposes, and the output is neither stable nor designed to be machine readable\&.
+.PP
+The
+\fIflags\fR
+parameter may be used to modify the output\&. With
+\fBSD_BUS_MESSAGE_DUMP_WITH_HEADER\fR, a header that specifies the message type and flags and some additional metadata is printed\&. When
+\fBSD_BUS_MESSAGE_DUMP_SUBTREE_ONLY\fR
+is not passed, the contents of the whole message are printed\&. When it
+\fIis\fR
+passed, only the current container in printed\&.
+.PP
+Note that this function moves the read pointer of the message\&. It may be necessary to reset the position afterwards, for example with
+\fBsd_bus_message_rewind\fR(3)\&.
+.SH "EXAMPLES"
+.PP
+Output for a signal message (with
+\fBSD_BUS_MESSAGE_DUMP_WITH_HEADER\fR):
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+>\& Type=signal  Endian=l  Flags=1  Version=1  Cookie=22
+  Path=/value/a  Interface=org\&.freedesktop\&.DBus\&.Properties  Member=PropertiesChanged
+  MESSAGE "sa{sv}as" {
+          STRING "org\&.freedesktop\&.systemd\&.ValueTest";
+          ARRAY "{sv}" {
+                  DICT_ENTRY "sv" {
+                          STRING "Value";
+                          VARIANT "s" {
+                                  STRING "object 0x1e, path /value/a";
+                          };
+                  };
+          };
+          ARRAY "s" {
+                  STRING "Value2";
+                  STRING "AnExplicitProperty";
+          };
+  };
+    
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+.SH "RETURN VALUE"
+.PP
+On success, this function returns 0 or a positive integer\&. On failure, it returns a negative errno\-style error code\&. No error codes are currently defined\&.
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3)

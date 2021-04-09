@@ -1,0 +1,257 @@
+'\" t
+.TH "SD_BUS_CREDS_NEW_FROM_PID" "3" "" "systemd 248" "sd_bus_creds_new_from_pid"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_creds_new_from_pid, sd_bus_creds_get_mask, sd_bus_creds_get_augmented_mask, sd_bus_creds_ref, sd_bus_creds_unref, sd_bus_creds_unrefp \- Retrieve credentials object for the specified PID
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_creds_new_from_pid('u
+.BI "int sd_bus_creds_new_from_pid(pid_t\ " "pid" ", uint64_t\ " "creds_mask" ", sd_bus_creds\ **" "ret" ");"
+.HP \w'uint64_t\ sd_bus_creds_get_mask('u
+.BI "uint64_t sd_bus_creds_get_mask(sd_bus_creds\ *" "c" ");"
+.HP \w'uint64_t\ sd_bus_creds_get_augmented_mask('u
+.BI "uint64_t sd_bus_creds_get_augmented_mask(sd_bus_creds\ *" "c" ");"
+.HP \w'sd_bus_creds\ *sd_bus_creds_ref('u
+.BI "sd_bus_creds *sd_bus_creds_ref(sd_bus_creds\ *" "c" ");"
+.HP \w'sd_bus_creds\ *sd_bus_creds_unref('u
+.BI "sd_bus_creds *sd_bus_creds_unref(sd_bus_creds\ *" "c" ");"
+.HP \w'void\ sd_bus_creds_unrefp('u
+.BI "void sd_bus_creds_unrefp(sd_bus_creds\ **" "c" ");"
+.PP
+\fBSD_BUS_CREDS_PID\fR,
+\fBSD_BUS_CREDS_PPID\fR,
+\fBSD_BUS_CREDS_TID\fR,
+\fBSD_BUS_CREDS_UID\fR,
+\fBSD_BUS_CREDS_EUID\fR,
+\fBSD_BUS_CREDS_SUID\fR,
+\fBSD_BUS_CREDS_FSUID\fR,
+\fBSD_BUS_CREDS_GID\fR,
+\fBSD_BUS_CREDS_EGID\fR,
+\fBSD_BUS_CREDS_SGID\fR,
+\fBSD_BUS_CREDS_FSGID\fR,
+\fBSD_BUS_CREDS_SUPPLEMENTARY_GIDS\fR,
+\fBSD_BUS_CREDS_COMM\fR,
+\fBSD_BUS_CREDS_TID_COMM\fR,
+\fBSD_BUS_CREDS_EXE\fR,
+\fBSD_BUS_CREDS_CMDLINE\fR,
+\fBSD_BUS_CREDS_CGROUP\fR,
+\fBSD_BUS_CREDS_UNIT\fR,
+\fBSD_BUS_CREDS_SLICE\fR,
+\fBSD_BUS_CREDS_USER_UNIT\fR,
+\fBSD_BUS_CREDS_USER_SLICE\fR,
+\fBSD_BUS_CREDS_SESSION\fR,
+\fBSD_BUS_CREDS_OWNER_UID\fR,
+\fBSD_BUS_CREDS_EFFECTIVE_CAPS\fR,
+\fBSD_BUS_CREDS_PERMITTED_CAPS\fR,
+\fBSD_BUS_CREDS_INHERITABLE_CAPS\fR,
+\fBSD_BUS_CREDS_BOUNDING_CAPS\fR,
+\fBSD_BUS_CREDS_SELINUX_CONTEXT\fR,
+\fBSD_BUS_CREDS_AUDIT_SESSION_ID\fR,
+\fBSD_BUS_CREDS_AUDIT_LOGIN_UID\fR,
+\fBSD_BUS_CREDS_TTY\fR,
+\fBSD_BUS_CREDS_UNIQUE_NAME\fR,
+\fBSD_BUS_CREDS_WELL_KNOWN_NAMES\fR,
+\fBSD_BUS_CREDS_DESCRIPTION\fR,
+\fBSD_BUS_CREDS_AUGMENT\fR,
+\fB_SD_BUS_CREDS_ALL\fR
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_creds_new_from_pid()\fR
+creates a new credentials object and fills it with information about the process
+\fIpid\fR\&. The pointer to this object will be stored in the
+\fIret\fR
+pointer\&. Note that credential objects may also be created and retrieved via
+\fBsd_bus_get_name_creds\fR(3),
+\fBsd_bus_get_owner_creds\fR(3)
+and
+\fBsd_bus_message_get_creds\fR(3)\&.
+.PP
+The information that will be stored is determined by
+\fIcreds_mask\fR\&. It may contain a subset of ORed constants
+\fBSD_BUS_CREDS_PID\fR,
+\fBSD_BUS_CREDS_PPID\fR,
+\fBSD_BUS_CREDS_TID\fR,
+\fBSD_BUS_CREDS_UID\fR,
+\fBSD_BUS_CREDS_EUID\fR,
+\fBSD_BUS_CREDS_SUID\fR,
+\fBSD_BUS_CREDS_FSUID\fR,
+\fBSD_BUS_CREDS_GID\fR,
+\fBSD_BUS_CREDS_EGID\fR,
+\fBSD_BUS_CREDS_SGID\fR,
+\fBSD_BUS_CREDS_FSGID\fR,
+\fBSD_BUS_CREDS_SUPPLEMENTARY_GIDS\fR,
+\fBSD_BUS_CREDS_COMM\fR,
+\fBSD_BUS_CREDS_TID_COMM\fR,
+\fBSD_BUS_CREDS_EXE\fR,
+\fBSD_BUS_CREDS_CMDLINE\fR,
+\fBSD_BUS_CREDS_CGROUP\fR,
+\fBSD_BUS_CREDS_UNIT\fR,
+\fBSD_BUS_CREDS_SLICE\fR,
+\fBSD_BUS_CREDS_USER_UNIT\fR,
+\fBSD_BUS_CREDS_USER_SLICE\fR,
+\fBSD_BUS_CREDS_SESSION\fR,
+\fBSD_BUS_CREDS_OWNER_UID\fR,
+\fBSD_BUS_CREDS_EFFECTIVE_CAPS\fR,
+\fBSD_BUS_CREDS_PERMITTED_CAPS\fR,
+\fBSD_BUS_CREDS_INHERITABLE_CAPS\fR,
+\fBSD_BUS_CREDS_BOUNDING_CAPS\fR,
+\fBSD_BUS_CREDS_SELINUX_CONTEXT\fR,
+\fBSD_BUS_CREDS_AUDIT_SESSION_ID\fR,
+\fBSD_BUS_CREDS_AUDIT_LOGIN_UID\fR,
+\fBSD_BUS_CREDS_TTY\fR,
+\fBSD_BUS_CREDS_UNIQUE_NAME\fR,
+\fBSD_BUS_CREDS_WELL_KNOWN_NAMES\fR, and
+\fBSD_BUS_CREDS_DESCRIPTION\fR\&. Use the special value
+\fB_SD_BUS_CREDS_ALL\fR
+to request all supported fields\&. The
+\fBSD_BUS_CREDS_AUGMENT\fR
+constant may not be ORed into the mask for invocations of
+\fBsd_bus_creds_new_from_pid()\fR\&.
+.PP
+Fields can be retrieved from the credentials object using
+\fBsd_bus_creds_get_pid\fR(3)
+and other functions which correspond directly to the constants listed above\&.
+.PP
+A mask of fields which were actually successfully retrieved can be retrieved with
+\fBsd_bus_creds_get_mask()\fR\&. If the credentials object was created with
+\fBsd_bus_creds_new_from_pid()\fR, this will be a subset of fields requested in
+\fIcreds_mask\fR\&.
+.PP
+Similar to
+\fBsd_bus_creds_get_mask()\fR, the function
+\fBsd_bus_creds_get_augmented_mask()\fR
+returns a bitmask of field constants\&. The mask indicates which credential fields have been retrieved in a non\-atomic fashion\&. For credential objects created via
+\fBsd_bus_creds_new_from_pid()\fR, this mask will be identical to the mask returned by
+\fBsd_bus_creds_get_mask()\fR\&. However, for credential objects retrieved via
+\fBsd_bus_get_name_creds()\fR, this mask will be set for the credential fields that could not be determined atomically at peer connection time, and which were later added by reading augmenting credential data from
+/proc/\&. Similarly, for credential objects retrieved via
+\fBsd_bus_get_owner_creds()\fR, the mask is set for the fields that could not be determined atomically at bus creation time, but have been augmented\&. Similarly, for credential objects retrieved via
+\fBsd_bus_message_get_creds()\fR, the mask is set for the fields that could not be determined atomically at message sending time, but have been augmented\&. The mask returned by
+\fBsd_bus_creds_get_augmented_mask()\fR
+is always a subset of (or identical to) the mask returned by
+\fBsd_bus_creds_get_mask()\fR
+for the same object\&. The latter call hence returns all credential fields available in the credential object, the former then marks the subset of those that have been augmented\&. Note that augmented fields are unsuitable for authorization decisions, as they may be retrieved at different times, thus being subject to races\&. Hence, augmented fields should be used exclusively for informational purposes\&.
+.PP
+\fBsd_bus_creds_ref()\fR
+creates a new reference to the credentials object
+\fIc\fR\&. This object will not be destroyed until
+\fBsd_bus_creds_unref()\fR
+has been called as many times plus once more\&. Once the reference count has dropped to zero,
+\fIc\fR
+cannot be used anymore, so further calls to
+\fBsd_bus_creds_ref(c)\fR
+or
+\fBsd_bus_creds_unref(c)\fR
+are illegal\&.
+.PP
+\fBsd_bus_creds_unref()\fR
+destroys a reference to
+\fIc\fR\&.
+.PP
+\fBsd_bus_creds_unrefp()\fR
+is similar to
+\fBsd_bus_creds_unref()\fR
+but takes a pointer to a pointer to an
+\fBsd_bus_creds\fR
+object\&. This call is useful in conjunction with GCC\*(Aqs and LLVM\*(Aqs
+\m[blue]\fBClean\-up Variable Attribute\fR\m[]\&\s-2\u[1]\d\s+2\&. Note that this function is defined as inline function\&.
+.PP
+\fBsd_bus_creds_ref()\fR,
+\fBsd_bus_creds_unref()\fR
+and
+\fBsd_bus_creds_unrefp()\fR
+execute no operation if the passed in bus credentials object is
+\fBNULL\fR\&.
+.SH "RETURN VALUE"
+.PP
+On success,
+\fBsd_bus_creds_new_from_pid()\fR
+returns 0 or a positive integer\&. On failure, it returns a negative errno\-style error code\&.
+.PP
+\fBsd_bus_creds_get_mask()\fR
+returns the mask of successfully acquired fields\&.
+.PP
+\fBsd_bus_creds_get_augmented_mask()\fR
+returns the mask of fields that have been augmented from data in
+/proc/, and are thus not suitable for authorization decisions\&.
+.PP
+\fBsd_bus_creds_ref()\fR
+always returns the argument\&.
+.PP
+\fBsd_bus_creds_unref()\fR
+always returns
+\fBNULL\fR\&.
+.SH "REFERENCE OWNERSHIP"
+.PP
+Function
+\fBsd_bus_creds_new_from_pid()\fR
+creates a new object and the caller owns the sole reference\&. When not needed anymore, this reference should be destroyed with
+\fBsd_bus_creds_unref\fR(3)\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-ESRCH\fR
+.RS 4
+Specified
+\fIpid\fR
+could not be found\&.
+.RE
+.PP
+\fB\-EINVAL\fR
+.RS 4
+Specified parameter is invalid (\fBNULL\fR
+in case of output parameters)\&.
+.RE
+.PP
+\fB\-ENOMEM\fR
+.RS 4
+Memory allocation failed\&.
+.RE
+.PP
+\fB\-EOPNOTSUPP\fR
+.RS 4
+One of the requested fields is unknown to the local system\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd_bus_creds_get_pid\fR(3),
+\fBsd_bus_get_name_creds\fR(3),
+\fBsd_bus_get_owner_creds\fR(3),
+\fBsd_bus_message_get_creds\fR(3)
+.SH "NOTES"
+.IP " 1." 4
+Clean-up Variable Attribute
+.RS 4
+\%https://gcc.gnu.org/onlinedocs/gcc/Common-Variable-Attributes.html
+.RE

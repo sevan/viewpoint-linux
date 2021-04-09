@@ -1,0 +1,145 @@
+'\" t
+.TH "SYSTEMD\&.TARGET" "5" "" "systemd 248" "systemd.target"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd.target \- Target unit configuration
+.SH "SYNOPSIS"
+.PP
+\fItarget\fR\&.target
+.SH "DESCRIPTION"
+.PP
+A unit configuration file whose name ends in
+"\&.target"
+encodes information about a target unit of systemd, which is used for grouping units and as well\-known synchronization points during start\-up\&.
+.PP
+This unit type has no specific options\&. See
+\fBsystemd.unit\fR(5)
+for the common options of all unit configuration files\&. The common configuration items are configured in the generic [Unit] and [Install] sections\&. A separate [Target] section does not exist, since no target\-specific options may be configured\&.
+.PP
+Target units do not offer any additional functionality on top of the generic functionality provided by units\&. They exist merely to group units via dependencies (useful as boot targets), and to establish standardized names for synchronization points used in dependencies between units\&. Among other things, target units are a more flexible replacement for SysV runlevels in the classic SysV init system\&. (And for compatibility reasons special target units such as
+runlevel3\&.target
+exist which are used by the SysV runlevel compatibility code in systemd\&. See
+\fBsystemd.special\fR(7)
+for details)\&.
+.SH "AUTOMATIC DEPENDENCIES"
+.SS "Implicit Dependencies"
+.PP
+There are no implicit dependencies for target units\&.
+.SS "Default Dependencies"
+.PP
+The following dependencies are added unless
+\fIDefaultDependencies=no\fR
+is set:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Target units will automatically complement all configured dependencies of type
+\fIWants=\fR
+or
+\fIRequires=\fR
+with dependencies of type
+\fIAfter=\fR
+unless
+\fIDefaultDependencies=no\fR
+is set in the specified units\&. Note that
+\fIWants=\fR
+or
+\fIRequires=\fR
+must be defined in the target unit itself \(em if you for example define
+\fIWants=\fRsome\&.target in some\&.service, the automatic ordering will not be added\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Target units automatically gain
+\fIConflicts=\fR
+and
+\fIBefore=\fR
+dependencies against
+shutdown\&.target\&.
+.RE
+.SH "EXAMPLE"
+.PP
+\fBExample\ \&1.\ \&Simple standalone target\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+# emergency\-net\&.target
+
+[Unit]
+Description=Emergency Mode with Networking
+Requires=emergency\&.target systemd\-networkd\&.service
+After=emergency\&.target systemd\-networkd\&.service
+AllowIsolate=yes
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+When adding dependencies to other units, it\*(Aqs important to check if they set
+\fIDefaultDependencies=\fR\&. Service units, unless they set
+\fIDefaultDependencies=no\fR, automatically get a dependency on
+sysinit\&.target\&. In this case, both
+emergency\&.target
+and
+systemd\-networkd\&.service
+have
+\fIDefaultDependencies=no\fR, so they are suitable for use in this target, and do not pull in
+sysinit\&.target\&.
+.PP
+You can now switch into this emergency mode by running
+\fIsystemctl isolate emergency\-net\&.target\fR
+or by passing the option
+\fIsystemd\&.unit=emergency\-net\&.target\fR
+on the kernel command line\&.
+.PP
+Other units can have
+\fIWantedBy=emergency\-net\&.target\fR
+in the
+\fI[Install]\fR
+section\&. After they are enabled using
+\fBsystemctl enable\fR, they will be started before
+\fIemergency\-net\&.target\fR
+is started\&. It is also possible to add arbitrary units as dependencies of
+emergency\&.target
+without modifying them by using
+\fBsystemctl add\-wants\fR\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsystemctl\fR(1),
+\fBsystemd.unit\fR(5),
+\fBsystemd.special\fR(7),
+\fBsystemd.directives\fR(7)

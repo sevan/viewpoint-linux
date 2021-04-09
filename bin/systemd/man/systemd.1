@@ -1,0 +1,1306 @@
+'\" t
+.TH "SYSTEMD" "1" "" "systemd 248" "systemd"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd, init \- systemd system and service manager
+.SH "SYNOPSIS"
+.HP \w'\fB/usr/lib/systemd/systemd\fR\ 'u
+\fB/usr/lib/systemd/systemd\fR [OPTIONS...]
+.HP \w'\fBinit\fR\ 'u
+\fBinit\fR [OPTIONS...] {COMMAND}
+.SH "DESCRIPTION"
+.PP
+systemd is a system and service manager for Linux operating systems\&. When run as first process on boot (as PID 1), it acts as init system that brings up and maintains userspace services\&. Separate instances are started for logged\-in users to start their services\&.
+.PP
+\fBsystemd\fR
+is usually not invoked directly by the user, but is installed as the
+/sbin/init
+symlink and started during early boot\&. The user manager instances are started automatically through the
+\fBuser@.service\fR(5)
+service\&.
+.PP
+For compatibility with SysV, if the binary is called as
+\fBinit\fR
+and is not the first process on the machine (PID is not 1), it will execute
+\fBtelinit\fR
+and pass all command line arguments unmodified\&. That means
+\fBinit\fR
+and
+\fBtelinit\fR
+are mostly equivalent when invoked from normal login sessions\&. See
+\fBtelinit\fR(8)
+for more information\&.
+.PP
+When run as a system instance, systemd interprets the configuration file
+system\&.conf
+and the files in
+system\&.conf\&.d
+directories; when run as a user instance, systemd interprets the configuration file
+user\&.conf
+and the files in
+user\&.conf\&.d
+directories\&. See
+\fBsystemd-system.conf\fR(5)
+for more information\&.
+.SH "CONCEPTS"
+.PP
+systemd provides a dependency system between various entities called "units" of 11 different types\&. Units encapsulate various objects that are relevant for system boot\-up and maintenance\&. The majority of units are configured in unit configuration files, whose syntax and basic set of options is described in
+\fBsystemd.unit\fR(5), however some are created automatically from other configuration, dynamically from system state or programmatically at runtime\&. Units may be "active" (meaning started, bound, plugged in, \&..., depending on the unit type, see below), or "inactive" (meaning stopped, unbound, unplugged, \&...), as well as in the process of being activated or deactivated, i\&.e\&. between the two states (these states are called "activating", "deactivating")\&. A special "failed" state is available as well, which is very similar to "inactive" and is entered when the service failed in some way (process returned error code on exit, or crashed, an operation timed out, or after too many restarts)\&. If this state is entered, the cause will be logged, for later reference\&. Note that the various unit types may have a number of additional substates, which are mapped to the five generalized unit states described here\&.
+.PP
+The following unit types are available:
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 1.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  1." 4.2
+.\}
+Service units, which start and control daemons and the processes they consist of\&. For details, see
+\fBsystemd.service\fR(5)\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 2.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  2." 4.2
+.\}
+Socket units, which encapsulate local IPC or network sockets in the system, useful for socket\-based activation\&. For details about socket units, see
+\fBsystemd.socket\fR(5), for details on socket\-based activation and other forms of activation, see
+\fBdaemon\fR(7)\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 3.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  3." 4.2
+.\}
+Target units are useful to group units, or provide well\-known synchronization points during boot\-up, see
+\fBsystemd.target\fR(5)\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 4.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  4." 4.2
+.\}
+Device units expose kernel devices in systemd and may be used to implement device\-based activation\&. For details, see
+\fBsystemd.device\fR(5)\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 5.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  5." 4.2
+.\}
+Mount units control mount points in the file system, for details see
+\fBsystemd.mount\fR(5)\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 6.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  6." 4.2
+.\}
+Automount units provide automount capabilities, for on\-demand mounting of file systems as well as parallelized boot\-up\&. See
+\fBsystemd.automount\fR(5)\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 7.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  7." 4.2
+.\}
+Timer units are useful for triggering activation of other units based on timers\&. You may find details in
+\fBsystemd.timer\fR(5)\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 8.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  8." 4.2
+.\}
+Swap units are very similar to mount units and encapsulate memory swap partitions or files of the operating system\&. They are described in
+\fBsystemd.swap\fR(5)\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 9.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  9." 4.2
+.\}
+Path units may be used to activate other services when file system objects change or are modified\&. See
+\fBsystemd.path\fR(5)\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'10.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "10." 4.2
+.\}
+Slice units may be used to group units which manage system processes (such as service and scope units) in a hierarchical tree for resource management purposes\&. See
+\fBsystemd.slice\fR(5)\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'11.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "11." 4.2
+.\}
+Scope units are similar to service units, but manage foreign processes instead of starting them as well\&. See
+\fBsystemd.scope\fR(5)\&.
+.RE
+.PP
+Units are named as their configuration files\&. Some units have special semantics\&. A detailed list is available in
+\fBsystemd.special\fR(7)\&.
+.PP
+systemd knows various kinds of dependencies, including positive and negative requirement dependencies (i\&.e\&.
+\fIRequires=\fR
+and
+\fIConflicts=\fR) as well as ordering dependencies (\fIAfter=\fR
+and
+\fIBefore=\fR)\&. NB: ordering and requirement dependencies are orthogonal\&. If only a requirement dependency exists between two units (e\&.g\&.
+foo\&.service
+requires
+bar\&.service), but no ordering dependency (e\&.g\&.
+foo\&.service
+after
+bar\&.service) and both are requested to start, they will be started in parallel\&. It is a common pattern that both requirement and ordering dependencies are placed between two units\&. Also note that the majority of dependencies are implicitly created and maintained by systemd\&. In most cases, it should be unnecessary to declare additional dependencies manually, however it is possible to do this\&.
+.PP
+Application programs and units (via dependencies) may request state changes of units\&. In systemd, these requests are encapsulated as \*(Aqjobs\*(Aq and maintained in a job queue\&. Jobs may succeed or can fail, their execution is ordered based on the ordering dependencies of the units they have been scheduled for\&.
+.PP
+On boot systemd activates the target unit
+default\&.target
+whose job is to activate on\-boot services and other on\-boot units by pulling them in via dependencies\&. Usually, the unit name is just an alias (symlink) for either
+graphical\&.target
+(for fully\-featured boots into the UI) or
+multi\-user\&.target
+(for limited console\-only boots for use in embedded or server environments, or similar; a subset of graphical\&.target)\&. However, it is at the discretion of the administrator to configure it as an alias to any other target unit\&. See
+\fBsystemd.special\fR(7)
+for details about these target units\&.
+.PP
+systemd only keeps a minimal set of units loaded into memory\&. Specifically, the only units that are kept loaded into memory are those for which at least one of the following conditions is true:
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 1.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  1." 4.2
+.\}
+It is in an active, activating, deactivating or failed state (i\&.e\&. in any unit state except for
+"inactive")
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 2.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  2." 4.2
+.\}
+It has a job queued for it
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 3.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  3." 4.2
+.\}
+It is a dependency of at least one other unit that is loaded into memory
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 4.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  4." 4.2
+.\}
+It has some form of resource still allocated (e\&.g\&. a service unit that is inactive but for which a process is still lingering that ignored the request to be terminated)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 5.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  5." 4.2
+.\}
+It has been pinned into memory programmatically by a D\-Bus call
+.RE
+.PP
+systemd will automatically and implicitly load units from disk \(em if they are not loaded yet \(em as soon as operations are requested for them\&. Thus, in many respects, the fact whether a unit is loaded or not is invisible to clients\&. Use
+\fBsystemctl list\-units \-\-all\fR
+to comprehensively list all units currently loaded\&. Any unit for which none of the conditions above applies is promptly unloaded\&. Note that when a unit is unloaded from memory its accounting data is flushed out too\&. However, this data is generally not lost, as a journal log record is generated declaring the consumed resources whenever a unit shuts down\&.
+.PP
+Processes systemd spawns are placed in individual Linux control groups named after the unit which they belong to in the private systemd hierarchy\&. (see
+\m[blue]\fBcgroups\&.txt\fR\m[]\&\s-2\u[1]\d\s+2
+for more information about control groups, or short "cgroups")\&. systemd uses this to effectively keep track of processes\&. Control group information is maintained in the kernel, and is accessible via the file system hierarchy (beneath
+/sys/fs/cgroup/systemd/), or in tools such as
+\fBsystemd-cgls\fR(1)
+or
+\fBps\fR(1)
+(\fBps xawf \-eo pid,user,cgroup,args\fR
+is particularly useful to list all processes and the systemd units they belong to\&.)\&.
+.PP
+systemd is compatible with the SysV init system to a large degree: SysV init scripts are supported and simply read as an alternative (though limited) configuration file format\&. The SysV
+/dev/initctl
+interface is provided, and compatibility implementations of the various SysV client tools are available\&. In addition to that, various established Unix functionality such as
+/etc/fstab
+or the
+utmp
+database are supported\&.
+.PP
+systemd has a minimal transaction system: if a unit is requested to start up or shut down it will add it and all its dependencies to a temporary transaction\&. Then, it will verify if the transaction is consistent (i\&.e\&. whether the ordering of all units is cycle\-free)\&. If it is not, systemd will try to fix it up, and removes non\-essential jobs from the transaction that might remove the loop\&. Also, systemd tries to suppress non\-essential jobs in the transaction that would stop a running service\&. Finally it is checked whether the jobs of the transaction contradict jobs that have already been queued, and optionally the transaction is aborted then\&. If all worked out and the transaction is consistent and minimized in its impact it is merged with all already outstanding jobs and added to the run queue\&. Effectively this means that before executing a requested operation, systemd will verify that it makes sense, fixing it if possible, and only failing if it really cannot work\&.
+.PP
+Note that transactions are generated independently of a unit\*(Aqs state at runtime, hence, for example, if a start job is requested on an already started unit, it will still generate a transaction and wake up any inactive dependencies (and cause propagation of other jobs as per the defined relationships)\&. This is because the enqueued job is at the time of execution compared to the target unit\*(Aqs state and is marked successful and complete when both satisfy\&. However, this job also pulls in other dependencies due to the defined relationships and thus leads to, in our example, start jobs for any of those inactive units getting queued as well\&.
+.PP
+systemd contains native implementations of various tasks that need to be executed as part of the boot process\&. For example, it sets the hostname or configures the loopback network device\&. It also sets up and mounts various API file systems, such as
+/sys/
+or
+/proc/\&.
+.PP
+For more information about the concepts and ideas behind systemd, please refer to the
+\m[blue]\fBOriginal Design Document\fR\m[]\&\s-2\u[2]\d\s+2\&.
+.PP
+Note that some but not all interfaces provided by systemd are covered by the
+\m[blue]\fBInterface Portability and Stability Promise\fR\m[]\&\s-2\u[3]\d\s+2\&.
+.PP
+Units may be generated dynamically at boot and system manager reload time, for example based on other configuration files or parameters passed on the kernel command line\&. For details, see
+\fBsystemd.generator\fR(7)\&.
+.PP
+The D\-Bus API of
+\fBsystemd\fR
+is described in
+\fBorg.freedesktop.systemd1\fR(5)
+and
+\fBorg.freedesktop.LogControl1\fR(5)\&.
+.PP
+Systems which invoke systemd in a container or initrd environment should implement the
+\m[blue]\fBContainer Interface\fR\m[]\&\s-2\u[4]\d\s+2
+or
+\m[blue]\fBinitrd Interface\fR\m[]\&\s-2\u[5]\d\s+2
+specifications, respectively\&.
+.SH "DIRECTORIES"
+.PP
+System unit directories
+.RS 4
+The systemd system manager reads unit configuration from various directories\&. Packages that want to install unit files shall place them in the directory returned by
+\fBpkg\-config systemd \-\-variable=systemdsystemunitdir\fR\&. Other directories checked are
+/usr/local/lib/systemd/system
+and
+/usr/lib/systemd/system\&. User configuration always takes precedence\&.
+\fBpkg\-config systemd \-\-variable=systemdsystemconfdir\fR
+returns the path of the system configuration directory\&. Packages should alter the content of these directories only with the
+\fBenable\fR
+and
+\fBdisable\fR
+commands of the
+\fBsystemctl\fR(1)
+tool\&. Full list of directories is provided in
+\fBsystemd.unit\fR(5)\&.
+.RE
+.PP
+User unit directories
+.RS 4
+Similar rules apply for the user unit directories\&. However, here the
+\m[blue]\fBXDG Base Directory specification\fR\m[]\&\s-2\u[6]\d\s+2
+is followed to find units\&. Applications should place their unit files in the directory returned by
+\fBpkg\-config systemd \-\-variable=systemduserunitdir\fR\&. Global configuration is done in the directory reported by
+\fBpkg\-config systemd \-\-variable=systemduserconfdir\fR\&. The
+\fBenable\fR
+and
+\fBdisable\fR
+commands of the
+\fBsystemctl\fR(1)
+tool can handle both global (i\&.e\&. for all users) and private (for one user) enabling/disabling of units\&. Full list of directories is provided in
+\fBsystemd.unit\fR(5)\&.
+.RE
+.PP
+SysV init scripts directory
+.RS 4
+The location of the SysV init script directory varies between distributions\&. If systemd cannot find a native unit file for a requested service, it will look for a SysV init script of the same name (with the
+\&.service
+suffix removed)\&.
+.RE
+.PP
+SysV runlevel link farm directory
+.RS 4
+The location of the SysV runlevel link farm directory varies between distributions\&. systemd will take the link farm into account when figuring out whether a service shall be enabled\&. Note that a service unit with a native unit configuration file cannot be started by activating it in the SysV runlevel link farm\&.
+.RE
+.SH "SIGNALS"
+.PP
+\fBSIGTERM\fR
+.RS 4
+Upon receiving this signal the systemd system manager serializes its state, reexecutes itself and deserializes the saved state again\&. This is mostly equivalent to
+\fBsystemctl daemon\-reexec\fR\&.
+.sp
+systemd user managers will start the
+exit\&.target
+unit when this signal is received\&. This is mostly equivalent to
+\fBsystemctl \-\-user start exit\&.target \-\-job\-mode=replace\-irreversibly\fR\&.
+.RE
+.PP
+\fBSIGINT\fR
+.RS 4
+Upon receiving this signal the systemd system manager will start the
+ctrl\-alt\-del\&.target
+unit\&. This is mostly equivalent to
+\fBsystemctl start ctrl\-alt\-del\&.target \-\-job\-mode=replace\-irreversibly\fR\&. If this signal is received more than 7 times per 2s, an immediate reboot is triggered\&. Note that pressing
+Ctrl+Alt+Del
+on the console will trigger this signal\&. Hence, if a reboot is hanging, pressing
+Ctrl+Alt+Del
+more than 7 times in 2 seconds is a relatively safe way to trigger an immediate reboot\&.
+.sp
+systemd user managers treat this signal the same way as
+\fBSIGTERM\fR\&.
+.RE
+.PP
+\fBSIGWINCH\fR
+.RS 4
+When this signal is received the systemd system manager will start the
+kbrequest\&.target
+unit\&. This is mostly equivalent to
+\fBsystemctl start kbrequest\&.target\fR\&.
+.sp
+This signal is ignored by systemd user managers\&.
+.RE
+.PP
+\fBSIGPWR\fR
+.RS 4
+When this signal is received the systemd manager will start the
+sigpwr\&.target
+unit\&. This is mostly equivalent to
+\fBsystemctl start sigpwr\&.target\fR\&.
+.RE
+.PP
+\fBSIGUSR1\fR
+.RS 4
+When this signal is received the systemd manager will try to reconnect to the D\-Bus bus\&.
+.RE
+.PP
+\fBSIGUSR2\fR
+.RS 4
+When this signal is received the systemd manager will log its complete state in human\-readable form\&. The data logged is the same as printed by
+\fBsystemd\-analyze dump\fR\&.
+.RE
+.PP
+\fBSIGHUP\fR
+.RS 4
+Reloads the complete daemon configuration\&. This is mostly equivalent to
+\fBsystemctl daemon\-reload\fR\&.
+.RE
+.PP
+\fBSIGRTMIN+0\fR
+.RS 4
+Enters default mode, starts the
+default\&.target
+unit\&. This is mostly equivalent to
+\fBsystemctl isolate default\&.target\fR\&.
+.RE
+.PP
+\fBSIGRTMIN+1\fR
+.RS 4
+Enters rescue mode, starts the
+rescue\&.target
+unit\&. This is mostly equivalent to
+\fBsystemctl isolate rescue\&.target\fR\&.
+.RE
+.PP
+\fBSIGRTMIN+2\fR
+.RS 4
+Enters emergency mode, starts the
+emergency\&.service
+unit\&. This is mostly equivalent to
+\fBsystemctl isolate emergency\&.service\fR\&.
+.RE
+.PP
+\fBSIGRTMIN+3\fR
+.RS 4
+Halts the machine, starts the
+halt\&.target
+unit\&. This is mostly equivalent to
+\fBsystemctl start halt\&.target \-\-job\-mode=replace\-irreversibly\fR\&.
+.RE
+.PP
+\fBSIGRTMIN+4\fR
+.RS 4
+Powers off the machine, starts the
+poweroff\&.target
+unit\&. This is mostly equivalent to
+\fBsystemctl start poweroff\&.target \-\-job\-mode=replace\-irreversibly\fR\&.
+.RE
+.PP
+\fBSIGRTMIN+5\fR
+.RS 4
+Reboots the machine, starts the
+reboot\&.target
+unit\&. This is mostly equivalent to
+\fBsystemctl start reboot\&.target \-\-job\-mode=replace\-irreversibly\fR\&.
+.RE
+.PP
+\fBSIGRTMIN+6\fR
+.RS 4
+Reboots the machine via kexec, starts the
+kexec\&.target
+unit\&. This is mostly equivalent to
+\fBsystemctl start kexec\&.target \-\-job\-mode=replace\-irreversibly\fR\&.
+.RE
+.PP
+\fBSIGRTMIN+13\fR
+.RS 4
+Immediately halts the machine\&.
+.RE
+.PP
+\fBSIGRTMIN+14\fR
+.RS 4
+Immediately powers off the machine\&.
+.RE
+.PP
+\fBSIGRTMIN+15\fR
+.RS 4
+Immediately reboots the machine\&.
+.RE
+.PP
+\fBSIGRTMIN+16\fR
+.RS 4
+Immediately reboots the machine with kexec\&.
+.RE
+.PP
+\fBSIGRTMIN+20\fR
+.RS 4
+Enables display of status messages on the console, as controlled via
+\fIsystemd\&.show_status=1\fR
+on the kernel command line\&.
+.RE
+.PP
+\fBSIGRTMIN+21\fR
+.RS 4
+Disables display of status messages on the console, as controlled via
+\fIsystemd\&.show_status=0\fR
+on the kernel command line\&.
+.RE
+.PP
+\fBSIGRTMIN+22\fR
+.RS 4
+Sets the service manager\*(Aqs log level to
+"debug", in a fashion equivalent to
+\fIsystemd\&.log_level=debug\fR
+on the kernel command line\&.
+.RE
+.PP
+\fBSIGRTMIN+23\fR
+.RS 4
+Restores the log level to its configured value\&. The configured value is derived from \(en in order of priority \(en the value specified with
+\fIsystemd\&.log\-level=\fR
+on the kernel command line, or the value specified with
+\fBLogLevel=\fR
+in the configuration file, or the built\-in default of
+"info"\&.
+.RE
+.PP
+\fBSIGRTMIN+24\fR
+.RS 4
+Immediately exits the manager (only available for \-\-user instances)\&.
+.RE
+.PP
+\fBSIGRTMIN+26\fR
+.RS 4
+Restores the log target to its configured value\&. The configured value is derived from \(en in order of priority \(en the value specified with
+\fIsystemd\&.log\-target=\fR
+on the kernel command line, or the value specified with
+\fBLogTarget=\fR
+in the configuration file, or the built\-in default\&.
+.RE
+.PP
+\fBSIGRTMIN+27\fR, \fBSIGRTMIN+28\fR
+.RS 4
+Sets the log target to
+"console"
+on
+\fBSIGRTMIN+27\fR
+(or
+"kmsg"
+on
+\fBSIGRTMIN+28\fR), in a fashion equivalent to
+\fIsystemd\&.log_target=console\fR
+(or
+\fIsystemd\&.log_target=kmsg\fR
+on
+\fBSIGRTMIN+28\fR) on the kernel command line\&.
+.RE
+.SH "ENVIRONMENT"
+.PP
+The environment block for the system manager is initially set by the kernel\&. (In particular,
+"key=value"
+assignments on the kernel command line are returned into environment variables for PID 1)\&. For the user manager, the system manager sets the environment as described in the "Environment Variables in Spawned Processes" section of
+\fBsystemd.exec\fR(5)\&. The
+\fIDefaultEnvironment=\fR
+setting in the system manager applies to all services including
+user@\&.service\&. Additional entries may be configured (as for any other service) through the
+\fIEnvironment=\fR
+and
+\fIEnvironmentFile=\fR
+settings for
+user@\&.service
+(see
+\fBsystemd.exec\fR(5))\&. Also, additional environment variables may be set through the
+\fIManagerEnvironment=\fR
+setting in
+\fBsystemd-system.conf\fR(5)
+and
+\fBsystemd-user.conf\fR(5)\&.
+.PP
+Some of the variables understood by
+\fBsystemd\fR:
+.PP
+\fI$SYSTEMD_LOG_LEVEL\fR
+.RS 4
+The maximum log level of emitted messages (messages with a higher log level, i\&.e\&. less important ones, will be suppressed)\&. Either one of (in order of decreasing importance)
+\fBemerg\fR,
+\fBalert\fR,
+\fBcrit\fR,
+\fBerr\fR,
+\fBwarning\fR,
+\fBnotice\fR,
+\fBinfo\fR,
+\fBdebug\fR, or an integer in the range 0\&...7\&. See
+\fBsyslog\fR(3)
+for more information\&.
+.sp
+This can be overridden with
+\fB\-\-log\-level=\fR\&.
+.RE
+.PP
+\fI$SYSTEMD_LOG_COLOR\fR
+.RS 4
+A boolean\&. If true, messages written to the tty will be colored according to priority\&.
+.sp
+This can be overridden with
+\fB\-\-log\-color=\fR\&.
+.RE
+.PP
+\fI$SYSTEMD_LOG_TIME\fR
+.RS 4
+A boolean\&. If true, log messages will be prefixed with a timestamp\&.
+.sp
+This can be overridden with
+\fB\-\-log\-time=\fR\&.
+.RE
+.PP
+\fI$SYSTEMD_LOG_LOCATION\fR
+.RS 4
+A boolean\&. If true, messages will be prefixed with a filename and line number in the source code where the message originates\&.
+.sp
+This can be overridden with
+\fB\-\-log\-location=\fR\&.
+.RE
+.PP
+\fI$SYSTEMD_LOG_TID\fR
+.RS 4
+A boolean\&. If true, messages will be prefixed with the current numerical thread ID (TID)\&.
+.RE
+.PP
+\fI$SYSTEMD_LOG_TARGET\fR
+.RS 4
+The destination for log messages\&. One of
+\fBconsole\fR
+(log to the attached tty),
+\fBconsole\-prefixed\fR
+(log to the attached tty but with prefixes encoding the log level and "facility", see
+\fBsyslog\fR(3),
+\fBkmsg\fR
+(log to the kernel circular log buffer),
+\fBjournal\fR
+(log to the journal),
+\fBjournal\-or\-kmsg\fR
+(log to the journal if available, and to kmsg otherwise),
+\fBauto\fR
+(determine the appropriate log target automatically, the default),
+\fBnull\fR
+(disable log output)\&.
+.sp
+This can be overridden with
+\fB\-\-log\-target=\fR\&.
+.RE
+.PP
+\fI$XDG_CONFIG_HOME\fR, \fI$XDG_CONFIG_DIRS\fR, \fI$XDG_DATA_HOME\fR, \fI$XDG_DATA_DIRS\fR
+.RS 4
+The systemd user manager uses these variables in accordance to the
+\m[blue]\fBXDG Base Directory specification\fR\m[]\&\s-2\u[6]\d\s+2
+to find its configuration\&.
+.RE
+.PP
+\fI$SYSTEMD_UNIT_PATH\fR, \fI$SYSTEMD_GENERATOR_PATH\fR, \fI$SYSTEMD_ENVIRONMENT_GENERATOR_PATH\fR
+.RS 4
+Controls where systemd looks for unit files and generators\&.
+.sp
+These variables may contain a list of paths, separated by colons (":")\&. When set, if the list ends with an empty component ("\&.\&.\&.:"), this list is prepended to the usual set of paths\&. Otherwise, the specified list replaces the usual set of paths\&.
+.RE
+.PP
+\fI$SYSTEMD_PAGER\fR
+.RS 4
+Pager to use when
+\fB\-\-no\-pager\fR
+is not given; overrides
+\fI$PAGER\fR\&. If neither
+\fI$SYSTEMD_PAGER\fR
+nor
+\fI$PAGER\fR
+are set, a set of well\-known pager implementations are tried in turn, including
+\fBless\fR(1)
+and
+\fBmore\fR(1), until one is found\&. If no pager implementation is discovered no pager is invoked\&. Setting this environment variable to an empty string or the value
+"cat"
+is equivalent to passing
+\fB\-\-no\-pager\fR\&.
+.RE
+.PP
+\fI$SYSTEMD_LESS\fR
+.RS 4
+Override the options passed to
+\fBless\fR
+(by default
+"FRSXMK")\&.
+.sp
+Users might want to change two options in particular:
+.PP
+\fBK\fR
+.RS 4
+This option instructs the pager to exit immediately when
+Ctrl+C
+is pressed\&. To allow
+\fBless\fR
+to handle
+Ctrl+C
+itself to switch back to the pager command prompt, unset this option\&.
+.sp
+If the value of
+\fI$SYSTEMD_LESS\fR
+does not include
+"K", and the pager that is invoked is
+\fBless\fR,
+Ctrl+C
+will be ignored by the executable, and needs to be handled by the pager\&.
+.RE
+.PP
+\fBX\fR
+.RS 4
+This option instructs the pager to not send termcap initialization and deinitialization strings to the terminal\&. It is set by default to allow command output to remain visible in the terminal even after the pager exits\&. Nevertheless, this prevents some pager functionality from working, in particular paged output cannot be scrolled with the mouse\&.
+.RE
+.sp
+See
+\fBless\fR(1)
+for more discussion\&.
+.RE
+.PP
+\fI$SYSTEMD_LESSCHARSET\fR
+.RS 4
+Override the charset passed to
+\fBless\fR
+(by default
+"utf\-8", if the invoking terminal is determined to be UTF\-8 compatible)\&.
+.RE
+.PP
+\fI$SYSTEMD_PAGERSECURE\fR
+.RS 4
+Takes a boolean argument\&. When true, the "secure" mode of the pager is enabled; if false, disabled\&. If
+\fI$SYSTEMD_PAGERSECURE\fR
+is not set at all, secure mode is enabled if the effective UID is not the same as the owner of the login session, see
+\fBgeteuid\fR(2)
+and
+\fBsd_pid_get_owner_uid\fR(3)\&. In secure mode,
+\fBLESSSECURE=1\fR
+will be set when invoking the pager, and the pager shall disable commands that open or create new files or start new subprocesses\&. When
+\fI$SYSTEMD_PAGERSECURE\fR
+is not set at all, pagers which are not known to implement secure mode will not be used\&. (Currently only
+\fBless\fR(1)
+implements secure mode\&.)
+.sp
+Note: when commands are invoked with elevated privileges, for example under
+\fBsudo\fR(8)
+or
+\fBpkexec\fR(1), care must be taken to ensure that unintended interactive features are not enabled\&. "Secure" mode for the pager may be enabled automatically as describe above\&. Setting
+\fISYSTEMD_PAGERSECURE=0\fR
+or not removing it from the inherited environment allows the user to invoke arbitrary commands\&. Note that if the
+\fI$SYSTEMD_PAGER\fR
+or
+\fI$PAGER\fR
+variables are to be honoured,
+\fI$SYSTEMD_PAGERSECURE\fR
+must be set too\&. It might be reasonable to completely disable the pager using
+\fB\-\-no\-pager\fR
+instead\&.
+.RE
+.PP
+\fI$SYSTEMD_COLORS\fR
+.RS 4
+Takes a boolean argument\&. When true,
+\fBsystemd\fR
+and related utilities will use colors in their output, otherwise the output will be monochrome\&. Additionally, the variable can take one of the following special values:
+"16",
+"256"
+to restrict the use of colors to the base 16 or 256 ANSI colors, respectively\&. This can be specified to override the automatic decision based on
+\fI$TERM\fR
+and what the console is connected to\&.
+.RE
+.PP
+\fI$SYSTEMD_URLIFY\fR
+.RS 4
+The value must be a boolean\&. Controls whether clickable links should be generated in the output for terminal emulators supporting this\&. This can be specified to override the decision that
+\fBsystemd\fR
+makes based on
+\fI$TERM\fR
+and other conditions\&.
+.RE
+.PP
+\fI$LISTEN_PID\fR, \fI$LISTEN_FDS\fR, \fI$LISTEN_FDNAMES\fR
+.RS 4
+Set by systemd for supervised processes during socket\-based activation\&. See
+\fBsd_listen_fds\fR(3)
+for more information\&.
+.RE
+.PP
+\fI$NOTIFY_SOCKET\fR
+.RS 4
+Set by systemd for supervised processes for status and start\-up completion notification\&. See
+\fBsd_notify\fR(3)
+for more information\&.
+.RE
+.PP
+For further environment variables understood by systemd and its various components, see
+\m[blue]\fBKnown Environment Variables\fR\m[]\&\s-2\u[7]\d\s+2\&.
+.SH "KERNEL COMMAND LINE"
+.PP
+When run as the system instance systemd parses a number of options listed below\&. They can be specified as kernel command line arguments\&\s-2\u[8]\d\s+2, or through the
+"SystemdOptions"
+EFI variable (on EFI systems)\&. The kernel command line has higher priority\&. Following variables are understood:
+.PP
+\fIsystemd\&.unit=\fR, \fIrd\&.systemd\&.unit=\fR
+.RS 4
+Overrides the unit to activate on boot\&. Defaults to
+default\&.target\&. This may be used to temporarily boot into a different boot unit, for example
+rescue\&.target
+or
+emergency\&.service\&. See
+\fBsystemd.special\fR(7)
+for details about these units\&. The option prefixed with
+"rd\&."
+is honored only in the initial RAM disk (initrd), while the one that is not prefixed only in the main system\&.
+.RE
+.PP
+\fIsystemd\&.dump_core\fR
+.RS 4
+Takes a boolean argument or enables the option if specified without an argument\&. If enabled, the systemd manager (PID 1) dumps core when it crashes\&. Otherwise, no core dump is created\&. Defaults to enabled\&.
+.RE
+.PP
+\fIsystemd\&.crash_chvt\fR
+.RS 4
+Takes a positive integer, or a boolean argument\&. Can be also specified without an argument, with the same effect as a positive boolean\&. If a positive integer (in the range 1\(en63) is specified, the system manager (PID 1) will activate the specified virtual terminal when it crashes\&. Defaults to disabled, meaning that no such switch is attempted\&. If set to enabled, the virtual terminal the kernel messages are written to is used instead\&.
+.RE
+.PP
+\fIsystemd\&.crash_shell\fR
+.RS 4
+Takes a boolean argument or enables the option if specified without an argument\&. If enabled, the system manager (PID 1) spawns a shell when it crashes, after a 10s delay\&. Otherwise, no shell is spawned\&. Defaults to disabled, for security reasons, as the shell is not protected by password authentication\&.
+.RE
+.PP
+\fIsystemd\&.crash_reboot\fR
+.RS 4
+Takes a boolean argument or enables the option if specified without an argument\&. If enabled, the system manager (PID 1) will reboot the machine automatically when it crashes, after a 10s delay\&. Otherwise, the system will hang indefinitely\&. Defaults to disabled, in order to avoid a reboot loop\&. If combined with
+\fIsystemd\&.crash_shell\fR, the system is rebooted after the shell exits\&.
+.RE
+.PP
+\fIsystemd\&.confirm_spawn\fR
+.RS 4
+Takes a boolean argument or a path to the virtual console where the confirmation messages should be emitted\&. Can be also specified without an argument, with the same effect as a positive boolean\&. If enabled, the system manager (PID 1) asks for confirmation when spawning processes using
+\fB/dev/console\fR\&. If a path or a console name (such as
+"ttyS0") is provided, the virtual console pointed to by this path or described by the give name will be used instead\&. Defaults to disabled\&.
+.RE
+.PP
+\fIsystemd\&.service_watchdogs=\fR
+.RS 4
+Takes a boolean argument\&. If disabled, all service runtime watchdogs (\fBWatchdogSec=\fR) and emergency actions (e\&.g\&.
+\fBOnFailure=\fR
+or
+\fBStartLimitAction=\fR) are ignored by the system manager (PID 1); see
+\fBsystemd.service\fR(5)\&. Defaults to enabled, i\&.e\&. watchdogs and failure actions are processed normally\&. The hardware watchdog is not affected by this option\&.
+.RE
+.PP
+\fIsystemd\&.show_status\fR
+.RS 4
+Takes a boolean argument or the constants
+\fBerror\fR
+and
+\fBauto\fR\&. Can be also specified without an argument, with the same effect as a positive boolean\&. If enabled, the systemd manager (PID 1) shows terse service status updates on the console during bootup\&. With
+\fBerror\fR, only messages about failures are shown, but boot is otherwise quiet\&.
+\fBauto\fR
+behaves like
+\fBfalse\fR
+until there is a significant delay in boot\&. Defaults to enabled, unless
+\fBquiet\fR
+is passed as kernel command line option, in which case it defaults to
+\fBerror\fR\&. If specified overrides the system manager configuration file option
+\fBShowStatus=\fR, see
+\fBsystemd-system.conf\fR(5)\&.
+.RE
+.PP
+\fIsystemd\&.status_unit_format=\fR
+.RS 4
+Takes either
+\fBname\fR
+or
+\fBdescription\fR
+as the value\&. If
+\fBname\fR, the system manager will use unit names in status messages\&. If specified, overrides the system manager configuration file option
+\fBStatusUnitFormat=\fR, see
+\fBsystemd-system.conf\fR(5)\&.
+.RE
+.PP
+\fIsystemd\&.log_color\fR, \fIsystemd\&.log_level=\fR, \fIsystemd\&.log_location\fR, \fIsystemd\&.log_target=\fR, \fIsystemd\&.log_time\fR, \fIsystemd\&.log_tid\fR
+.RS 4
+Controls log output, with the same effect as the
+\fI$SYSTEMD_LOG_COLOR\fR,
+\fI$SYSTEMD_LOG_LEVEL\fR,
+\fI$SYSTEMD_LOG_LOCATION\fR,
+\fI$SYSTEMD_LOG_TARGET\fR,
+\fI$SYSTEMD_LOG_TIME\fR, and
+\fI$SYSTEMD_LOG_TID\fR
+environment variables described above\&.
+\fIsystemd\&.log_color\fR,
+\fIsystemd\&.log_location\fR,
+\fIsystemd\&.log_time\fR, and
+\fIsystemd\&.log_tid=\fR
+can be specified without an argument, with the same effect as a positive boolean\&.
+.RE
+.PP
+\fIsystemd\&.default_standard_output=\fR, \fIsystemd\&.default_standard_error=\fR
+.RS 4
+Controls default standard output and error output for services and sockets\&. That is, controls the default for
+\fBStandardOutput=\fR
+and
+\fBStandardError=\fR
+(see
+\fBsystemd.exec\fR(5)
+for details)\&. Takes one of
+\fBinherit\fR,
+\fBnull\fR,
+\fBtty\fR,
+\fBjournal\fR,
+\fBjournal+console\fR,
+\fBkmsg\fR,
+\fBkmsg+console\fR\&. If the argument is omitted
+\fIsystemd\&.default\-standard\-output=\fR
+defaults to
+\fBjournal\fR
+and
+\fIsystemd\&.default\-standard\-error=\fR
+to
+\fBinherit\fR\&.
+.RE
+.PP
+\fIsystemd\&.setenv=\fR
+.RS 4
+Takes a string argument in the form VARIABLE=VALUE\&. May be used to set default environment variables to add to forked child processes\&. May be used more than once to set multiple variables\&.
+.RE
+.PP
+\fIsystemd\&.machine_id=\fR
+.RS 4
+Takes a 32 character hex value to be used for setting the machine\-id\&. Intended mostly for network booting where the same machine\-id is desired for every boot\&.
+.RE
+.PP
+\fIsystemd\&.unified_cgroup_hierarchy\fR
+.RS 4
+When specified without an argument or with a true argument, enables the usage of
+\m[blue]\fBunified cgroup hierarchy\fR\m[]\&\s-2\u[9]\d\s+2
+(a\&.k\&.a\&.\ \&cgroups\-v2)\&. When specified with a false argument, fall back to hybrid or full legacy cgroup hierarchy\&.
+.sp
+If this option is not specified, the default behaviour is determined during compilation (the
+\fB\-Ddefault\-hierarchy=\fR
+meson option)\&. If the kernel does not support unified cgroup hierarchy, the legacy hierarchy will be used even if this option is specified\&.
+.RE
+.PP
+\fIsystemd\&.legacy_systemd_cgroup_controller\fR
+.RS 4
+Takes effect if the full unified cgroup hierarchy is not used (see previous option)\&. When specified without an argument or with a true argument, disables the use of "hybrid" cgroup hierarchy (i\&.e\&. a cgroups\-v2 tree used for systemd, and
+\m[blue]\fBlegacy cgroup hierarchy\fR\m[]\&\s-2\u[10]\d\s+2, a\&.k\&.a\&.\ \&cgroups\-v1, for other controllers), and forces a full "legacy" mode\&. When specified with a false argument, enables the use of "hybrid" hierarchy\&.
+.sp
+If this option is not specified, the default behaviour is determined during compilation (the
+\fB\-Ddefault\-hierarchy=\fR
+meson option)\&. If the kernel does not support unified cgroup hierarchy, the legacy hierarchy will be used even if this option is specified\&.
+.RE
+.PP
+\fIquiet\fR
+.RS 4
+Turn off status output at boot, much like
+\fIsystemd\&.show_status=no\fR
+would\&. Note that this option is also read by the kernel itself and disables kernel log output\&. Passing this option hence turns off the usual output from both the system manager and the kernel\&.
+.RE
+.PP
+\fIdebug\fR
+.RS 4
+Turn on debugging output\&. This is equivalent to
+\fIsystemd\&.log_level=debug\fR\&. Note that this option is also read by the kernel itself and enables kernel debug output\&. Passing this option hence turns on the debug output from both the system manager and the kernel\&.
+.RE
+.PP
+\fIemergency\fR, \fIrd\&.emergency\fR, \fI\-b\fR
+.RS 4
+Boot into emergency mode\&. This is equivalent to
+\fIsystemd\&.unit=emergency\&.target\fR
+or
+\fIrd\&.systemd\&.unit=emergency\&.target\fR, respectively, and provided for compatibility reasons and to be easier to type\&.
+.RE
+.PP
+\fIrescue\fR, \fIrd\&.rescue\fR, \fIsingle\fR, \fIs\fR, \fIS\fR, \fI1\fR
+.RS 4
+Boot into rescue mode\&. This is equivalent to
+\fIsystemd\&.unit=rescue\&.target\fR
+or
+\fIrd\&.systemd\&.unit=rescue\&.target\fR, respectively, and provided for compatibility reasons and to be easier to type\&.
+.RE
+.PP
+\fI2\fR, \fI3\fR, \fI4\fR, \fI5\fR
+.RS 4
+Boot into the specified legacy SysV runlevel\&. These are equivalent to
+\fIsystemd\&.unit=runlevel2\&.target\fR,
+\fIsystemd\&.unit=runlevel3\&.target\fR,
+\fIsystemd\&.unit=runlevel4\&.target\fR, and
+\fIsystemd\&.unit=runlevel5\&.target\fR, respectively, and provided for compatibility reasons and to be easier to type\&.
+.RE
+.PP
+\fIlocale\&.LANG=\fR, \fIlocale\&.LANGUAGE=\fR, \fIlocale\&.LC_CTYPE=\fR, \fIlocale\&.LC_NUMERIC=\fR, \fIlocale\&.LC_TIME=\fR, \fIlocale\&.LC_COLLATE=\fR, \fIlocale\&.LC_MONETARY=\fR, \fIlocale\&.LC_MESSAGES=\fR, \fIlocale\&.LC_PAPER=\fR, \fIlocale\&.LC_NAME=\fR, \fIlocale\&.LC_ADDRESS=\fR, \fIlocale\&.LC_TELEPHONE=\fR, \fIlocale\&.LC_MEASUREMENT=\fR, \fIlocale\&.LC_IDENTIFICATION=\fR
+.RS 4
+Set the system locale to use\&. This overrides the settings in
+/etc/locale\&.conf\&. For more information, see
+\fBlocale.conf\fR(5)
+and
+\fBlocale\fR(7)\&.
+.RE
+.PP
+For other kernel command line parameters understood by components of the core OS, please refer to
+\fBkernel-command-line\fR(7)\&.
+.SH "OPTIONS"
+.PP
+\fBsystemd\fR
+is only very rarely invoked directly, since it is started early and is already running by the time users may interact with it\&. Normally, tools like
+\fBsystemctl\fR(1)
+are used to give commands to the manager\&. Since
+\fBsystemd\fR
+is usually not invoked directly, the options listed below are mostly useful for debugging and special purposes\&.
+.SS "Introspection and debugging options"
+.PP
+Those options are used for testing and introspection, and
+\fBsystemd\fR
+may be invoked with them at any time:
+.PP
+\fB\-\-dump\-configuration\-items\fR
+.RS 4
+Dump understood unit configuration items\&. This outputs a terse but complete list of configuration items understood in unit definition files\&.
+.RE
+.PP
+\fB\-\-dump\-bus\-properties\fR
+.RS 4
+Dump exposed bus properties\&. This outputs a terse but complete list of properties exposed on D\-Bus\&.
+.RE
+.PP
+\fB\-\-test\fR
+.RS 4
+Determine the initial start\-up transaction (i\&.e\&. the list of jobs enqueued at start\-up), dump it and exit \(em without actually executing any of the determined jobs\&. This option is useful for debugging only\&. Note that during regular service manager start\-up additional units not shown by this operation may be started, because hardware, socket, bus or other kinds of activation might add additional jobs as the transaction is executed\&. Use
+\fB\-\-system\fR
+to request the initial transaction of the system service manager (this is also the implied default), combine with
+\fB\-\-user\fR
+to request the initial transaction of the per\-user service manager instead\&.
+.RE
+.PP
+\fB\-\-system\fR, \fB\-\-user\fR
+.RS 4
+When used in conjunction with
+\fB\-\-test\fR, selects whether to calculate the initial transaction for the system instance or for a per\-user instance\&. These options have no effect when invoked without
+\fB\-\-test\fR, as during regular (i\&.e\&. non\-\fB\-\-test\fR) invocations the service manager will automatically detect whether it shall operate in system or per\-user mode, by checking whether the PID it is run as is 1 or not\&. Note that it is not supported booting and maintaining a system with the service manager running in
+\fB\-\-system\fR
+mode but with a PID other than 1\&.
+.RE
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+Print a short help text and exit\&.
+.RE
+.PP
+\fB\-\-version\fR
+.RS 4
+Print a short version string and exit\&.
+.RE
+.SS "Options that duplicate kernel command line settings"
+.PP
+Those options correspond directly to options listed above in "Kernel Command Line"\&. Both forms may be used equivalently for the system manager, but it is recommended to use the forms listed above in this context, because they are properly namespaced\&. When an option is specified both on the kernel command line and as a normal command line argument, the latter has higher precedence\&.
+.PP
+When
+\fBsystemd\fR
+is used as a user manager, the kernel command line is ignored and only the options described below are understood\&. Nevertheless,
+\fBsystemd\fR
+is usually started in this mode through the
+\fBuser@.service\fR(5)
+service, which is shared between all users\&. It may be more convenient to use configuration files to modify settings (see
+\fBsystemd-user.conf\fR(5)), or environment variables\&. See the "Environment" section above for a discussion of how the environment block is set\&.
+.PP
+\fB\-\-unit=\fR
+.RS 4
+Set default unit to activate on startup\&. If not specified, defaults to
+default\&.target\&. See
+\fIsystemd\&.unit=\fR
+above\&.
+.RE
+.PP
+\fB\-\-dump\-core\fR
+.RS 4
+Enable core dumping on crash\&. This switch has no effect when running as user instance\&. Same as
+\fIsystemd\&.dump_core=\fR
+above\&.
+.RE
+.PP
+\fB\-\-crash\-vt=\fR\fIVT\fR
+.RS 4
+Switch to a specific virtual console (VT) on crash\&. This switch has no effect when running as user instance\&. Same as
+\fIsystemd\&.crash_chvt=\fR
+above (but not the different spelling!)\&.
+.RE
+.PP
+\fB\-\-crash\-shell\fR
+.RS 4
+Run a shell on crash\&. This switch has no effect when running as user instance\&. See
+\fIsystemd\&.crash_shell=\fR
+above\&.
+.RE
+.PP
+\fB\-\-crash\-reboot\fR
+.RS 4
+Automatically reboot the system on crash\&. This switch has no effect when running as user instance\&. See
+\fIsystemd\&.crash_reboot\fR
+above\&.
+.RE
+.PP
+\fB\-\-confirm\-spawn\fR
+.RS 4
+Ask for confirmation when spawning processes\&. This switch has no effect when run as user instance\&. See
+\fIsystemd\&.confirm_spawn\fR
+above\&.
+.RE
+.PP
+\fB\-\-show\-status\fR
+.RS 4
+Show terse unit status information on the console during boot\-up and shutdown\&. See
+\fIsystemd\&.show_status\fR
+above\&.
+.RE
+.PP
+\fB\-\-log\-color\fR
+.RS 4
+Highlight important log messages\&. See
+\fIsystemd\&.log_color\fR
+above\&.
+.RE
+.PP
+\fB\-\-log\-level=\fR
+.RS 4
+Set log level\&. See
+\fIsystemd\&.log_level\fR
+above\&.
+.RE
+.PP
+\fB\-\-log\-location\fR
+.RS 4
+Include code location in log messages\&. See
+\fIsystemd\&.log_location\fR
+above\&.
+.RE
+.PP
+\fB\-\-log\-target=\fR
+.RS 4
+Set log target\&. See
+\fIsystemd\&.log_target\fR
+above\&.
+.RE
+.PP
+\fB\-\-log\-time=\fR
+.RS 4
+Prefix messages with timestamp\&. See
+\fIsystemd\&.log_time\fR
+above\&.
+.RE
+.PP
+\fB\-\-machine\-id=\fR
+.RS 4
+Override the machine\-id set on the hard drive\&. See
+\fIsystemd\&.machine_id=\fR
+above\&.
+.RE
+.PP
+\fB\-\-service\-watchdogs\fR
+.RS 4
+Globally enable/disable all service watchdog timeouts and emergency actions\&. See
+\fIsystemd\&.service_watchdogs\fR
+above\&.
+.RE
+.PP
+\fB\-\-default\-standard\-output=\fR, \fB\-\-default\-standard\-error=\fR
+.RS 4
+Sets the default output or error output for all services and sockets, respectively\&. See
+\fIsystemd\&.default_standard_output=\fR
+and
+\fIsystemd\&.default_standard_error=\fR
+above\&.
+.RE
+.SH "SOCKETS AND FIFOS"
+.PP
+/run/systemd/notify
+.RS 4
+Daemon status notification socket\&. This is an
+\fBAF_UNIX\fR
+datagram socket and is used to implement the daemon notification logic as implemented by
+\fBsd_notify\fR(3)\&.
+.RE
+.PP
+/run/systemd/private
+.RS 4
+Used internally as communication channel between
+\fBsystemctl\fR(1)
+and the systemd process\&. This is an
+\fBAF_UNIX\fR
+stream socket\&. This interface is private to systemd and should not be used in external projects\&.
+.RE
+.PP
+/dev/initctl
+.RS 4
+Limited compatibility support for the SysV client interface, as implemented by the
+systemd\-initctl\&.service
+unit\&. This is a named pipe in the file system\&. This interface is obsolete and should not be used in new applications\&.
+.RE
+.SH "SEE ALSO"
+.PP
+The
+\m[blue]\fBsystemd Homepage\fR\m[]\&\s-2\u[11]\d\s+2,
+\fBsystemd-system.conf\fR(5),
+\fBlocale.conf\fR(5),
+\fBsystemctl\fR(1),
+\fBjournalctl\fR(1),
+\fBsystemd-notify\fR(1),
+\fBdaemon\fR(7),
+\fBsd-daemon\fR(3),
+\fBorg.freedesktop.systemd1\fR(5),
+\fBsystemd.unit\fR(5),
+\fBsystemd.special\fR(7),
+\fBpkg-config\fR(1),
+\fBkernel-command-line\fR(7),
+\fBbootup\fR(7),
+\fBsystemd.directives\fR(7)
+.SH "NOTES"
+.IP " 1." 4
+cgroups.txt
+.RS 4
+\%https://www.kernel.org/doc/Documentation/cgroup-v1/cgroups.txt
+.RE
+.IP " 2." 4
+Original Design Document
+.RS 4
+\%http://0pointer.de/blog/projects/systemd.html
+.RE
+.IP " 3." 4
+Interface Portability and Stability Promise
+.RS 4
+\%https://systemd.io/PORTABILITY_AND_STABILITY/
+.RE
+.IP " 4." 4
+Container Interface
+.RS 4
+\%https://systemd.io/CONTAINER_INTERFACE
+.RE
+.IP " 5." 4
+initrd Interface
+.RS 4
+\%https://systemd.io/INITRD_INTERFACE/
+.RE
+.IP " 6." 4
+XDG Base Directory specification
+.RS 4
+\%http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html
+.RE
+.IP " 7." 4
+Known Environment Variables
+.RS 4
+\%https://systemd.io/ENVIRONMENT
+.RE
+.IP " 8." 4
+If run inside a Linux container these arguments may be passed as command line arguments to systemd itself, next to any of the command line options listed in the Options section above. If run outside of Linux containers, these arguments are parsed from
+/proc/cmdline
+instead.
+.IP " 9." 4
+unified cgroup hierarchy
+.RS 4
+\%https://www.kernel.org/doc/html/latest/admin-guide/cgroup-v2.html
+.RE
+.IP "10." 4
+legacy cgroup hierarchy
+.RS 4
+\%https://www.kernel.org/doc/Documentation/cgroup-v1/
+.RE
+.IP "11." 4
+systemd Homepage
+.RS 4
+\%https://www.freedesktop.org/wiki/Software/systemd/
+.RE

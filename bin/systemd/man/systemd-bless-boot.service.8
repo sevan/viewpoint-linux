@@ -1,0 +1,111 @@
+'\" t
+.TH "SYSTEMD\-BLESS\-BOOT\&.SERVICE" "8" "" "systemd 248" "systemd-bless-boot.service"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd-bless-boot.service, systemd-bless-boot \- Mark current boot process as successful
+.SH "SYNOPSIS"
+.PP
+systemd\-bless\-boot\&.service
+.PP
+/usr/lib/systemd/system\-bless\-boot
+.SH "DESCRIPTION"
+.PP
+systemd\-bless\-boot\&.service
+is a system service that marks the current boot process as successful\&. It\*(Aqs automatically pulled into the initial transaction when
+\fBsystemd-bless-boot-generator\fR(8)
+detects that
+\fBsystemd-boot\fR(7)
+style boot counting is used\&.
+.PP
+Internally, the service operates based on the
+\fILoaderBootCountPath\fR
+EFI variable (of the vendor UUID
+\fB4a67b082\-0a4c\-41cf\-b6c7\-440b29bb8c4\fR), which is passed from the boot loader to the OS\&. It contains a file system path (relative to the EFI system partition) of the
+\m[blue]\fBBoot Loader Specification\fR\m[]\&\s-2\u[1]\d\s+2
+compliant boot loader entry file or unified kernel image file that was used to boot up the system\&.
+\fBsystemd\-bless\-boot\&.service\fR
+removes the two \*(Aqtries done\*(Aq and \*(Aqtries left\*(Aq numeric boot counters from the filename, which indicates to future invocations of the boot loader that the entry has completed booting successfully at least once\&. (This service will hence rename the boot loader entry file or unified kernel image file on the first successful boot\&.)
+.SH "OPTIONS"
+.PP
+The
+/usr/lib/systemd/system\-bless\-boot
+executable may also be invoked from the command line, taking one of the following command arguments:
+.PP
+\fBstatus\fR
+.RS 4
+The current status of the boot loader entry file or unified kernel image file is shown\&. This outputs one of
+"good",
+"bad",
+"indeterminate",
+"clean", depending on the state and previous invocations of the command\&. The string
+"indeterminate"
+is shown initially after boot, before it has been marked as "good" or "bad"\&. The string
+"good"
+is shown after the boot was marked as "good" with the
+\fBgood\fR
+command below, and "bad" conversely after the
+\fBbad\fR
+command was invoked\&. The string
+"clean"
+is returned when boot counting is currently not in effect\&.
+.sp
+This command is implied if no command argument is specified\&.
+.RE
+.PP
+\fBgood\fR
+.RS 4
+When invoked, the current boot loader entry file or unified kernel image file will be marked as "good", executing the file rename operation described above\&. This command is intended to be invoked at the end of a successful boot\&. The
+systemd\-bless\-boot\&.service
+unit invokes this command\&.
+.RE
+.PP
+\fBbad\fR
+.RS 4
+When called the \*(Aqtries left\*(Aq counter in the boot loader entry file name or unified kernel image file name is set to zero, marking the boot loader entry or kernel image as "bad", so that the boot loader won\*(Aqt consider it anymore on future boots (at least as long as there are other entries available that are not marked "bad" yet)\&. This command is normally not executed, but can be used to instantly put an end to the boot counting logic if a problem is detected and persistently mark the boot entry as bad\&.
+.RE
+.PP
+\fBindeterminate\fR
+.RS 4
+This command undoes any marking of the current boot loader entry file or unified kernel image file as good or bad\&. This is implemented by renaming the boot loader entry file or unified kernel image file back to the path encoded in the
+\fILoaderBootCountPath\fR
+EFI variable\&.
+.RE
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+Print a short help text and exit\&.
+.RE
+.PP
+\fB\-\-version\fR
+.RS 4
+Print a short version string and exit\&.
+.RE
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsystemd-boot\fR(7),
+\fBsystemd.special\fR(7)
+.SH "NOTES"
+.IP " 1." 4
+Boot Loader Specification
+.RS 4
+\%https://systemd.io/BOOT_LOADER_SPECIFICATION
+.RE

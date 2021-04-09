@@ -1,0 +1,127 @@
+'\" t
+.TH "SD_EVENT_SOURCE_SET_ENABLED" "3" "" "systemd 248" "sd_event_source_set_enabled"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_event_source_set_enabled, sd_event_source_get_enabled, SD_EVENT_ON, SD_EVENT_OFF, SD_EVENT_ONESHOT \- Enable or disable event sources
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-event\&.h>
+.fi
+.ft
+.sp
+.ft B
+.nf
+enum {
+        \fBSD_EVENT_OFF\fR = 0,
+        \fBSD_EVENT_ON\fR = 1,
+        \fBSD_EVENT_ONESHOT\fR = \-1,
+};
+.fi
+.ft
+.HP \w'int\ sd_event_source_set_enabled('u
+.BI "int sd_event_source_set_enabled(sd_event_source\ *" "source" ", int\ " "enabled" ");"
+.HP \w'int\ sd_event_source_get_enabled('u
+.BI "int sd_event_source_get_enabled(sd_event_source\ *" "source" ", int\ *" "enabled" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_event_source_set_enabled()\fR
+may be used to enable or disable the event source object specified as
+\fIsource\fR\&. The
+\fIenabled\fR
+parameter takes one of
+\fBSD_EVENT_ON\fR
+(to enable),
+\fBSD_EVENT_OFF\fR
+(to disable) or
+\fBSD_EVENT_ONESHOT\fR\&. If invoked with
+\fBSD_EVENT_ONESHOT\fR
+the event source will be enabled but automatically reset to
+\fBSD_EVENT_OFF\fR
+after the event source was dispatched once\&.
+.PP
+Event sources that are disabled will not result in event loop wakeups and will not be dispatched, until they are enabled again\&.
+.PP
+\fBsd_event_source_get_enabled()\fR
+may be used to query whether the event source object
+\fIsource\fR
+is currently enabled or not\&. It returns the enablement state (one of
+\fBSD_EVENT_ON\fR,
+\fBSD_EVENT_OFF\fR,
+\fBSD_EVENT_ONESHOT\fR) in
+\fIenabled\fR, if it is not
+\fBNULL\fR\&. It also returns true if the event source is not disabled\&.
+.PP
+Event source objects are enabled when they are first created with calls such as
+\fBsd_event_add_io\fR(3),
+\fBsd_event_add_time\fR(3)\&. However, depending on the event source type they are enabled continuously (\fBSD_EVENT_ON\fR) or only for a single invocation of the event source handler (\fBSD_EVENT_ONESHOT\fR)\&. For details see the respective manual pages\&.
+.PP
+As event source objects stay active and may be dispatched as long as there is at least one reference to them, in many cases it is a good idea to combine a call to
+\fBsd_event_source_unref\fR(3)
+with a prior call to
+\fBsd_event_source_set_enabled()\fR
+with
+\fBSD_EVENT_OFF\fR, to ensure the event source is not dispatched again until all other remaining references are dropped\&.
+.SH "RETURN VALUE"
+.PP
+On success,
+\fBsd_event_source_set_enabled()\fR
+returns a non\-negative integer\&.
+\fBsd_event_source_get_enabled()\fR
+returns zero if the source is disabled (\fBSD_EVENT_OFF\fR) and a positive integer otherwise\&. On failure, they return a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+\fIsource\fR
+is not a valid pointer to an
+sd_event_source
+object\&.
+.RE
+.PP
+\fB\-ENOMEM\fR
+.RS 4
+Not enough memory\&.
+.RE
+.PP
+\fB\-ECHILD\fR
+.RS 4
+The event loop has been created in a different process\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsd-event\fR(3),
+\fBsd_event_add_io\fR(3),
+\fBsd_event_add_time\fR(3),
+\fBsd_event_add_signal\fR(3),
+\fBsd_event_add_child\fR(3),
+\fBsd_event_add_inotify\fR(3),
+\fBsd_event_add_defer\fR(3),
+\fBsd_event_source_unref\fR(3),
+\fBsd_event_source_set_ratelimit\fR(3)

@@ -1,0 +1,79 @@
+'\" t
+.TH "SYSTEMD\-MAKEFS@\&.SERVICE" "8" "" "systemd 248" "systemd-makefs@.service"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd-makefs@.service, systemd-mkswap@.service, systemd-growfs@.service, systemd-makefs, systemd-growfs \- Creating and growing file systems on demand
+.SH "SYNOPSIS"
+.PP
+systemd\-makefs@\fIdevice\fR\&.service
+.PP
+systemd\-mkswap@\fIdevice\fR\&.service
+.PP
+systemd\-growfs@\fImountpoint\fR\&.service
+.PP
+/usr/lib/systemd/systemd\-makefs
+.PP
+/usr/lib/systemd/systemd\-growfs
+.SH "DESCRIPTION"
+.PP
+systemd\-makefs@\&.service,
+systemd\-mkswap@\&.service, and
+systemd\-growfs@\&.service
+are used to implement the
+\fBx\-systemd\&.makefs\fR
+and
+\fBx\-systemd\&.growfs\fR
+options in
+\fBfstab\fR(5), see
+\fBsystemd.mount\fR(5)\&. They are instantiated for each device for which the file system or swap structure needs to be initialized, and for each mount point where the file system needs to be grown\&.
+.PP
+These services are started at boot, either right before or right after the mount point or swap device are used\&.
+.PP
+systemd\-makefs
+knows very little about specific file systems and swap devices, and after checking that the block device does not already contain a file system or other content, it will execute binaries specific to each filesystem type (/sbin/mkfs\&.\fItype\fR
+or
+/sbin/mkswap)\&.
+.PP
+systemd\-growfs
+knows very little about specific file systems and swap devices, and will instruct the kernel to grow the mounted filesystem to full size of the underlying block device\&. Nevertheless, it needs to know the
+\fBioctl\fR(2)
+number specific to each file system, so only certain types are supported\&. Currently:
+\fBext4\fR(5),
+\fBbtrfs\fR(5),
+\fBxfs\fR(5),
+and dm\-crypt partitions (see
+\fBcryptsetup\fR(8))\&.
+.PP
+If the creation of a file system or swap device fails, the mount point or swap is failed too\&. If the growing of a file system fails, a warning is emitted\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsystemd.mount\fR(8),
+\fBsystemd-fstab-generator\fR(8),
+\fBsystemd-repart\fR(8),
+\fBmkfs.btrfs\fR(8),
+\fBmkfs.cramfs\fR(8),
+\fBmkfs.ext4\fR(8),
+\fBmkfs.fat\fR(8),
+\fBmkfs.hfsplus\fR(8),
+\fBmkfs.minix\fR(8),
+\fBmkfs.ntfs\fR(8),
+\fBmkfs.xfs\fR(8)

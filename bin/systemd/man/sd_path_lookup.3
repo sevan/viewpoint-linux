@@ -1,0 +1,228 @@
+'\" t
+.TH "SD_PATH_LOOKUP" "3" "" "systemd 248" "sd_path_lookup"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_path_lookup, sd_path_lookup_strv \- Query well\-known file system paths
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-path\&.h>
+.fi
+.ft
+.sp
+.ft B
+.nf
+enum {
+        \fBSD_PATH_TEMPORARY\fR,
+        \fBSD_PATH_TEMPORARY_LARGE\fR,
+
+        \fBSD_PATH_SYSTEM_BINARIES\fR,
+        \fBSD_PATH_SYSTEM_INCLUDE\fR,
+        \fBSD_PATH_SYSTEM_LIBRARY_PRIVATE\fR,
+        \fBSD_PATH_SYSTEM_LIBRARY_ARCH\fR,
+        \fBSD_PATH_SYSTEM_SHARED\fR,
+        \fBSD_PATH_SYSTEM_CONFIGURATION_FACTORY\fR,
+        \fBSD_PATH_SYSTEM_STATE_FACTORY\fR,
+
+        \fBSD_PATH_SYSTEM_CONFIGURATION\fR,
+        \fBSD_PATH_SYSTEM_RUNTIME\fR,
+        \fBSD_PATH_SYSTEM_RUNTIME_LOGS\fR,
+        \fBSD_PATH_SYSTEM_STATE_PRIVATE\fR,
+        \fBSD_PATH_SYSTEM_STATE_LOGS\fR,
+        \fBSD_PATH_SYSTEM_STATE_CACHE\fR,
+        \fBSD_PATH_SYSTEM_STATE_SPOOL\fR,
+
+        \fBSD_PATH_USER_BINARIES\fR,
+        \fBSD_PATH_USER_LIBRARY_PRIVATE\fR,
+        \fBSD_PATH_USER_LIBRARY_ARCH\fR,
+        \fBSD_PATH_USER_SHARED\fR,
+
+        \fBSD_PATH_USER_CONFIGURATION\fR,
+        \fBSD_PATH_USER_RUNTIME\fR,
+        \fBSD_PATH_USER_STATE_CACHE\fR,
+
+        \fBSD_PATH_USER\fR,
+        \fBSD_PATH_USER_DOCUMENTS\fR,
+        \fBSD_PATH_USER_MUSIC\fR,
+        \fBSD_PATH_USER_PICTURES\fR,
+        \fBSD_PATH_USER_VIDEOS\fR,
+        \fBSD_PATH_USER_DOWNLOAD\fR,
+        \fBSD_PATH_USER_PUBLIC\fR,
+        \fBSD_PATH_USER_TEMPLATES\fR,
+        \fBSD_PATH_USER_DESKTOP\fR,
+
+        \fBSD_PATH_SEARCH_BINARIES\fR,
+        \fBSD_PATH_SEARCH_BINARIES_DEFAULT\fR,
+        \fBSD_PATH_SEARCH_LIBRARY_PRIVATE\fR,
+        \fBSD_PATH_SEARCH_LIBRARY_ARCH\fR,
+        \fBSD_PATH_SEARCH_SHARED\fR,
+        \fBSD_PATH_SEARCH_CONFIGURATION_FACTORY\fR,
+        \fBSD_PATH_SEARCH_STATE_FACTORY\fR,
+        \fBSD_PATH_SEARCH_CONFIGURATION\fR,
+
+        \fBSD_PATH_SYSTEMD_UTIL\fR,
+        \fBSD_PATH_SYSTEMD_SYSTEM_UNIT\fR,
+        \fBSD_PATH_SYSTEMD_SYSTEM_PRESET\fR,
+        \fBSD_PATH_SYSTEMD_USER_UNIT\fR,
+        \fBSD_PATH_SYSTEMD_USER_PRESET\fR,
+        \fBSD_PATH_SYSTEMD_SYSTEM_CONF\fR,
+        \fBSD_PATH_SYSTEMD_USER_CONF\fR,
+        \fBSD_PATH_SYSTEMD_SEARCH_SYSTEM_UNIT\fR,
+        \fBSD_PATH_SYSTEMD_SEARCH_USER_UNIT\fR,
+        \fBSD_PATH_SYSTEMD_SYSTEM_GENERATOR\fR,
+        \fBSD_PATH_SYSTEMD_USER_GENERATOR\fR,
+        \fBSD_PATH_SYSTEMD_SEARCH_SYSTEM_GENERATOR\fR,
+        \fBSD_PATH_SYSTEMD_SEARCH_USER_GENERATOR\fR,
+        \fBSD_PATH_SYSTEMD_SLEEP\fR,
+        \fBSD_PATH_SYSTEMD_SHUTDOWN\fR,
+
+        \fBSD_PATH_TMPFILES\fR,
+        \fBSD_PATH_SYSUSERS\fR,
+        \fBSD_PATH_SYSCTL\fR,
+        \fBSD_PATH_BINFMT\fR,
+        \fBSD_PATH_MODULES_LOAD\fR,
+        \fBSD_PATH_CATALOG\fR,
+
+        \fBSD_PATH_SYSTEMD_SEARCH_NETWORK\fR,
+};
+.fi
+.ft
+.HP \w'int\ sd_path_lookup('u
+.BI "int sd_path_lookup(uint64_t\ " "type" ", const\ char\ *" "suffix" ", char\ **" "paths" ");"
+.HP \w'int\ sd_path_lookup_strv('u
+.BI "int sd_path_lookup_strv(uint64_t\ " "type" ", const\ char\ *" "suffix" ", char\ ***" "paths" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_path_lookup()\fR
+and
+\fBsd_bus_path_lookup_strv()\fR
+return a single path or set of file system paths specified by the argument
+\fItype\fR\&. In case of
+\fBsd_path_lookup()\fR
+a single
+\fBNUL\fR\-terminated string is returned\&. When
+\fItype\fR
+specifies a set of paths, they are concatenated using
+":"
+as a separator (as is traditionally done for e\&.g\&.
+\fI$PATH\fR
+or
+\fI$LD_LIBRARY_PATH\fR)\&. In case of
+\fBsd_path_lookup_strv()\fR
+a
+\fBNULL\fR\-terminated array of strings is returned (strv)\&. If suffix
+\fIsuffix\fR
+is given, it is concatenated to each of the paths after a slash ("/")\&. All returned paths are absolute\&.
+.PP
+For paths which refer to user directories, the relevant XDG standard is followed, with support for environment variables like
+\fI$XDG_DOCUMENTS_DIR\fR,
+\fI$XDG_DESKTOP_DIR\fR, \&.\&.\&., and explicit configuration in
+/etc/xdg/user\-dirs\&.conf
+or
+${XDG_CONFIG_HOME}/user\-dirs\&.dirs\&. See
+\m[blue]\fBXDG Base Directory Specification\fR\m[]\&\s-2\u[1]\d\s+2
+for details\&.
+.PP
+\fBsystemd-path\fR(1)
+is a wrapper around
+\fBsd_path_lookup()\fR
+and allows the same set of paths to be queried\&.
+.SH "RETURN VALUE"
+.PP
+On success,
+\fBsd_path_lookup()\fR
+and
+\fBsd_path_lookup_strv()\fR
+return a non\-negative integer\&. On failure, a negative errno\-style error number is returned by either function\&.
+.PP
+The returned string or string array (strv) must be
+\fBfree\fR(3)\*(Aqd by the caller\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EOPNOTSUPP\fR
+.RS 4
+Unknown identifier
+\fItype\fR\&.
+.RE
+.PP
+\fB\-EINVAL\fR
+.RS 4
+Output argument is
+\fBNULL\fR\&.
+.RE
+.PP
+\fB\-ENXIO\fR
+.RS 4
+Query failed because of an undefined environment variable (e\&.g\&. for
+\fBSD_PATH_USER_RUNTIME\fR
+when
+\fI$XDG_RUNTIME_DIR\fR
+is not defined)\&.
+.RE
+.PP
+\fB\-ENOMEM\fR
+.RS 4
+Memory allocation failed\&.
+.RE
+.SH "EXAMPLES"
+.SS "Look up the location of ~/Documents"
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+#include <stdio\&.h>
+#include <sd\-path\&.h>
+
+int main(void) {
+  char *t;
+
+  sd_path_lookup(SD_PATH_USER_DOCUMENTS, NULL, &t);
+  printf("~/Documents: %s\en", t);
+}
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+Note that the default answer of
+$HOME/Documents
+may be overridden by
+user\-dirs\&.conf
+or
+\fI$XDG_DOCUMENTS_DIR\fR\&.
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd-path\fR(1)
+.SH "NOTES"
+.IP " 1." 4
+XDG Base Directory Specification
+.RS 4
+\%https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
+.RE

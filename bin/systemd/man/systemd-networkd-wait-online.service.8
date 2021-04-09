@@ -1,0 +1,111 @@
+'\" t
+.TH "SYSTEMD\-NETWORKD\-WAIT\-ONLINE\&.SERVICE" "8" "" "systemd 248" "systemd-networkd-wait-online.service"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd-networkd-wait-online.service, systemd-networkd-wait-online \- Wait for network to come online
+.SH "SYNOPSIS"
+.PP
+systemd\-networkd\-wait\-online\&.service
+.PP
+/usr/lib/systemd/systemd\-networkd\-wait\-online
+.SH "DESCRIPTION"
+.PP
+\fBsystemd\-networkd\-wait\-online\fR
+is a oneshot system service (see
+\fBsystemd.service\fR(5)), that waits for the network to be configured\&. By default, it will wait for all links it is aware of and which are managed by
+\fBsystemd-networkd.service\fR(8)
+to be fully configured or failed, and for at least one link to be online\&. Here, online means that the link\*(Aqs operational state is equal or higher than
+"degraded"\&. The threshold can be configured by
+\fB\-\-operational\-state=\fR
+option\&.
+.SH "OPTIONS"
+.PP
+The following options are understood:
+.PP
+\fB\-i\fR \fIINTERFACE\fR[:\fIMIN_OPERSTATE\fR[:\fIMAX_OPERSTATE\fR]], \fB\-\-interface=\fR\fIINTERFACE\fR[:\fIMIN_OPERSTATE\fR[:\fIMAX_OPERSTATE\fR]]
+.RS 4
+Network interface to wait for before deciding if the system is online\&. This is useful when a system has several interfaces which will be configured, but a particular one is necessary to access some network resources\&. When used, all other interfaces are ignored\&. This option may be used more than once to wait for multiple network interfaces\&. When this option is specified multiple times, then
+\fBsystemd\-networkd\-wait\-online\fR
+waits for all specified interfaces to be online\&. Optionally, required minimum and maximum operational states can be specified after a colon
+":"\&. Please see
+\fBnetworkctl\fR(1)
+for possible operational states\&. If the operational state is not specified here, then the value from
+\fIRequiredForOnline=\fR
+in the corresponding
+\&.network
+file is used if present, and
+"degraded"
+otherwise\&.
+.RE
+.PP
+\fB\-\-ignore=\fR\fIINTERFACE\fR
+.RS 4
+Network interfaces to be ignored when deciding if the system is online\&. By default, only the loopback interface is ignored\&. This option may be used more than once to ignore multiple network interfaces\&.
+.RE
+.PP
+\fB\-o\fR \fIMIN_OPERSTATE\fR[:\fIMAX_OPERSTATE\fR], \fB\-\-operational\-state=\fR\fIMIN_OPERSTATE\fR[:\fIMAX_OPERSTATE\fR]
+.RS 4
+Takes a minimum operational state and an optional maximum operational state\&. Please see
+\fBnetworkctl\fR(1)
+for possible operational states\&. If set, the specified value overrides
+\fIRequiredForOnline=\fR
+settings in
+\&.network
+files\&. But this does not override operational states specified in
+\fB\-\-interface=\fR
+option\&.
+.RE
+.PP
+\fB\-\-any\fR
+.RS 4
+Even if several interfaces are in configuring state,
+\fBsystemd\-networkd\-wait\-online\fR
+exits with success when at least one interface becomes online\&. When this option is specified with
+\fB\-\-interface=\fR, then
+\fBsystemd\-networkd\-wait\-online\fR
+waits for one of the specified interfaces to be online\&. This option is useful when some interfaces may not have carrier on boot\&.
+.RE
+.PP
+\fB\-\-timeout=\fR\fISECS\fR
+.RS 4
+Fail the service if the network is not online by the time the timeout elapses\&. A timeout of 0 disables the timeout\&. Defaults to 120 seconds\&.
+.RE
+.PP
+\fB\-q\fR, \fB\-\-quiet\fR
+.RS 4
+Suppress log messages\&.
+.RE
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+Print a short help text and exit\&.
+.RE
+.PP
+\fB\-\-version\fR
+.RS 4
+Print a short version string and exit\&.
+.RE
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsystemd.service\fR(5),
+\fBsystemd-networkd.service\fR(8),
+\fBnetworkctl\fR(1)

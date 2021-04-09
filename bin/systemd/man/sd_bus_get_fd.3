@@ -1,0 +1,141 @@
+'\" t
+.TH "SD_BUS_GET_FD" "3" "" "systemd 248" "sd_bus_get_fd"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_get_fd, sd_bus_get_events, sd_bus_get_timeout \- Get the file descriptor, I/O events and timeout to wait for from a message bus object
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_get_fd('u
+.BI "int sd_bus_get_fd(sd_bus\ *" "bus" ");"
+.HP \w'int\ sd_bus_get_events('u
+.BI "int sd_bus_get_events(sd_bus\ *" "bus" ");"
+.HP \w'int\ sd_bus_get_timeout('u
+.BI "int sd_bus_get_timeout(sd_bus\ *" "bus" ", uint64_t\ *" "timeout_usec" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_get_fd()\fR
+returns the file descriptor used to communicate from a message bus object\&. This descriptor can be used with
+\fBpoll\fR(3)
+or a similar function to wait for I/O events on the specified bus connection object\&. If the bus object was configured with the
+\fBsd_bus_set_fd()\fR
+function, then the
+\fIinput_fd\fR
+file descriptor used in that call is returned\&.
+.PP
+\fBsd_bus_get_events()\fR
+returns the I/O events to wait for, suitable for passing to
+\fBpoll()\fR
+or a similar call\&. Returns a combination of
+\fBPOLLIN\fR,
+\fBPOLLOUT\fR, \&... events, or negative on error\&.
+.PP
+\fBsd_bus_get_timeout()\fR
+returns the timeout in \(mcs to pass to
+\fBpoll()\fR
+or a similar call when waiting for events on the specified bus connection\&. The returned timeout may be zero, in which case a subsequent I/O polling call should be invoked in non\-blocking mode\&. The returned timeout may be
+\fBUINT64_MAX\fR
+in which case the I/O polling call may block indefinitely, without any applied timeout\&. Note that the returned timeout should be considered only a maximum sleeping time\&. It is permissible (and even expected) that shorter timeouts are used by the calling program, in case other event sources are polled in the same event loop\&. Note that the returned time\-value is relative and specified in microseconds\&. When converting this value in order to pass it as third argument to
+\fBpoll()\fR
+(which expects milliseconds), care should be taken to use a division that rounds up to ensure the I/O polling operation doesn\*(Aqt sleep for shorter than necessary, which might result in unintended busy looping (alternatively, use
+\fBppoll\fR(2)
+instead of plain
+\fBpoll()\fR, which understands timeouts with nano\-second granularity)\&.
+.PP
+These three functions are useful to hook up a bus connection object with an external or manual event loop involving
+\fBpoll()\fR
+or a similar I/O polling call\&. Before each invocation of the I/O polling call, all three functions should be invoked: the file descriptor returned by
+\fBsd_bus_get_fd()\fR
+should be polled for the events indicated by
+\fBsd_bus_get_events()\fR, and the I/O call should block for that up to the timeout returned by
+\fBsd_bus_get_timeout()\fR\&. After each I/O polling call the bus connection needs to process incoming or outgoing data, by invoking
+\fBsd_bus_process\fR(3)\&.
+.PP
+Note that these functions are only one of three supported ways to implement I/O event handling for bus connections\&. Alternatively use
+\fBsd_bus_attach_event\fR(3)
+to attach a bus connection to an
+\fBsd-event\fR(3)
+event loop\&. Or use
+\fBsd_bus_wait\fR(3)
+as a simple synchronous, blocking I/O waiting call\&.
+.SH "RETURN VALUE"
+.PP
+On success,
+\fBsd_bus_get_fd()\fR
+returns the file descriptor used for communication\&. On failure, it returns a negative errno\-style error code\&.
+.PP
+On success,
+\fBsd_bus_get_events()\fR
+returns the I/O event mask to use for I/O event watching\&. On failure, it returns a negative errno\-style error code\&.
+.PP
+On success,
+\fBsd_bus_get_timeout()\fR
+returns a non\-negative integer\&. On failure, it returns a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+An invalid bus object was passed\&.
+.RE
+.PP
+\fB\-ECHILD\fR
+.RS 4
+The bus connection was allocated in a parent process and is being reused in a child process after
+\fBfork()\fR\&.
+.RE
+.PP
+\fB\-ENOTCONN\fR
+.RS 4
+The bus connection has been terminated\&.
+.RE
+.PP
+\fB\-EPERM\fR
+.RS 4
+Two distinct file descriptors were passed for input and output using
+\fBsd_bus_set_fd()\fR, which
+\fBsd_bus_get_fd()\fR
+cannot return\&.
+.RE
+.PP
+\fB\-ENOPKG\fR
+.RS 4
+The bus cannot be resolved\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd_bus_process\fR(3),
+\fBsd_bus_attach_event\fR(3),
+\fBsd_bus_wait\fR(3),
+\fBsd_bus_set_fd\fR(3),
+\fBpoll\fR(3)
