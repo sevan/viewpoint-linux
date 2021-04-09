@@ -1,0 +1,137 @@
+'\" t
+.TH "NSS\-MYMACHINES" "8" "" "systemd 248" "nss-mymachines"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+nss-mymachines, libnss_mymachines.so.2 \- Hostname resolution for local container instances
+.SH "SYNOPSIS"
+.PP
+libnss_mymachines\&.so\&.2
+.SH "DESCRIPTION"
+.PP
+\fBnss\-mymachines\fR
+is a plug\-in module for the GNU Name Service Switch (NSS) functionality of the GNU C Library (\fBglibc\fR), providing hostname resolution for the names of containers running locally that are registered with
+\fBsystemd-machined.service\fR(8)\&. The container names are resolved to the IP addresses of the specific container, ordered by their scope\&. This functionality only applies to containers using network namespacing (see the description of
+\fB\-\-private\-network\fR
+in
+\fBsystemd-nspawn\fR(1))\&. Note that the name that is resolved is the one registered with
+\fBsystemd\-machined\fR, which may be different than the hostname configured inside of the container\&.
+.PP
+To activate the NSS module, add
+"mymachines"
+to the line starting with
+"hosts:"
+in
+/etc/nsswitch\&.conf\&.
+.PP
+It is recommended to place
+"mymachines"
+before the
+"resolve"
+or
+"dns"
+entry of the
+"hosts:"
+line of
+/etc/nsswitch\&.conf
+in order to make sure that its mappings are preferred over other resolvers such as DNS\&.
+.SH "CONFIGURATION IN /ETC/NSSWITCH\&.CONF"
+.PP
+Here is an example
+/etc/nsswitch\&.conf
+file that enables
+\fBnss\-mymachines\fR
+correctly:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+passwd:         compat systemd
+group:          compat [SUCCESS=merge] systemd
+shadow:         compat
+
+hosts:          \fBmymachines\fR resolve [!UNAVAIL=return] files myhostname dns
+networks:       files
+
+protocols:      db files
+services:       db files
+ethers:         db files
+rpc:            db files
+
+netgroup:       nis
+.fi
+.if n \{\
+.RE
+.\}
+.SH "EXAMPLE: MAPPINGS PROVIDED BY NSS\-MYMACHINES"
+.PP
+The container
+"rawhide"
+is spawned using
+\fBsystemd-nspawn\fR(1):
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+# systemd\-nspawn \-M rawhide \-\-boot \-\-network\-veth \-\-private\-users=pick
+Spawning container rawhide on /var/lib/machines/rawhide\&.
+Selected user namespace base 20119552 and range 65536\&.
+\&.\&.\&.
+
+$ machinectl \-\-max\-addresses=3
+MACHINE CLASS     SERVICE        OS     VERSION ADDRESSES
+rawhide container systemd\-nspawn fedora 30      169\&.254\&.40\&.164 fe80::94aa:3aff:fe7b:d4b9
+
+$ ping \-c1 rawhide
+PING rawhide(fe80::94aa:3aff:fe7b:d4b9%ve\-rawhide (fe80::94aa:3aff:fe7b:d4b9%ve\-rawhide)) 56 data bytes
+64 bytes from fe80::94aa:3aff:fe7b:d4b9%ve\-rawhide (fe80::94aa:3aff:fe7b:d4b9%ve\-rawhide): icmp_seq=1 ttl=64 time=0\&.045 ms
+\&.\&.\&.
+$ ping \-c1 \-4 rawhide
+PING rawhide (169\&.254\&.40\&.164) 56(84) bytes of data\&.
+64 bytes from 169\&.254\&.40\&.164 (169\&.254\&.40\&.164): icmp_seq=1 ttl=64 time=0\&.064 ms
+\&.\&.\&.
+
+# machinectl shell rawhide /sbin/ip a
+Connected to machine rawhide\&. Press ^] three times within 1s to exit session\&.
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    \&.\&.\&.
+2: host0@if21: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+    link/ether 96:aa:3a:7b:d4:b9 brd ff:ff:ff:ff:ff:ff link\-netnsid 0
+    inet 169\&.254\&.40\&.164/16 brd 169\&.254\&.255\&.255 scope link host0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::94aa:3aff:fe7b:d4b9/64 scope link
+       valid_lft forever preferred_lft forever
+Connection to machine rawhide terminated\&.
+.fi
+.if n \{\
+.RE
+.\}
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsystemd-machined.service\fR(8),
+\fBmachinectl\fR(1),
+\fBnss-systemd\fR(8),
+\fBnss-resolve\fR(8),
+\fBnss-myhostname\fR(8),
+\fBnsswitch.conf\fR(5),
+\fBgetent\fR(1)

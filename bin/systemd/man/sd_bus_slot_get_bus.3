@@ -1,0 +1,76 @@
+'\" t
+.TH "SD_BUS_SLOT_GET_BUS" "3" "" "systemd 248" "sd_bus_slot_get_bus"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_slot_get_bus, sd_bus_slot_get_current_handler, sd_bus_slot_get_current_message, sd_bus_slot_get_current_userdata \- Query information attached to a bus slot object
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'typedef\ int\ (*sd_bus_message_handler_t)('u
+.BI "typedef int (*sd_bus_message_handler_t)(sd_bus_message\ *" "m" ", void\ *" "userdata" ", sd_bus_error\ *" "ret_error" ");"
+.HP \w'sd_bus\ *sd_bus_slot_get_bus('u
+.BI "sd_bus *sd_bus_slot_get_bus(sd_bus_slot\ *" "slot" ");"
+.HP \w'sd_bus_message_handler_t\ sd_bus_slot_get_current_handler('u
+.BI "sd_bus_message_handler_t sd_bus_slot_get_current_handler(sd_bus_slot\ *" "slot" ");"
+.HP \w'sd_bus_message\ *sd_bus_slot_get_current_message('u
+.BI "sd_bus_message *sd_bus_slot_get_current_message(sd_bus_slot\ *" "slot" ");"
+.HP \w'void\ *sd_bus_slot_get_current_userdata('u
+.BI "void *sd_bus_slot_get_current_userdata(sd_bus_slot\ *" "slot" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_slot_get_bus()\fR
+returns the bus object that message
+\fIslot\fR
+is attached to\&.
+.PP
+\fBsd_bus_slot_get_current_handler()\fR,
+\fBsd_bus_slot_get_current_message()\fR
+and
+\fBsd_bus_slot_get_current_userdata()\fR
+return the current handler, message and userdata respectively of the bus
+\fIslot\fR
+is attached to if we\*(Aqre currently executing the callback associated with
+\fIslot\fR\&.
+.SH "RETURN VALUE"
+.PP
+\fBsd_bus_slot_get_bus()\fR
+always returns the bus object\&.
+.PP
+On success,
+\fBsd_bus_slot_get_current_handler()\fR,
+\fBsd_bus_slot_get_current_message()\fR
+and
+\fBsd_bus_slot_get_current_userdata()\fR
+return the requested object\&. On failure, they return
+\fBNULL\fR\&.
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),

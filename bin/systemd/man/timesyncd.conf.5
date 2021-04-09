@@ -1,0 +1,115 @@
+'\" t
+.TH "TIMESYNCD\&.CONF" "5" "" "systemd 248" "timesyncd.conf"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+timesyncd.conf, timesyncd.conf.d \- Network Time Synchronization configuration files
+.SH "SYNOPSIS"
+.PP
+/etc/systemd/timesyncd\&.conf
+.PP
+/etc/systemd/timesyncd\&.conf\&.d/*\&.conf
+.PP
+/run/systemd/timesyncd\&.conf\&.d/*\&.conf
+.PP
+/usr/lib/systemd/timesyncd\&.conf\&.d/*\&.conf
+.SH "DESCRIPTION"
+.PP
+These configuration files control NTP network time synchronization\&. See
+\fBsystemd.syntax\fR(7)
+for a general description of the syntax\&.
+.SH "CONFIGURATION DIRECTORIES AND PRECEDENCE"
+.PP
+The default configuration is set during compilation, so configuration is only needed when it is necessary to deviate from those defaults\&. Initially, the main configuration file in
+/etc/systemd/
+contains commented out entries showing the defaults as a guide to the administrator\&. Local overrides can be created by editing this file or by creating drop\-ins, as described below\&. Using drop\-ins for local configuration is recommended over modifications to the main configuration file\&.
+.PP
+In addition to the "main" configuration file, drop\-in configuration snippets are read from
+/usr/lib/systemd/*\&.conf\&.d/,
+/usr/local/lib/systemd/*\&.conf\&.d/, and
+/etc/systemd/*\&.conf\&.d/\&. Those drop\-ins have higher precedence and override the main configuration file\&. Files in the
+*\&.conf\&.d/
+configuration subdirectories are sorted by their filename in lexicographic order, regardless of in which of the subdirectories they reside\&. When multiple files specify the same option, for options which accept just a single value, the entry in the file sorted last takes precedence, and for options which accept a list of values, entries are collected as they occur in the sorted files\&.
+.PP
+When packages need to customize the configuration, they can install drop\-ins under
+/usr/\&. Files in
+/etc/
+are reserved for the local administrator, who may use this logic to override the configuration files installed by vendor packages\&. Drop\-ins have to be used to override package drop\-ins, since the main configuration file has lower precedence\&. It is recommended to prefix all filenames in those subdirectories with a two\-digit number and a dash, to simplify the ordering of the files\&.
+.PP
+To disable a configuration file supplied by the vendor, the recommended way is to place a symlink to
+/dev/null
+in the configuration directory in
+/etc/, with the same filename as the vendor configuration file\&.
+.SH "OPTIONS"
+.PP
+The following settings are configured in the [Time] section:
+.PP
+\fINTP=\fR
+.RS 4
+A space\-separated list of NTP server host names or IP addresses\&. During runtime this list is combined with any per\-interface NTP servers acquired from
+\fBsystemd-networkd.service\fR(8)\&.
+\fBsystemd\-timesyncd\fR
+will contact all configured system or per\-interface servers in turn, until one responds\&. When the empty string is assigned, the list of NTP servers is reset, and all prior assignments will have no effect\&. This setting defaults to an empty list\&.
+.RE
+.PP
+\fIFallbackNTP=\fR
+.RS 4
+A space\-separated list of NTP server host names or IP addresses to be used as the fallback NTP servers\&. Any per\-interface NTP servers obtained from
+\fBsystemd-networkd.service\fR(8)
+take precedence over this setting, as do any servers set via
+\fINTP=\fR
+above\&. This setting is hence only relevant if no other NTP server information is known\&. When the empty string is assigned, the list of NTP servers is reset, and all prior assignments will have no effect\&. If this option is not given, a compiled\-in list of NTP servers is used\&.
+.RE
+.PP
+\fIRootDistanceMaxSec=\fR
+.RS 4
+Maximum acceptable root distance, i\&.e\&. the maximum estimated time required for a packet to travel to the server we are connected to from the server with the reference clock\&. If the current server does not satisfy this limit,
+\fBsystemd\-timesyncd\fR
+will switch to a different server\&.
+.sp
+Takes a time span value\&. The default unit is seconds, but other units may be specified, see
+\fBsystemd.time\fR(5)\&. Defaults to 5 seconds\&.
+.RE
+.PP
+\fIPollIntervalMinSec=\fR, \fIPollIntervalMaxSec=\fR
+.RS 4
+The minimum and maximum poll intervals for NTP messages\&. Polling starts at the minimum poll interval, and is adjusted within the specified limits in response to received packets\&.
+.sp
+Each setting takes a time span value\&. The default unit is seconds, but other units may be specified, see
+\fBsystemd.time\fR(5)\&.
+\fIPollIntervalMinSec=\fR
+defaults to 32 seconds and must not be smaller than 16\ \&seconds\&.
+\fIPollIntervalMaxSec=\fR
+defaults to 34\ \&min\ \&8\ \&s (2048\ \&seconds) and must be larger than
+\fIPollIntervalMinSec=\fR\&.
+.RE
+.PP
+\fIConnectionRetrySec=\fR
+.RS 4
+Specifies the minimum delay before subsequent attempts to contact a new NTP server are made\&.
+.sp
+Takes a time span value\&. The default unit is seconds, but other units may be specified, see
+\fBsystemd.time\fR(5)\&. Defaults to 30 seconds and must not be smaller than 1 second\&.
+.RE
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsystemd-timesyncd.service\fR(8),
+\fBsystemd-networkd.service\fR(8)

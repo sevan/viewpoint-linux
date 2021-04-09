@@ -1,0 +1,106 @@
+'\" t
+.TH "SD_EVENT_SOURCE_SET_PREPARE" "3" "" "systemd 248" "sd_event_source_set_prepare"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_event_source_set_prepare \- Set a preparation callback for event sources
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-event\&.h>
+.fi
+.ft
+.HP \w'int\ sd_event_source_set_prepare('u
+.BI "int sd_event_source_set_prepare(sd_event_source\ *" "source" ", sd_event_handler_t\ " "callback" ");"
+.HP \w'typedef\ int\ (*sd_event_handler_t)('u
+.BI "typedef int (*sd_event_handler_t)(sd_event_source\ *" "s" ", void\ *" "userdata" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_event_source_set_prepare()\fR
+may be used to set a preparation callback for the event source object specified as
+\fIsource\fR\&. The callback function specified as
+\fIcallback\fR
+will be invoked immediately before the event loop goes to sleep to wait for incoming events\&. It is invoked with the user data pointer passed when the event source was created\&. The event source will be disabled if the callback function returns a negative error code\&. The callback function may be used to reconfigure the precise events to wait for\&. If the
+\fIcallback\fR
+parameter is passed as
+\fBNULL\fR
+the callback function is reset\&.
+.PP
+Event source objects have no preparation callback associated when they are first created with calls such as
+\fBsd_event_add_io\fR(3),
+\fBsd_event_add_time\fR(3)\&. Preparation callback functions are supported for all event source types with the exception of those created with
+\fBsd_event_add_exit\fR(3)\&. Preparation callback functions are dispatched in the order indicated by the event source\*(Aqs priority field, as set with
+\fBsd_event_source_set_priority\fR(3)\&. Preparation callbacks of disabled event sources (see
+\fBsd_event_source_set_enabled\fR(3)) are not invoked\&.
+.SH "RETURN VALUE"
+.PP
+On success,
+\fBsd_event_source_set_prepare()\fR
+returns a non\-negative integer\&. On failure, it returns a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+\fIsource\fR
+is not a valid pointer to an
+sd_event_source
+object\&.
+.RE
+.PP
+\fB\-ESTALE\fR
+.RS 4
+The event loop is already terminated\&.
+.RE
+.PP
+\fB\-ENOMEM\fR
+.RS 4
+Not enough memory\&.
+.RE
+.PP
+\fB\-ECHILD\fR
+.RS 4
+The event loop has been created in a different process\&.
+.RE
+.PP
+\fB\-EDOM\fR
+.RS 4
+The specified event source has been created with
+\fBsd_event_add_exit\fR(3)\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsd-event\fR(3),
+\fBsd_event_add_io\fR(3),
+\fBsd_event_add_time\fR(3),
+\fBsd_event_add_signal\fR(3),
+\fBsd_event_add_child\fR(3),
+\fBsd_event_add_inotify\fR(3),
+\fBsd_event_add_defer\fR(3),
+\fBsd_event_source_set_enabled\fR(3),
+\fBsd_event_source_set_priority\fR(3),
+\fBsd_event_source_set_userdata\fR(3)

@@ -1,0 +1,1048 @@
+'\" t
+.TH "SYSTEMD\&.RESOURCE\-CONTROL" "5" "" "systemd 248" "systemd.resource-control"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd.resource-control \- Resource control unit settings
+.SH "SYNOPSIS"
+.PP
+\fIslice\fR\&.slice,
+\fIscope\fR\&.scope,
+\fIservice\fR\&.service,
+\fIsocket\fR\&.socket,
+\fImount\fR\&.mount,
+\fIswap\fR\&.swap
+.SH "DESCRIPTION"
+.PP
+Unit configuration files for services, slices, scopes, sockets, mount points, and swap devices share a subset of configuration options for resource control of spawned processes\&. Internally, this relies on the Linux Control Groups (cgroups) kernel concept for organizing processes in a hierarchical tree of named groups for the purpose of resource management\&.
+.PP
+This man page lists the configuration options shared by those six unit types\&. See
+\fBsystemd.unit\fR(5)
+for the common options of all unit configuration files, and
+\fBsystemd.slice\fR(5),
+\fBsystemd.scope\fR(5),
+\fBsystemd.service\fR(5),
+\fBsystemd.socket\fR(5),
+\fBsystemd.mount\fR(5), and
+\fBsystemd.swap\fR(5)
+for more information on the specific unit configuration files\&. The resource control configuration options are configured in the [Slice], [Scope], [Service], [Socket], [Mount], or [Swap] sections, depending on the unit type\&.
+.PP
+In addition, options which control resources available to programs
+\fIexecuted\fR
+by systemd are listed in
+\fBsystemd.exec\fR(5)\&. Those options complement options listed here\&.
+.PP
+See the
+\m[blue]\fBNew Control Group Interfaces\fR\m[]\&\s-2\u[1]\d\s+2
+for an introduction on how to make use of resource control APIs from programs\&.
+.SS "Setting resource controls for a group of related units"
+.PP
+As described in
+\fBsystemd.unit\fR(5), the settings listed here may be set through the main file of a unit and drop\-in snippets in
+*\&.d/
+directories\&. The list of directories searched for drop\-ins includes names formed by repeatedly truncating the unit name after all dashes\&. This is particularly convenient to set resource limits for a group of units with similar names\&.
+.PP
+For example, every user gets their own slice
+user\-\fInnn\fR\&.slice\&. Drop\-ins with local configuration that affect user 1000 may be placed in
+/etc/systemd/system/user\-1000\&.slice,
+/etc/systemd/system/user\-1000\&.slice\&.d/*\&.conf, but also
+/etc/systemd/system/user\-\&.slice\&.d/*\&.conf\&. This last directory applies to all user slices\&.
+.SH "IMPLICIT DEPENDENCIES"
+.PP
+The following dependencies are implicitly added:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Units with the
+\fISlice=\fR
+setting set automatically acquire
+\fIRequires=\fR
+and
+\fIAfter=\fR
+dependencies on the specified slice unit\&.
+.RE
+.SH "UNIFIED AND LEGACY CONTROL GROUP HIERARCHIES"
+.PP
+The unified control group hierarchy is the new version of kernel control group interface, see
+\m[blue]\fBControl Groups v2\fR\m[]\&\s-2\u[2]\d\s+2\&. Depending on the resource type, there are differences in resource control capabilities\&. Also, because of interface changes, some resource types have separate set of options on the unified hierarchy\&.
+.PP
+.PP
+CPU
+.RS 4
+\fICPUWeight=\fR
+and
+\fIStartupCPUWeight=\fR
+replace
+\fICPUShares=\fR
+and
+\fIStartupCPUShares=\fR, respectively\&.
+.sp
+The
+"cpuacct"
+controller does not exist separately on the unified hierarchy\&.
+.RE
+.PP
+Memory
+.RS 4
+\fIMemoryMax=\fR
+replaces
+\fIMemoryLimit=\fR\&.
+\fIMemoryLow=\fR
+and
+\fIMemoryHigh=\fR
+are effective only on unified hierarchy\&.
+.RE
+.PP
+IO
+.RS 4
+"IO"\-prefixed settings are a superset of and replace
+"BlockIO"\-prefixed ones\&. On unified hierarchy, IO resource control also applies to buffered writes\&.
+.RE
+.PP
+To ease the transition, there is best\-effort translation between the two versions of settings\&. For each controller, if any of the settings for the unified hierarchy are present, all settings for the legacy hierarchy are ignored\&. If the resulting settings are for the other type of hierarchy, the configurations are translated before application\&.
+.PP
+Legacy control group hierarchy (see
+\m[blue]\fBControl Groups version 1\fR\m[]\&\s-2\u[3]\d\s+2), also called cgroup\-v1, doesn\*(Aqt allow safe delegation of controllers to unprivileged processes\&. If the system uses the legacy control group hierarchy, resource control is disabled for the systemd user instance, see
+\fBsystemd\fR(1)\&.
+.SH "OPTIONS"
+.PP
+Units of the types listed above can have settings for resource control configuration:
+.PP
+\fICPUAccounting=\fR
+.RS 4
+Turn on CPU usage accounting for this unit\&. Takes a boolean argument\&. Note that turning on CPU accounting for one unit will also implicitly turn it on for all units contained in the same slice and for all its parent slices and the units contained therein\&. The system default for this setting may be controlled with
+\fIDefaultCPUAccounting=\fR
+in
+\fBsystemd-system.conf\fR(5)\&.
+.RE
+.PP
+\fICPUWeight=\fR\fI\fIweight\fR\fR, \fIStartupCPUWeight=\fR\fI\fIweight\fR\fR
+.RS 4
+Assign the specified CPU time weight to the processes executed, if the unified control group hierarchy is used on the system\&. These options take an integer value and control the
+"cpu\&.weight"
+control group attribute\&. The allowed range is 1 to 10000\&. Defaults to 100\&. For details about this control group attribute, see
+\m[blue]\fBControl Groups v2\fR\m[]\&\s-2\u[2]\d\s+2
+and
+\m[blue]\fBCFS Scheduler\fR\m[]\&\s-2\u[4]\d\s+2\&. The available CPU time is split up among all units within one slice relative to their CPU time weight\&.
+.sp
+While
+\fIStartupCPUWeight=\fR
+only applies to the startup phase of the system,
+\fICPUWeight=\fR
+applies to normal runtime of the system, and if the former is not set also to the startup phase\&. Using
+\fIStartupCPUWeight=\fR
+allows prioritizing specific services at boot\-up differently than during normal runtime\&.
+.sp
+These settings replace
+\fICPUShares=\fR
+and
+\fIStartupCPUShares=\fR\&.
+.RE
+.PP
+\fICPUQuota=\fR
+.RS 4
+Assign the specified CPU time quota to the processes executed\&. Takes a percentage value, suffixed with "%"\&. The percentage specifies how much CPU time the unit shall get at maximum, relative to the total CPU time available on one CPU\&. Use values > 100% for allotting CPU time on more than one CPU\&. This controls the
+"cpu\&.max"
+attribute on the unified control group hierarchy and
+"cpu\&.cfs_quota_us"
+on legacy\&. For details about these control group attributes, see
+\m[blue]\fBControl Groups v2\fR\m[]\&\s-2\u[2]\d\s+2
+and
+\m[blue]\fBsched\-bwc\&.txt\fR\m[]\&\s-2\u[5]\d\s+2\&.
+.sp
+Example:
+\fICPUQuota=20%\fR
+ensures that the executed processes will never get more than 20% CPU time on one CPU\&.
+.RE
+.PP
+\fICPUQuotaPeriodSec=\fR
+.RS 4
+Assign the duration over which the CPU time quota specified by
+\fICPUQuota=\fR
+is measured\&. Takes a time duration value in seconds, with an optional suffix such as "ms" for milliseconds (or "s" for seconds\&.) The default setting is 100ms\&. The period is clamped to the range supported by the kernel, which is [1ms, 1000ms]\&. Additionally, the period is adjusted up so that the quota interval is also at least 1ms\&. Setting
+\fICPUQuotaPeriodSec=\fR
+to an empty value resets it to the default\&.
+.sp
+This controls the second field of
+"cpu\&.max"
+attribute on the unified control group hierarchy and
+"cpu\&.cfs_period_us"
+on legacy\&. For details about these control group attributes, see
+\m[blue]\fBControl Groups v2\fR\m[]\&\s-2\u[2]\d\s+2
+and
+\m[blue]\fBCFS Scheduler\fR\m[]\&\s-2\u[4]\d\s+2\&.
+.sp
+Example:
+\fICPUQuotaPeriodSec=10ms\fR
+to request that the CPU quota is measured in periods of 10ms\&.
+.RE
+.PP
+\fIAllowedCPUs=\fR
+.RS 4
+Restrict processes to be executed on specific CPUs\&. Takes a list of CPU indices or ranges separated by either whitespace or commas\&. CPU ranges are specified by the lower and upper CPU indices separated by a dash\&.
+.sp
+Setting
+\fIAllowedCPUs=\fR
+doesn\*(Aqt guarantee that all of the CPUs will be used by the processes as it may be limited by parent units\&. The effective configuration is reported as
+\fIEffectiveCPUs=\fR\&.
+.sp
+This setting is supported only with the unified control group hierarchy\&.
+.RE
+.PP
+\fIAllowedMemoryNodes=\fR
+.RS 4
+Restrict processes to be executed on specific memory NUMA nodes\&. Takes a list of memory NUMA nodes indices or ranges separated by either whitespace or commas\&. Memory NUMA nodes ranges are specified by the lower and upper NUMA nodes indices separated by a dash\&.
+.sp
+Setting
+\fIAllowedMemoryNodes=\fR
+doesn\*(Aqt guarantee that all of the memory NUMA nodes will be used by the processes as it may be limited by parent units\&. The effective configuration is reported as
+\fIEffectiveMemoryNodes=\fR\&.
+.sp
+This setting is supported only with the unified control group hierarchy\&.
+.RE
+.PP
+\fIMemoryAccounting=\fR
+.RS 4
+Turn on process and kernel memory accounting for this unit\&. Takes a boolean argument\&. Note that turning on memory accounting for one unit will also implicitly turn it on for all units contained in the same slice and for all its parent slices and the units contained therein\&. The system default for this setting may be controlled with
+\fIDefaultMemoryAccounting=\fR
+in
+\fBsystemd-system.conf\fR(5)\&.
+.RE
+.PP
+\fIMemoryMin=\fR\fI\fIbytes\fR\fR, \fIMemoryLow=\fR\fI\fIbytes\fR\fR
+.RS 4
+Specify the memory usage protection of the executed processes in this unit\&. When reclaiming memory, the unit is treated as if it was using less memory resulting in memory to be preferentially reclaimed from unprotected units\&. Using
+\fIMemoryLow=\fR
+results in a weaker protection where memory may still be reclaimed to avoid invoking the OOM killer in case there is no other reclaimable memory\&.
+.sp
+For a protection to be effective, it is generally required to set a corresponding allocation on all ancestors, which is then distributed between children (with the exception of the root slice)\&. Any
+\fIMemoryMin=\fR
+or
+\fIMemoryLow=\fR
+allocation that is not explicitly distributed to specific children is used to create a shared protection for all children\&. As this is a shared protection, the children will freely compete for the memory\&.
+.sp
+Takes a memory size in bytes\&. If the value is suffixed with K, M, G or T, the specified memory size is parsed as Kilobytes, Megabytes, Gigabytes, or Terabytes (with the base 1024), respectively\&. Alternatively, a percentage value may be specified, which is taken relative to the installed physical memory on the system\&. If assigned the special value
+"infinity", all available memory is protected, which may be useful in order to always inherit all of the protection afforded by ancestors\&. This controls the
+"memory\&.min"
+or
+"memory\&.low"
+control group attribute\&. For details about this control group attribute, see
+\m[blue]\fBMemory Interface Files\fR\m[]\&\s-2\u[6]\d\s+2\&.
+.sp
+This setting is supported only if the unified control group hierarchy is used and disables
+\fIMemoryLimit=\fR\&.
+.sp
+Units may have their children use a default
+"memory\&.min"
+or
+"memory\&.low"
+value by specifying
+\fIDefaultMemoryMin=\fR
+or
+\fIDefaultMemoryLow=\fR, which has the same semantics as
+\fIMemoryMin=\fR
+and
+\fIMemoryLow=\fR\&. This setting does not affect
+"memory\&.min"
+or
+"memory\&.low"
+in the unit itself\&. Using it to set a default child allocation is only useful on kernels older than 5\&.7, which do not support the
+"memory_recursiveprot"
+cgroup2 mount option\&.
+.RE
+.PP
+\fIMemoryHigh=\fR\fI\fIbytes\fR\fR
+.RS 4
+Specify the throttling limit on memory usage of the executed processes in this unit\&. Memory usage may go above the limit if unavoidable, but the processes are heavily slowed down and memory is taken away aggressively in such cases\&. This is the main mechanism to control memory usage of a unit\&.
+.sp
+Takes a memory size in bytes\&. If the value is suffixed with K, M, G or T, the specified memory size is parsed as Kilobytes, Megabytes, Gigabytes, or Terabytes (with the base 1024), respectively\&. Alternatively, a percentage value may be specified, which is taken relative to the installed physical memory on the system\&. If assigned the special value
+"infinity", no memory throttling is applied\&. This controls the
+"memory\&.high"
+control group attribute\&. For details about this control group attribute, see
+\m[blue]\fBMemory Interface Files\fR\m[]\&\s-2\u[6]\d\s+2\&.
+.sp
+This setting is supported only if the unified control group hierarchy is used and disables
+\fIMemoryLimit=\fR\&.
+.RE
+.PP
+\fIMemoryMax=\fR\fI\fIbytes\fR\fR
+.RS 4
+Specify the absolute limit on memory usage of the executed processes in this unit\&. If memory usage cannot be contained under the limit, out\-of\-memory killer is invoked inside the unit\&. It is recommended to use
+\fIMemoryHigh=\fR
+as the main control mechanism and use
+\fIMemoryMax=\fR
+as the last line of defense\&.
+.sp
+Takes a memory size in bytes\&. If the value is suffixed with K, M, G or T, the specified memory size is parsed as Kilobytes, Megabytes, Gigabytes, or Terabytes (with the base 1024), respectively\&. Alternatively, a percentage value may be specified, which is taken relative to the installed physical memory on the system\&. If assigned the special value
+"infinity", no memory limit is applied\&. This controls the
+"memory\&.max"
+control group attribute\&. For details about this control group attribute, see
+\m[blue]\fBMemory Interface Files\fR\m[]\&\s-2\u[6]\d\s+2\&.
+.sp
+This setting replaces
+\fIMemoryLimit=\fR\&.
+.RE
+.PP
+\fIMemorySwapMax=\fR\fI\fIbytes\fR\fR
+.RS 4
+Specify the absolute limit on swap usage of the executed processes in this unit\&.
+.sp
+Takes a swap size in bytes\&. If the value is suffixed with K, M, G or T, the specified swap size is parsed as Kilobytes, Megabytes, Gigabytes, or Terabytes (with the base 1024), respectively\&. If assigned the special value
+"infinity", no swap limit is applied\&. This controls the
+"memory\&.swap\&.max"
+control group attribute\&. For details about this control group attribute, see
+\m[blue]\fBMemory Interface Files\fR\m[]\&\s-2\u[6]\d\s+2\&.
+.sp
+This setting is supported only if the unified control group hierarchy is used and disables
+\fIMemoryLimit=\fR\&.
+.RE
+.PP
+\fITasksAccounting=\fR
+.RS 4
+Turn on task accounting for this unit\&. Takes a boolean argument\&. If enabled, the system manager will keep track of the number of tasks in the unit\&. The number of tasks accounted this way includes both kernel threads and userspace processes, with each thread counting individually\&. Note that turning on tasks accounting for one unit will also implicitly turn it on for all units contained in the same slice and for all its parent slices and the units contained therein\&. The system default for this setting may be controlled with
+\fIDefaultTasksAccounting=\fR
+in
+\fBsystemd-system.conf\fR(5)\&.
+.RE
+.PP
+\fITasksMax=\fR\fI\fIN\fR\fR
+.RS 4
+Specify the maximum number of tasks that may be created in the unit\&. This ensures that the number of tasks accounted for the unit (see above) stays below a specific limit\&. This either takes an absolute number of tasks or a percentage value that is taken relative to the configured maximum number of tasks on the system\&. If assigned the special value
+"infinity", no tasks limit is applied\&. This controls the
+"pids\&.max"
+control group attribute\&. For details about this control group attribute, see
+\m[blue]\fBProcess Number Controller\fR\m[]\&\s-2\u[7]\d\s+2\&.
+.sp
+The system default for this setting may be controlled with
+\fIDefaultTasksMax=\fR
+in
+\fBsystemd-system.conf\fR(5)\&.
+.RE
+.PP
+\fIIOAccounting=\fR
+.RS 4
+Turn on Block I/O accounting for this unit, if the unified control group hierarchy is used on the system\&. Takes a boolean argument\&. Note that turning on block I/O accounting for one unit will also implicitly turn it on for all units contained in the same slice and all for its parent slices and the units contained therein\&. The system default for this setting may be controlled with
+\fIDefaultIOAccounting=\fR
+in
+\fBsystemd-system.conf\fR(5)\&.
+.sp
+This setting replaces
+\fIBlockIOAccounting=\fR
+and disables settings prefixed with
+\fIBlockIO\fR
+or
+\fIStartupBlockIO\fR\&.
+.RE
+.PP
+\fIIOWeight=\fR\fI\fIweight\fR\fR, \fIStartupIOWeight=\fR\fI\fIweight\fR\fR
+.RS 4
+Set the default overall block I/O weight for the executed processes, if the unified control group hierarchy is used on the system\&. Takes a single weight value (between 1 and 10000) to set the default block I/O weight\&. This controls the
+"io\&.weight"
+control group attribute, which defaults to 100\&. For details about this control group attribute, see
+\m[blue]\fBIO Interface Files\fR\m[]\&\s-2\u[8]\d\s+2\&. The available I/O bandwidth is split up among all units within one slice relative to their block I/O weight\&.
+.sp
+While
+\fIStartupIOWeight=\fR
+only applies to the startup phase of the system,
+\fIIOWeight=\fR
+applies to the later runtime of the system, and if the former is not set also to the startup phase\&. This allows prioritizing specific services at boot\-up differently than during runtime\&.
+.sp
+These settings replace
+\fIBlockIOWeight=\fR
+and
+\fIStartupBlockIOWeight=\fR
+and disable settings prefixed with
+\fIBlockIO\fR
+or
+\fIStartupBlockIO\fR\&.
+.RE
+.PP
+\fIIODeviceWeight=\fR\fI\fIdevice\fR\fR\fI \fR\fI\fIweight\fR\fR
+.RS 4
+Set the per\-device overall block I/O weight for the executed processes, if the unified control group hierarchy is used on the system\&. Takes a space\-separated pair of a file path and a weight value to specify the device specific weight value, between 1 and 10000\&. (Example:
+"/dev/sda 1000")\&. The file path may be specified as path to a block device node or as any other file, in which case the backing block device of the file system of the file is determined\&. This controls the
+"io\&.weight"
+control group attribute, which defaults to 100\&. Use this option multiple times to set weights for multiple devices\&. For details about this control group attribute, see
+\m[blue]\fBIO Interface Files\fR\m[]\&\s-2\u[8]\d\s+2\&.
+.sp
+This setting replaces
+\fIBlockIODeviceWeight=\fR
+and disables settings prefixed with
+\fIBlockIO\fR
+or
+\fIStartupBlockIO\fR\&.
+.sp
+The specified device node should reference a block device that has an I/O scheduler associated, i\&.e\&. should not refer to partition or loopback block devices, but to the originating, physical device\&. When a path to a regular file or directory is specified it is attempted to discover the correct originating device backing the file system of the specified path\&. This works correctly only for simpler cases, where the file system is directly placed on a partition or physical block device, or where simple 1:1 encryption using dm\-crypt/LUKS is used\&. This discovery does not cover complex storage and in particular RAID and volume management storage devices\&.
+.RE
+.PP
+\fIIOReadBandwidthMax=\fR\fI\fIdevice\fR\fR\fI \fR\fI\fIbytes\fR\fR, \fIIOWriteBandwidthMax=\fR\fI\fIdevice\fR\fR\fI \fR\fI\fIbytes\fR\fR
+.RS 4
+Set the per\-device overall block I/O bandwidth maximum limit for the executed processes, if the unified control group hierarchy is used on the system\&. This limit is not work\-conserving and the executed processes are not allowed to use more even if the device has idle capacity\&. Takes a space\-separated pair of a file path and a bandwidth value (in bytes per second) to specify the device specific bandwidth\&. The file path may be a path to a block device node, or as any other file in which case the backing block device of the file system of the file is used\&. If the bandwidth is suffixed with K, M, G, or T, the specified bandwidth is parsed as Kilobytes, Megabytes, Gigabytes, or Terabytes, respectively, to the base of 1000\&. (Example: "/dev/disk/by\-path/pci\-0000:00:1f\&.2\-scsi\-0:0:0:0 5M")\&. This controls the
+"io\&.max"
+control group attributes\&. Use this option multiple times to set bandwidth limits for multiple devices\&. For details about this control group attribute, see
+\m[blue]\fBIO Interface Files\fR\m[]\&\s-2\u[8]\d\s+2\&.
+.sp
+These settings replace
+\fIBlockIOReadBandwidth=\fR
+and
+\fIBlockIOWriteBandwidth=\fR
+and disable settings prefixed with
+\fIBlockIO\fR
+or
+\fIStartupBlockIO\fR\&.
+.sp
+Similar restrictions on block device discovery as for
+\fIIODeviceWeight=\fR
+apply, see above\&.
+.RE
+.PP
+\fIIOReadIOPSMax=\fR\fI\fIdevice\fR\fR\fI \fR\fI\fIIOPS\fR\fR, \fIIOWriteIOPSMax=\fR\fI\fIdevice\fR\fR\fI \fR\fI\fIIOPS\fR\fR
+.RS 4
+Set the per\-device overall block I/O IOs\-Per\-Second maximum limit for the executed processes, if the unified control group hierarchy is used on the system\&. This limit is not work\-conserving and the executed processes are not allowed to use more even if the device has idle capacity\&. Takes a space\-separated pair of a file path and an IOPS value to specify the device specific IOPS\&. The file path may be a path to a block device node, or as any other file in which case the backing block device of the file system of the file is used\&. If the IOPS is suffixed with K, M, G, or T, the specified IOPS is parsed as KiloIOPS, MegaIOPS, GigaIOPS, or TeraIOPS, respectively, to the base of 1000\&. (Example: "/dev/disk/by\-path/pci\-0000:00:1f\&.2\-scsi\-0:0:0:0 1K")\&. This controls the
+"io\&.max"
+control group attributes\&. Use this option multiple times to set IOPS limits for multiple devices\&. For details about this control group attribute, see
+\m[blue]\fBIO Interface Files\fR\m[]\&\s-2\u[8]\d\s+2\&.
+.sp
+These settings are supported only if the unified control group hierarchy is used and disable settings prefixed with
+\fIBlockIO\fR
+or
+\fIStartupBlockIO\fR\&.
+.sp
+Similar restrictions on block device discovery as for
+\fIIODeviceWeight=\fR
+apply, see above\&.
+.RE
+.PP
+\fIIODeviceLatencyTargetSec=\fR\fI\fIdevice\fR\fR\fI \fR\fI\fItarget\fR\fR
+.RS 4
+Set the per\-device average target I/O latency for the executed processes, if the unified control group hierarchy is used on the system\&. Takes a file path and a timespan separated by a space to specify the device specific latency target\&. (Example: "/dev/sda 25ms")\&. The file path may be specified as path to a block device node or as any other file, in which case the backing block device of the file system of the file is determined\&. This controls the
+"io\&.latency"
+control group attribute\&. Use this option multiple times to set latency target for multiple devices\&. For details about this control group attribute, see
+\m[blue]\fBIO Interface Files\fR\m[]\&\s-2\u[8]\d\s+2\&.
+.sp
+Implies
+"IOAccounting=yes"\&.
+.sp
+These settings are supported only if the unified control group hierarchy is used\&.
+.sp
+Similar restrictions on block device discovery as for
+\fIIODeviceWeight=\fR
+apply, see above\&.
+.RE
+.PP
+\fIIPAccounting=\fR
+.RS 4
+Takes a boolean argument\&. If true, turns on IPv4 and IPv6 network traffic accounting for packets sent or received by the unit\&. When this option is turned on, all IPv4 and IPv6 sockets created by any process of the unit are accounted for\&.
+.sp
+When this option is used in socket units, it applies to all IPv4 and IPv6 sockets associated with it (including both listening and connection sockets where this applies)\&. Note that for socket\-activated services, this configuration setting and the accounting data of the service unit and the socket unit are kept separate, and displayed separately\&. No propagation of the setting and the collected statistics is done, in either direction\&. Moreover, any traffic sent or received on any of the socket unit\*(Aqs sockets is accounted to the socket unit \(em and never to the service unit it might have activated, even if the socket is used by it\&.
+.sp
+The system default for this setting may be controlled with
+\fIDefaultIPAccounting=\fR
+in
+\fBsystemd-system.conf\fR(5)\&.
+.RE
+.PP
+\fIIPAddressAllow=\fR\fI\fIADDRESS[/PREFIXLENGTH]\&...\fR\fR, \fIIPAddressDeny=\fR\fI\fIADDRESS[/PREFIXLENGTH]\&...\fR\fR
+.RS 4
+Turn on network traffic filtering for IP packets sent and received over
+\fBAF_INET\fR
+and
+\fBAF_INET6\fR
+sockets\&. Both directives take a space separated list of IPv4 or IPv6 addresses, each optionally suffixed with an address prefix length in bits after a
+"/"
+character\&. If the suffix is omitted, the address is considered a host address, i\&.e\&. the filter covers the whole address (32 bits for IPv4, 128 bits for IPv6)\&.
+.sp
+The access lists configured with this option are applied to all sockets created by processes of this unit (or in the case of socket units, associated with it)\&. The lists are implicitly combined with any lists configured for any of the parent slice units this unit might be a member of\&. By default both access lists are empty\&. Both ingress and egress traffic is filtered by these settings\&. In case of ingress traffic the source IP address is checked against these access lists, in case of egress traffic the destination IP address is checked\&. The following rules are applied in turn:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Access is granted when the checked IP address matches an entry in the
+\fIIPAddressAllow=\fR
+list\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Otherwise, access is denied when the checked IP address matches an entry in the
+\fIIPAddressDeny=\fR
+list\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Otherwise, access is granted\&.
+.RE
+.sp
+In order to implement an allow\-listing IP firewall, it is recommended to use a
+\fIIPAddressDeny=\fR\fBany\fR
+setting on an upper\-level slice unit (such as the root slice
+\-\&.slice
+or the slice containing all system services
+system\&.slice
+\(en see
+\fBsystemd.special\fR(7)
+for details on these slice units), plus individual per\-service
+\fIIPAddressAllow=\fR
+lines permitting network access to relevant services, and only them\&.
+.sp
+Note that for socket\-activated services, the IP access list configured on the socket unit applies to all sockets associated with it directly, but not to any sockets created by the ultimately activated services for it\&. Conversely, the IP access list configured for the service is not applied to any sockets passed into the service via socket activation\&. Thus, it is usually a good idea to replicate the IP access lists on both the socket and the service unit\&. Nevertheless, it may make sense to maintain one list more open and the other one more restricted, depending on the usecase\&.
+.sp
+If these settings are used multiple times in the same unit the specified lists are combined\&. If an empty string is assigned to these settings the specific access list is reset and all previous settings undone\&.
+.sp
+In place of explicit IPv4 or IPv6 address and prefix length specifications a small set of symbolic names may be used\&. The following names are defined:
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+.B Table\ \&1.\ \&Special address/network names
+.TS
+allbox tab(:);
+lB lB lB.
+T{
+Symbolic Name
+T}:T{
+Definition
+T}:T{
+Meaning
+T}
+.T&
+l l l
+l l l
+l l l
+l l l.
+T{
+\fBany\fR
+T}:T{
+0\&.0\&.0\&.0/0 ::/0
+T}:T{
+Any host
+T}
+T{
+\fBlocalhost\fR
+T}:T{
+127\&.0\&.0\&.0/8 ::1/128
+T}:T{
+All addresses on the local loopback
+T}
+T{
+\fBlink\-local\fR
+T}:T{
+169\&.254\&.0\&.0/16 fe80::/64
+T}:T{
+All link\-local IP addresses
+T}
+T{
+\fBmulticast\fR
+T}:T{
+224\&.0\&.0\&.0/4 ff00::/8
+T}:T{
+All IP multicasting addresses
+T}
+.TE
+.sp 1
+Note that these settings might not be supported on some systems (for example if eBPF control group support is not enabled in the underlying kernel or container manager)\&. These settings will have no effect in that case\&. If compatibility with such systems is desired it is hence recommended to not exclusively rely on them for IP security\&.
+.RE
+.PP
+\fIIPIngressFilterPath=\fR\fI\fIBPF_FS_PROGRAM_PATH\fR\fR, \fIIPEgressFilterPath=\fR\fI\fIBPF_FS_PROGRAM_PATH\fR\fR
+.RS 4
+Add custom network traffic filters implemented as BPF programs, applying to all IP packets sent and received over
+\fBAF_INET\fR
+and
+\fBAF_INET6\fR
+sockets\&. Takes an absolute path to a pinned BPF program in the BPF virtual filesystem (/sys/fs/bpf/)\&.
+.sp
+The filters configured with this option are applied to all sockets created by processes of this unit (or in the case of socket units, associated with it)\&. The filters are loaded in addition to filters any of the parent slice units this unit might be a member of as well as any
+\fIIPAddressAllow=\fR
+and
+\fIIPAddressDeny=\fR
+filters in any of these units\&. By default there are no filters specified\&.
+.sp
+If these settings are used multiple times in the same unit all the specified programs are attached\&. If an empty string is assigned to these settings the program list is reset and all previous specified programs ignored\&.
+.sp
+Note that for socket\-activated services, the IP filter programs configured on the socket unit apply to all sockets associated with it directly, but not to any sockets created by the ultimately activated services for it\&. Conversely, the IP filter programs configured for the service are not applied to any sockets passed into the service via socket activation\&. Thus, it is usually a good idea, to replicate the IP filter programs on both the socket and the service unit, however it often makes sense to maintain one configuration more open and the other one more restricted, depending on the usecase\&.
+.sp
+Note that these settings might not be supported on some systems (for example if eBPF control group support is not enabled in the underlying kernel or container manager)\&. These settings will fail the service in that case\&. If compatibility with such systems is desired it is hence recommended to attach your filter manually (requires
+\fIDelegate=\fR\fByes\fR) instead of using this setting\&.
+.RE
+.PP
+\fIDeviceAllow=\fR
+.RS 4
+Control access to specific device nodes by the executed processes\&. Takes two space\-separated strings: a device node specifier followed by a combination of
+\fBr\fR,
+\fBw\fR,
+\fBm\fR
+to control
+\fIr\fReading,
+\fIw\fRriting, or creation of the specific device node(s) by the unit (\fIm\fRknod), respectively\&. On cgroup\-v1 this controls the
+"devices\&.allow"
+control group attribute\&. For details about this control group attribute, see
+\m[blue]\fBDevice Whitelist Controller\fR\m[]\&\s-2\u[9]\d\s+2\&. In the unified cgroup hierarchy this functionality is implemented using eBPF filtering\&.
+.sp
+The device node specifier is either a path to a device node in the file system, starting with
+/dev/, or a string starting with either
+"char\-"
+or
+"block\-"
+followed by a device group name, as listed in
+/proc/devices\&. The latter is useful to allow\-list all current and future devices belonging to a specific device group at once\&. The device group is matched according to filename globbing rules, you may hence use the
+"*"
+and
+"?"
+wildcards\&. (Note that such globbing wildcards are not available for device node path specifications!) In order to match device nodes by numeric major/minor, use device node paths in the
+/dev/char/
+and
+/dev/block/
+directories\&. However, matching devices by major/minor is generally not recommended as assignments are neither stable nor portable between systems or different kernel versions\&.
+.sp
+Examples:
+/dev/sda5
+is a path to a device node, referring to an ATA or SCSI block device\&.
+"char\-pts"
+and
+"char\-alsa"
+are specifiers for all pseudo TTYs and all ALSA sound devices, respectively\&.
+"char\-cpu/*"
+is a specifier matching all CPU related device groups\&.
+.sp
+Note that allow lists defined this way should only reference device groups which are resolvable at the time the unit is started\&. Any device groups not resolvable then are not added to the device allow list\&. In order to work around this limitation, consider extending service units with a pair of
+\fBAfter=modprobe@xyz\&.service\fR
+and
+\fBWants=modprobe@xyz\&.service\fR
+lines that load the necessary kernel module implementing the device group if missing\&. Example:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+\&...
+[Unit]
+Wants=modprobe@loop\&.service
+After=modprobe@loop\&.service
+
+[Service]
+DeviceAllow=block\-loop
+DeviceAllow=/dev/loop\-control
+\&...
+.fi
+.if n \{\
+.RE
+.\}
+.RE
+.PP
+\fIDevicePolicy=auto|closed|strict\fR
+.RS 4
+Control the policy for allowing device access:
+.PP
+\fBstrict\fR
+.RS 4
+means to only allow types of access that are explicitly specified\&.
+.RE
+.PP
+\fBclosed\fR
+.RS 4
+in addition, allows access to standard pseudo devices including
+/dev/null,
+/dev/zero,
+/dev/full,
+/dev/random, and
+/dev/urandom\&.
+.RE
+.PP
+\fBauto\fR
+.RS 4
+in addition, allows access to all devices if no explicit
+\fIDeviceAllow=\fR
+is present\&. This is the default\&.
+.RE
+.RE
+.PP
+\fISlice=\fR
+.RS 4
+The name of the slice unit to place the unit in\&. Defaults to
+system\&.slice
+for all non\-instantiated units of all unit types (except for slice units themselves see below)\&. Instance units are by default placed in a subslice of
+system\&.slice
+that is named after the template name\&.
+.sp
+This option may be used to arrange systemd units in a hierarchy of slices each of which might have resource settings applied\&.
+.sp
+For units of type slice, the only accepted value for this setting is the parent slice\&. Since the name of a slice unit implies the parent slice, it is hence redundant to ever set this parameter directly for slice units\&.
+.sp
+Special care should be taken when relying on the default slice assignment in templated service units that have
+\fIDefaultDependencies=no\fR
+set, see
+\fBsystemd.service\fR(5), section "Default Dependencies" for details\&.
+.RE
+.PP
+\fIDelegate=\fR
+.RS 4
+Turns on delegation of further resource control partitioning to processes of the unit\&. Units where this is enabled may create and manage their own private subhierarchy of control groups below the control group of the unit itself\&. For unprivileged services (i\&.e\&. those using the
+\fIUser=\fR
+setting) the unit\*(Aqs control group will be made accessible to the relevant user\&. When enabled the service manager will refrain from manipulating control groups or moving processes below the unit\*(Aqs control group, so that a clear concept of ownership is established: the control group tree above the unit\*(Aqs control group (i\&.e\&. towards the root control group) is owned and managed by the service manager of the host, while the control group tree below the unit\*(Aqs control group is owned and managed by the unit itself\&. Takes either a boolean argument or a list of control group controller names\&. If true, delegation is turned on, and all supported controllers are enabled for the unit, making them available to the unit\*(Aqs processes for management\&. If false, delegation is turned off entirely (and no additional controllers are enabled)\&. If set to a list of controllers, delegation is turned on, and the specified controllers are enabled for the unit\&. Note that additional controllers than the ones specified might be made available as well, depending on configuration of the containing slice unit or other units contained in it\&. Note that assigning the empty string will enable delegation, but reset the list of controllers, all assignments prior to this will have no effect\&. Defaults to false\&.
+.sp
+Note that controller delegation to less privileged code is only safe on the unified control group hierarchy\&. Accordingly, access to the specified controllers will not be granted to unprivileged services on the legacy hierarchy, even when requested\&.
+.sp
+The following controller names may be specified:
+\fBcpu\fR,
+\fBcpuacct\fR,
+\fBcpuset\fR,
+\fBio\fR,
+\fBblkio\fR,
+\fBmemory\fR,
+\fBdevices\fR,
+\fBpids\fR,
+\fBbpf\-firewall\fR, and
+\fBbpf\-devices\fR\&.
+.sp
+Not all of these controllers are available on all kernels however, and some are specific to the unified hierarchy while others are specific to the legacy hierarchy\&. Also note that the kernel might support further controllers, which aren\*(Aqt covered here yet as delegation is either not supported at all for them or not defined cleanly\&.
+.sp
+For further details on the delegation model consult
+\m[blue]\fBControl Group APIs and Delegation\fR\m[]\&\s-2\u[10]\d\s+2\&.
+.RE
+.PP
+\fIDisableControllers=\fR
+.RS 4
+Disables controllers from being enabled for a unit\*(Aqs children\&. If a controller listed is already in use in its subtree, the controller will be removed from the subtree\&. This can be used to avoid child units being able to implicitly or explicitly enable a controller\&. Defaults to not disabling any controllers\&.
+.sp
+It may not be possible to successfully disable a controller if the unit or any child of the unit in question delegates controllers to its children, as any delegated subtree of the cgroup hierarchy is unmanaged by systemd\&.
+.sp
+Multiple controllers may be specified, separated by spaces\&. You may also pass
+\fIDisableControllers=\fR
+multiple times, in which case each new instance adds another controller to disable\&. Passing
+\fIDisableControllers=\fR
+by itself with no controller name present resets the disabled controller list\&.
+.sp
+The following controller names may be specified:
+\fBcpu\fR,
+\fBcpuacct\fR,
+\fBcpuset\fR,
+\fBio\fR,
+\fBblkio\fR,
+\fBmemory\fR,
+\fBdevices\fR,
+\fBpids\fR,
+\fBbpf\-firewall\fR, and
+\fBbpf\-devices\fR\&.
+.RE
+.PP
+\fIManagedOOMSwap=auto|kill\fR, \fIManagedOOMMemoryPressure=auto|kill\fR
+.RS 4
+Specifies how
+\fBsystemd-oomd.service\fR(8)
+will act on this unit\*(Aqs cgroups\&. Defaults to
+\fBauto\fR\&.
+.sp
+When set to
+\fBkill\fR,
+\fBsystemd\-oomd\fR
+will actively monitor this unit\*(Aqs cgroup metrics to decide whether it needs to act\&. If the cgroup passes the limits set by
+\fBoomd.conf\fR(5)
+or its overrides,
+\fBsystemd\-oomd\fR
+will send a
+\fBSIGKILL\fR
+to all of the processes under the chosen candidate cgroup\&. Note that only descendant cgroups can be eligible candidates for killing; the unit that set its property to
+\fBkill\fR
+is not a candidate (unless one of its ancestors set their property to
+\fBkill\fR)\&. You can find more details on candidates and kill behavior at
+\fBsystemd-oomd.service\fR(8)
+and
+\fBoomd.conf\fR(5)\&. Setting either of these properties to
+\fBkill\fR
+will also automatically acquire
+\fIAfter=\fR
+and
+\fIWants=\fR
+dependencies on
+systemd\-oomd\&.service
+unless
+\fIDefaultDependencies=no\fR\&.
+.sp
+When set to
+\fBauto\fR,
+\fBsystemd\-oomd\fR
+will not actively use this cgroup\*(Aqs data for monitoring and detection\&. However, if an ancestor cgroup has one of these properties set to
+\fBkill\fR, a unit with
+\fBauto\fR
+can still be an eligible candidate for
+\fBsystemd\-oomd\fR
+to act on\&.
+.RE
+.PP
+\fIManagedOOMMemoryPressureLimit=\fR
+.RS 4
+Overrides the default memory pressure limit set by
+\fBoomd.conf\fR(5)
+for this unit (cgroup)\&. Takes a percentage value between 0% and 100%, inclusive\&. This property is ignored unless
+\fIManagedOOMMemoryPressure=\fR\fBkill\fR\&. Defaults to 0%, which means to use the default set by
+\fBoomd.conf\fR(5)\&.
+.RE
+.PP
+\fIManagedOOMPreference=none|avoid|omit\fR
+.RS 4
+Allows deprioritizing or omitting this unit\*(Aqs cgroup as a candidate when
+\fBsystemd\-oomd\fR
+needs to act\&. Requires support for extended attributes (see
+\fBxattr\fR(7)) in order to use
+\fBavoid\fR
+or
+\fBomit\fR\&. Additionally,
+\fBsystemd\-oomd\fR
+will ignore these extended attributes if the unit\*(Aqs cgroup is not owned by the root user\&.
+.sp
+If this property is set to
+\fBavoid\fR, the service manager will convey this to
+\fBsystemd\-oomd\fR, which will only select this cgroup if there are no other viable candidates\&.
+.sp
+If this property is set to
+\fBomit\fR, the service manager will convey this to
+\fBsystemd\-oomd\fR, which will ignore this cgroup as a candidate and will not perform any actions on it\&.
+.sp
+It is recommended to use
+\fBavoid\fR
+and
+\fBomit\fR
+sparingly, as it can adversely affect
+\fBsystemd\-oomd\fR\*(Aqs kill behavior\&. Also note that these extended attributes are not applied recursively to cgroups under this unit\*(Aqs cgroup\&.
+.sp
+Defaults to
+\fBnone\fR
+which means
+\fBsystemd\-oomd\fR
+will rank this unit\*(Aqs cgroup as defined in
+\fBsystemd-oomd.service\fR(8)
+and
+\fBoomd.conf\fR(5)\&.
+.RE
+.SH "DEPRECATED OPTIONS"
+.PP
+The following options are deprecated\&. Use the indicated superseding options instead:
+.PP
+\fICPUShares=\fR\fI\fIweight\fR\fR, \fIStartupCPUShares=\fR\fI\fIweight\fR\fR
+.RS 4
+Assign the specified CPU time share weight to the processes executed\&. These options take an integer value and control the
+"cpu\&.shares"
+control group attribute\&. The allowed range is 2 to 262144\&. Defaults to 1024\&. For details about this control group attribute, see
+\m[blue]\fBCFS Scheduler\fR\m[]\&\s-2\u[4]\d\s+2\&. The available CPU time is split up among all units within one slice relative to their CPU time share weight\&.
+.sp
+While
+\fIStartupCPUShares=\fR
+only applies to the startup phase of the system,
+\fICPUShares=\fR
+applies to normal runtime of the system, and if the former is not set also to the startup phase\&. Using
+\fIStartupCPUShares=\fR
+allows prioritizing specific services at boot\-up differently than during normal runtime\&.
+.sp
+Implies
+"CPUAccounting=yes"\&.
+.sp
+These settings are deprecated\&. Use
+\fICPUWeight=\fR
+and
+\fIStartupCPUWeight=\fR
+instead\&.
+.RE
+.PP
+\fIMemoryLimit=\fR\fI\fIbytes\fR\fR
+.RS 4
+Specify the limit on maximum memory usage of the executed processes\&. The limit specifies how much process and kernel memory can be used by tasks in this unit\&. Takes a memory size in bytes\&. If the value is suffixed with K, M, G or T, the specified memory size is parsed as Kilobytes, Megabytes, Gigabytes, or Terabytes (with the base 1024), respectively\&. Alternatively, a percentage value may be specified, which is taken relative to the installed physical memory on the system\&. If assigned the special value
+"infinity", no memory limit is applied\&. This controls the
+"memory\&.limit_in_bytes"
+control group attribute\&. For details about this control group attribute, see
+\m[blue]\fBMemory Resource Controller\fR\m[]\&\s-2\u[11]\d\s+2\&.
+.sp
+Implies
+"MemoryAccounting=yes"\&.
+.sp
+This setting is deprecated\&. Use
+\fIMemoryMax=\fR
+instead\&.
+.RE
+.PP
+\fIBlockIOAccounting=\fR
+.RS 4
+Turn on Block I/O accounting for this unit, if the legacy control group hierarchy is used on the system\&. Takes a boolean argument\&. Note that turning on block I/O accounting for one unit will also implicitly turn it on for all units contained in the same slice and all for its parent slices and the units contained therein\&. The system default for this setting may be controlled with
+\fIDefaultBlockIOAccounting=\fR
+in
+\fBsystemd-system.conf\fR(5)\&.
+.sp
+This setting is deprecated\&. Use
+\fIIOAccounting=\fR
+instead\&.
+.RE
+.PP
+\fIBlockIOWeight=\fR\fI\fIweight\fR\fR, \fIStartupBlockIOWeight=\fR\fI\fIweight\fR\fR
+.RS 4
+Set the default overall block I/O weight for the executed processes, if the legacy control group hierarchy is used on the system\&. Takes a single weight value (between 10 and 1000) to set the default block I/O weight\&. This controls the
+"blkio\&.weight"
+control group attribute, which defaults to 500\&. For details about this control group attribute, see
+\m[blue]\fBBlock IO Controller\fR\m[]\&\s-2\u[12]\d\s+2\&. The available I/O bandwidth is split up among all units within one slice relative to their block I/O weight\&.
+.sp
+While
+\fIStartupBlockIOWeight=\fR
+only applies to the startup phase of the system,
+\fIBlockIOWeight=\fR
+applies to the later runtime of the system, and if the former is not set also to the startup phase\&. This allows prioritizing specific services at boot\-up differently than during runtime\&.
+.sp
+Implies
+"BlockIOAccounting=yes"\&.
+.sp
+These settings are deprecated\&. Use
+\fIIOWeight=\fR
+and
+\fIStartupIOWeight=\fR
+instead\&.
+.RE
+.PP
+\fIBlockIODeviceWeight=\fR\fI\fIdevice\fR\fR\fI \fR\fI\fIweight\fR\fR
+.RS 4
+Set the per\-device overall block I/O weight for the executed processes, if the legacy control group hierarchy is used on the system\&. Takes a space\-separated pair of a file path and a weight value to specify the device specific weight value, between 10 and 1000\&. (Example: "/dev/sda 500")\&. The file path may be specified as path to a block device node or as any other file, in which case the backing block device of the file system of the file is determined\&. This controls the
+"blkio\&.weight_device"
+control group attribute, which defaults to 1000\&. Use this option multiple times to set weights for multiple devices\&. For details about this control group attribute, see
+\m[blue]\fBBlock IO Controller\fR\m[]\&\s-2\u[12]\d\s+2\&.
+.sp
+Implies
+"BlockIOAccounting=yes"\&.
+.sp
+This setting is deprecated\&. Use
+\fIIODeviceWeight=\fR
+instead\&.
+.RE
+.PP
+\fIBlockIOReadBandwidth=\fR\fI\fIdevice\fR\fR\fI \fR\fI\fIbytes\fR\fR, \fIBlockIOWriteBandwidth=\fR\fI\fIdevice\fR\fR\fI \fR\fI\fIbytes\fR\fR
+.RS 4
+Set the per\-device overall block I/O bandwidth limit for the executed processes, if the legacy control group hierarchy is used on the system\&. Takes a space\-separated pair of a file path and a bandwidth value (in bytes per second) to specify the device specific bandwidth\&. The file path may be a path to a block device node, or as any other file in which case the backing block device of the file system of the file is used\&. If the bandwidth is suffixed with K, M, G, or T, the specified bandwidth is parsed as Kilobytes, Megabytes, Gigabytes, or Terabytes, respectively, to the base of 1000\&. (Example: "/dev/disk/by\-path/pci\-0000:00:1f\&.2\-scsi\-0:0:0:0 5M")\&. This controls the
+"blkio\&.throttle\&.read_bps_device"
+and
+"blkio\&.throttle\&.write_bps_device"
+control group attributes\&. Use this option multiple times to set bandwidth limits for multiple devices\&. For details about these control group attributes, see
+\m[blue]\fBBlock IO Controller\fR\m[]\&\s-2\u[12]\d\s+2\&.
+.sp
+Implies
+"BlockIOAccounting=yes"\&.
+.sp
+These settings are deprecated\&. Use
+\fIIOReadBandwidthMax=\fR
+and
+\fIIOWriteBandwidthMax=\fR
+instead\&.
+.RE
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsystemd-system.conf\fR(5),
+\fBsystemd.unit\fR(5),
+\fBsystemd.service\fR(5),
+\fBsystemd.slice\fR(5),
+\fBsystemd.scope\fR(5),
+\fBsystemd.socket\fR(5),
+\fBsystemd.mount\fR(5),
+\fBsystemd.swap\fR(5),
+\fBsystemd.exec\fR(5),
+\fBsystemd.directives\fR(7),
+\fBsystemd.special\fR(7),
+\fBsystemd-oomd.service\fR(8), The documentation for control groups and specific controllers in the Linux kernel:
+\m[blue]\fBControl Groups v2\fR\m[]\&\s-2\u[2]\d\s+2\&.
+.SH "NOTES"
+.IP " 1." 4
+New Control Group Interfaces
+.RS 4
+\%https://www.freedesktop.org/wiki/Software/systemd/ControlGroupInterface/
+.RE
+.IP " 2." 4
+Control Groups v2
+.RS 4
+\%https://www.kernel.org/doc/html/latest/admin-guide/cgroup-v2.html
+.RE
+.IP " 3." 4
+Control Groups version 1
+.RS 4
+\%https://www.kernel.org/doc/html/latest/admin-guide/cgroup-v1/
+.RE
+.IP " 4." 4
+CFS Scheduler
+.RS 4
+\%https://www.kernel.org/doc/html/latest/scheduler/sched-design-CFS.html
+.RE
+.IP " 5." 4
+sched-bwc.txt
+.RS 4
+\%https://www.kernel.org/doc/Documentation/scheduler/sched-bwc.txt
+.RE
+.IP " 6." 4
+Memory Interface Files
+.RS 4
+\%https://www.kernel.org/doc/html/latest/admin-guide/cgroup-v2.html#memory-interface-files
+.RE
+.IP " 7." 4
+Process Number Controller
+.RS 4
+\%https://www.kernel.org/doc/html/latest/admin-guide/cgroup-v1/pids.html
+.RE
+.IP " 8." 4
+IO Interface Files
+.RS 4
+\%https://www.kernel.org/doc/html/latest/admin-guide/cgroup-v2.html#io-interface-files
+.RE
+.IP " 9." 4
+Device Whitelist Controller
+.RS 4
+\%https://www.kernel.org/doc/html/latest/admin-guide/cgroup-v1/devices.html
+.RE
+.IP "10." 4
+Control Group APIs and Delegation
+.RS 4
+\%https://systemd.io/CGROUP_DELEGATION
+.RE
+.IP "11." 4
+Memory Resource Controller
+.RS 4
+\%https://www.kernel.org/doc/html/latest/admin-guide/cgroup-v1/memory.html
+.RE
+.IP "12." 4
+Block IO Controller
+.RS 4
+\%https://www.kernel.org/doc/html/latest/admin-guide/cgroup-v1/blkio-controller.html
+.RE

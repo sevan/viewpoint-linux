@@ -1,0 +1,206 @@
+'\" t
+.TH "SD_BUS_SET_ADDRESS" "3" "" "systemd 248" "sd_bus_set_address"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_set_address, sd_bus_get_address, sd_bus_set_exec \- Set or query the address of the bus connection
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_set_address('u
+.BI "int sd_bus_set_address(sd_bus\ *" "bus" ", const\ char\ *" "address" ");"
+.HP \w'int\ sd_bus_get_address('u
+.BI "int sd_bus_get_address(sd_bus\ *" "bus" ", const\ char\ **" "address" ");"
+.HP \w'int\ sd_bus_set_exec('u
+.BI "int sd_bus_set_exec(sd_bus\ *" "bus" ", const\ char\ *" "path" ", char\ *const\ *" "argv" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_set_address()\fR
+configures a list of addresses of bus brokers to try to connect to from a subsequent
+\fBsd_bus_start\fR(3)
+call\&. The argument is a
+";"\-separated list of addresses to try\&. Each item must be one of the following:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+A unix socket address specified as
+"unix:guid=\fIguid\fR,path=\fIpath\fR"
+or
+"unix:guid=\fIguid\fR,abstract=\fIpath\fR"\&. Exactly one of the
+\fIpath=\fR
+and
+\fIabstract=\fR
+keys must be present, while
+\fIguid=\fR
+is optional\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+A TCP socket address specified as
+"tcp:[guid=\fIguid\fR,][host=\fIhost\fR][,port=\fIport\fR][,family=\fIfamily\fR]"\&. One or both of the
+\fIhost=\fR
+and
+\fIport=\fR
+keys must be present, while the rest is optional\&.
+\fIfamily\fR
+may be either
+\fBipv4\fR
+or
+\fBipv6\fR\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+An executable to spawn specified as
+"unixexec:guid=\fIguid\fR,path=\fIpath\fR,argv1=\fIargument\fR,argv2=\fIargument\fR,\&.\&.\&."\&. The
+\fIpath=\fR
+key must be present, while
+\fIguid=\fR
+is optional\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+A machine (container) to connect to specified as
+"x\-machine\-unix:guid=\fIguid\fR,machine=\fImachine\fR,pid=\fIpid\fR"\&. Exactly one of the
+\fImachine=\fR
+and
+\fIpid=\fR
+keys must be present, while
+\fIguid=\fR
+is optional\&.
+\fImachine\fR
+is the name of a local container\&. See
+\fBmachinectl\fR(1)
+for more information about the "machine" concept\&.
+"machine=\&.host"
+may be used to specify the host machine\&. A connection to the standard system bus socket inside of the specified machine will be created\&.
+.RE
+.PP
+In all cases, parameter
+\fIguid\fR
+is an identifier of the remote peer, in the syntax accepted by
+\fBsd_id128_from_string\fR(3)\&. If specified, the identifier returned by the peer after the connection is established will be checked and the connection will be rejected in case of a mismatch\&.
+.PP
+Note that the addresses passed to
+\fBsd_bus_set_address()\fR
+may not be verified immediately\&. If they are invalid, an error may be returned e\&.g\&. from a subsequent call to
+\fBsd_bus_start\fR(3)\&.
+.PP
+\fBsd_bus_get_address()\fR
+returns any previously set addresses\&. In addition to being explicitly set by
+\fBsd_bus_set_address()\fR, the address will also be set automatically by
+\fBsd_bus_open\fR(3)
+and similar calls, based on environment variables or built\-in defaults\&.
+.PP
+\fBsd_bus_set_exec()\fR
+is a shorthand function for setting a
+"unixexec"
+address that spawns the given executable with the given arguments\&. If
+\fIargv\fR
+is
+\fBNULL\fR, the given executable is spawned without any extra arguments\&.
+.SH "RETURN VALUE"
+.PP
+On success, these functions return a non\-negative integer\&. On failure, they return a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+The input parameters
+\fIbus\fR
+or
+\fIaddress\fR
+are
+\fBNULL\fR\&.
+.RE
+.PP
+\fB\-ENOPKG\fR
+.RS 4
+The bus object
+\fIbus\fR
+could not be resolved\&.
+.RE
+.PP
+\fB\-EPERM\fR
+.RS 4
+The input parameter
+\fIbus\fR
+is in a wrong state (\fBsd_bus_set_address()\fR
+may only be called once on a newly\-created bus object)\&.
+.RE
+.PP
+\fB\-ECHILD\fR
+.RS 4
+The bus object
+\fIbus\fR
+was created in a different process\&.
+.RE
+.PP
+\fB\-ENODATA\fR
+.RS 4
+The bus object
+\fIbus\fR
+has no address configured\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd_bus_new\fR(3),
+\fBsd_bus_start\fR(3),
+\fBsystemd-machined.service\fR(8),
+\fBmachinectl\fR(1)

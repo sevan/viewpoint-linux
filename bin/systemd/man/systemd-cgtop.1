@@ -1,0 +1,262 @@
+'\" t
+.TH "SYSTEMD\-CGTOP" "1" "" "systemd 248" "systemd-cgtop"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd-cgtop \- Show top control groups by their resource usage
+.SH "SYNOPSIS"
+.HP \w'\fBsystemd\-cgtop\fR\ 'u
+\fBsystemd\-cgtop\fR [OPTIONS...] [GROUP]
+.SH "DESCRIPTION"
+.PP
+\fBsystemd\-cgtop\fR
+shows the top control groups of the local Linux control group hierarchy, ordered by their CPU, memory, or disk I/O load\&. The display is refreshed in regular intervals (by default every 1s), similar in style to
+\fBtop\fR(1)\&. If a control group path is specified, shows only the services of the specified control group\&.
+.PP
+If
+\fBsystemd\-cgtop\fR
+is not connected to a tty, no column headers are printed and the default is to only run one iteration\&. The
+\fB\-\-iterations=\fR
+argument, if given, is honored\&. This mode is suitable for scripting\&.
+.PP
+Resource usage is only accounted for control groups in the relevant hierarchy, i\&.e\&. CPU usage is only accounted for control groups in the
+"cpuacct"
+hierarchy, memory usage only for those in
+"memory"
+and disk I/O usage for those in
+"blkio"\&. If resource monitoring for these resources is required, it is recommended to add the
+\fICPUAccounting=1\fR,
+\fIMemoryAccounting=1\fR
+and
+\fIBlockIOAccounting=1\fR
+settings in the unit files in question\&. See
+\fBsystemd.resource-control\fR(5)
+for details\&.
+.PP
+The CPU load value can be between 0 and 100 times the number of processors the system has\&. For example, if the system has 8 processors, the CPU load value is going to be between 0% and 800%\&. The number of processors can be found in
+"/proc/cpuinfo"\&.
+.PP
+To emphasize this: unless
+"CPUAccounting=1",
+"MemoryAccounting=1"
+and
+"BlockIOAccounting=1"
+are enabled for the services in question, no resource accounting will be available for system services and the data shown by
+\fBsystemd\-cgtop\fR
+will be incomplete\&.
+.SH "OPTIONS"
+.PP
+The following options are understood:
+.PP
+\fB\-p\fR, \fB\-\-order=path\fR
+.RS 4
+Order by control group path name\&.
+.RE
+.PP
+\fB\-t\fR, \fB\-\-order=tasks\fR
+.RS 4
+Order by number of tasks/processes in the control group\&.
+.RE
+.PP
+\fB\-c\fR, \fB\-\-order=cpu\fR
+.RS 4
+Order by CPU load\&.
+.RE
+.PP
+\fB\-m\fR, \fB\-\-order=memory\fR
+.RS 4
+Order by memory usage\&.
+.RE
+.PP
+\fB\-i\fR, \fB\-\-order=io\fR
+.RS 4
+Order by disk I/O load\&.
+.RE
+.PP
+\fB\-b\fR, \fB\-\-batch\fR
+.RS 4
+Run in "batch" mode: do not accept input and run until the iteration limit set with
+\fB\-\-iterations=\fR
+is exhausted or until killed\&. This mode could be useful for sending output from
+\fBsystemd\-cgtop\fR
+to other programs or to a file\&.
+.RE
+.PP
+\fB\-r\fR, \fB\-\-raw\fR
+.RS 4
+Format byte counts (as in memory usage and I/O metrics) and CPU time with raw numeric values rather than human\-readable numbers\&.
+.RE
+.PP
+\fB\-\-cpu=percentage\fR, \fB\-\-cpu=time\fR
+.RS 4
+Controls whether the CPU usage is shown as percentage or time\&. By default, the CPU usage is shown as percentage\&. This setting may also be toggled at runtime by pressing the
+%
+key\&.
+.RE
+.PP
+\fB\-P\fR
+.RS 4
+Count only userspace processes instead of all tasks\&. By default, all tasks are counted: each kernel thread and each userspace thread individually\&. With this setting, kernel threads are excluded from the counting and each userspace process only counts as one, regardless how many threads it consists of\&. This setting may also be toggled at runtime by pressing the
+P
+key\&. This option may not be combined with
+\fB\-k\fR\&.
+.RE
+.PP
+\fB\-k\fR
+.RS 4
+Count only userspace processes and kernel threads instead of all tasks\&. By default, all tasks are counted: each kernel thread and each userspace thread individually\&. With this setting, kernel threads are included in the counting and each userspace process only counts as on one, regardless how many threads it consists of\&. This setting may also be toggled at runtime by pressing the
+k
+key\&. This option may not be combined with
+\fB\-P\fR\&.
+.RE
+.PP
+\fB\-\-recursive=\fR
+.RS 4
+Controls whether the number of processes shown for a control group shall include all processes that are contained in any of the child control groups as well\&. Takes a boolean argument, which defaults to
+"yes"\&. If enabled, the processes in child control groups are included, if disabled, only the processes in the control group itself are counted\&. This setting may also be toggled at runtime by pressing the
+r
+key\&. Note that this setting only applies to process counting, i\&.e\&. when the
+\fB\-P\fR
+or
+\fB\-k\fR
+options are used\&. It has not effect if all tasks are counted, in which case the counting is always recursive\&.
+.RE
+.PP
+\fB\-n\fR, \fB\-\-iterations=\fR
+.RS 4
+Perform only this many iterations\&. A value of 0 indicates that the program should run indefinitely\&.
+.RE
+.PP
+\fB\-1\fR
+.RS 4
+A shortcut for
+\fB\-\-iterations=1\fR\&.
+.RE
+.PP
+\fB\-d\fR, \fB\-\-delay=\fR
+.RS 4
+Specify refresh delay in seconds (or if one of
+"ms",
+"us",
+"min"
+is specified as unit in this time unit)\&. This setting may also be increased and decreased at runtime by pressing the
++
+and
+\-
+keys\&.
+.RE
+.PP
+\fB\-\-depth=\fR
+.RS 4
+Maximum control group tree traversal depth\&. Specifies how deep
+\fBsystemd\-cgtop\fR
+shall traverse the control group hierarchies\&. If 0 is specified, only the root group is monitored\&. For 1, only the first level of control groups is monitored, and so on\&. Defaults to 3\&.
+.RE
+.PP
+\fB\-M \fR\fB\fIMACHINE\fR\fR, \fB\-\-machine=\fR\fB\fIMACHINE\fR\fR
+.RS 4
+Limit control groups shown to the part corresponding to the container
+\fIMACHINE\fR\&. This option may not be used when a control group path is specified\&.
+.RE
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+Print a short help text and exit\&.
+.RE
+.PP
+\fB\-\-version\fR
+.RS 4
+Print a short version string and exit\&.
+.RE
+.SH "KEYS"
+.PP
+\fBsystemd\-cgtop\fR
+is an interactive tool and may be controlled via user input using the following keys:
+.PP
+h
+.RS 4
+Shows a short help text\&.
+.RE
+.PP
+Space
+.RS 4
+Immediately refresh output\&.
+.RE
+.PP
+q
+.RS 4
+Terminate the program\&.
+.RE
+.PP
+p, t, c, m, i
+.RS 4
+Sort the control groups by path, number of tasks, CPU load, memory usage, or I/O load, respectively\&. This setting may also be controlled using the
+\fB\-\-order=\fR
+command line switch\&.
+.RE
+.PP
+%
+.RS 4
+Toggle between showing CPU time as time or percentage\&. This setting may also be controlled using the
+\fB\-\-cpu=\fR
+command line switch\&.
+.RE
+.PP
++, \-
+.RS 4
+Increase or decrease refresh delay, respectively\&. This setting may also be controlled using the
+\fB\-\-delay=\fR
+command line switch\&.
+.RE
+.PP
+P
+.RS 4
+Toggle between counting all tasks, or only userspace processes\&. This setting may also be controlled using the
+\fB\-P\fR
+command line switch (see above)\&.
+.RE
+.PP
+k
+.RS 4
+Toggle between counting all tasks, or only userspace processes and kernel threads\&. This setting may also be controlled using the
+\fB\-k\fR
+command line switch (see above)\&.
+.RE
+.PP
+r
+.RS 4
+Toggle between recursively including or excluding processes in child control groups in control group process counts\&. This setting may also be controlled using the
+\fB\-\-recursive=\fR
+command line switch\&. This key is not available if all tasks are counted, it is only available if processes are counted, as enabled with the
+P
+or
+k
+keys\&.
+.RE
+.SH "EXIT STATUS"
+.PP
+On success, 0 is returned, a non\-zero failure code otherwise\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsystemctl\fR(1),
+\fBsystemd-cgls\fR(1),
+\fBsystemd.resource-control\fR(5),
+\fBtop\fR(1)

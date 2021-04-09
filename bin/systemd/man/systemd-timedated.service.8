@@ -1,0 +1,154 @@
+'\" t
+.TH "SYSTEMD\-TIMEDATED\&.SERVICE" "8" "" "systemd 248" "systemd-timedated.service"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd-timedated.service, systemd-timedated \- Time and date bus mechanism
+.SH "SYNOPSIS"
+.PP
+systemd\-timedated\&.service
+.PP
+/usr/lib/systemd/systemd\-timedated
+.SH "DESCRIPTION"
+.PP
+systemd\-timedated\&.service
+is a system service that may be used as a mechanism to change the system clock and timezone, as well as to enable/disable network time synchronization\&.
+systemd\-timedated
+is automatically activated on request and terminates itself when it is unused\&.
+.PP
+The tool
+\fBtimedatectl\fR(1)
+is a command line client to this service\&.
+.PP
+systemd\-timedated
+currently offers access to the following four settings:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+The system time
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+The system timezone
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+A boolean controlling whether the system RTC is in local or UTC timezone
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Whether the time synchronization service is enabled/started or disabled/stopped, see next section\&.
+.RE
+.PP
+See
+\fBorg.freedesktop.timedate1\fR(5)
+and
+\fBorg.freedesktop.LogControl1\fR(5)
+for information about the D\-Bus API\&.
+.SH "LIST OF NETWORK TIME SYNCHRONIZATION SERVICES"
+.PP
+\fBsystemd\-timesyncd\fR
+will look for files with a
+"\&.list"
+extension in
+ntp\-units\&.d/
+directories\&. Each file is parsed as a list of unit names, one per line\&. Empty lines and lines with comments ("#") are ignored\&. Files are read from
+/usr/lib/systemd/ntp\-units\&.d/
+and the corresponding directories under
+/etc/,
+/run/,
+/usr/local/lib/\&. Files in
+/etc/
+override files with the same name in
+/run/,
+/usr/local/lib/, and
+/usr/lib/\&. Files in
+/run/
+override files with the same name under
+/usr/\&. Packages should install their configuration files in
+/usr/lib/
+(distribution packages) or
+/usr/local/lib/
+(local installs)\&.
+.PP
+\fBExample\ \&1.\ \&ntp\-units\&.d/ entry for systemd\-timesyncd\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+# /usr/lib/systemd/ntp\-units\&.d/80\-systemd\-timesync\&.list
+systemd\-timesyncd\&.service
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+If the environment variable
+\fI$SYSTEMD_TIMEDATED_NTP_SERVICES\fR
+is set,
+\fBsystemd\-timesyncd\fR
+will parse the contents of that variable as a colon\-separated list of unit names\&. When set, this variable overrides the file\-based list described above\&.
+.PP
+\fBExample\ \&2.\ \&An override that specifies that chronyd should be used if available\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+SYSTEMD_TIMEDATED_NTP_SERVICES=chronyd\&.service:systemd\-timesyncd\&.service
+.fi
+.if n \{\
+.RE
+.\}
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBtimedatectl\fR(1),
+\fBlocaltime\fR(5),
+\fBhwclock\fR(8),
+\fBsystemd-timesyncd\fR(8)

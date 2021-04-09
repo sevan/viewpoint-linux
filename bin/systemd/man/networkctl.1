@@ -1,0 +1,341 @@
+'\" t
+.TH "NETWORKCTL" "1" "" "systemd 248" "networkctl"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+networkctl \- Query the status of network links
+.SH "SYNOPSIS"
+.HP \w'\fBnetworkctl\fR\ 'u
+\fBnetworkctl\fR [OPTIONS...] COMMAND [LINK...]
+.SH "DESCRIPTION"
+.PP
+\fBnetworkctl\fR
+may be used to introspect the state of the network links as seen by
+\fBsystemd\-networkd\fR\&. Please refer to
+\fBsystemd-networkd.service\fR(8)
+for an introduction to the basic concepts, functionality, and configuration syntax\&.
+.SH "COMMANDS"
+.PP
+The following commands are understood:
+.PP
+\fBlist\fR [\fIPATTERN\&...\fR]
+.RS 4
+Show a list of existing links and their status\&. If one ore more
+\fIPATTERN\fRs are specified, only links matching one of them are shown\&. If no further arguments are specified shows all links, otherwise just the specified links\&. Produces output similar to:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+IDX LINK         TYPE     OPERATIONAL SETUP
+  1 lo           loopback carrier     unmanaged
+  2 eth0         ether    routable    configured
+  3 virbr0       ether    no\-carrier  unmanaged
+  4 virbr0\-nic   ether    off         unmanaged
+
+4 links listed\&.
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+The operational status is one of the following:
+.PP
+missing
+.RS 4
+the device is missing
+.RE
+.PP
+off
+.RS 4
+the device is powered down
+.RE
+.PP
+no\-carrier
+.RS 4
+the device is powered up, but it does not yet have a carrier
+.RE
+.PP
+dormant
+.RS 4
+the device has a carrier, but is not yet ready for normal traffic
+.RE
+.PP
+degraded\-carrier
+.RS 4
+for bond or bridge master, one of the bonding or bridge slave network interfaces is in off, no\-carrier, or dormant state
+.RE
+.PP
+carrier
+.RS 4
+the link has a carrier, or for bond or bridge master, all bonding or bridge slave network interfaces are enslaved to the master
+.RE
+.PP
+degraded
+.RS 4
+the link has carrier and addresses valid on the local link configured
+.RE
+.PP
+enslaved
+.RS 4
+the link has carrier and is enslaved to bond or bridge master network interface
+.RE
+.PP
+routable
+.RS 4
+the link has carrier and routable address configured
+.RE
+.sp
+The setup status is one of the following:
+.PP
+pending
+.RS 4
+udev is still processing the link, we don\*(Aqt yet know if we will manage it
+.RE
+.PP
+failed
+.RS 4
+networkd failed to manage the link
+.RE
+.PP
+configuring
+.RS 4
+in the process of retrieving configuration or configuring the link
+.RE
+.PP
+configured
+.RS 4
+link configured successfully
+.RE
+.PP
+unmanaged
+.RS 4
+networkd is not handling the link
+.RE
+.PP
+linger
+.RS 4
+the link is gone, but has not yet been dropped by networkd
+.RE
+.sp
+.RE
+.PP
+\fBstatus\fR [\fIPATTERN\&...\fR]
+.RS 4
+Show information about the specified links: type, state, kernel module driver, hardware and IP address, configured DNS servers, etc\&. If one ore more
+\fIPATTERN\fRs are specified, only links matching one of them are shown\&.
+.sp
+When no links are specified, an overall network status is shown\&. Also see the option
+\fB\-\-all\fR\&.
+.sp
+Produces output similar to:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+●      State: routable
+     Address: 10\&.193\&.76\&.5 on eth0
+              192\&.168\&.122\&.1 on virbr0
+              169\&.254\&.190\&.105 on eth0
+              fe80::5054:aa:bbbb:cccc on eth0
+     Gateway: 10\&.193\&.11\&.1 (CISCO SYSTEMS, INC\&.) on eth0
+         DNS: 8\&.8\&.8\&.8
+              8\&.8\&.4\&.4
+.fi
+.if n \{\
+.RE
+.\}
+.RE
+.PP
+\fBlldp\fR [\fIPATTERN\&...\fR]
+.RS 4
+Show discovered LLDP (Link Layer Discovery Protocol) neighbors\&. If one or more
+\fIPATTERN\fRs are specified only neighbors on those interfaces are shown\&. Otherwise shows discovered neighbors on all interfaces\&. Note that for this feature to work,
+\fILLDP=\fR
+must be turned on for the specific interface, see
+\fBsystemd.network\fR(5)
+for details\&.
+.sp
+Produces output similar to:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+LINK             CHASSIS ID        SYSTEM NAME      CAPS        PORT ID           PORT DESCRIPTION
+enp0s25          00:e0:4c:00:00:00 GS1900           \&.\&.b\&.\&.\&.\&.\&.\&.\&.\&. 2                 Port #2
+
+Capability Flags:
+o \- Other; p \- Repeater;  b \- Bridge; w \- WLAN Access Point; r \- Router;
+t \- Telephone; d \- DOCSIS cable device; a \- Station; c \- Customer VLAN;
+s \- Service VLAN, m \- Two\-port MAC Relay (TPMR)
+
+1 neighbors listed\&.
+.fi
+.if n \{\
+.RE
+.\}
+.RE
+.PP
+\fBlabel\fR
+.RS 4
+Show numerical address labels that can be used for address selection\&. This is the same information that
+\fBip-addrlabel\fR(8)
+shows\&. See
+\m[blue]\fBRFC 3484\fR\m[]\&\s-2\u[1]\d\s+2
+for a discussion of address labels\&.
+.sp
+Produces output similar to:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+Prefix/Prefixlen                          Label
+        ::/0                                  1
+    fc00::/7                                  5
+    fec0::/10                                11
+    2002::/16                                 2
+    3ffe::/16                                12
+ 2001:10::/28                                 7
+    2001::/32                                 6
+::ffff:0\&.0\&.0\&.0/96                             4
+        ::/96                                 3
+       ::1/128                                0
+.fi
+.if n \{\
+.RE
+.\}
+.RE
+.PP
+\fBdelete\fR \fIDEVICE\&...\fR
+.RS 4
+Deletes virtual netdevs\&. Takes interface name or index number\&.
+.RE
+.PP
+\fBup\fR \fIDEVICE\&...\fR
+.RS 4
+Bring devices up\&. Takes interface name or index number\&.
+.RE
+.PP
+\fBdown\fR \fIDEVICE\&...\fR
+.RS 4
+Bring devices down\&. Takes interface name or index number\&.
+.RE
+.PP
+\fBrenew\fR \fIDEVICE\&...\fR
+.RS 4
+Renew dynamic configurations e\&.g\&. addresses received from DHCP server\&. Takes interface name or index number\&.
+.RE
+.PP
+\fBforcerenew\fR \fIDEVICE\&...\fR
+.RS 4
+Send a FORCERENEW message to all connected clients, triggering DHCP reconfiguration\&. Takes interface name or index number\&.
+.RE
+.PP
+\fBreconfigure\fR \fIDEVICE\&...\fR
+.RS 4
+Reconfigure network interfaces\&. Takes interface name or index number\&. Note that this does not reload
+\&.netdev
+or
+\&.network
+corresponding to the specified interface\&. So, if you edit config files, it is necessary to call
+\fBnetworkctl reload\fR
+first to apply new settings\&.
+.RE
+.PP
+\fBreload\fR
+.RS 4
+Reload
+\&.netdev
+and
+\&.network
+files\&. If a new
+\&.netdev
+file is found, then the corresponding netdev is created\&. Note that even if an existing
+\&.netdev
+is modified or removed,
+\fBsystemd\-networkd\fR
+does not update or remove the netdev\&. If a new, modified or removed
+\&.network
+file is found, then all interfaces which match the file are reconfigured\&.
+.RE
+.SH "OPTIONS"
+.PP
+The following options are understood:
+.PP
+\fB\-a\fR \fB\-\-all\fR
+.RS 4
+Show all links with
+\fBstatus\fR\&.
+.RE
+.PP
+\fB\-s\fR \fB\-\-stats\fR
+.RS 4
+Show link statistics with
+\fBstatus\fR\&.
+.RE
+.PP
+\fB\-l\fR, \fB\-\-full\fR
+.RS 4
+Do not ellipsize the output\&.
+.RE
+.PP
+\fB\-n\fR, \fB\-\-lines=\fR
+.RS 4
+When used with
+\fBstatus\fR, controls the number of journal lines to show, counting from the most recent ones\&. Takes a positive integer argument\&. Defaults to 10\&.
+.RE
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+Print a short help text and exit\&.
+.RE
+.PP
+\fB\-\-version\fR
+.RS 4
+Print a short version string and exit\&.
+.RE
+.PP
+\fB\-\-no\-legend\fR
+.RS 4
+Do not print the legend, i\&.e\&. column headers and the footer with hints\&.
+.RE
+.PP
+\fB\-\-no\-pager\fR
+.RS 4
+Do not pipe output into a pager\&.
+.RE
+.SH "EXIT STATUS"
+.PP
+On success, 0 is returned, a non\-zero failure code otherwise\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd-networkd.service\fR(8),
+\fBsystemd.network\fR(5),
+\fBsystemd.netdev\fR(5),
+\fBip\fR(8)
+.SH "NOTES"
+.IP " 1." 4
+RFC 3484
+.RS 4
+\%https://tools.ietf.org/html/rfc3484
+.RE

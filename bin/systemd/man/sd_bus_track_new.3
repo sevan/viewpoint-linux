@@ -1,0 +1,197 @@
+'\" t
+.TH "SD_BUS_TRACK_NEW" "3" "" "systemd 248" "sd_bus_track_new"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_track_new, sd_bus_track_ref, sd_bus_track_unref, sd_bus_track_unrefp, sd_bus_track_set_recursive, sd_bus_track_get_recursive, sd_bus_track_get_bus, sd_bus_track_get_userdata, sd_bus_track_set_userdata \- Track bus peers
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_track_new('u
+.BI "int sd_bus_track_new(sd_bus*\ " "bus" ", sd_bus_track**\ " "ret" ", sd_bus_track_handler_t\ " "handler" ", void*\ " "userdata" ");"
+.HP \w'sd_bus_track\ *sd_bus_track_ref('u
+.BI "sd_bus_track *sd_bus_track_ref(sd_bus_track\ *" "t" ");"
+.HP \w'sd_bus_track\ *sd_bus_track_unref('u
+.BI "sd_bus_track *sd_bus_track_unref(sd_bus_track\ *" "t" ");"
+.HP \w'void\ sd_bus_track_unrefp('u
+.BI "void sd_bus_track_unrefp(sd_bus_track\ **" "t" ");"
+.HP \w'int\ sd_bus_track_get_recursive('u
+.BI "int sd_bus_track_get_recursive(sd_bus_track\ *" "t" ");"
+.HP \w'int\ sd_bus_track_set_recursive('u
+.BI "int sd_bus_track_set_recursive(sd_bus_track\ *" "t" ", int\ " "b" ");"
+.HP \w'sd_bus*\ sd_bus_track_get_bus('u
+.BI "sd_bus* sd_bus_track_get_bus(sd_bus_track\ *" "t" ");"
+.HP \w'void*\ sd_bus_track_get_userdata('u
+.BI "void* sd_bus_track_get_userdata(sd_bus_track\ *" "t" ");"
+.HP \w'void*\ sd_bus_track_set_userdata('u
+.BI "void* sd_bus_track_set_userdata(sd_bus_track\ *" "t" ", void\ *userdata);"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_track_new()\fR
+creates a new bus peer tracking object\&. The object is allocated for the specified bus, and returned in the
+\fI*ret\fR
+parameter\&. After use, the object should be freed again by dropping the acquired reference with
+\fBsd_bus_track_unref()\fR
+(see below)\&. A bus peer tracking object may be used to keep track of peers on a specific IPC bus, for cases where peers are making use of one or more local objects, in order to control the lifecycle of the local objects and ensure they stay around as long as the peers needing them are around, and unreferenced (and possibly destroyed) as soon as all relevant peers have vanished\&. Each bus peer tracking object may be used to track zero, one or more peers add a time\&. References to specific bus peers are added via
+\fBsd_bus_track_add_name\fR(3)
+or
+\fBsd_bus_track_add_sender()\fR\&. They may be dropped again via
+\fBsd_bus_track_remove_name()\fR
+and
+\fBsd_bus_track_remove_sender()\fR\&. Alternatively, references on peers are removed automatically when they disconnect from the bus\&. If non\-\fBNULL\fR
+the
+\fIhandler\fR
+may specify a function that is invoked whenever the last reference is dropped, regardless whether the reference is dropped explicitly via
+\fBsd_bus_track_remove_name()\fR
+or implicitly because the peer disconnected from the bus\&. The final argument
+\fIuserdata\fR
+may be used to attach a generic user data pointer to the object\&. This pointer is passed to the handler callback when it is invoked\&.
+.PP
+\fBsd_bus_track_ref()\fR
+creates a new reference to a bus peer tracking object\&. This object will not be destroyed until
+\fBsd_bus_track_unref()\fR
+has been called as many times plus once more\&. Once the reference count has dropped to zero, the specified object cannot be used anymore, further calls to
+\fBsd_bus_track_ref()\fR
+or
+\fBsd_bus_track_unref()\fR
+on the same object are illegal\&.
+.PP
+\fBsd_bus_track_unref()\fR
+destroys a reference to a bus peer tracking object\&.
+.PP
+\fBsd_bus_track_unrefp()\fR
+is similar to
+\fBsd_bus_track_unref()\fR
+but takes a pointer to a pointer to an
+\fBsd_bus_track\fR
+object\&. This call is useful in conjunction with GCC\*(Aqs and LLVM\*(Aqs
+\m[blue]\fBClean\-up Variable Attribute\fR\m[]\&\s-2\u[1]\d\s+2\&. Note that this function is defined as inline function\&.
+.PP
+\fBsd_bus_track_ref()\fR,
+\fBsd_bus_track_unref()\fR
+and
+\fBsd_bus_track_unrefp()\fR
+execute no operation if the passed in bus peer tracking object is
+\fBNULL\fR\&.
+.PP
+Bus peer tracking objects may exist in two modes: by default they operate in non\-recursive mode, but may optionally be switched into recursive mode\&. If operating in the default non\-recursive mode a peer is either tracked or not tracked\&. In this mode invoking
+\fBsd_bus_track_add_name()\fR
+multiple times in a row for the same peer is fully equivalent to calling it just once, as the call adds the peer to the set of tracked peers if necessary, and executes no operation if the peer is already being tracked\&. A single invocation of
+\fBsd_bus_track_remove_name()\fR
+removes the reference on the peer again, regardless how many times
+\fBsd_bus_track_add_name()\fR
+was called before\&. If operating in recursive mode, the number of times
+\fBsd_bus_track_add_name()\fR
+is invoked for the same peer name is counted and
+\fBsd_bus_track_remove_name()\fR
+must be called the same number of times before the peer is not tracked anymore, with the exception when the tracked peer vanishes from the bus, in which case the count is irrelevant and the tracking of the specific peer is immediately removed\&.
+\fBsd_bus_track_get_recursive()\fR
+may be used to determine whether the bus peer tracking object is operating in recursive mode\&.
+\fBsd_bus_track_set_recursive()\fR
+may be used to enable or disable recursive mode\&. By default a bus peer tracking object operates in non\-recursive mode, and
+\fBsd_bus_track_get_recursive()\fR
+for a newly allocated object hence returns a value equal to zero\&. Use
+\fBsd_bus_track_set_recursive()\fR
+to enable recursive mode, right after allocation\&. It takes a boolean argument to enable or disable recursive mode\&. Note that tracking objects for which
+\fBsd_bus_track_add_name()\fR
+was already invoked at least once (and which hence track already one or more peers) may not be switched from recursive to non\-recursive mode anymore\&.
+.PP
+\fBsd_bus_track_get_bus()\fR
+returns the bus object the bus peer tracking object belongs to\&. It returns the bus object initially passed to
+\fBsd_bus_track_new()\fR
+when the object was allocated\&.
+.PP
+\fBsd_bus_track_get_userdata()\fR
+returns the generic user data pointer set on the bus peer tracking object at the time of creation using
+\fBsd_bus_track_new()\fR
+or at a later time, using
+\fBsd_bus_track_set_userdata()\fR\&.
+.SH "RETURN VALUE"
+.PP
+On success,
+\fBsd_bus_track_new()\fR
+and
+\fBsd_bus_track_set_recursive()\fR
+return 0 or a positive integer\&. On failure, they return a negative errno\-style error code\&.
+.PP
+\fBsd_bus_track_ref()\fR
+always returns the argument\&.
+.PP
+\fBsd_bus_track_unref()\fR
+always returns
+\fBNULL\fR\&.
+.PP
+\fBsd_bus_track_get_recursive()\fR
+returns 0 if non\-recursive mode is selected (default), and greater than 0 if recursive mode is selected\&. On failure a negative errno\-style error code is returned\&.
+.PP
+\fBsd_bus_track_get_bus()\fR
+returns the bus object associated to the bus peer tracking object\&.
+.PP
+\fBsd_bus_track_get_userdata()\fR
+returns the generic user data pointer associated with the bus peer tracking object\&.
+\fBsd_bus_track_set_userdata()\fR
+returns the previous user data pointer set\&.
+.SH "REFERENCE OWNERSHIP"
+.PP
+The
+\fBsd_bus_track_new()\fR
+function creates a new object and the caller owns the sole reference\&. When not needed anymore, this reference should be destroyed with
+\fBsd_bus_track_unref()\fR\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EBUSY\fR
+.RS 4
+Bus peers have already been added to the bus peer tracking object and
+\fBsd_bus_track_set_recursive()\fR
+was called to change tracking mode\&.
+.RE
+.PP
+\fB\-EINVAL\fR
+.RS 4
+Specified parameter is invalid (\fBNULL\fR
+in case of output parameters)\&.
+.RE
+.PP
+\fB\-ENOMEM\fR
+.RS 4
+Memory allocation failed\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3)
+\fBsd_bus_track_add_name\fR(3)
+.SH "NOTES"
+.IP " 1." 4
+Clean-up Variable Attribute
+.RS 4
+\%https://gcc.gnu.org/onlinedocs/gcc/Common-Variable-Attributes.html
+.RE

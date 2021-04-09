@@ -1,0 +1,118 @@
+'\" t
+.TH "SD_EVENT_SOURCE_SET_PRIORITY" "3" "" "systemd 248" "sd_event_source_set_priority"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_event_source_set_priority, sd_event_source_get_priority, SD_EVENT_PRIORITY_IMPORTANT, SD_EVENT_PRIORITY_NORMAL, SD_EVENT_PRIORITY_IDLE \- Set or retrieve the priority of event sources
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-event\&.h>
+.fi
+.ft
+.sp
+.ft B
+.nf
+enum {
+        \fBSD_EVENT_PRIORITY_IMPORTANT\fR = \-100,
+        \fBSD_EVENT_PRIORITY_NORMAL\fR = 0,
+        \fBSD_EVENT_PRIORITY_IDLE\fR = 100,
+};
+.fi
+.ft
+.HP \w'int\ sd_event_source_set_priority('u
+.BI "int sd_event_source_set_priority(sd_event_source\ *" "source" ", int64_t\ " "priority" ");"
+.HP \w'int\ sd_event_source_get_priority('u
+.BI "int sd_event_source_get_priority(sd_event_source\ *" "source" ", int64_t\ *" "priority" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_event_source_set_priority()\fR
+may be used to set the priority for the event source object specified as
+\fIsource\fR\&. The priority is specified as an arbitrary signed 64bit integer\&. The priority is initialized to
+\fBSD_EVENT_PRIORITY_NORMAL\fR
+(0) when the event source is allocated with a call such as
+\fBsd_event_add_io\fR(3)
+or
+\fBsd_event_add_time\fR(3), and may be changed with this call\&. If multiple event sources have seen events at the same time, they are dispatched in the order indicated by the event sources\*(Aq priorities\&. Event sources with smaller priority values are dispatched first\&. As well\-known points of reference, the constants
+\fBSD_EVENT_PRIORITY_IMPORTANT\fR
+(\-100),
+\fBSD_EVENT_PRIORITY_NORMAL\fR
+(0) and
+\fBSD_EVENT_PRIORITY_IDLE\fR
+(100) may be used to indicate event sources that shall be dispatched early, normally or late\&. It is recommended to specify priorities based on these definitions, and relative to them \(em however, the full 64bit signed integer range is available for ordering event sources\&.
+.PP
+Priorities define the order in which event sources that have seen events are dispatched\&. Care should be taken to ensure that high\-priority event sources (those with negative priority values assigned) do not cause starvation of low\-priority event sources (those with positive priority values assigned)\&.
+.PP
+The order in which event sources with the same priority are dispatched is undefined, but the event loop generally tries to dispatch them in the order it learnt about events on them\&. As the backing kernel primitives do not provide accurate information about the order in which events occurred this is not necessarily reliable\&. However, it is guaranteed that if events are seen on multiple same\-priority event sources at the same time, each one is not dispatched again until all others have been dispatched once\&. This behavior guarantees that within each priority particular event sources do not starve or dominate the event loop\&.
+.PP
+The priority of event sources may be changed at any time of their lifetime, with the exception of inotify event sources (i\&.e\&. those created with
+\fBsd_event_add_inotify\fR(3)) whose priority may only be changed in the time between their initial creation and the first subsequent event loop iteration\&.
+.PP
+\fBsd_event_source_get_priority()\fR
+may be used to query the current priority assigned to the event source object
+\fIsource\fR\&.
+.SH "RETURN VALUE"
+.PP
+On success,
+\fBsd_event_source_set_priority()\fR
+and
+\fBsd_event_source_get_priority()\fR
+return a non\-negative integer\&. On failure, they return a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+\fIsource\fR
+is not a valid pointer to an
+sd_event_source
+object\&.
+.RE
+.PP
+\fB\-ENOMEM\fR
+.RS 4
+Not enough memory\&.
+.RE
+.PP
+\fB\-ESTALE\fR
+.RS 4
+The event loop is already terminated\&.
+.RE
+.PP
+\fB\-ECHILD\fR
+.RS 4
+The event loop has been created in a different process\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsd-event\fR(3),
+\fBsd_event_add_io\fR(3),
+\fBsd_event_add_time\fR(3),
+\fBsd_event_add_signal\fR(3),
+\fBsd_event_add_child\fR(3),
+\fBsd_event_add_inotify\fR(3),
+\fBsd_event_add_defer\fR(3)

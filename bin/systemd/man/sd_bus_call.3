@@ -1,0 +1,197 @@
+'\" t
+.TH "SD_BUS_CALL" "3" "" "systemd 248" "sd_bus_call"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_call, sd_bus_call_async \- Invoke a D\-Bus method call
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'typedef\ int\ (*sd_bus_message_handler_t)('u
+.BI "typedef int (*sd_bus_message_handler_t)(sd_bus_message\ *" "m" ", void\ *" "userdata" ", sd_bus_error\ *" "ret_error" ");"
+.HP \w'int\ sd_bus_call('u
+.BI "int sd_bus_call(sd_bus\ *" "bus" ", sd_bus_message\ *" "m" ", uint64_t\ " "usec" ", sd_bus_error\ *" "ret_error" ", sd_bus_message\ **" "reply" ");"
+.HP \w'int\ sd_bus_call_async('u
+.BI "int sd_bus_call_async(sd_bus\ *" "bus" ", sd_bus_slot\ **" "slot" ", sd_bus_message\ *" "m" ", sd_bus_message_handler_t\ " "callback" ", void\ *" "userdata" ", uint64_t\ " "usec" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_call()\fR
+takes a complete bus message object and calls the corresponding D\-Bus method\&. On success, the response is stored in
+\fIreply\fR\&.
+\fIusec\fR
+indicates the timeout in microseconds\&. If
+\fIret_error\fR
+is not
+\fBNULL\fR
+and
+\fBsd_bus_call()\fR
+fails (either because of an internal error or because it received a D\-Bus error reply),
+\fIret_error\fR
+is initialized to an instance of
+sd_bus_error
+describing the error\&.
+.PP
+\fBsd_bus_call_async()\fR
+is like
+\fBsd_bus_call()\fR
+but works asynchronously\&. The
+\fIcallback\fR
+indicates the function to call when the response arrives\&. The
+\fIuserdata\fR
+pointer will be passed to the callback function, and may be chosen freely by the caller\&. If
+\fIslot\fR
+is not
+\fBNULL\fR
+and
+\fBsd_bus_call_async()\fR
+succeeds,
+\fIslot\fR
+is set to a slot object which can be used to cancel the method call at a later time using
+\fBsd_bus_slot_unref\fR(3)\&. If
+\fIslot\fR
+is
+\fBNULL\fR, the lifetime of the method call is bound to the lifetime of the bus object itself, and it cannot be cancelled independently\&. See
+\fBsd_bus_slot_set_floating\fR(3)
+for details\&.
+\fIcallback\fR
+is called when a reply arrives with the reply,
+\fIuserdata\fR
+and an
+sd_bus_error
+output parameter as its arguments\&. Unlike
+\fBsd_bus_call()\fR, the
+sd_bus_error
+output parameter passed to the callback will be empty\&. To determine whether the method call succeeded, use
+\fBsd_bus_message_is_method_error\fR(3)
+on the reply message passed to the callback instead\&. If the callback returns zero and the
+sd_bus_error
+output parameter is still empty when the callback finishes, other handlers registered with functions such as
+\fBsd_bus_add_filter\fR(3)
+or
+\fBsd_bus_add_match\fR(3)
+are given a chance to process the message\&. If the callback returns a non\-zero value or the
+sd_bus_error
+output parameter is not empty when the callback finishes, no further processing of the message is done\&. Generally, you want to return zero from the callback to give other registered handlers a chance to process the reply as well\&. (Note that the
+sd_bus_error
+parameter is an output parameter of the callback function, not an input parameter; it can be used to propagate errors from the callback handler, it will not receive any error that was received as method reply\&.)
+.PP
+The message
+\fIm\fR
+passed to the callback is only borrowed, that is, the callback should not call
+\fBsd_bus_message_unref\fR(3)
+on it\&. If the callback wants to hold on to the message beyond the lifetime of the callback, it needs to call
+\fBsd_bus_message_ref\fR(3)
+to create a new reference\&.
+.PP
+If
+\fIusec\fR
+is zero, the default D\-Bus method call timeout is used\&. See
+\fBsd_bus_get_method_call_timeout\fR(3)\&.
+.SH "RETURN VALUE"
+.PP
+On success, these functions return a non\-negative integer\&. On failure, they return a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+When
+\fBsd_bus_call()\fR
+internally receives a D\-Bus error reply, it will set
+\fIret_error\fR
+if it is not
+\fBNULL\fR, and will return a negative value mapped from the error reply, see
+\fBsd_bus_error_get_errno\fR(3)\&.
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+The input parameter
+\fIm\fR
+is
+\fBNULL\fR\&.
+The input parameter
+\fIm\fR
+is not a D\-Bus method call\&. To create a new D\-Bus method call, use
+\fBsd_bus_message_new_method_call\fR(3)\&.
+The input parameter
+\fIm\fR
+has the
+\fBBUS_MESSAGE_NO_REPLY_EXPECTED\fR
+flag set\&.
+The input parameter
+\fIerror\fR
+is non\-\fBNULL\fR
+but was not set to
+\fBSD_BUS_ERROR_NULL\fR\&.
+.RE
+.PP
+\fB\-ECHILD\fR
+.RS 4
+The bus connection was allocated in a parent process and is being reused in a child process after
+\fBfork()\fR\&.
+.RE
+.PP
+\fB\-ENOTCONN\fR
+.RS 4
+The input parameter
+\fIbus\fR
+is
+\fBNULL\fR
+or the bus is not connected\&.
+.RE
+.PP
+\fB\-ECONNRESET\fR
+.RS 4
+The bus connection was closed while waiting for the response\&.
+.RE
+.PP
+\fB\-ETIMEDOUT\fR
+.RS 4
+A response was not received within the given timeout\&.
+.RE
+.PP
+\fB\-ELOOP\fR
+.RS 4
+The message
+\fIm\fR
+is addressed to its own client\&.
+.RE
+.PP
+\fB\-ENOMEM\fR
+.RS 4
+Memory allocation failed\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd_bus_call_method\fR(3),
+\fBsd_bus_call_method_async\fR(3),
+\fBsd_bus_message_new_method_call\fR(3),
+\fBsd_bus_message_append\fR(3),
+\fBsd_bus_error\fR(3)

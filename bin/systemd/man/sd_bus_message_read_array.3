@@ -1,0 +1,86 @@
+'\" t
+.TH "SD_BUS_MESSAGE_READ_ARRAY" "3" "" "systemd 248" "sd_bus_message_read_array"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_message_read_array \- Access an array of elements in a message
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_message_read_array('u
+.BI "int sd_bus_message_read_array(sd_bus_message\ *" "m" ", char\ " "type" ", const\ void\ **" "ptr" ", size_t\ *" "size" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_message_read_array()\fR
+provides access to an array elements in the bus message
+\fIm\fR\&. The "read pointer" in the message must be right before an array of type
+\fItype\fR\&. As a special case,
+\fItype\fR
+may be
+\fBNUL\fR, in which case any trivial type is acceptable\&. A pointer to the array data is returned in the parameter
+\fIptr\fR
+and the size of array data (in bytes) is returned in the parameter
+\fIsize\fR\&. If the returned
+\fIsize\fR
+parameter is 0, a valid non\-null pointer will be returned as
+\fIptr\fR, but it may not be dereferenced\&. The data is aligned as appropriate for the data type\&. The data is part of the message \(em it may not be modified and is valid only as long as the message is referenced\&. After this function returns, the "read pointer" points at the next element after the array\&.
+.PP
+Note that this function only supports arrays of trivial types, i\&.e\&. arrays of booleans, the various integer types, as well as floating point numbers\&. In particular it may not be used for arrays of strings, structures or similar\&.
+.SH "RETURN VALUE"
+.PP
+On success and when an array was read,
+\fBsd_bus_message_read_array()\fR
+returns an integer greater than zero\&. If invoked while inside a container element (such as an array, e\&.g\&. when operating on an array of arrays) and the final element of the outer container has been read already and the read pointer is thus behind the last element of the outer container this call returns 0 (and the returned pointer will be
+\fBNULL\fR
+and the size will be 0)\&. On failure, it returns a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+Specified type is invalid or not a trivial type (see above), or the message parameter or one of the output parameters are
+\fBNULL\fR\&.
+.RE
+.PP
+\fB\-EOPNOTSUPP\fR
+.RS 4
+The byte order in the message is different than native byte order\&.
+.RE
+.PP
+\fB\-EPERM\fR
+.RS 4
+The message is not sealed\&.
+.RE
+.PP
+\fB\-EBADMSG\fR
+.RS 4
+The message cannot be parsed\&.
+.RE
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd_bus_message_read\fR(3),
+\fBsd_bus_message_read_strv\fR(3)

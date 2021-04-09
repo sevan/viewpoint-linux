@@ -1,0 +1,911 @@
+'\" t
+.TH "TMPFILES\&.D" "5" "" "systemd 248" "tmpfiles.d"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+tmpfiles.d \- Configuration for creation, deletion and cleaning of volatile and temporary files
+.SH "SYNOPSIS"
+.PP
+.nf
+/etc/tmpfiles\&.d/*\&.conf
+/run/tmpfiles\&.d/*\&.conf
+/usr/lib/tmpfiles\&.d/*\&.conf
+    
+.fi
+.PP
+.nf
+~/\&.config/user\-tmpfiles\&.d/*\&.conf
+$XDG_RUNTIME_DIR/user\-tmpfiles\&.d/*\&.conf
+~/\&.local/share/user\-tmpfiles\&.d/*\&.conf
+\&...
+/usr/share/user\-tmpfiles\&.d/*\&.conf
+    
+.fi
+
+.sp
+.nf
+#Type Path                                     Mode User Group Age         Argument
+f     /file/to/create                          mode user group \-           content
+f+    /file/to/create\-or\-truncate              mode user group \-           content
+w     /file/to/write\-to                        \-    \-    \-     \-           content
+w+    /file/to/append\-to                       \-    \-    \-     \-           content
+d     /directory/to/create\-and\-cleanup         mode user group cleanup\-age \-
+D     /directory/to/create\-and\-remove          mode user group cleanup\-age \-
+e     /directory/to/cleanup                    mode user group cleanup\-age \-
+v     /subvolume\-or\-directory/to/create        mode user group \-           \-
+q     /subvolume\-or\-directory/to/create        mode user group \-           \-
+Q     /subvolume\-or\-directory/to/create        mode user group \-           \-
+p     /fifo/to/create                          mode user group \-           \-
+p+    /fifo/to/[re]create                      mode user group \-           \-
+L     /symlink/to/create                       \-    \-    \-     \-           symlink/target/path
+L+    /symlink/to/[re]create                   \-    \-    \-     \-           symlink/target/path
+c     /dev/char\-device\-to\-create               mode user group \-           major:minor
+c+    /dev/char\-device\-to\-[re]create           mode user group \-           major:minor
+b     /dev/block\-device\-to\-create              mode user group \-           major:minor
+b+    /dev/block\-device\-to\-[re]create          mode user group \-           major:minor
+C     /target/to/create                        \-    \-    \-     \-           /source/to/copy
+x     /path\-or\-glob/to/ignore                  \-    \-    \-     \-           \-
+X     /path\-or\-glob/to/ignore/recursively      \-    \-    \-     \-           \-
+r     /empty/dir/to/remove                     \-    \-    \-     \-           \-
+R     /dir/to/remove/recursively               \-    \-    \-     \-           \-
+z     /path\-or\-glob/to/adjust/mode             mode user group \-           \-
+Z     /path\-or\-glob/to/adjust/mode/recursively mode user group \-           \-
+t     /path\-or\-glob/to/set/xattrs              \-    \-    \-     \-           xattrs
+T     /path\-or\-glob/to/set/xattrs/recursively  \-    \-    \-     \-           xattrs
+h     /path\-or\-glob/to/set/attrs               \-    \-    \-     \-           file attrs
+H     /path\-or\-glob/to/set/attrs/recursively   \-    \-    \-     \-           file attrs
+a     /path\-or\-glob/to/set/acls                \-    \-    \-     \-           POSIX ACLs
+a+    /path\-or\-glob/to/append/acls             \-    \-    \-     \-           POSIX ACLs
+A     /path\-or\-glob/to/set/acls/recursively    \-    \-    \-     \-           POSIX ACLs
+A+    /path\-or\-glob/to/append/acls/recursively \-    \-    \-     \-           POSIX ACLs
+
+.fi
+.SH "DESCRIPTION"
+.PP
+tmpfiles\&.d
+configuration files provide a generic mechanism to define the
+\fIcreation\fR
+of regular files, directories, pipes, and device nodes, adjustments to their
+\fIaccess mode, ownership, attributes, quota assignments, and contents\fR, and finally their time\-based
+\fIremoval\fR\&. It is mostly commonly used for volatile and temporary files and directories (such as those located under
+/run/,
+/tmp/,
+/var/tmp/, the API file systems such as
+/sys/
+or
+/proc/, as well as some other directories below
+/var/)\&.
+.PP
+\fBsystemd\-tmpfiles\fR
+uses this configuration to create volatile files and directories during boot and to do periodic cleanup afterwards\&. See
+\fBsystemd-tmpfiles\fR(5)
+for the description of
+systemd\-tmpfiles\-setup\&.service,
+systemd\-tmpfiles\-clean\&.service, and associated units\&.
+.PP
+System daemons frequently require private runtime directories below
+/run/
+to store communication sockets and similar\&. For these, it is better to use
+\fIRuntimeDirectory=\fR
+in their unit files (see
+\fBsystemd.exec\fR(5)
+for details), if the flexibility provided by
+tmpfiles\&.d
+is not required\&. The advantages are that the configuration required by the unit is centralized in one place, and that the lifetime of the directory is tied to the lifetime of the service itself\&. Similarly,
+\fIStateDirectory=\fR,
+\fICacheDirectory=\fR,
+\fILogsDirectory=\fR, and
+\fIConfigurationDirectory=\fR
+should be used to create directories under
+/var/lib/,
+/var/cache/,
+/var/log/, and
+/etc/\&.
+tmpfiles\&.d
+should be used for files whose lifetime is independent of any service or requires more complicated configuration\&.
+.SH "CONFIGURATION DIRECTORIES AND PRECEDENCE"
+.PP
+Each configuration file shall be named in the style of
+\fIpackage\fR\&.conf
+or
+\fIpackage\fR\-\fIpart\fR\&.conf\&. The second variant should be used when it is desirable to make it easy to override just this part of configuration\&.
+.PP
+Files in
+/etc/tmpfiles\&.d
+override files with the same name in
+/usr/lib/tmpfiles\&.d
+and
+/run/tmpfiles\&.d\&. Files in
+/run/tmpfiles\&.d
+override files with the same name in
+/usr/lib/tmpfiles\&.d\&. Packages should install their configuration files in
+/usr/lib/tmpfiles\&.d\&. Files in
+/etc/tmpfiles\&.d
+are reserved for the local administrator, who may use this logic to override the configuration files installed by vendor packages\&. All configuration files are sorted by their filename in lexicographic order, regardless of which of the directories they reside in\&. If multiple files specify the same path, the entry in the file with the lexicographically earliest name will be applied (note that lines suppressed due to the
+"!"
+are filtered before application, meaning that if an early line carries the exclamation mark and is suppressed because of that, a later line matching in path will be applied)\&. All other conflicting entries will be logged as errors\&. When two lines are prefix path and suffix path of each other, then the prefix line is always created first, the suffix later (and if removal applies to the line, the order is reversed: the suffix is removed first, the prefix later)\&. Lines that take globs are applied after those accepting no globs\&. If multiple operations shall be applied on the same file (such as ACL, xattr, file attribute adjustments), these are always done in the same fixed order\&. Except for those cases, the files/directories are processed in the order they are listed\&.
+.PP
+If the administrator wants to disable a configuration file supplied by the vendor, the recommended way is to place a symlink to
+/dev/null
+in
+/etc/tmpfiles\&.d/
+bearing the same filename\&.
+.SH "CONFIGURATION FILE FORMAT"
+.PP
+The configuration format is one line per path, containing type, path, mode, ownership, age, and argument fields\&. The lines are separated by newlines, the fields by whitespace:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+#Type Path        Mode User Group Age Argument\&...
+d     /run/user   0755 root root  10d \-
+L     /tmp/foobar \-    \-    \-     \-   /dev/null
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+Fields may contain C\-style escapes\&. With the exception of the seventh field (the "argument") all fields may be enclosed in quotes\&. Note that any whitespace found in the line after the beginning of the argument field will be considered part of the argument field\&. To begin the argument field with a whitespace character, use C\-style escapes (e\&.g\&.
+"\ex20")\&.
+.SS "Type"
+.PP
+The type consists of a single letter and optionally an exclamation mark ("!") and/or minus sign ("\-")\&.
+.PP
+The following line types are understood:
+.PP
+\fIf\fR, \fIf+\fR
+.RS 4
+\fIf\fR
+will create a file if it does not exist yet\&. If the argument parameter is given and the file did not exist yet, it will be written to the file\&.
+\fIf+\fR
+will create or truncate the file\&. If the argument parameter is given, it will be written to the file\&. Does not follow symlinks\&.
+.RE
+.PP
+\fIw\fR, \fIw+\fR
+.RS 4
+Write the argument parameter to a file, if the file exists\&. If suffixed with
+\fI+\fR, the line will be appended to the file\&. If your configuration writes multiple lines to the same file, use
+\fIw+\fR\&. Lines of this type accept shell\-style globs in place of normal path names\&. The argument parameter will be written without a trailing newline\&. C\-style backslash escapes are interpreted\&. Follows symlinks\&.
+.RE
+.PP
+\fId\fR
+.RS 4
+Create a directory\&. The mode and ownership will be adjusted if specified\&. Contents of this directory are subject to time based cleanup if the age argument is specified\&.
+.RE
+.PP
+\fID\fR
+.RS 4
+Similar to
+\fId\fR, but in addition the contents of the directory will be removed when
+\fB\-\-remove\fR
+is used\&.
+.RE
+.PP
+\fIe\fR
+.RS 4
+Adjust the mode and ownership of existing directories and remove their contents based on age\&. Lines of this type accept shell\-style globs in place of normal path names\&. Contents of the directories are subject to time based cleanup if the age argument is specified\&. If the age argument is
+"0", contents will be unconditionally deleted every time
+\fBsystemd\-tmpfiles \-\-clean\fR
+is run\&.
+.sp
+For this entry to be useful, at least one of the mode, user, group, or age arguments must be specified, since otherwise this entry has no effect\&. As an exception, an entry with no effect may be useful when combined with
+\fI!\fR, see the examples\&.
+.RE
+.PP
+\fIv\fR
+.RS 4
+Create a subvolume if the path does not exist yet, the file system supports subvolumes (btrfs), and the system itself is installed into a subvolume (specifically: the root directory
+/
+is itself a subvolume)\&. Otherwise, create a normal directory, in the same way as
+\fId\fR\&.
+.sp
+A subvolume created with this line type is not assigned to any higher\-level quota group\&. For that, use
+\fIq\fR
+or
+\fIQ\fR, which allow creating simple quota group hierarchies, see below\&.
+.RE
+.PP
+\fIq\fR
+.RS 4
+Create a subvolume or directory the same as
+\fIv\fR, but assign the subvolume to the same higher\-level quota groups as the parent\&. This ensures that higher\-level limits and accounting applied to the parent subvolume also include the specified subvolume\&. On non\-btrfs file systems, this line type is identical to
+\fId\fR\&.
+.sp
+If the subvolume already exists, no change to the quota hierarchy is made, regardless of whether the subvolume is already attached to a quota group or not\&. Also see
+\fIQ\fR
+below\&. See
+\fBbtrfs-qgroup\fR(8)
+for details about the btrfs quota group concept\&.
+.RE
+.PP
+\fIQ\fR
+.RS 4
+Create the subvolume or directory the same as
+\fIv\fR, but assign the new subvolume to a new leaf quota group\&. Instead of copying the higher\-level quota group assignments from the parent as is done with
+\fIq\fR, the lowest quota group of the parent subvolume is determined that is not the leaf quota group\&. Then, an "intermediary" quota group is inserted that is one level below this level, and shares the same ID part as the specified subvolume\&. If no higher\-level quota group exists for the parent subvolume, a new quota group at level 255 sharing the same ID as the specified subvolume is inserted instead\&. This new intermediary quota group is then assigned to the parent subvolume\*(Aqs higher\-level quota groups, and the specified subvolume\*(Aqs leaf quota group is assigned to it\&.
+.sp
+Effectively, this has a similar effect as
+\fIq\fR, however introduces a new higher\-level quota group for the specified subvolume that may be used to enforce limits and accounting to the specified subvolume and children subvolume created within it\&. Thus, by creating subvolumes only via
+\fIq\fR
+and
+\fIQ\fR, a concept of "subtree quotas" is implemented\&. Each subvolume for which
+\fIQ\fR
+is set will get a "subtree" quota group created, and all child subvolumes created within it will be assigned to it\&. Each subvolume for which
+\fIq\fR
+is set will not get such a "subtree" quota group, but it is ensured that they are added to the same "subtree" quota group as their immediate parents\&.
+.sp
+It is recommended to use
+\fIQ\fR
+for subvolumes that typically contain further subvolumes, and where it is desirable to have accounting and quota limits on all child subvolumes together\&. Examples for
+\fIQ\fR
+are typically
+/home/
+or
+/var/lib/machines/\&. In contrast,
+\fIq\fR
+should be used for subvolumes that either usually do not include further subvolumes or where no accounting and quota limits are needed that apply to all child subvolumes together\&. Examples for
+\fIq\fR
+are typically
+/var/
+or
+/var/tmp/\&.
+.sp
+As with
+\fIq\fR,
+\fIQ\fR
+has no effect on the quota group hierarchy if the subvolume already exists, regardless of whether the subvolume already belong to a quota group or not\&.
+.RE
+.PP
+\fIp\fR, \fIp+\fR
+.RS 4
+Create a named pipe (FIFO) if it does not exist yet\&. If suffixed with
+\fI+\fR
+and a file already exists where the pipe is to be created, it will be removed and be replaced by the pipe\&.
+.RE
+.PP
+\fIL\fR, \fIL+\fR
+.RS 4
+Create a symlink if it does not exist yet\&. If suffixed with
+\fI+\fR
+and a file or directory already exists where the symlink is to be created, it will be removed and be replaced by the symlink\&. If the argument is omitted, symlinks to files with the same name residing in the directory
+/usr/share/factory/
+are created\&. Note that permissions and ownership on symlinks are ignored\&.
+.RE
+.PP
+\fIc\fR, \fIc+\fR
+.RS 4
+Create a character device node if it does not exist yet\&. If suffixed with
+\fI+\fR
+and a file already exists where the device node is to be created, it will be removed and be replaced by the device node\&. It is recommended to suffix this entry with an exclamation mark to only create static device nodes at boot, as udev will not manage static device nodes that are created at runtime\&.
+.RE
+.PP
+\fIb\fR, \fIb+\fR
+.RS 4
+Create a block device node if it does not exist yet\&. If suffixed with
+\fI+\fR
+and a file already exists where the device node is to be created, it will be removed and be replaced by the device node\&. It is recommended to suffix this entry with an exclamation mark to only create static device nodes at boot, as udev will not manage static device nodes that are created at runtime\&.
+.RE
+.PP
+\fIC\fR
+.RS 4
+Recursively copy a file or directory, if the destination files or directories do not exist yet or the destination directory is empty\&. Note that this command will not descend into subdirectories if the destination directory already exists and is not empty\&. Instead, the entire copy operation is skipped\&. If the argument is omitted, files from the source directory
+/usr/share/factory/
+with the same name are copied\&. Does not follow symlinks\&.
+.RE
+.PP
+\fIx\fR
+.RS 4
+Ignore a path during cleaning\&. Use this type to exclude paths from clean\-up as controlled with the Age parameter\&. Note that lines of this type do not influence the effect of
+\fIr\fR
+or
+\fIR\fR
+lines\&. Lines of this type accept shell\-style globs in place of normal path names\&.
+.RE
+.PP
+\fIX\fR
+.RS 4
+Ignore a path during cleaning\&. Use this type to exclude paths from clean\-up as controlled with the Age parameter\&. Unlike
+\fIx\fR, this parameter will not exclude the content if path is a directory, but only directory itself\&. Note that lines of this type do not influence the effect of
+\fIr\fR
+or
+\fIR\fR
+lines\&. Lines of this type accept shell\-style globs in place of normal path names\&.
+.RE
+.PP
+\fIr\fR
+.RS 4
+Remove a file or directory if it exists\&. This may not be used to remove non\-empty directories, use
+\fIR\fR
+for that\&. Lines of this type accept shell\-style globs in place of normal path names\&. Does not follow symlinks\&.
+.RE
+.PP
+\fIR\fR
+.RS 4
+Recursively remove a path and all its subdirectories (if it is a directory)\&. Lines of this type accept shell\-style globs in place of normal path names\&. Does not follow symlinks\&.
+.RE
+.PP
+\fIz\fR
+.RS 4
+Adjust the access mode, user and group ownership, and restore the SELinux security context of a file or directory, if it exists\&. Lines of this type accept shell\-style globs in place of normal path names\&. Does not follow symlinks\&.
+.RE
+.PP
+\fIZ\fR
+.RS 4
+Recursively set the access mode, user and group ownership, and restore the SELinux security context of a file or directory if it exists, as well as of its subdirectories and the files contained therein (if applicable)\&. Lines of this type accept shell\-style globs in place of normal path names\&. Does not follow symlinks\&.
+.RE
+.PP
+\fIt\fR
+.RS 4
+Set extended attributes, see
+\fBattr\fR(5)
+for details\&. The argument field should take one or more assignment expressions in the form
+\fInamespace\fR\&.\fIattribute\fR=\fIvalue\fR, for examples see below\&. Lines of this type accept shell\-style globs in place of normal path names\&. This can be useful for setting SMACK labels\&. Does not follow symlinks\&.
+.sp
+Please note that extended attributes settable with this line type are a different concept from the Linux file attributes settable with
+\fIh\fR/\fIH\fR, see below\&.
+.RE
+.PP
+\fIT\fR
+.RS 4
+Same as
+\fIt\fR, but operates recursively\&.
+.RE
+.PP
+\fIh\fR
+.RS 4
+Set Linux file/directory attributes\&. Lines of this type accept shell\-style globs in place of normal path names\&.
+.sp
+The format of the argument field is
+\fI[+\-=][aAcCdDeijPsStTu]\fR\&. The prefix
+\fI+\fR
+(the default one) causes the attribute(s) to be added;
+\fI\-\fR
+causes the attribute(s) to be removed;
+\fI=\fR
+causes the attributes to be set exactly as the following letters\&. The letters
+"aAcCdDeijPsStTu"
+select the new attributes for the files, see
+\fBchattr\fR(1)
+for further information\&.
+.sp
+Passing only
+\fI=\fR
+as argument resets all the file attributes listed above\&. It has to be pointed out that the
+\fI=\fR
+prefix limits itself to the attributes corresponding to the letters listed here\&. All other attributes will be left untouched\&. Does not follow symlinks\&.
+.sp
+Please note that the Linux file attributes settable with this line type are a different concept from the extended attributes settable with
+\fIt\fR/\fIT\fR, see above\&.
+.RE
+.PP
+\fIH\fR
+.RS 4
+Sames as
+\fIh\fR, but operates recursively\&.
+.RE
+.PP
+\fIa\fR, \fIa+\fR
+.RS 4
+Set POSIX ACLs (access control lists), see
+\fBacl\fR(5)\&. If suffixed with
+\fI+\fR, the specified entries will be added to the existing set\&.
+\fBsystemd\-tmpfiles\fR
+will automatically add the required base entries for user and group based on the access mode of the file, unless base entries already exist or are explicitly specified\&. The mask will be added if not specified explicitly or already present\&. Lines of this type accept shell\-style globs in place of normal path names\&. This can be useful for allowing additional access to certain files\&. Does not follow symlinks\&.
+.RE
+.PP
+\fIA\fR, \fIA+\fR
+.RS 4
+Same as
+\fIa\fR
+and
+\fIa+\fR, but recursive\&. Does not follow symlinks\&.
+.RE
+.PP
+If the exclamation mark ("!") is used, this line is only safe to execute during boot, and can break a running system\&. Lines without the exclamation mark are presumed to be safe to execute at any time, e\&.g\&. on package upgrades\&.
+\fBsystemd\-tmpfiles\fR
+will take lines with an exclamation mark only into consideration, if the
+\fB\-\-boot\fR
+option is given\&.
+.PP
+For example:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+# Make sure these are created by default so that nobody else can
+d /tmp/\&.X11\-unix 1777 root root 10d
+
+# Unlink the X11 lock files
+r! /tmp/\&.X[0\-9]*\-lock
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+The second line in contrast to the first one would break a running system, and will only be executed with
+\fB\-\-boot\fR\&.
+.PP
+If the minus sign ("\-") is used, this line failing to run successfully during create (and only create) will not cause the execution of
+\fBsystemd\-tmpfiles\fR
+to return an error\&.
+.PP
+For example:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+# Modify sysfs but don\*(Aqt fail if we are in a container with a read\-only /proc
+w\- /proc/sys/vm/swappiness \- \- \- \- 10
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+Note that for all line types that result in creation of any kind of file node (i\&.e\&.
+\fIf\fR/\fIF\fR,
+\fId\fR/\fID\fR/\fIv\fR/\fIq\fR/\fIQ\fR,
+\fIp\fR,
+\fIL\fR,
+\fIc\fR/\fIb\fR
+and
+\fIC\fR) leading directories are implicitly created if needed, owned by root with an access mode of 0755\&. In order to create them with different modes or ownership make sure to add appropriate
+\fId\fR
+lines\&.
+.SS "Path"
+.PP
+The file system path specification supports simple specifier expansion, see below\&. The path (after expansion) must be absolute\&.
+.SS "Mode"
+.PP
+The file access mode to use when creating this file or directory\&. If omitted or when set to
+"\-", the default is used: 0755 for directories, 0644 for all other file objects\&. For
+\fIz\fR,
+\fIZ\fR
+lines, if omitted or when set to
+"\-", the file access mode will not be modified\&. This parameter is ignored for
+\fIx\fR,
+\fIr\fR,
+\fIR\fR,
+\fIL\fR,
+\fIt\fR, and
+\fIa\fR
+lines\&.
+.PP
+Optionally, if prefixed with
+"~", the access mode is masked based on the already set access bits for existing file or directories: if the existing file has all executable bits unset, all executable bits are removed from the new access mode, too\&. Similarly, if all read bits are removed from the old access mode, they will be removed from the new access mode too, and if all write bits are removed, they will be removed from the new access mode too\&. In addition, the sticky/SUID/SGID bit is removed unless applied to a directory\&. This functionality is particularly useful in conjunction with
+\fIZ\fR\&.
+.SS "User, Group"
+.PP
+The user and group to use for this file or directory\&. This may either be a numeric ID or a user/group name\&. If omitted or when set to
+"\-", the user and group of the user who invokes
+\fBsystemd\-tmpfiles\fR
+is used\&. For
+\fIz\fR
+and
+\fIZ\fR
+lines, when omitted or when set to
+"\-", the file ownership will not be modified\&. These parameters are ignored for
+\fIx\fR,
+\fIr\fR,
+\fIR\fR,
+\fIL\fR,
+\fIt\fR, and
+\fIa\fR
+lines\&.
+.PP
+This field should generally only reference system users/groups, i\&.e\&. users/groups that are guaranteed to be resolvable during early boot\&. If this field references users/groups that only become resolveable during later boot (i\&.e\&. after NIS, LDAP or a similar networked directory service become available), execution of the operations declared by the line will likely fail\&. Also see
+\m[blue]\fBNotes on Resolvability of User and Group Names\fR\m[]\&\s-2\u[1]\d\s+2
+for more information on requirements on system user/group definitions\&.
+.SS "Age"
+.PP
+The date field, when set, is used to decide what files to delete when cleaning\&. If a file or directory is older than the current time minus the age field, it is deleted\&. The field format is a series of integers each followed by one of the following suffixes for the respective time units:
+\fBs\fR,
+\fBm\fR
+or
+\fBmin\fR,
+\fBh\fR,
+\fBd\fR,
+\fBw\fR,
+\fBms\fR, and
+\fBus\fR, meaning seconds, minutes, hours, days, weeks, milliseconds, and microseconds, respectively\&. Full names of the time units can be used too\&.
+.PP
+If multiple integers and units are specified, the time values are summed\&. If an integer is given without a unit,
+\fBs\fR
+is assumed\&.
+.PP
+When the age is set to zero, the files are cleaned unconditionally\&.
+.PP
+The age field only applies to lines starting with
+\fId\fR,
+\fID\fR,
+\fIe\fR,
+\fIv\fR,
+\fIq\fR,
+\fIQ\fR,
+\fIC\fR,
+\fIx\fR
+and
+\fIX\fR\&. If omitted or set to
+"\-", no automatic clean\-up is done\&.
+.PP
+If the age field starts with a tilde character
+"~", the clean\-up is only applied to files and directories one level inside the directory specified, but not the files and directories immediately inside it\&.
+.PP
+The age of a file system entry is determined from its last modification timestamp (mtime), its last access timestamp (atime), and (except for directories) its last status change timestamp (ctime)\&. Any of these three (or two) values will prevent cleanup if it is more recent than the current time minus the age field\&.
+.PP
+Note that while the aging algorithm is run a \*(Aqshared\*(Aq BSD file lock (see
+\fBflock\fR(2)) is taken on each directory the algorithm descends into (and each directory below that, and so on)\&. If the aging algorithm finds a lock is already taken on some directory, it (and everything below it) is skipped\&. Applications may use this to temporarily exclude certain directory subtrees from the aging algorithm: the applications can take a BSD file lock themselves, and as long as they keep it aging of the directory and everything below it is disabled\&.
+.SS "Argument"
+.PP
+For
+\fIL\fR
+lines determines the destination path of the symlink\&. For
+\fIc\fR
+and
+\fIb\fR, determines the major/minor of the device node, with major and minor formatted as integers, separated by
+":", e\&.g\&.
+"1:3"\&. For
+\fIf\fR,
+\fIF\fR, and
+\fIw\fR, the argument may be used to specify a short string that is written to the file, suffixed by a newline\&. For
+\fIC\fR, specifies the source file or directory\&. For
+\fIt\fR
+and
+\fIT\fR, determines extended attributes to be set\&. For
+\fIa\fR
+and
+\fIA\fR, determines ACL attributes to be set\&. For
+\fIh\fR
+and
+\fIH\fR, determines the file attributes to set\&. Ignored for all other lines\&.
+.PP
+This field can contain specifiers, see below\&.
+.SH "SPECIFIERS"
+.PP
+Specifiers can be used in the "path" and "argument" fields\&. An unknown or unresolvable specifier is treated as invalid configuration\&. The following expansions are understood:
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+.B Table\ \&1.\ \&Specifiers available
+.TS
+allbox tab(:);
+lB lB lB.
+T{
+Specifier
+T}:T{
+Meaning
+T}:T{
+Details
+T}
+.T&
+l l l
+l l l
+l l l
+l l l
+l l l
+l l l
+l l l
+l l l
+l l l
+l l l
+l l l
+l l l
+l l l
+l l l
+l l l
+l l l
+l l l
+l l l
+l l l
+l l l
+l l l
+l l l.
+T{
+"%a"
+T}:T{
+Architecture
+T}:T{
+A short string identifying the architecture of the local system\&. A string such as \fBx86\fR, \fBx86\-64\fR or \fBarm64\fR\&. See the architectures defined for \fIConditionArchitecture=\fR in \fBsystemd.unit\fR(5) for a full list\&.
+T}
+T{
+"%b"
+T}:T{
+Boot ID
+T}:T{
+The boot ID of the running system, formatted as string\&. See \fBrandom\fR(4) for more information\&.
+T}
+T{
+"%B"
+T}:T{
+Operating system build ID
+T}:T{
+The operating system build identifier of the running system, as read from the \fIBUILD_ID=\fR field of /etc/os\-release\&. If not set, resolves to an empty string\&. See \fBos-release\fR(5) for more information\&.
+T}
+T{
+"%C"
+T}:T{
+System or user cache directory
+T}:T{
+In \fB\-\-user\fR mode, this is the same as \fI$XDG_CACHE_HOME\fR, and /var/cache otherwise\&.
+T}
+T{
+"%g"
+T}:T{
+User group
+T}:T{
+This is the name of the group running the command\&. In case of the system instance this resolves to "root"\&.
+T}
+T{
+"%G"
+T}:T{
+User GID
+T}:T{
+This is the numeric GID of the group running the command\&. In case of the system instance this resolves to \fB0\fR\&.
+T}
+T{
+"%h"
+T}:T{
+User home directory
+T}:T{
+This is the home directory of the user running the command\&. In case of the system instance this resolves to "/root"\&.
+T}
+T{
+"%H"
+T}:T{
+Host name
+T}:T{
+The hostname of the running system\&.
+T}
+T{
+"%l"
+T}:T{
+Short host name
+T}:T{
+The hostname of the running system, truncated at the first dot to remove any domain component\&.
+T}
+T{
+"%L"
+T}:T{
+System or user log directory
+T}:T{
+In \fB\-\-user\fR mode, this is the same as \fI$XDG_CONFIG_HOME\fR with /log appended, and /var/log otherwise\&.
+T}
+T{
+"%m"
+T}:T{
+Machine ID
+T}:T{
+The machine ID of the running system, formatted as string\&. See \fBmachine-id\fR(5) for more information\&.
+T}
+T{
+"%o"
+T}:T{
+Operating system ID
+T}:T{
+The operating system identifier of the running system, as read from the \fIID=\fR field of /etc/os\-release\&. See \fBos-release\fR(5) for more information\&.
+T}
+T{
+"%S"
+T}:T{
+System or user state directory
+T}:T{
+In \fB\-\-user\fR mode, this is the same as \fI$XDG_CONFIG_HOME\fR, and /var/lib otherwise\&.
+T}
+T{
+"%t"
+T}:T{
+System or user runtime directory
+T}:T{
+In \fB\-\-user\fR mode, this is the same \fI$XDG_RUNTIME_DIR\fR, and /run/ otherwise\&.
+T}
+T{
+"%T"
+T}:T{
+Directory for temporary files
+T}:T{
+This is either /tmp or the path "$TMPDIR", "$TEMP" or "$TMP" are set to\&. (Note that the directory may be specified without a trailing slash\&.)
+T}
+T{
+"%u"
+T}:T{
+User name
+T}:T{
+This is the name of the user running the command\&. In case of the system instance this resolves to "root"\&.
+T}
+T{
+"%U"
+T}:T{
+User UID
+T}:T{
+This is the numeric UID of the user running the command\&. In case of the system instance this resolves to \fB0\fR\&.
+T}
+T{
+"%v"
+T}:T{
+Kernel release
+T}:T{
+Identical to \fBuname \-r\fR output\&.
+T}
+T{
+"%V"
+T}:T{
+Directory for larger and persistent temporary files
+T}:T{
+This is either /var/tmp or the path "$TMPDIR", "$TEMP" or "$TMP" are set to\&. (Note that the directory may be specified without a trailing slash\&.)
+T}
+T{
+"%w"
+T}:T{
+Operating system version ID
+T}:T{
+The operating system version identifier of the running system, as read from the \fIVERSION_ID=\fR field of /etc/os\-release\&. If not set, resolves to an empty string\&. See \fBos-release\fR(5) for more information\&.
+T}
+T{
+"%W"
+T}:T{
+Operating system variant ID
+T}:T{
+The operating system variant identifier of the running system, as read from the \fIVARIANT_ID=\fR field of /etc/os\-release\&. If not set, resolves to an empty string\&. See \fBos-release\fR(5) for more information\&.
+T}
+T{
+"%%"
+T}:T{
+Single percent sign
+T}:T{
+Use "%%" in place of "%" to specify a single percent sign\&.
+T}
+.TE
+.sp 1
+.SH "EXAMPLES"
+.PP
+\fBExample\ \&1.\ \&Create directories with specific mode and ownership\fR
+.PP
+\fBscreen\fR(1), needs two directories created at boot with specific modes and ownership:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+# /usr/lib/tmpfiles\&.d/screen\&.conf
+d /run/screens  1777 root screen 10d
+d /run/uscreens 0755 root screen 10d12h
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+Contents of
+/run/screens
+and /run/uscreens will be cleaned up after 10 and 10\(12 days, respectively\&.
+.PP
+\fBExample\ \&2.\ \&Create a directory with a SMACK attribute\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+D /run/cups \- \- \- \-
+t /run/cups \- \- \- \- security\&.SMACK64=printing user\&.attr\-with\-spaces="foo bar"
+      
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+The directory will be owned by root and have default mode\&. Its contents are not subject to time based cleanup, but will be obliterated when
+\fBsystemd\-tmpfiles \-\-remove\fR
+runs\&.
+.PP
+\fBExample\ \&3.\ \&Create a directory and prevent its contents from cleanup\fR
+.PP
+\fBabrt\fR(1), needs a directory created at boot with specific mode and ownership and its content should be preserved from the automatic cleanup applied to the contents of
+/var/tmp:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+# /usr/lib/tmpfiles\&.d/tmp\&.conf
+d /var/tmp 1777 root root 30d
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+# /usr/lib/tmpfiles\&.d/abrt\&.conf
+d /var/tmp/abrt 0755 abrt abrt \-
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBExample\ \&4.\ \&Apply clean up during boot and based on time\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+# /usr/lib/tmpfiles\&.d/dnf\&.conf
+r! /var/cache/dnf/*/*/download_lock\&.pid
+r! /var/cache/dnf/*/*/metadata_lock\&.pid
+r! /var/lib/dnf/rpmdb_lock\&.pid
+e  /var/cache/dnf/ \- \- \- 30d
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+The lock files will be removed during boot\&. Any files and directories in
+/var/cache/dnf/
+will be removed after they have not been accessed in 30 days\&.
+.PP
+\fBExample\ \&5.\ \&Empty the contents of a cache directory on boot\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+# /usr/lib/tmpfiles\&.d/krb5rcache\&.conf
+e! /var/cache/krb5rcache \- \- \- 0
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+Any files and subdirectories in
+/var/cache/krb5rcache/
+will be removed on boot\&. The directory will not be created\&.
+.SH "/RUN/ AND /VAR/RUN/"
+.PP
+/var/run/
+is a deprecated symlink to
+/run/, and applications should use the latter\&.
+\fBsystemd\-tmpfiles\fR
+will warn if
+/var/run/
+is used\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsystemd-tmpfiles\fR(8),
+\fBsystemd-delta\fR(1),
+\fBsystemd.exec\fR(5),
+\fBattr\fR(5),
+\fBgetfattr\fR(1),
+\fBsetfattr\fR(1),
+\fBsetfacl\fR(1),
+\fBgetfacl\fR(1),
+\fBchattr\fR(1),
+\fBbtrfs-subvolume\fR(8),
+\fBbtrfs-qgroup\fR(8)
+.SH "NOTES"
+.IP " 1." 4
+Notes on Resolvability of User and Group Names
+.RS 4
+\%https://systemd.io/UIDS-GIDS/#notes-on-resolvability-of-user-and-group-names
+.RE

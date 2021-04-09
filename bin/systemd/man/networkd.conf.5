@@ -1,0 +1,203 @@
+'\" t
+.TH "NETWORKD\&.CONF" "5" "" "systemd 248" "networkd.conf"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+networkd.conf, networkd.conf.d \- Global Network configuration files
+.SH "SYNOPSIS"
+.PP
+/etc/systemd/networkd\&.conf
+.PP
+/etc/systemd/networkd\&.conf\&.d/*\&.conf
+.PP
+/usr/lib/systemd/networkd\&.conf\&.d/*\&.conf
+.SH "DESCRIPTION"
+.PP
+These configuration files control global network parameters\&. Currently the DHCP Unique Identifier (DUID)\&.
+.SH "CONFIGURATION DIRECTORIES AND PRECEDENCE"
+.PP
+The default configuration is set during compilation, so configuration is only needed when it is necessary to deviate from those defaults\&. Initially, the main configuration file in
+/etc/systemd/
+contains commented out entries showing the defaults as a guide to the administrator\&. Local overrides can be created by editing this file or by creating drop\-ins, as described below\&. Using drop\-ins for local configuration is recommended over modifications to the main configuration file\&.
+.PP
+In addition to the "main" configuration file, drop\-in configuration snippets are read from
+/usr/lib/systemd/*\&.conf\&.d/,
+/usr/local/lib/systemd/*\&.conf\&.d/, and
+/etc/systemd/*\&.conf\&.d/\&. Those drop\-ins have higher precedence and override the main configuration file\&. Files in the
+*\&.conf\&.d/
+configuration subdirectories are sorted by their filename in lexicographic order, regardless of in which of the subdirectories they reside\&. When multiple files specify the same option, for options which accept just a single value, the entry in the file sorted last takes precedence, and for options which accept a list of values, entries are collected as they occur in the sorted files\&.
+.PP
+When packages need to customize the configuration, they can install drop\-ins under
+/usr/\&. Files in
+/etc/
+are reserved for the local administrator, who may use this logic to override the configuration files installed by vendor packages\&. Drop\-ins have to be used to override package drop\-ins, since the main configuration file has lower precedence\&. It is recommended to prefix all filenames in those subdirectories with a two\-digit number and a dash, to simplify the ordering of the files\&.
+.PP
+To disable a configuration file supplied by the vendor, the recommended way is to place a symlink to
+/dev/null
+in the configuration directory in
+/etc/, with the same filename as the vendor configuration file\&.
+.SH "[NETWORK] SECTION OPTIONS"
+.PP
+The following options are available in the [Network] section:
+.PP
+\fISpeedMeter=\fR
+.RS 4
+Takes a boolean\&. If set to yes, then
+\fBsystemd\-networkd\fR
+measures the traffic of each interface, and
+\fBnetworkctl status \fR\fB\fIINTERFACE\fR\fR
+shows the measured speed\&. Defaults to no\&.
+.RE
+.PP
+\fISpeedMeterIntervalSec=\fR
+.RS 4
+Specifies the time interval to calculate the traffic speed of each interface\&. If
+\fISpeedMeter=no\fR, the value is ignored\&. Defaults to 10sec\&.
+.RE
+.PP
+\fIManageForeignRoutes=\fR
+.RS 4
+A boolean\&. When true,
+\fBsystemd\-networkd\fR
+will store any routes configured by other tools in its memory\&. When false,
+\fBsystemd\-networkd\fR
+will not manage the foreign routes, thus they are kept even if
+\fIKeepConfiguration=\fR
+is false\&. Defaults to yes\&.
+.RE
+.PP
+\fIRouteTable=\fR
+.RS 4
+Defines the route table name\&. Takes a whitespace\-separated list of the pairs of route table name and number\&. The route table name and number in each pair are separated with a colon, i\&.e\&.,
+"\fIname\fR:\fInumber\fR"\&. The route table name must not be
+"default",
+"main", or
+"local", as these route table names are predefined with route table number 253, 254, and 255, respectively\&. The route table number must be an integer in the range 1\&...4294967295\&. This setting can be specified multiple times\&. If an empty string is specified, then the list specified earlier are cleared\&. Defaults to unset\&.
+.RE
+.SH "[DHCP] SECTION OPTIONS"
+.PP
+This section configures the DHCP Unique Identifier (DUID) value used by DHCP protocol\&. DHCPv6 client protocol sends the DHCP Unique Identifier and the interface Identity Association Identifier (IAID) to a DHCP server when acquiring a dynamic IPv6 address\&. DHCPv4 client protocol sends IAID and DUID to the DHCP server when acquiring a dynamic IPv4 address if
+\fBClientIdentifier=duid\fR\&. IAID and DUID allows a DHCP server to uniquely identify the machine and the interface requesting a DHCP IP\&. To configure IAID and ClientIdentifier, see
+\fBsystemd.network\fR(5)\&.
+.PP
+The following options are understood:
+.PP
+\fIDUIDType=\fR
+.RS 4
+Specifies how the DUID should be generated\&. See
+\m[blue]\fBRFC 3315\fR\m[]\&\s-2\u[1]\d\s+2
+for a description of all the options\&.
+.sp
+The following values are understood:
+.PP
+\fBvendor\fR
+.RS 4
+If
+"DUIDType=vendor", then the DUID value will be generated using
+"43793"
+as the vendor identifier (systemd) and hashed contents of
+\fBmachine-id\fR(5)\&. This is the default if
+\fIDUIDType=\fR
+is not specified\&.
+.RE
+.PP
+\fBuuid\fR
+.RS 4
+If
+"DUIDType=uuid", and
+\fIDUIDRawData=\fR
+is not set, then the product UUID is used as a DUID value\&. If a system does not have valid product UUID, then an application\-specific
+\fBmachine-id\fR(5)
+is used as a DUID value\&. About the application\-specific machine ID, see
+\fBsd_id128_get_machine_app_specific\fR(3)\&.
+.RE
+.PP
+\fBlink\-layer\-time[:\fR\fB\fITIME\fR\fR\fB]\fR, \fBlink\-layer\fR
+.RS 4
+If
+"link\-layer\-time"
+or
+"link\-layer"
+is specified, then the MAC address of the interface is used as a DUID value\&. The value
+"link\-layer\-time"
+can take additional time value after a colon, e\&.g\&.
+"link\-layer\-time:2018\-01\-23 12:34:56 UTC"\&. The default time value is
+"2000\-01\-01 00:00:00 UTC"\&.
+.RE
+.sp
+In all cases,
+\fIDUIDRawData=\fR
+can be used to override the actual DUID value that is used\&.
+.RE
+.PP
+\fIDUIDRawData=\fR
+.RS 4
+Specifies the DHCP DUID value as a single newline\-terminated, hexadecimal string, with each byte separated by
+":"\&. The DUID that is sent is composed of the DUID type specified by
+\fIDUIDType=\fR
+and the value configured here\&.
+.sp
+The DUID value specified here overrides the DUID that
+\fBsystemd-networkd.service\fR(8)
+generates from the machine ID\&. To configure DUID per\-network, see
+\fBsystemd.network\fR(5)\&. The configured DHCP DUID should conform to the specification in
+\m[blue]\fBRFC 3315\fR\m[]\&\s-2\u[2]\d\s+2,
+\m[blue]\fBRFC 6355\fR\m[]\&\s-2\u[3]\d\s+2\&. To configure IAID, see
+\fBsystemd.network\fR(5)\&.
+.PP
+\fBExample\ \&1.\ \&A DUIDType=vendor with a custom value\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+DUIDType=vendor
+DUIDRawData=00:00:ab:11:f9:2a:c2:77:29:f9:5c:00
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+This specifies a 14 byte DUID, with the type DUID\-EN ("00:02"), enterprise number 43793 ("00:00:ab:11"), and identifier value
+"f9:2a:c2:77:29:f9:5c:00"\&.
+.RE
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsystemd.network\fR(5),
+\fBsystemd-networkd.service\fR(8),
+\fBmachine-id\fR(5),
+\fBsd_id128_get_machine_app_specific\fR(3)
+.SH "NOTES"
+.IP " 1." 4
+RFC 3315
+.RS 4
+\%https://tools.ietf.org/html/rfc3315#section-9
+.RE
+.IP " 2." 4
+RFC 3315
+.RS 4
+\%http://tools.ietf.org/html/rfc3315#section-9
+.RE
+.IP " 3." 4
+RFC 6355
+.RS 4
+\%http://tools.ietf.org/html/rfc6355
+.RE

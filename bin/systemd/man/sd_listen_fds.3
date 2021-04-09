@@ -1,0 +1,182 @@
+'\" t
+.TH "SD_LISTEN_FDS" "3" "" "systemd 248" "sd_listen_fds"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_listen_fds, sd_listen_fds_with_names, SD_LISTEN_FDS_START \- Check for file descriptors passed by the system manager
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-daemon\&.h>
+.fi
+.ft
+.sp
+.ft B
+.nf
+#define SD_LISTEN_FDS_START 3
+.fi
+.ft
+.HP \w'int\ sd_listen_fds('u
+.BI "int sd_listen_fds(int\ " "unset_environment" ");"
+.HP \w'int\ sd_listen_fds_with_names('u
+.BI "int sd_listen_fds_with_names(int\ " "unset_environment" ", char***\ " "names" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_listen_fds()\fR
+may be invoked by a daemon to check for file descriptors passed by the service manager as part of the socket\-based activation logic\&. It returns the number of received file descriptors\&. If no file descriptors have been received, zero is returned\&. The first file descriptor may be found at file descriptor number 3 (i\&.e\&.
+\fBSD_LISTEN_FDS_START\fR), the remaining descriptors follow at 4, 5, 6, \&..., if any\&.
+.PP
+If a daemon receives more than one file descriptor, they will be passed in the same order as configured in the systemd socket unit file (see
+\fBsystemd.socket\fR(5)
+for details) \(em if there\*(Aqs only one such file (see below)\&. Nonetheless, it is recommended to verify the correct socket types before using them\&. To simplify this checking, the functions
+\fBsd_is_fifo\fR(3),
+\fBsd_is_socket\fR(3),
+\fBsd_is_socket_inet\fR(3),
+\fBsd_is_socket_unix\fR(3)
+are provided\&. In order to maximize flexibility, it is recommended to make these checks as loose as possible without allowing incorrect setups\&. i\&.e\&. often, the actual port number a socket is bound to matters little for the service to work, hence it should not be verified\&. On the other hand, whether a socket is a datagram or stream socket matters a lot for the most common program logics and should be checked\&.
+.PP
+This function call will set the FD_CLOEXEC flag for all passed file descriptors to avoid further inheritance to children of the calling process\&.
+.PP
+If multiple socket units activate the same service, the order of the file descriptors passed to its main process is undefined\&. If additional file descriptors have been passed to the service manager using
+\fBsd_pid_notify_with_fds\fR(3)\*(Aqs
+"FDSTORE=1"
+messages, these file descriptors are passed last, in arbitrary order, and with duplicates removed\&.
+.PP
+If the
+\fIunset_environment\fR
+parameter is non\-zero,
+\fBsd_listen_fds()\fR
+will unset the
+\fI$LISTEN_FDS\fR,
+\fI$LISTEN_PID\fR
+and
+\fI$LISTEN_FDNAMES\fR
+environment variables before returning (regardless of whether the function call itself succeeded or not)\&. Further calls to
+\fBsd_listen_fds()\fR
+will then return zero, but the variables are no longer inherited by child processes\&.
+.PP
+\fBsd_listen_fds_with_names()\fR
+is like
+\fBsd_listen_fds()\fR, but optionally also returns an array of strings with identification names for the passed file descriptors, if that is available and the
+\fInames\fR
+parameter is non\-\fBNULL\fR\&. This information is read from the
+\fI$LISTEN_FDNAMES\fR
+variable, which may contain a colon\-separated list of names\&. For socket\-activated services, these names may be configured with the
+\fIFileDescriptorName=\fR
+setting in socket unit files, see
+\fBsystemd.socket\fR(5)
+for details\&. For file descriptors pushed into the file descriptor store (see above), the name is set via the
+\fIFDNAME=\fR
+field transmitted via
+\fBsd_pid_notify_with_fds()\fR\&. The primary usecase for these names are services which accept a variety of file descriptors which are not recognizable with functions like
+\fBsd_is_socket()\fR
+alone, and thus require identification via a name\&. It is recommended to rely on named file descriptors only if identification via
+\fBsd_is_socket()\fR
+and related calls is not sufficient\&. Note that the names used are not unique in any way\&. The returned array of strings has as many entries as file descriptors have been received, plus a final
+\fBNULL\fR
+pointer terminating the array\&. The caller needs to free the array itself and each of its elements with libc\*(Aqs
+\fBfree()\fR
+call after use\&. If the
+\fInames\fR
+parameter is
+\fBNULL\fR, the call is entirely equivalent to
+\fBsd_listen_fds()\fR\&.
+.PP
+Under specific conditions, the following automatic file descriptor names are returned:
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+.B Table\ \&1.\ \& Special names
+.TS
+allbox tab(:);
+lB lB.
+T{
+Name
+T}:T{
+Description
+T}
+.T&
+l l
+l l
+l l.
+T{
+"unknown"
+T}:T{
+The process received no name for the specific file descriptor from the service manager\&.
+T}
+T{
+"stored"
+T}:T{
+The file descriptor originates in the service manager\*(Aqs per\-service file descriptor store, and the \fIFDNAME=\fR field was absent when the file descriptor was submitted to the service manager\&.
+T}
+T{
+"connection"
+T}:T{
+The service was activated in per\-connection style using \fIAccept=yes\fR in the socket unit file, and the file descriptor is the connection socket\&.
+T}
+.TE
+.sp 1
+.SH "RETURN VALUE"
+.PP
+On failure, these calls returns a negative errno\-style error code\&. If
+\fI$LISTEN_FDS\fR/\fI$LISTEN_PID\fR
+was not set or was not correctly set for this daemon and hence no file descriptors were received, 0 is returned\&. Otherwise, the number of file descriptors passed is returned\&. The application may find them starting with file descriptor SD_LISTEN_FDS_START, i\&.e\&. file descriptor 3\&.
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.PP
+Internally,
+\fBsd_listen_fds()\fR
+checks whether the
+\fI$LISTEN_PID\fR
+environment variable equals the daemon PID\&. If not, it returns immediately\&. Otherwise, it parses the number passed in the
+\fI$LISTEN_FDS\fR
+environment variable, then sets the FD_CLOEXEC flag for the parsed number of file descriptors starting from SD_LISTEN_FDS_START\&. Finally, it returns the parsed number\&.
+\fBsd_listen_fds_with_names()\fR
+does the same but also parses
+\fI$LISTEN_FDNAMES\fR
+if set\&.
+.SH "ENVIRONMENT"
+.PP
+\fI$LISTEN_PID\fR, \fI$LISTEN_FDS\fR, \fI$LISTEN_FDNAMES\fR
+.RS 4
+Set by the service manager for supervised processes that use socket\-based activation\&. This environment variable specifies the data
+\fBsd_listen_fds()\fR
+and
+\fBsd_listen_fds_with_names()\fR
+parses\&. See above for details\&.
+.RE
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-daemon\fR(3),
+\fBsd_is_fifo\fR(3),
+\fBsd_is_socket\fR(3),
+\fBsd_is_socket_inet\fR(3),
+\fBsd_is_socket_unix\fR(3),
+\fBsd_pid_notify_with_fds\fR(3),
+\fBdaemon\fR(7),
+\fBsystemd.service\fR(5),
+\fBsystemd.socket\fR(5)

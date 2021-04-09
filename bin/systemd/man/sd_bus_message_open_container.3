@@ -1,0 +1,234 @@
+'\" t
+.TH "SD_BUS_MESSAGE_OPEN_CONTAINER" "3" "" "systemd 248" "sd_bus_message_open_container"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_message_open_container, sd_bus_message_close_container, sd_bus_message_enter_container, sd_bus_message_exit_container \- Create and move between containers in D\-Bus messages
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_message_open_container('u
+.BI "int sd_bus_message_open_container(sd_bus_message\ *" "m" ", char\ " "type" ", const\ char\ *" "contents" ");"
+.HP \w'int\ sd_bus_message_close_container('u
+.BI "int sd_bus_message_close_container(sd_bus_message\ *" "m" ");"
+.HP \w'int\ sd_bus_message_enter_container('u
+.BI "int sd_bus_message_enter_container(sd_bus_message\ *" "m" ", char\ " "type" ", const\ char\ *" "contents" ");"
+.HP \w'int\ sd_bus_message_exit_container('u
+.BI "int sd_bus_message_exit_container(sd_bus_message\ *" "m" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_message_open_container()\fR
+appends a new container to the message
+\fIm\fR\&. After opening a new container, it can be filled with content using
+\fBsd_bus_message_append\fR(3)
+and similar functions\&. Containers behave like a stack\&. To nest containers inside each other, call
+\fBsd_bus_message_open_container()\fR
+multiple times without calling
+\fBsd_bus_message_close_container()\fR
+in between\&. Each container will be nested inside the previous container\&.
+\fItype\fR
+represents the container type and should be one of
+"r",
+"a",
+"v"
+or
+"e"
+as described in
+\fBsd_bus_message_append\fR(3)\&. Instead of literals, the corresponding constants
+\fBSD_BUS_TYPE_STRUCT\fR,
+\fBSD_BUS_TYPE_ARRAY\fR,
+\fBSD_BUS_TYPE_VARIANT\fR
+or
+\fBSD_BUS_TYPE_DICT_ENTRY\fR
+can also be used\&.
+\fIcontents\fR
+describes the type of the container\*(Aqs elements and should be a D\-Bus type string following the rules described in
+\fBsd_bus_message_append\fR(3)\&.
+.PP
+\fBsd_bus_message_close_container()\fR
+closes the last container opened with
+\fBsd_bus_message_open_container()\fR\&. On success, the write pointer of the message
+\fIm\fR
+is positioned after the closed container in its parent container or in
+\fIm\fR
+itself if there is no parent container\&.
+.PP
+\fBsd_bus_message_enter_container()\fR
+enters the next container of the message
+\fIm\fR
+for reading\&. It behaves mostly the same as
+\fBsd_bus_message_open_container()\fR\&. Entering a container allows reading its contents with
+\fBsd_bus_message_read\fR(3)
+and similar functions\&.
+\fItype\fR
+and
+\fIcontents\fR
+are the same as in
+\fBsd_bus_message_open_container()\fR\&.
+.PP
+\fBsd_bus_message_exit_container()\fR
+exits the scope of the last container entered with
+\fBsd_bus_message_enter_container()\fR\&. It behaves mostly the same as
+\fBsd_bus_message_close_container()\fR\&. Note that
+\fBsd_bus_message_exit_container()\fR
+may only be called after iterating through all members of the container, i\&.e\&. reading or skipping them\&. Use
+\fBsd_bus_message_skip\fR(3)
+to skip over felds of a container in order to be able to exit the container with
+\fBsd_bus_message_exit_container()\fR
+without reading all members\&.
+.SH "RETURN VALUE"
+.PP
+On success, these functions return a non\-negative integer\&.
+\fBsd_bus_message_open_container()\fR
+and
+\fBsd_bus_message_close_container()\fR
+return 0\&.
+\fBsd_bus_message_enter_container()\fR
+returns 1 if it successfully opened a new container, and 0 if that was not possible because the end of the currently open container or message was reached\&.
+\fBsd_bus_message_exit_container()\fR
+returns 1 on success\&. On failure, all of these functions return a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+\fIm\fR
+or
+\fIcontents\fR
+are
+\fBNULL\fR
+or
+\fItype\fR
+is invalid\&.
+.RE
+.PP
+\fB\-EPERM\fR
+.RS 4
+The message
+\fIm\fR
+is already sealed\&.
+.RE
+.PP
+\fB\-ESTALE\fR
+.RS 4
+The message
+\fIm\fR
+is in an invalid state\&.
+.RE
+.PP
+\fB\-ENOMEM\fR
+.RS 4
+Memory allocation failed\&.
+.RE
+.PP
+\fB\-EBUSY\fR
+.RS 4
+\fBsd_bus_message_exit_container()\fR
+was called but there are unread members left in the container\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "EXAMPLES"
+.PP
+\fBExample\ \&1.\ \&Append an array of strings to a message\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+#include <systemd/sd\-bus\&.h>
+
+int append_strings_to_message(sd_bus_message *m, const char *const *arr) {
+  int r;
+
+  r = sd_bus_message_open_container(m, \*(Aqa\*(Aq, "s");
+  if (r < 0)
+    return r;
+
+  for (const char *s = *arr; *s; s++) {
+    r = sd_bus_message_append(m, "s", s);
+    if (r < 0)
+      return r;
+  }
+
+  return sd_bus_message_close_container(m);
+}
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBExample\ \&2.\ \&Read an array of strings from a message\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+#include <stdio\&.h>
+
+#include <systemd/sd\-bus\&.h>
+
+int read_strings_from_message(sd_bus_message *m) {
+  int r;
+
+  r = sd_bus_message_enter_container(m, \*(Aqa\*(Aq, "s");
+  if (r < 0)
+    return r;
+
+  for (;;) {
+    const char *s;
+
+    r = sd_bus_message_read(m, "s", &s);
+    if (r < 0)
+      return r;
+    if (r == 0)
+      break;
+
+    printf("%s\en", s);
+  }
+
+  return sd_bus_message_exit_container(m);
+}
+.fi
+.if n \{\
+.RE
+.\}
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd_bus_message_append\fR(3),
+\fBsd_bus_message_read\fR(3),
+\fBsd_bus_message_skip\fR(3),
+\m[blue]\fBThe D\-Bus specification\fR\m[]\&\s-2\u[1]\d\s+2
+.SH "NOTES"
+.IP " 1." 4
+The D-Bus specification
+.RS 4
+\%https://dbus.freedesktop.org/doc/dbus-specification.html
+.RE

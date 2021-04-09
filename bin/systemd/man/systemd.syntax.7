@@ -1,0 +1,292 @@
+'\" t
+.TH "SYSTEMD\&.SYNTAX" "7" "" "systemd 248" "systemd.syntax"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd.syntax \- General syntax of systemd configuration files
+.SH "INTRODUCTION"
+.PP
+This page describes the basic principles of configuration files used by
+\fBsystemd\fR(1)
+and related programs for:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+systemd unit files, see
+\fBsystemd.unit\fR(5),
+\fBsystemd.service\fR(5),
+\fBsystemd.socket\fR(5),
+\fBsystemd.device\fR(5),
+\fBsystemd.mount\fR(5),
+\fBsystemd.automount\fR(5),
+\fBsystemd.swap\fR(5),
+\fBsystemd.target\fR(5),
+\fBsystemd.path\fR(5),
+\fBsystemd.timer\fR(5),
+\fBsystemd.slice\fR(5),
+\fBsystemd.scope\fR(5),
+\fBsystemd.nspawn\fR(5)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+link files, see
+\fBsystemd.link\fR(5)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+netdev and network files, see
+\fBsystemd.netdev\fR(5),
+\fBsystemd.network\fR(5)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+daemon config files, see
+\fBsystemd-system.conf\fR(5),
+\fBsystemd-user.conf\fR(5),
+\fBlogind.conf\fR(5),
+\fBjournald.conf\fR(5),
+\fBjournal-remote.conf\fR(5),
+\fBjournal-upload.conf\fR(5),
+\fBsystemd-sleep.conf\fR(5),
+\fBtimesyncd.conf\fR(5)
+.RE
+.PP
+The syntax is inspired by
+\m[blue]\fBXDG Desktop Entry Specification\fR\m[]\&\s-2\u[1]\d\s+2
+\&.desktop
+files, which are in turn inspired by Microsoft Windows
+\&.ini
+files\&.
+.PP
+Each file is a plain text file divided into sections, with configuration entries in the style
+\fIkey\fR=\fIvalue\fR\&. Whitespace immediately before or after the
+"="
+is ignored\&. Empty lines and lines starting with
+"#"
+or
+";"
+are ignored, which may be used for commenting\&.
+.PP
+Lines ending in a backslash are concatenated with the following line while reading and the backslash is replaced by a space character\&. This may be used to wrap long lines\&. The limit on line length is very large (currently 1 MB), but it is recommended to avoid such long lines and use multiple directives, variable substitution, or other mechanism as appropriate for the given file type\&. When a comment line or lines follow a line ending with a backslash, the comment block is ignored, so the continued line is concatenated with whatever follows the comment block\&.
+.PP
+\fBExample\ \&1.\ \&\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+[Section A]
+KeyOne=value 1
+KeyTwo=value 2
+
+# a comment
+
+[Section B]
+Setting="something" "some thing" "\&..."
+KeyTwo=value 2 \e
+       value 2 continued
+
+[Section C]
+KeyThree=value 3\e
+# this line is ignored
+; this line is ignored too
+       value 3 continued
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+Boolean arguments used in configuration files can be written in various formats\&. For positive settings the strings
+\fB1\fR,
+\fByes\fR,
+\fBtrue\fR
+and
+\fBon\fR
+are equivalent\&. For negative settings, the strings
+\fB0\fR,
+\fBno\fR,
+\fBfalse\fR
+and
+\fBoff\fR
+are equivalent\&.
+.PP
+Time span values encoded in configuration files can be written in various formats\&. A stand\-alone number specifies a time in seconds\&. If suffixed with a time unit, the unit is honored\&. A concatenation of multiple values with units is supported, in which case the values are added up\&. Example:
+"50"
+refers to 50 seconds;
+"2min\ \&200ms"
+refers to 2 minutes and 200 milliseconds, i\&.e\&. 120200\ \&ms\&. The following time units are understood:
+"s",
+"min",
+"h",
+"d",
+"w",
+"ms",
+"us"\&. For details see
+\fBsystemd.time\fR(7)\&.
+.PP
+Various settings are allowed to be specified more than once, in which case the interpretation depends on the setting\&. Often, multiple settings form a list, and setting to an empty value "resets", which means that previous assignments are ignored\&. When this is allowed, it is mentioned in the description of the setting\&. Note that using multiple assignments to the same value makes the file incompatible with parsers for the XDG
+\&.desktop
+file format\&.
+.SH "QUOTING"
+.PP
+For settings where quoting is allowed, the following general rules apply: double quotes ("\&...") and single quotes (\*(Aq\&...\*(Aq) may be used to wrap a whole item (the opening quote may appear only at the beginning or after whitespace that is not quoted, and the closing quote must be followed by whitespace or the end of line), in which case everything until the next matching quote becomes part of the same item\&. Quotes themselves are removed\&. C\-style escapes are supported\&. The table below contains the list of known escape patterns\&. Only escape patterns which match the syntax in the table are allowed; other patterns may be added in the future and unknown patterns will result in a warning\&. In particular, any backslashes should be doubled\&. Finally, a trailing backslash ("\e") may be used to merge lines, as described above\&. UTF\-8 is accepted, and hence typical unicode characters do not need to be escaped\&.
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+.B Table\ \&1.\ \&Supported escapes
+.TS
+allbox tab(:);
+lB lB.
+T{
+Literal
+T}:T{
+Actual value
+T}
+.T&
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l.
+T{
+"\ea"
+T}:T{
+bell
+T}
+T{
+"\eb"
+T}:T{
+backspace
+T}
+T{
+"\ef"
+T}:T{
+form feed
+T}
+T{
+"\en"
+T}:T{
+newline
+T}
+T{
+"\er"
+T}:T{
+carriage return
+T}
+T{
+"\et"
+T}:T{
+tab
+T}
+T{
+"\ev"
+T}:T{
+vertical tab
+T}
+T{
+"\e\e"
+T}:T{
+backslash
+T}
+T{
+"\e""
+T}:T{
+double quotation mark
+T}
+T{
+"\e\*(Aq"
+T}:T{
+single quotation mark
+T}
+T{
+"\es"
+T}:T{
+space
+T}
+T{
+"\ex\fIxx\fR"
+T}:T{
+character number \fIxx\fR in hexadecimal encoding
+T}
+T{
+"\e\fInnn\fR"
+T}:T{
+character number \fInnn\fR in octal encoding
+T}
+T{
+"\eu\fInnnn\fR"
+T}:T{
+unicode code point \fInnnn\fR in hexadecimal encoding
+T}
+T{
+"\eU\fInnnnnnnn\fR"
+T}:T{
+unicode code point \fInnnnnnnn\fR in hexadecimal encoding
+T}
+.TE
+.sp 1
+.SH "SEE ALSO"
+.PP
+\fBsystemd.time\fR(7)
+.SH "NOTES"
+.IP " 1." 4
+XDG Desktop Entry Specification
+.RS 4
+\%http://standards.freedesktop.org/desktop-entry-spec/latest/
+.RE

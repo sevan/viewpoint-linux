@@ -1,0 +1,253 @@
+'\" t
+.TH "SD_BUS_MESSAGE_READ_BASIC" "3" "" "systemd 248" "sd_bus_message_read_basic"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_message_read_basic \- Read a basic type from a message
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_message_read_basic('u
+.BI "int sd_bus_message_read_basic(sd_bus_message\ *" "m" ", char\ " "type" ", void\ *" "p" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_message_read_basic()\fR
+reads a basic type from a message and advances the read position in the message\&. The set of basic types and their ascii codes passed in
+\fItype\fR
+are described in the
+\m[blue]\fBD\-Bus Specification\fR\m[]\&\s-2\u[1]\d\s+2\&.
+.PP
+If
+\fIp\fR
+is not
+\fBNULL\fR, it should contain a pointer to an appropriate object\&. For example, if
+\fItype\fR
+is
+\fB\*(Aqy\*(Aq\fR, the object passed in
+\fIp\fR
+should have type
+\fBuint8_t *\fR\&. If
+\fItype\fR
+is
+\fB\*(Aqs\*(Aq\fR, the object passed in
+\fIp\fR
+should have type
+\fBconst char **\fR\&. Note that, if the basic type is a pointer (e\&.g\&.,
+\fBconst char *\fR
+in the case of a string), the pointer is only borrowed and the contents must be copied if they are to be used after the end of the message\*(Aqs lifetime\&. Similarly, during the lifetime of such a pointer, the message must not be modified\&. If
+\fItype\fR
+is
+\fB\*(Aqh\*(Aq\fR
+(UNIX file descriptor), the descriptor is not duplicated by this call and the returned descriptor remains in possession of the message object, and needs to be duplicated by the caller in order to keep an open reference to it after the message object is freed (for example by calling
+"fcntl(fd, FD_DUPFD_CLOEXEC, 3)")\&. See the table below for a complete list of allowed types\&.
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+.B Table\ \&1.\ \&Item type specifiers
+.TS
+allbox tab(:);
+lB lB lB lB.
+T{
+Specifier
+T}:T{
+Constant
+T}:T{
+Description
+T}:T{
+Expected C Type
+T}
+.T&
+l l l l
+l l l l
+l l l l
+l l l l
+l l l l
+l l l l
+l l l l
+l l l l
+l l l l
+l l l l
+l l l l
+l l l l
+l l l l.
+T{
+"y"
+T}:T{
+\fBSD_BUS_TYPE_BYTE\fR
+T}:T{
+8bit unsigned integer
+T}:T{
+\fBuint8_t *\fR
+T}
+T{
+"b"
+T}:T{
+\fBSD_BUS_TYPE_BOOLEAN\fR
+T}:T{
+boolean
+T}:T{
+\fBint *\fR (NB: not \fBbool *\fR)
+T}
+T{
+"n"
+T}:T{
+\fBSD_BUS_TYPE_INT16\fR
+T}:T{
+16bit signed integer
+T}:T{
+\fBint16_t *\fR
+T}
+T{
+"q"
+T}:T{
+\fBSD_BUS_TYPE_UINT16\fR
+T}:T{
+16bit unsigned integer
+T}:T{
+\fBuint16_t *\fR
+T}
+T{
+"i"
+T}:T{
+\fBSD_BUS_TYPE_INT32\fR
+T}:T{
+32bit signed integer
+T}:T{
+\fBint32_t *\fR
+T}
+T{
+"u"
+T}:T{
+\fBSD_BUS_TYPE_UINT32\fR
+T}:T{
+32bit unsigned integer
+T}:T{
+\fBuint32_t *\fR
+T}
+T{
+"x"
+T}:T{
+\fBSD_BUS_TYPE_INT64\fR
+T}:T{
+64bit signed integer
+T}:T{
+\fBint64_t *\fR
+T}
+T{
+"t"
+T}:T{
+\fBSD_BUS_TYPE_UINT64\fR
+T}:T{
+64bit unsigned integer
+T}:T{
+\fBuint64_t *\fR
+T}
+T{
+"d"
+T}:T{
+\fBSD_BUS_TYPE_DOUBLE\fR
+T}:T{
+IEEE 754 double precision floating\-point
+T}:T{
+\fBdouble *\fR
+T}
+T{
+"s"
+T}:T{
+\fBSD_BUS_TYPE_STRING\fR
+T}:T{
+UTF\-8 string
+T}:T{
+\fBconst char **\fR
+T}
+T{
+"o"
+T}:T{
+\fBSD_BUS_TYPE_OBJECT_PATH\fR
+T}:T{
+D\-Bus object path string
+T}:T{
+\fBconst char **\fR
+T}
+T{
+"g"
+T}:T{
+\fBSD_BUS_TYPE_SIGNATURE\fR
+T}:T{
+D\-Bus signature string
+T}:T{
+\fBconst char **\fR
+T}
+T{
+"h"
+T}:T{
+\fBSD_BUS_TYPE_UNIX_FD\fR
+T}:T{
+UNIX file descriptor
+T}:T{
+\fBint *\fR
+T}
+.TE
+.sp 1
+.PP
+If there is no object of the specified type at the current position in the message, an error is returned\&.
+.SH "RETURN VALUE"
+.PP
+On success,
+\fBsd_bus_message_read_basic()\fR
+returns a positive integer\&. If the end of the currently opened array has been reached, it returns 0\&. On failure, it returns a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+Specified type string is invalid or the message parameter is
+\fBNULL\fR\&.
+.RE
+.PP
+\fB\-ENXIO\fR
+.RS 4
+The message does not contain the specified type at current position\&.
+.RE
+.PP
+\fB\-EBADMSG\fR
+.RS 4
+The message cannot be parsed\&.
+.RE
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd_bus_message_append_basic\fR(3),
+\fBsd_bus_message_skip\fR(3),
+\fBsd_bus_message_read\fR(3)
+.SH "NOTES"
+.IP " 1." 4
+D-Bus Specification
+.RS 4
+\%https://dbus.freedesktop.org/doc/dbus-specification.html
+.RE

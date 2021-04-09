@@ -1,0 +1,42 @@
+'\" t
+.TH "SYSTEMD\-BLESS\-BOOT\-GENERATOR" "8" "" "systemd 248" "systemd-bless-boot-generator"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd-bless-boot-generator \- Pull systemd\-bless\-boot\&.service into the initial boot transaction when boot counting is in effect
+.SH "SYNOPSIS"
+.PP
+/usr/lib/systemd/system\-generators/systemd\-bless\-boot\-generator
+.SH "DESCRIPTION"
+.PP
+systemd\-bless\-boot\-generator
+is a generator that pulls
+systemd\-bless\-boot\&.service
+into the initial boot transaction when boot counting, as implemented by
+\fBsystemd-boot\fR(7), is enabled\&.
+.PP
+systemd\-bless\-boot\-generator
+implements
+\fBsystemd.generator\fR(7)\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsystemd-bless-boot.service\fR(8),
+\fBsystemd-boot\fR(7)

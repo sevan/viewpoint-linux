@@ -1,0 +1,858 @@
+'\" t
+.TH "ORG\&.FREEDESKTOP\&.RESOLVE1" "5" "" "systemd 248" "org.freedesktop.resolve1"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+org.freedesktop.resolve1 \- The D\-Bus interface of systemd\-resolved
+.SH "INTRODUCTION"
+.PP
+\fBsystemd-resolved.service\fR(8)
+is a system service that provides hostname resolution and caching using DNS, LLMNR, and mDNS\&. It also does DNSSEC validation\&. This page describes the resolve semantics and the D\-Bus interface\&.
+.PP
+This page contains an API reference only\&. If you are looking for a longer explanation how to use this API, please consult
+\m[blue]\fBWriting Network Configuration Managers\fR\m[]\&\s-2\u[1]\d\s+2
+and
+\m[blue]\fBWriting Resolver Clients\fR\m[]\&\s-2\u[2]\d\s+2\&.
+.SH "THE MANAGER OBJECT"
+.PP
+The service exposes the following interfaces on the Manager object on the bus:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+node /org/freedesktop/resolve1 {
+  interface org\&.freedesktop\&.resolve1\&.Manager {
+    methods:
+      ResolveHostname(in  i ifindex,
+                      in  s name,
+                      in  i family,
+                      in  t flags,
+                      out a(iiay) addresses,
+                      out s canonical,
+                      out t flags);
+      ResolveAddress(in  i ifindex,
+                     in  i family,
+                     in  ay address,
+                     in  t flags,
+                     out a(is) names,
+                     out t flags);
+      ResolveRecord(in  i ifindex,
+                    in  s name,
+                    in  q class,
+                    in  q type,
+                    in  t flags,
+                    out a(iqqay) records,
+                    out t flags);
+      ResolveService(in  i ifindex,
+                     in  s name,
+                     in  s type,
+                     in  s domain,
+                     in  i family,
+                     in  t flags,
+                     out a(qqqsa(iiay)s) srv_data,
+                     out aay txt_data,
+                     out s canonical_name,
+                     out s canonical_type,
+                     out s canonical_domain,
+                     out t flags);
+      GetLink(in  i ifindex,
+              out o path);
+      SetLinkDNS(in  i ifindex,
+                 in  a(iay) addresses);
+      SetLinkDNSEx(in  i ifindex,
+                   in  a(iayqs) addresses);
+      SetLinkDomains(in  i ifindex,
+                     in  a(sb) domains);
+      SetLinkDefaultRoute(in  i ifindex,
+                          in  b enable);
+      SetLinkLLMNR(in  i ifindex,
+                   in  s mode);
+      SetLinkMulticastDNS(in  i ifindex,
+                          in  s mode);
+      SetLinkDNSOverTLS(in  i ifindex,
+                        in  s mode);
+      SetLinkDNSSEC(in  i ifindex,
+                    in  s mode);
+      SetLinkDNSSECNegativeTrustAnchors(in  i ifindex,
+                                        in  as names);
+      RevertLink(in  i ifindex);
+      RegisterService(in  s name,
+                      in  s name_template,
+                      in  s type,
+                      in  q service_port,
+                      in  q service_priority,
+                      in  q service_weight,
+                      in  aa{say} txt_datas,
+                      out o service_path);
+      UnregisterService(in  o service_path);
+      ResetStatistics();
+      FlushCaches();
+      ResetServerFeatures();
+    properties:
+      readonly s LLMNRHostname = \*(Aq\&.\&.\&.\*(Aq;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
+      readonly s LLMNR = \*(Aq\&.\&.\&.\*(Aq;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
+      readonly s MulticastDNS = \*(Aq\&.\&.\&.\*(Aq;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
+      readonly s DNSOverTLS = \*(Aq\&.\&.\&.\*(Aq;
+      readonly a(iiay) DNS = [\&.\&.\&.];
+      readonly a(iiayqs) DNSEx = [\&.\&.\&.];
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
+      readonly a(iiay) FallbackDNS = [\&.\&.\&.];
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("const")
+      readonly a(iiayqs) FallbackDNSEx = [\&.\&.\&.];
+      readonly (iiay) CurrentDNSServer = \&.\&.\&.;
+      readonly (iiayqs) CurrentDNSServerEx = \&.\&.\&.;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
+      readonly a(isb) Domains = [\&.\&.\&.];
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
+      readonly (tt) TransactionStatistics = \&.\&.\&.;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
+      readonly (ttt) CacheStatistics = \&.\&.\&.;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
+      readonly s DNSSEC = \*(Aq\&.\&.\&.\*(Aq;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
+      readonly (tttt) DNSSECStatistics = \&.\&.\&.;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
+      readonly b DNSSECSupported = \&.\&.\&.;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
+      readonly as DNSSECNegativeTrustAnchors = [\*(Aq\&.\&.\&.\*(Aq, \&.\&.\&.];
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
+      readonly s DNSStubListener = \*(Aq\&.\&.\&.\*(Aq;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
+      readonly s ResolvConfMode = \*(Aq\&.\&.\&.\*(Aq;
+  };
+  interface org\&.freedesktop\&.DBus\&.Peer { \&.\&.\&. };
+  interface org\&.freedesktop\&.DBus\&.Introspectable { \&.\&.\&. };
+  interface org\&.freedesktop\&.DBus\&.Properties { \&.\&.\&. };
+};
+    
+.fi
+.if n \{\
+.RE
+.\}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.SS "Methods"
+.PP
+\fBResolveHostname()\fR
+takes a hostname and resolves it to one or more IP addresses\&. As parameters it takes the Linux network interface index to execute the query on, or 0 if it may be done on any suitable interface\&. The
+\fIname\fR
+parameter specifies the hostname to resolve\&. Note that if required, IDNA conversion is applied to this name unless it is resolved via LLMNR or MulticastDNS\&. The
+\fIfamily\fR
+parameter limits the results to a specific address family\&. It may be
+\fBAF_INET\fR,
+\fBAF_INET6\fR
+or
+\fBAF_UNSPEC\fR\&. If
+\fBAF_UNSPEC\fR
+is specified (recommended), both kinds are retrieved, subject to local network configuration (i\&.e\&. if no local, routable IPv6 address is found, no IPv6 address is retrieved; and similarly for IPv4)\&. A 64\-bit
+\fIflags\fR
+field may be used to alter the behaviour of the resolver operation (see below)\&. The method returns an array of address records\&. Each address record consists of the interface index the address belongs to, an address family as well as a byte array with the actual IP address data (which either has 4 or 16 elements, depending on the address family)\&. The returned address family will be one of
+\fBAF_INET\fR
+or
+\fBAF_INET6\fR\&. For IPv6, the returned address interface index should be used to initialize the \&.sin6_scope_id field of a
+struct\ \&sockaddr_in6
+instance to permit support for resolution to link\-local IP addresses\&. The address array is followed by the canonical name of the host, which may or may not be identical to the resolved hostname\&. Finally, a 64\-bit
+\fIflags\fR
+field is returned that is defined similarly to the
+\fIflags\fR
+field that was passed in, but contains information about the resolved data (see below)\&. If the hostname passed in is an IPv4 or IPv6 address formatted as string, it is parsed, and the result is returned\&. In this case, no network communication is done\&.
+.PP
+\fBResolveAddress()\fR
+executes the reverse operation: it takes an IP address and acquires one or more hostnames for it\&. As parameters it takes the interface index to execute the query on, or
+\fB0\fR
+if all suitable interfaces are OK\&. The
+\fIfamily\fR
+parameter indicates the address family of the IP address to resolve\&. It may be either
+\fBAF_INET\fR
+or
+\fBAF_INET6\fR\&. The
+\fIaddress\fR
+parameter takes the raw IP address data (as either a 4 or 16 byte array)\&. The
+\fIflags\fR
+input parameter may be used to alter the resolver operation (see below)\&. The method returns an array of name records, each consisting of an interface index and a hostname\&. The
+\fIflags\fR
+output field contains additional information about the resolver operation (see below)\&.
+.PP
+\fBResolveRecord()\fR
+takes a DNS resource record (RR) type, class and name, and retrieves the full resource record set (RRset), including the RDATA, for it\&. As parameter it takes the Linux network interface index to execute the query on, or
+\fB0\fR
+if it may be done on any suitable interface\&. The
+\fIname\fR
+parameter specifies the RR domain name to look up (no IDNA conversion is applied), followed by the 16\-bit class and type fields (which may be ANY)\&. Finally, a
+\fIflags\fR
+field may be passed in to alter behaviour of the look\-up (see below)\&. On completion, an array of RR items is returned\&. Each array entry consists of the network interface index the RR was discovered on, the type and class field of the RR found, and a byte array of the raw RR discovered\&. The raw RR data starts with the RR\*(Aqs domain name, in the original casing, followed by the RR type, class, TTL and RDATA, in the binary format documented in
+\m[blue]\fBRFC\ \&1035\fR\m[]\&\s-2\u[3]\d\s+2\&. For RRs that support name compression in the payload (such as MX or PTR), the compression is expanded in the returned data\&.
+.PP
+Note that currently, the class field has to be specified as IN or ANY\&. Specifying a different class will return an error indicating that look\-ups of this kind are unsupported\&. Similarly, some special types are not supported either (AXFR, OPT, \&...)\&. While
+systemd\-resolved
+parses and validates resource records of many types, it is crucial that clients using this API understand that the RR data originates from the network and should be thoroughly validated before use\&.
+.PP
+\fBResolveService()\fR
+may be used to resolve a DNS SRV service record, as well as the hostnames referenced in it, and possibly an accompanying DNS\-SD TXT record containing additional service metadata\&. The primary benefit of using this method over
+\fBResolveRecord()\fR
+specifying the SRV type is that it will resolve the SRV and TXT RRs as well as the hostnames referenced in the SRV in a single operation\&. As parameters it takes a Linux network interface index, a service name, a service type and a service domain\&. This method may be invoked in three different modes:
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 1.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  1." 4.2
+.\}
+To resolve a DNS\-SD service, specify the service name (e\&.g\&.
+"Lennart\*(Aqs Files"), the service type (e\&.g\&.
+"_webdav\&._tcp") and the domain to search in (e\&.g\&.
+"local") as the three service parameters\&. The service name must be in UTF\-8 format, and no IDNA conversion is applied to it in this mode (as mandated by the DNS\-SD specifications)\&. However, if necessary, IDNA conversion is applied to the domain parameter\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 2.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  2." 4.2
+.\}
+To resolve a plain SRV record, set the service name parameter to the empty string and set the service type and domain properly\&. (IDNA conversion is applied to the domain, if necessary\&.)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 3.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  3." 4.2
+.\}
+Alternatively, leave both the service name and type empty and specify the full domain name of the SRV record (i\&.e\&. prefixed with the service type) in the domain parameter\&. (No IDNA conversion is applied in this mode\&.)
+.RE
+.PP
+The
+\fIfamily\fR
+parameter of the
+\fBResolveService()\fR
+method encodes the desired family of the addresses to resolve (use
+\fBAF_INET\fR,
+\fBAF_INET6\fR, or
+\fBAF_UNSPEC\fR)\&. If this is enabled (Use the
+\fBNO_ADDRESS\fR
+flag to turn address resolution off, see below)\&. The
+\fIflags\fR
+parameter takes a couple of flags that may be used to alter the resolver operation\&.
+.PP
+On completion,
+\fBResolveService()\fR
+returns an array of SRV record structures\&. Each items consisting of the priority, weight and port fields as well as the hostname to contact, as encoded in the SRV record\&. Immediately following is an array of the addresses of this hostname, with each item consisting of the interface index, the address family and the address data in a byte array\&. This address array is followed by the canonicalized hostname\&. After this array of SRV record structures an array of byte arrays follows that encodes the TXT RR strings, in case DNS\-SD look\-ups are enabled\&. The next parameters are the canonical service name, type and domain\&. This may or may not be identical to the parameters passed in\&. Finally, a
+\fIflags\fR
+field is returned that contains information about the resolver operation performed\&.
+.PP
+The
+\fBResetStatistics()\fR
+method resets the various statistics counters that
+systemd\-resolved
+maintains to zero\&. (For details, see the statistics properties below\&.)
+.PP
+The
+\fBGetLink()\fR
+method takes a network interface index and returns the object path to the
+org\&.freedesktop\&.resolve1\&.Link
+object corresponding to it\&.
+.PP
+The
+\fBSetLinkDNS()\fR
+method sets the DNS servers to use on a specific interface\&. This method (and the following ones) may be used by network management software to configure per\-interface DNS settings\&. It takes a network interface index as well as an array of DNS server IP address records\&. Each array item consists of an address family (either
+\fBAF_INET\fR
+or
+\fBAF_INET6\fR), followed by a 4\-byte or 16\-byte array with the raw address data\&. This method is a one\-step shortcut for retrieving the Link object for a network interface using
+\fBGetLink()\fR
+(see above) and then invoking the
+\fBSetDNS()\fR
+method (see below) on it\&.
+.PP
+\fBSetLinkDNSEx()\fR
+is similar to
+\fBSetLinkDNS()\fR, but allows an IP port (instead of the default 53) and DNS name to be specified for each DNS server\&. The server name is used for Server Name Indication (SNI), which is useful when DNS\-over\-TLS is used\&. C\&.f\&.
+\fIDNS=\fR
+in
+\fBresolved.conf\fR(5)\&.
+.PP
+\fBSetLinkDefaultRoute()\fR
+specifies whether the link shall be used as the default route for name queries\&. See the description of name routing in
+\fBsystemd-resolved.service\fR(8)
+for details\&.
+.PP
+The
+\fBSetLinkDomains()\fR
+method sets the search and routing domains to use on a specific network interface for DNS look\-ups\&. It takes a network interface index and an array of domains, each with a boolean parameter indicating whether the specified domain shall be used as a search domain (false), or just as a routing domain (true)\&. Search domains are used for qualifying single\-label names into FQDN when looking up hostnames, as well as for making routing decisions on which interface to send queries ending in the domain to\&. Routing domains are only used for routing decisions and not used for single\-label name qualification\&. Pass the search domains in the order they should be used\&.
+.PP
+The
+\fBSetLinkLLMNR()\fR
+method enables or disables LLMNR support on a specific network interface\&. It takes a network interface index as well as a string that may either be empty or one of
+"yes",
+"no"
+or
+"resolve"\&. If empty, the systemd\-wide default LLMNR setting is used\&. If
+"yes", LLMNR is used for resolution of single\-label names and the local hostname is registered on all local LANs for LLMNR resolution by peers\&. If
+"no", LLMNR is turned off fully on this interface\&. If
+"resolve", LLMNR is only enabled for resolving names, but the local hostname is not registered for other peers to use\&.
+.PP
+Similarly, the
+\fBSetLinkMulticastDNS()\fR
+method enables or disables MulticastDNS support on a specific interface\&. It takes the same parameters as
+\fBSetLinkLLMNR()\fR
+described above\&.
+.PP
+The
+\fBSetLinkDNSSEC()\fR
+method enables or disables DNSSEC validation on a specific network interface\&. It takes a network interface index as well as a string that may either be empty or one of
+"yes",
+"no", or
+"allow\-downgrade"\&. When empty, the system\-wide default DNSSEC setting is used\&. If
+"yes", full DNSSEC validation is done for all look\-ups\&. If the selected DNS server does not support DNSSEC, look\-ups will fail if this mode is used\&. If
+"no", DNSSEC validation is fully disabled\&. If
+"allow\-downgrade", DNSSEC validation is enabled, but is turned off automatically if the selected server does not support it (thus opening up behaviour to downgrade attacks)\&. Note that DNSSEC only applies to traditional DNS, not to LLMNR or MulticastDNS\&.
+.PP
+The
+\fBSetLinkDNSSECNegativeTrustAnchors()\fR
+method may be used to configure DNSSEC Negative Trust Anchors (NTAs) for a specific network interface\&. It takes a network interface index and a list of domains as arguments\&.
+.PP
+The
+\fBSetLinkDNSOverTLS()\fR
+method enables or disables DNS\-over\-TLS\&. C\&.f\&.
+\fIDNSOverTLS=\fR
+in
+\fBsystemd-resolved.service\fR(8)
+for details\&.
+.PP
+Network management software integrating with
+systemd\-resolved
+should call
+\fBSetLinkDNS()\fR
+or
+\fBSetLinkDNSEx()\fR,
+\fBSetLinkDefaultRoute()\fR,
+\fBSetLinkDomains()\fR
+and others after the interface appeared in the kernel (and thus after a network interface index has been assigned), but before the network interfaces is activated (\fBIFF_UP\fR
+set) so that all settings take effect during the full time the network interface is up\&. It is safe to alter settings while the interface is up, however\&. Use
+\fBRevertLink()\fR
+(described below) to reset all per\-interface settings\&.
+.PP
+The
+\fBRevertLink()\fR
+method may be used to revert all per\-link settings described above to the defaults\&.
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+.ps +1
+\fBThe Flags Parameter\fR
+.RS 4
+.PP
+The four methods above accept and return a 64\-bit flags value\&. In most cases passing 0 is sufficient and recommended\&. However, the following flags are defined to alter the look\-up:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+#define SD_RESOLVED_DNS           (UINT64_C(1) << 0)
+#define SD_RESOLVED_LLMNR_IPV4    (UINT64_C(1) << 1)
+#define SD_RESOLVED_LLMNR_IPV6    (UINT64_C(1) << 2)
+#define SD_RESOLVED_MDNS_IPV4     (UINT64_C(1) << 3)
+#define SD_RESOLVED_MDNS_IPV6     (UINT64_C(1) << 4)
+#define SD_RESOLVED_NO_CNAME      (UINT64_C(1) << 5)
+#define SD_RESOLVED_NO_TXT        (UINT64_C(1) << 6)
+#define SD_RESOLVED_NO_ADDRESS    (UINT64_C(1) << 7)
+#define SD_RESOLVED_NO_SEARCH     (UINT64_C(1) << 8)
+#define SD_RESOLVED_AUTHENTICATED (UINT64_C(1) << 9)
+        
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+On input, the first five flags control the protocols to use for the look\-up\&. They refer to classic unicast DNS, LLMNR via IPv4/UDP and IPv6/UDP respectively, as well as MulticastDNS via IPv4/UDP and IPv6/UDP\&. If all of these five bits are off on input (which is strongly recommended) the look\-up will be done via all suitable protocols for the specific look\-up\&. Note that these flags operate as filter only, but cannot force a look\-up to be done via a protocol\&. Specifically,
+systemd\-resolved
+will only route look\-ups within the \&.local TLD to MulticastDNS (plus some reverse look\-up address domains), and single\-label names to LLMNR (plus some reverse address lookup domains)\&. It will route neither of these to Unicast DNS servers\&. Also, it will do LLMNR and Multicast DNS only on interfaces suitable for multicast\&.
+.PP
+On output, these five flags indicate which protocol was used to execute the operation, and hence where the data was found\&.
+.PP
+The primary use cases for these five flags are follow\-up look\-ups based on DNS data retrieved earlier\&. In this case it is often a good idea to limit the follow\-up look\-up to the protocol that was used to discover the first DNS result\&.
+.PP
+The NO_CNAME flag controls whether CNAME/DNAME resource records shall be followed during the look\-up\&. This flag is only available at input, none of the functions will return it on output\&. If a CNAME/DNAME RR is discovered while resolving a hostname, an error is returned instead\&. By default, when the flag is off, CNAME/DNAME RRs are followed\&.
+.PP
+The NO_TXT and NO_ADDRESS flags only influence operation of the
+\fBResolveService()\fR
+method\&. They are only defined for input, not output\&. If NO_TXT set, the DNS\-SD TXT RR look\-up is not done in the same operation\&. If NO_ADDRESS is specified, the hostnames discovered are not implicitly translated to their addresses\&.
+.PP
+The NO_SEARCH flag turns off the search domain logic\&. It is only defined for input in
+\fBResolveHostname()\fR\&. When specified, single\-label hostnames are not qualified using defined search domains, if any are configured\&. Note that
+\fBResolveRecord()\fR
+will never qualify single\-label domain names using search domains\&. Also note that multi\-label hostnames are never subject to search list expansion\&.
+.PP
+The AUTHENTICATED bit is defined only in the output flags of the four functions\&. If set, the returned data has been fully authenticated\&. Specifically, this bit is set for all DNSSEC\-protected data for which a full trust chain may be established to a trusted domain anchor\&. It is also set for locally synthesized data, such as
+"localhost"
+or data from
+/etc/hosts\&. Moreover, it is set for all LLMNR or mDNS RRs which originate from the local host\&. Applications that require authenticated RR data for operation should check this flag before trusting the data\&. Note that
+systemd\-resolved
+will never return invalidated data, hence this flag simply allows to discern the cases where data is known to be trustable, or where there is proof that the data is "rightfully" unauthenticated (which includes cases where the underlying protocol or server does not support authenticating data)\&.
+.RE
+.SS "Properties"
+.PP
+The
+\fILLMNR\fR
+and
+\fIMulticastDNS\fR
+properties report whether LLMNR and MulticastDNS are (globally) enabled\&. Each may be one of
+"yes",
+"no", and
+"resolve"\&. See
+\fBSetLinkLLMNR()\fR
+and
+\fBSetLinkMulticastDNS()\fR
+above\&.
+.PP
+\fILLMNRHostname\fR
+contains the hostname currently exposed on the network via LLMNR\&. It usually follows the system hostname as may be queried via
+\fBgethostname\fR(3), but may differ if a conflict is detected on the network\&.
+.PP
+\fIDNS\fR
+and
+\fIDNSEx\fR
+contain arrays of all DNS servers currently used by
+systemd\-resolved\&.
+\fIDNS\fR
+contains information similar to the DNS server data in
+/run/systemd/resolve/resolv\&.conf\&. Each structure in the array consists of a numeric network interface index, an address family, and a byte array containing the DNS server address (either 4 bytes in length for IPv4 or 16 bytes in lengths for IPv6)\&.
+\fIDNSEx\fR
+is similar, but additionally contains the IP port and server name (used for Server Name Indication, SNI)\&. Both arrays contain DNS servers configured system\-wide, including those possibly read from a foreign
+/etc/resolv\&.conf
+or the
+\fIDNS=\fR
+setting in
+/etc/systemd/resolved\&.conf, as well as per\-interface DNS server information either retrieved from
+\fBsystemd-networkd\fR(8), or configured by external software via
+\fBSetLinkDNS()\fR
+or
+\fBSetLinkDNSEx()\fR
+(see above)\&. The network interface index will be 0 for the system\-wide configured services and non\-zero for the per\-link servers\&.
+.PP
+\fIFallbackDNS\fR
+and
+\fIFallbackDNSEx\fR
+contain arrays of all DNS servers configured as fallback servers, if any, using the same format as
+\fIDNS\fR
+and
+\fIDNSEx\fR
+described above\&. See the description of
+\fIFallbackDNS=\fR
+in
+\fBresolved.conf\fR(5)
+for the description of when those servers are used\&.
+.PP
+\fICurrentDNSServer\fR
+and
+\fICurrentDNSServerEx\fR
+specify the server that is currently used for query resolution, in the same format as a single entry in the
+\fIDNS\fR
+and
+\fIDNSEx\fR
+arrays described above\&.
+.PP
+Similarly, the
+\fIDomains\fR
+property contains an array of all search and routing domains currently used by
+systemd\-resolved\&. Each entry consists of a network interface index (again, 0 encodes system\-wide entries), the actual domain name, and whether the entry is used only for routing (true) or for both routing and searching (false)\&.
+.PP
+The
+\fITransactionStatistics\fR
+property contains information about the number of transactions
+systemd\-resolved
+has processed\&. It contains a pair of unsigned 64\-bit counters, the first containing the number of currently ongoing transactions, the second the number of total transactions
+systemd\-resolved
+is processing or has processed\&. The latter value may be reset using the
+\fBResetStatistics()\fR
+method described above\&. Note that the number of transactions does not directly map to the number of issued resolver bus method calls\&. While simple look\-ups usually require a single transaction only, more complex look\-ups might result in more, for example when CNAMEs or DNSSEC are in use\&.
+.PP
+The
+\fICacheStatistics\fR
+property contains information about the executed cache operations so far\&. It exposes three 64\-bit counters: the first being the total number of current cache entries (both positive and negative), the second the number of cache hits, and the third the number of cache misses\&. The latter counters may be reset using
+\fBResetStatistics()\fR
+(see above)\&.
+.PP
+The
+\fIDNSSEC\fR
+property specifies current status of DNSSEC validation\&. It is one of
+"yes"
+(validation is enforced),
+"no"
+(no validation is done),
+"allow\-downgrade"
+(validation is done if the current DNS server supports it)\&. See the description of
+\fIDNSSEC=\fR
+in
+\fBresolved.conf\fR(5)\&.
+.PP
+The
+\fIDNSSECStatistics\fR
+property contains information about the DNSSEC validations executed so far\&. It contains four 64\-bit counters: the number of secure, insecure, bogus, and indeterminate DNSSEC validations so far\&. The counters are increased for each validated RRset, and each non\-existance proof\&. The secure counter is increased for each operation that successfully verified a signed reply, the insecure counter is increased for each operation that successfully verified that an unsigned reply is rightfully unsigned\&. The bogus counter is increased for each operation where the validation did not check out and the data is likely to have been tempered with\&. Finally the indeterminate counter is increased for each operation which did not complete because the necessary keys could not be acquired or the cryptographic algorithms were unknown\&.
+.PP
+The
+\fIDNSSECSupported\fR
+boolean property reports whether DNSSEC is enabled and the selected DNS servers support it\&. It combines information about system\-wide and per\-link DNS settings (see below), and only reports true if DNSSEC is enabled and supported on every interface for which DNS is configured and for the system\-wide settings if there are any\&. Note that
+systemd\-resolved
+assumes DNSSEC is supported by DNS servers until it verifies that this is not the case\&. Thus, the reported value may initially be true, until the first transactions are executed\&.
+.PP
+The
+\fIDNSOverTLS\fR
+boolean property reports whether DNS\-over\-TLS is enabled\&.
+.PP
+The
+\fIResolvConfMode\fR
+property exposes how
+/etc/resolv\&.conf
+is managed on the host\&. Currently, the values
+"uplink",
+"stub",
+"static"
+(these three correspond to the three different files
+systemd\-resolved\&.service
+provides),
+"foreign"
+(the file is managed by admin or another service,
+systemd\-resolved\&.service
+just consumes it),
+"missing"
+(/etc/resolv\&.conf
+is missing)\&.
+.PP
+The
+\fIDNSStubListener\fR
+property reports whether the stub listener on port 53 is enabled\&. Possible values are
+"yes"
+(enabled),
+"no"
+(disabled),
+"udp"
+(only the UDP listener is enabled), and
+"tcp"
+(only the TCP listener is enabled)\&.
+.SH "LINK OBJECT"
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+node /org/freedesktop/resolve1/link/_1 {
+  interface org\&.freedesktop\&.resolve1\&.Link {
+    methods:
+      SetDNS(in  a(iay) addresses);
+      SetDNSEx(in  a(iayqs) addresses);
+      SetDomains(in  a(sb) domains);
+      SetDefaultRoute(in  b enable);
+      SetLLMNR(in  s mode);
+      SetMulticastDNS(in  s mode);
+      SetDNSOverTLS(in  s mode);
+      SetDNSSEC(in  s mode);
+      SetDNSSECNegativeTrustAnchors(in  as names);
+      Revert();
+    properties:
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
+      readonly t ScopesMask = \&.\&.\&.;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
+      readonly a(iay) DNS = [\&.\&.\&.];
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
+      readonly a(iayqs) DNSEx = [\&.\&.\&.];
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
+      readonly (iay) CurrentDNSServer = \&.\&.\&.;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
+      readonly (iayqs) CurrentDNSServerEx = \&.\&.\&.;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
+      readonly a(sb) Domains = [\&.\&.\&.];
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
+      readonly b DefaultRoute = \&.\&.\&.;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
+      readonly s LLMNR = \*(Aq\&.\&.\&.\*(Aq;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
+      readonly s MulticastDNS = \*(Aq\&.\&.\&.\*(Aq;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
+      readonly s DNSOverTLS = \*(Aq\&.\&.\&.\*(Aq;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
+      readonly s DNSSEC = \*(Aq\&.\&.\&.\*(Aq;
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
+      readonly as DNSSECNegativeTrustAnchors = [\*(Aq\&.\&.\&.\*(Aq, \&.\&.\&.];
+      @org\&.freedesktop\&.DBus\&.Property\&.EmitsChangedSignal("false")
+      readonly b DNSSECSupported = \&.\&.\&.;
+  };
+  interface org\&.freedesktop\&.DBus\&.Peer { \&.\&.\&. };
+  interface org\&.freedesktop\&.DBus\&.Introspectable { \&.\&.\&. };
+  interface org\&.freedesktop\&.DBus\&.Properties { \&.\&.\&. };
+};
+    
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.PP
+For each Linux network interface a "Link" object is created which exposes per\-link DNS configuration and state\&. Use
+\fBGetLink()\fR
+on the Manager interface to retrieve the object path for a link object given the network interface index (see above)\&.
+.SS "Methods"
+.PP
+The various methods exposed by the Link interface are equivalent to their similarly named counterparts on the Manager interface\&. e\&.g\&.
+\fBSetDNS()\fR
+on the Link object maps to
+\fBSetLinkDNS()\fR
+on the Manager object, the main difference being that the later expects an interface index to be specified\&. Invoking the methods on the Manager interface has the benefit of reducing roundtrips, as it is not necessary to first request the Link object path via
+\fBGetLink()\fR
+before invoking the methods\&. The same relationship holds for
+\fBSetDNSEx()\fR,
+\fBSetDomains()\fR,
+\fBSetDefaultRoute()\fR,
+\fBSetLLMNR()\fR,
+\fBSetMulticastDNS()\fR,
+\fBSetDNSOverTLS()\fR,
+\fBSetDNSSEC()\fR,
+\fBSetDNSSECNegativeTrustAnchors()\fR, and
+\fBRevert()\fR\&. For further details on these methods see the
+Manager
+documentation above\&.
+.SS "Properties"
+.PP
+\fIScopesMask\fR
+defines which resolver scopes are currently active on this interface\&. This 64\-bit unsigned integer field is a bit mask consisting of a subset of the bits of the flags parameter describe above\&. Specifically, it may have the DNS, LLMNR and MDNS bits (the latter in IPv4 and IPv6 flavours) set\&. Each individual bit is set when the protocol applies to a specific interface and is enabled for it\&. It is unset otherwise\&. Specifically, a multicast\-capable interface in the "UP" state with an IP address is suitable for LLMNR or MulticastDNS, and any interface that is UP and has an IP address is suitable for DNS\&. Note the relationship of the bits exposed here with the LLMNR and MulticastDNS properties also exposed on the Link interface\&. The latter expose what is *configured* to be used on the interface, the former expose what is actually used on the interface, taking into account the abilities of the interface\&.
+.PP
+\fIDNSSECSupported\fR
+exposes a boolean field that indicates whether DNSSEC is currently configured and in use on the interface\&. Note that if DNSSEC is enabled on an interface, it is assumed available until it is detected that the configured server does not actually support it\&. Thus, this property may initially report that DNSSEC is supported on an interface\&.
+.PP
+\fIDefaultRoute\fR
+exposes a boolean field that indicates whether the interface will be used as default route for name queries\&. See
+\fBSetLinkDefaultRoute()\fR
+above\&.
+.PP
+The other properties reflect the state of the various configuration settings for the link which may be set with the various methods calls such as
+\fBSetDNS()\fR
+or
+\fBSetLLMNR()\fR\&.
+.SH "COMMON ERRORS"
+.PP
+Many bus methods
+systemd\-resolved
+exposes (in particular the resolver methods such as
+\fBResolveHostname()\fR
+on the
+Manager
+interface) may return some of the following errors:
+.PP
+\fBorg\&.freedesktop\&.resolve1\&.NoNameServers\fR
+.RS 4
+No suitable DNS servers were found to resolve a request\&.
+.RE
+.PP
+\fBorg\&.freedesktop\&.resolve1\&.InvalidReply\fR
+.RS 4
+A response from the selected DNS server was not understood\&.
+.RE
+.PP
+\fBorg\&.freedesktop\&.resolve1\&.NoSuchRR\fR
+.RS 4
+The requested name exists, but there is no resource record of the requested type for it\&. (This is the DNS NODATA case)\&.
+.RE
+.PP
+\fBorg\&.freedesktop\&.resolve1\&.CNameLoop\fR
+.RS 4
+The look\-up failed because a CNAME or DNAME loop was detected\&.
+.RE
+.PP
+\fBorg\&.freedesktop\&.resolve1\&.Aborted\fR
+.RS 4
+The look\-up was aborted because the selected protocol became unavailable while the operation was ongoing\&.
+.RE
+.PP
+\fBorg\&.freedesktop\&.resolve1\&.NoSuchService\fR
+.RS 4
+A service look\-up was successful, but the SRV record reported that the service is not available\&.
+.RE
+.PP
+\fBorg\&.freedesktop\&.resolve1\&.DnssecFailed\fR
+.RS 4
+The acquired response did not pass DNSSEC validation\&.
+.RE
+.PP
+\fBorg\&.freedesktop\&.resolve1\&.NoTrustAnchor\fR
+.RS 4
+No chain of trust could be established for the response to a configured DNSSEC trust anchor\&.
+.RE
+.PP
+\fBorg\&.freedesktop\&.resolve1\&.ResourceRecordTypeUnsupported\fR
+.RS 4
+The requested resource record type is not supported on the selected DNS servers\&. This error is generated for example when an RRSIG record is requested from a DNS server that does not support DNSSEC\&.
+.RE
+.PP
+\fBorg\&.freedesktop\&.resolve1\&.NoSuchLink\fR
+.RS 4
+No network interface with the specified network interface index exists\&.
+.RE
+.PP
+\fBorg\&.freedesktop\&.resolve1\&.LinkBusy\fR
+.RS 4
+The requested configuration change could not be made because
+\fBsystemd-networkd\fR(8), already took possession of the interface and supplied configuration data for it\&.
+.RE
+.PP
+\fBorg\&.freedesktop\&.resolve1\&.NetworkDown\fR
+.RS 4
+The requested look\-up failed because the system is currently not connected to any suitable network\&.
+.RE
+.PP
+\fBorg\&.freedesktop\&.resolve1\&.DnsError\&.NXDOMAIN\fR, \fBorg\&.freedesktop\&.resolve1\&.DnsError\&.REFUSED\fR, \&.\&.\&.
+.RS 4
+The look\-up failed with a DNS return code reporting a failure\&. The error names used as suffixes here are defined in by IANA in
+\m[blue]\fBDNS\ \&RCODEs\fR\m[]\&\s-2\u[4]\d\s+2\&.
+.RE
+.SH "EXAMPLES"
+.PP
+\fBExample\ \&1.\ \&Introspect org\&.freedesktop\&.resolve1\&.Manager on the bus\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ gdbus introspect \-\-system \e
+  \-\-dest org\&.freedesktop\&.resolve1 \e
+  \-\-object\-path /org/freedesktop/resolve1
+      
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBExample\ \&2.\ \&Introspect org\&.freedesktop\&.resolve1\&.Link on the bus\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ gdbus introspect \-\-system \e
+  \-\-dest org\&.freedesktop\&.resolve1 \e
+  \-\-object\-path /org/freedesktop/resolve1/link/_11
+      
+.fi
+.if n \{\
+.RE
+.\}
+.SH "VERSIONING"
+.PP
+These D\-Bus interfaces follow
+\m[blue]\fBthe usual interface versioning guidelines\fR\m[]\&\s-2\u[5]\d\s+2\&.
+.SH "NOTES"
+.IP " 1." 4
+Writing Network Configuration Managers
+.RS 4
+\%https://wiki.freedesktop.org/www/Software/systemd/writing-network-configuration-managers
+.RE
+.IP " 2." 4
+Writing Resolver Clients
+.RS 4
+\%https://wiki.freedesktop.org/www/Software/systemd/writing-resolver-clients
+.RE
+.IP " 3." 4
+RFC\ \&1035
+.RS 4
+\%https://www.ietf.org/rfc/rfc1035.txt
+.RE
+.IP " 4." 4
+DNS\ \&RCODEs
+.RS 4
+\%https://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml#dns-parameters-6
+.RE
+.IP " 5." 4
+the usual interface versioning guidelines
+.RS 4
+\%http://0pointer.de/blog/projects/versioning-dbus.html
+.RE

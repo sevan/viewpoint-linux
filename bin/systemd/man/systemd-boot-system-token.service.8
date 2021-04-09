@@ -1,0 +1,87 @@
+'\" t
+.TH "SYSTEMD\-BOOT\-SYSTEM\-TOKEN\&.SERVICE" "8" "" "systemd 248" "systemd-boot-system-token.service"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd-boot-system-token.service \- Generate an initial boot loader system token and random seed
+.SH "SYNOPSIS"
+.PP
+systemd\-boot\-system\-token\&.service
+.SH "DESCRIPTION"
+.PP
+systemd\-boot\-system\-token\&.service
+is a system service that automatically generates a \*(Aqsystem token\*(Aq to store in an EFI variable in the system\*(Aqs NVRAM and a random seed to store on the EFI System Partition ESP on disk\&. The boot loader may then combine these two randomized data fields by cryptographic hashing, and pass it to the OS it boots as initialization seed for its entropy pool\&. The random seed stored in the ESP is refreshed on each reboot ensuring that multiple subsequent boots will boot with different seeds\&. The \*(Aqsystem token\*(Aq is generated randomly once, and then persistently stored in the system\*(Aqs EFI variable storage\&.
+.PP
+The
+systemd\-boot\-system\-token\&.service
+unit invokes the
+\fBbootctl random\-seed\fR
+command, which updates the random seed in the ESP, and initializes the \*(Aqsystem token\*(Aq if it\*(Aqs not initialized yet\&. The service is conditionalized so that it is run only when all of the below apply:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+A boot loader is used that implements the
+\m[blue]\fBBoot Loader Interface\fR\m[]\&\s-2\u[1]\d\s+2
+(which defines the \*(Aqsystem token\*(Aq concept)\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Either a \*(Aqsystem token\*(Aq was not set yet, or the boot loader has not passed the OS a random seed yet (and thus most likely has been missing the random seed file in the ESP)\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+The system is not running in a VM environment\&. This case is explicitly excluded since on VM environments the ESP backing storage and EFI variable storage is typically not physically separated and hence booting the same OS image in multiple instances would replicate both, thus reusing the same random seed and \*(Aqsystem token\*(Aq among all instances, which defeats its purpose\&. Note that it\*(Aqs still possible to use boot loader random seed provisioning in this mode, but the automatic logic implemented by this service has no effect then, and the user instead has to manually invoke the
+\fBbootctl random\-seed\fR
+acknowledging these restrictions\&.
+.RE
+.PP
+For further details see
+\fBbootctl\fR(1), regarding the command this service invokes\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBbootctl\fR(1),
+\fBsystemd-boot\fR(7)
+.SH "NOTES"
+.IP " 1." 4
+Boot Loader Interface
+.RS 4
+\%https://systemd.io/BOOT_LOADER_INTERFACE
+.RE

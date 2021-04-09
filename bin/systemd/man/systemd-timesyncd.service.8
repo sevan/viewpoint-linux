@@ -1,0 +1,91 @@
+'\" t
+.TH "SYSTEMD\-TIMESYNCD\&.SERVICE" "8" "" "systemd 248" "systemd-timesyncd.service"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd-timesyncd.service, systemd-timesyncd \- Network Time Synchronization
+.SH "SYNOPSIS"
+.PP
+systemd\-timesyncd\&.service
+.PP
+/usr/lib/systemd/systemd\-timesyncd
+.SH "DESCRIPTION"
+.PP
+systemd\-timesyncd
+is a system service that may be used to synchronize the local system clock with a remote Network Time Protocol (NTP) server\&. It also saves the local time to disk every time the clock has been synchronized and uses this to possibly advance the system realtime clock on subsequent reboots to ensure it (roughly) monotonically advances even if the system lacks a battery\-buffered RTC chip\&.
+.PP
+The
+systemd\-timesyncd
+service implements SNTP only\&. This minimalistic service will step the system clock for large offsets or slowly adjust it for smaller deltas\&. Complex use cases that require full NTP support (and where SNTP is not sufficient) are not covered by
+systemd\-timesyncd\&.
+.PP
+The NTP servers contacted are determined from the global settings in
+\fBtimesyncd.conf\fR(5), the per\-link static settings in
+\&.network
+files, and the per\-link dynamic settings received over DHCP\&. See
+\fBsystemd.network\fR(5)
+for further details\&.
+.PP
+\fBtimedatectl\fR(1)\*(Aqs
+\fBset\-ntp\fR
+command may be used to enable and start, or disable and stop this service\&.
+.PP
+\fBtimedatectl\fR(1)\*(Aqs
+\fBtimesync\-status\fR
+or
+\fBshow\-timesync\fR
+command can be used to show the current status of this service\&.
+.PP
+systemd\-timesyncd
+initialization delays the start of units that are ordered after
+time\-set\&.target
+(see
+\fBsystemd.special\fR(7)
+for details) until the local time has been updated from
+/var/lib/systemd/timesync/clock
+(see below) in order to make it roughly monotonic\&. It does not delay other units until synchronization with an accurate reference time sources has been reached\&. Use
+\fBsystemd-time-wait-sync.service\fR(8)
+to achieve that, which will delay start of units that are ordered after
+time\-sync\&.target
+until synchronization to an accurate reference clock is reached\&.
+.SH "FILES"
+.PP
+/var/lib/systemd/timesync/clock
+.RS 4
+The modification time ("mtime") of this file indicates the timestamp of the last successful synchronization (or at least the systemd build date, in case synchronization was not possible)\&. It is used to ensure that the system clock remains roughly monotonic across reboots, in case no local RTC is available\&.
+.RE
+.PP
+/run/systemd/timesync/synchronized
+.RS 4
+A file that is touched on each successful synchronization, to assist
+systemd\-time\-wait\-sync
+and other applications to detecting synchronization with accurate reference clocks\&.
+.RE
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBtimesyncd.conf\fR(5),
+\fBsystemd.network\fR(5),
+\fBsystemd-networkd.service\fR(8),
+\fBsystemd-time-wait-sync.service\fR(8),
+\fBsystemd.special\fR(7),
+\fBtimedatectl\fR(1),
+\fBlocaltime\fR(5),
+\fBhwclock\fR(8)

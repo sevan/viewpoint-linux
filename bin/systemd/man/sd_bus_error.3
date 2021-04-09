@@ -1,0 +1,335 @@
+'\" t
+.TH "SD_BUS_ERROR" "3" "" "systemd 248" "sd_bus_error"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_error, SD_BUS_ERROR_MAKE_CONST, SD_BUS_ERROR_NULL, sd_bus_error_free, sd_bus_error_set, sd_bus_error_setf, sd_bus_error_set_const, sd_bus_error_set_errno, sd_bus_error_set_errnof, sd_bus_error_set_errnofv, sd_bus_error_get_errno, sd_bus_error_copy, sd_bus_error_move, sd_bus_error_is_set, sd_bus_error_has_name, sd_bus_error_has_names_sentinel, sd_bus_error_has_names \- sd\-bus error handling
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.sp
+.ft B
+.nf
+typedef struct {
+        const char *name;
+        const char *message;
+        \&...
+} sd_bus_error;
+.fi
+.ft
+.PP
+\fBSD_BUS_ERROR_MAKE_CONST(\fR\fB\fIname\fR\fR\fB, \fR\fB\fImessage\fR\fR\fB)\fR
+.PP
+\fBSD_BUS_ERROR_NULL\fR
+.HP \w'void\ sd_bus_error_free('u
+.BI "void sd_bus_error_free(sd_bus_error\ *" "e" ");"
+.HP \w'int\ sd_bus_error_set('u
+.BI "int sd_bus_error_set(sd_bus_error\ *" "e" ", const\ char\ *" "name" ", const\ char\ *" "message" ");"
+.HP \w'int\ sd_bus_error_setf('u
+.BI "int sd_bus_error_setf(sd_bus_error\ *" "e" ", const\ char\ *" "name" ", const\ char\ *" "format" ", \&...);"
+.HP \w'int\ sd_bus_error_set_const('u
+.BI "int sd_bus_error_set_const(sd_bus_error\ *" "e" ", const\ char\ *" "name" ", const\ char\ *" "message" ");"
+.HP \w'int\ sd_bus_error_set_errno('u
+.BI "int sd_bus_error_set_errno(sd_bus_error\ *" "e" ", int\ " "error" ");"
+.HP \w'int\ sd_bus_error_set_errnof('u
+.BI "int sd_bus_error_set_errnof(sd_bus_error\ *" "e" ", int\ " "error" ", const\ char\ *" "format" ", \&...);"
+.HP \w'int\ sd_bus_error_set_errnofv('u
+.BI "int sd_bus_error_set_errnofv(sd_bus_error\ *" "e" ", int\ " "error" ", const\ char\ *" "format" ", va_list\ " "ap" ");"
+.HP \w'int\ sd_bus_error_get_errno('u
+.BI "int sd_bus_error_get_errno(const\ sd_bus_error\ *" "e" ");"
+.HP \w'int\ sd_bus_error_copy('u
+.BI "int sd_bus_error_copy(sd_bus_error\ *" "dst" ", const\ sd_bus_error\ *" "e" ");"
+.HP \w'int\ sd_bus_error_move('u
+.BI "int sd_bus_error_move(sd_bus_error\ *" "dst" ", sd_bus_error\ *" "e" ");"
+.HP \w'int\ sd_bus_error_is_set('u
+.BI "int sd_bus_error_is_set(const\ sd_bus_error\ *" "e" ");"
+.HP \w'int\ sd_bus_error_has_name('u
+.BI "int sd_bus_error_has_name(const\ sd_bus_error\ *" "e" ", const\ char\ *" "name" ");"
+.HP \w'int\ sd_bus_error_has_names_sentinel('u
+.BI "int sd_bus_error_has_names_sentinel(const\ sd_bus_error\ *" "e" ", \&.\&.\&.);"
+.PP
+#define sd_bus_error_has_names(e, \&.\&.\&.) sd_bus_error_has_names_sentinel(e, \&.\&.\&., NULL)
+.SH "DESCRIPTION"
+.PP
+The
+sd_bus_error
+structure carries information about a D\-Bus error condition\&. The functions described below may be used to set and query fields in this structure\&. The
+\fIname\fR
+field contains a short identifier of an error\&. It should follow the rules for error names described in the D\-Bus specification, subsection
+\m[blue]\fBValid Names\fR\m[]\&\s-2\u[1]\d\s+2\&. A number of common, standardized error names are described in
+\fBsd-bus-errors\fR(3), but additional domain\-specific errors may be defined by applications\&. The
+\fImessage\fR
+field usually contains a human\-readable string describing the details, but might be
+\fBNULL\fR\&. An unset
+sd_bus_error
+structure should have both fields initialized to
+\fBNULL\fR\&. Set an error structure to
+\fBSD_BUS_ERROR_NULL\fR
+in order to reset both fields to
+\fBNULL\fR\&. When no longer necessary, resources held by the
+sd_bus_error
+structure should be destroyed with
+\fBsd_bus_error_free()\fR\&.
+.PP
+\fBsd_bus_error_set()\fR
+sets an error structure to the specified name and message strings\&. The strings will be copied into internal, newly allocated memory\&. It is essential to free the error structure again when it is not required anymore (see above)\&. The function will return an
+\fIerrno\fR\-like negative value (see
+\fBerrno\fR(3)) determined from the specified error name\&. Various well\-known D\-Bus errors are converted to well\-known
+\fIerrno\fR
+counterparts, and the other ones to
+\fB\-EIO\fR\&. See
+\fBsd-bus-errors\fR(3)
+for a list of well\-known error names\&. Additional error mappings may be defined with
+\fBsd_bus_error_add_map\fR(3)\&. If
+\fIe\fR
+is
+\fBNULL\fR, no error structure is initialized, but the error is still converted into an
+\fIerrno\fR\-style error\&. If
+\fIname\fR
+is
+\fBNULL\fR, it is assumed that no error occurred, and 0 is returned\&. This means that this function may be conveniently used in a
+\fBreturn\fR
+statement\&. If
+\fImessage\fR
+is
+\fBNULL\fR, no message is set\&. This call can fail if no memory may be allocated for the name and message strings, in which case an
+\fBSD_BUS_ERROR_NO_MEMORY\fR
+error might be set instead and \-ENOMEM be returned\&. Do not use this call on error structures that are already initialized\&. If you intend to reuse an error structure, free the old data stored in it with
+\fBsd_bus_error_free()\fR
+first\&.
+.PP
+\fBsd_bus_error_setf()\fR
+is similar to
+\fBsd_bus_error_set()\fR, but takes a
+\fBprintf\fR(3)
+format string and corresponding arguments to generate the
+\fImessage\fR
+field\&.
+.PP
+\fBsd_bus_error_set_const()\fR
+is similar to
+\fBsd_bus_error_set()\fR, but the string parameters are not copied internally, and must hence remain constant and valid for the lifetime of
+\fIe\fR\&. Use this call to avoid memory allocations when setting error structures\&. Since this call does not allocate memory, it will not fail with an out\-of\-memory condition as
+\fBsd_bus_error_set()\fR
+can, as described above\&. Alternatively, the
+\fBSD_BUS_ERROR_MAKE_CONST()\fR
+macro may be used to generate a literal, constant bus error structure on\-the\-fly\&.
+.PP
+\fBsd_bus_error_set_errno()\fR
+will set
+\fIname\fR
+from an
+\fIerrno\fR\-like value that is converted to a D\-Bus error\&.
+\fBstrerror_r\fR(3)
+will be used to set
+\fImessage\fR\&. Well\-known D\-Bus error names will be used for
+\fIname\fR
+if applicable, otherwise a name in the
+"System\&.Error\&."
+namespace will be generated\&. The sign of the specified error number is ignored\&. The absolute value is used implicitly\&. The call always returns a negative value, for convenient usage in
+\fBreturn\fR
+statements\&. This call might fail due to lack of memory, in which case an
+\fBSD_BUS_ERROR_NO_MEMORY\fR
+error is set instead, and \-ENOMEM is returned\&.
+.PP
+\fBsd_bus_error_set_errnof()\fR
+is similar to
+\fBsd_bus_error_set_errno()\fR, but in addition to
+\fIerror\fR, takes a
+\fBprintf\fR(3)
+format string and corresponding arguments\&. The
+\fImessage\fR
+field will be generated from
+\fIformat\fR
+and the arguments\&.
+.PP
+\fBsd_bus_error_set_errnofv()\fR
+is similar to
+\fBsd_bus_error_set_errnof()\fR, but takes the format string parameters as
+\fBva_arg\fR(3)
+parameter list\&.
+.PP
+\fBsd_bus_error_get_errno()\fR
+converts the
+\fIname\fR
+field of an error structure to an
+\fIerrno\fR\-like (positive) value using the same rules as
+\fBsd_bus_error_set()\fR\&. If
+\fIe\fR
+is
+\fBNULL\fR, 0 will be returned\&.
+.PP
+\fBsd_bus_error_copy()\fR
+will initialize
+\fIdst\fR
+using the values in
+\fIe\fR\&. If the strings in
+\fIe\fR
+were set using
+\fBsd_bus_error_set_const()\fR, they will be shared\&. Otherwise, they will be copied\&. Returns a converted
+\fIerrno\fR\-like, negative error code\&.
+.PP
+\fBsd_bus_error_move()\fR
+is similar to
+\fBsd_bus_error_copy()\fR, but will move any error information from
+\fIe\fR
+into
+\fIdst\fR, resetting the former\&. This function cannot fail, as no new memory is allocated\&. Note that if
+\fIe\fR
+is not set (or
+\fBNULL\fR)
+\fIdst\fR
+is initializated to
+\fBSD_BUS_ERROR_NULL\fR\&. Moreover, if
+\fIdst\fR
+is
+\fBNULL\fR
+no operation is executed on it and resources held by
+\fIe\fR
+are freed and reset\&. Returns a converted
+\fIerrno\fR\-like, negative error code\&.
+.PP
+\fBsd_bus_error_is_set()\fR
+will return a non\-zero value if
+\fIe\fR
+is non\-\fBNULL\fR
+and an error has been set,
+\fBfalse\fR
+otherwise\&.
+.PP
+\fBsd_bus_error_has_name()\fR
+will return a non\-zero value if
+\fIe\fR
+is non\-\fBNULL\fR
+and an error with the same
+\fIname\fR
+has been set,
+\fBfalse\fR
+otherwise\&.
+.PP
+\fBsd_bus_error_has_names_sentinel()\fR
+is similar to
+\fBsd_bus_error_has_name()\fR, but takes multiple names to check against\&. The list must be terminated with
+\fBNULL\fR\&.
+\fBsd_bus_error_has_names()\fR
+is a macro wrapper around
+\fBsd_bus_error_has_names_sentinel()\fR
+that adds the
+\fBNULL\fR
+sentinel automatically\&.
+.PP
+\fBsd_bus_error_free()\fR
+will destroy resources held by
+\fIe\fR\&. The parameter itself will not be deallocated, and must be
+\fBfree\fR(3)d by the caller if necessary\&. The function may also be called safely on unset errors (error structures with both fields set to
+\fBNULL\fR), in which case it performs no operation\&. This call will reset the error structure after freeing the data, so that all fields are set to
+\fBNULL\fR\&. The structure may be reused afterwards\&.
+.SH "RETURN VALUE"
+.PP
+The functions
+\fBsd_bus_error_set()\fR,
+\fBsd_bus_error_setf()\fR, and
+\fBsd_bus_error_set_const()\fR, when successful, return the negative errno value corresponding to the
+\fIname\fR
+parameter\&. The functions
+\fBsd_bus_error_set_errno()\fR,
+\fBsd_bus_error_set_errnof()\fR
+and
+\fBsd_bus_error_set_errnofv()\fR, when successful, return the negative value of the
+\fIerror\fR
+parameter\&. If an error occurs, one of the negative error values listed below will be returned\&.
+.PP
+\fBsd_bus_error_get_errno()\fR
+returns
+\fBfalse\fR
+when
+\fIe\fR
+is
+\fBNULL\fR, and a positive errno value mapped from
+\fIe\->name\fR
+otherwise\&.
+.PP
+\fBsd_bus_error_copy()\fR
+and
+\fBsd_bus_error_move()\fR
+return 0 or a positive integer on success, and a negative error value converted from the error name otherwise\&.
+.PP
+\fBsd_bus_error_is_set()\fR
+returns a non\-zero value when
+\fIe\fR
+and the
+\fIname\fR
+field are non\-\fBNULL\fR, zero otherwise\&.
+.PP
+\fBsd_bus_error_has_name()\fR,
+\fBsd_bus_error_has_names()\fR, and
+\fBsd_bus_error_has_names_sentinel()\fR
+return a non\-zero value when
+\fIe\fR
+is non\-\fBNULL\fR
+and the
+\fIname\fR
+field is equal to one of the given names, zero otherwise\&.
+.SH "REFERENCE OWNERSHIP"
+.PP
+sd_bus_error
+is not reference counted\&. Users should destroy resources held by it by calling
+\fBsd_bus_error_free()\fR\&. Usually, error structures are allocated on the stack or passed in as function parameters, but they may also be allocated dynamically, in which case it is the duty of the caller to
+\fBfree\fR(3)
+the memory held by the structure itself after freeing its contents with
+\fBsd_bus_error_free()\fR\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+Error was already set in
+sd_bus_error
+structure when one the error\-setting functions was called\&.
+.RE
+.PP
+\fB\-ENOMEM\fR
+.RS 4
+Memory allocation failed\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd-bus-errors\fR(3),
+\fBsd_bus_error_add_map\fR(3),
+\fBerrno\fR(3),
+\fBstrerror_r\fR(3)
+.SH "NOTES"
+.IP " 1." 4
+Valid Names
+.RS 4
+\%http://dbus.freedesktop.org/doc/dbus-specification.html#message-protocol-names
+.RE

@@ -1,0 +1,95 @@
+'\" t
+.TH "SD_EVENT_SOURCE_SET_DESTROY_CALLBACK" "3" "" "systemd 248" "sd_event_source_set_destroy_callback"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_event_source_set_destroy_callback, sd_event_source_get_destroy_callback, sd_event_destroy_t \- Define the callback function for resource cleanup
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-event\&.h>
+.fi
+.ft
+.HP \w'typedef\ int\ (*sd_event_destroy_t)('u
+.BI "typedef int (*sd_event_destroy_t)(void\ *" "userdata" ");"
+.HP \w'int\ sd_event_source_set_destroy_callback('u
+.BI "int sd_event_source_set_destroy_callback(sd_event_source\ *" "source" ", sd_event_destroy_t\ " "callback" ");"
+.HP \w'int\ sd_event_source_get_destroy_callback('u
+.BI "int sd_event_source_get_destroy_callback(sd_event_source\ *" "source" ", sd_event_destroy_t\ *" "callback" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_event_source_set_destroy_callback()\fR
+sets
+\fIcallback\fR
+as the callback function to be called right before the event source object
+\fIsource\fR
+is deallocated\&. The
+\fIuserdata\fR
+pointer from the event source object will be passed as the
+\fIuserdata\fR
+parameter\&. This pointer can be set by an argument to the constructor functions, see
+\fBsd_event_add_io\fR(3), or directly, see
+\fBsd_event_source_set_userdata\fR(3)\&. This callback function is called even if
+\fIuserdata\fR
+is
+\fBNULL\fR\&. Note that this callback is invoked at a time where the event source object itself is already invalidated, and executing operations or taking new references to the event source object is not permissible\&.
+.PP
+\fBsd_event_source_get_destroy_callback()\fR
+returns the current callback for
+\fIsource\fR
+in the
+\fIcallback\fR
+parameter\&.
+.SH "RETURN VALUE"
+.PP
+On success,
+\fBsd_event_source_set_destroy_callback()\fR
+returns 0 or a positive integer\&. On failure, it returns a negative errno\-style error code\&.
+.PP
+\fBsd_event_source_get_destroy_callback()\fR
+returns positive if the destroy callback function is set, 0 if not\&. On failure, returns a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+The
+\fIsource\fR
+parameter is
+\fBNULL\fR\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-event\fR(3),
+\fBsd_event_add_io\fR(3),
+\fBsd_event_add_time\fR(3),
+\fBsd_event_add_signal\fR(3),
+\fBsd_event_add_child\fR(3),
+\fBsd_event_add_inotify\fR(3),
+\fBsd_event_add_defer\fR(3),
+\fBsd_event_source_set_userdata\fR(3)

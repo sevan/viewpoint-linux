@@ -1,0 +1,141 @@
+'\" t
+.TH "SD_EVENT_GET_FD" "3" "" "systemd 248" "sd_event_get_fd"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_event_get_fd \- Obtain a file descriptor to poll for event loop events
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-event\&.h>
+.fi
+.ft
+.HP \w'int\ sd_event_get_fd('u
+.BI "int sd_event_get_fd(sd_event\ *" "event" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_event_get_fd()\fR
+returns the file descriptor that an event loop object returned by the
+\fBsd_event_new\fR(3)
+function uses to wait for events\&. This file descriptor may itself be polled for
+\fBPOLLIN\fR/\fBEPOLLIN\fR
+events\&. This makes it possible to embed an
+\fBsd-event\fR(3)
+event loop into another, possibly foreign, event loop\&.
+.PP
+The returned file descriptor refers to an
+\fBepoll\fR(7)
+object\&. It is recommended not to alter it by invoking
+\fBepoll_ctl\fR(2)
+on it, in order to avoid interference with the event loop\*(Aqs inner logic and assumptions\&.
+.SH "RETURN VALUE"
+.PP
+On success,
+\fBsd_event_get_fd()\fR
+returns a non\-negative file descriptor\&. On failure, it returns a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+\fIevent\fR
+is not a valid pointer to an
+sd_event
+structure\&.
+.RE
+.PP
+\fB\-ECHILD\fR
+.RS 4
+The event loop has been created in a different process\&.
+.RE
+.SH "EXAMPLES"
+.PP
+\fBExample\ \&1.\ \&Integration in the GLib event loop\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+/* SPDX\-License\-Identifier: MIT */
+
+#include <stdlib\&.h>
+#include <glib\&.h>
+#include <systemd/sd\-event\&.h>
+
+typedef struct SDEventSource {
+  GSource source;
+  GPollFD pollfd;
+  sd_event *event;
+} SDEventSource;
+
+static gboolean event_prepare(GSource *source, gint *timeout_) {
+  return sd_event_prepare(((SDEventSource *)source)\->event) > 0;
+}
+
+static gboolean event_check(GSource *source) {
+  return sd_event_wait(((SDEventSource *)source)\->event, 0) > 0;
+}
+
+static gboolean event_dispatch(GSource *source, GSourceFunc callback, gpointer user_data) {
+  return sd_event_dispatch(((SDEventSource *)source)\->event) > 0;
+}
+
+static void event_finalize(GSource *source) {
+  sd_event_unref(((SDEventSource *)source)\->event);
+}
+
+static GSourceFuncs event_funcs = {
+  \&.prepare = event_prepare,
+  \&.check = event_check,
+  \&.dispatch = event_dispatch,
+  \&.finalize = event_finalize,
+};
+
+GSource *g_sd_event_create_source(sd_event *event) {
+  SDEventSource *source;
+
+  source = (SDEventSource *)g_source_new(&event_funcs, sizeof(SDEventSource));
+
+  source\->event = sd_event_ref(event);
+  source\->pollfd\&.fd = sd_event_get_fd(event);
+  source\->pollfd\&.events = G_IO_IN | G_IO_HUP | G_IO_ERR;
+
+  g_source_add_poll((GSource *)source, &source\->pollfd);
+
+  return (GSource *)source;
+}
+.fi
+.if n \{\
+.RE
+.\}
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsd-event\fR(3),
+\fBsd_event_new\fR(3),
+\fBsd_event_wait\fR(3),
+\fBepoll_ctl\fR(2),
+\fBepoll\fR(7)

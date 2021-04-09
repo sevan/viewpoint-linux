@@ -1,0 +1,428 @@
+'\" t
+.TH "SYSTEMD\-COREDUMP" "8" "" "systemd 248" "systemd-coredump"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd-coredump, systemd-coredump.socket, systemd-coredump@.service \- Acquire, save and process core dumps
+.SH "SYNOPSIS"
+.PP
+/usr/lib/systemd/systemd\-coredump
+.PP
+/usr/lib/systemd/systemd\-coredump
+\fB\-\-backtrace\fR
+.PP
+systemd\-coredump@\&.service
+.PP
+systemd\-coredump\&.socket
+.SH "DESCRIPTION"
+.PP
+systemd\-coredump@\&.service
+is a system service to process core dumps\&. It will log a summary of the event to
+\fBsystemd-journald.service\fR(8), including information about the process identifier, owner, the signal that killed the process, and the stack trace if possible\&. It may also save the core dump for later processing\&. See the "Information about the crashed process" section below\&.
+.PP
+The behavior of a specific program upon reception of a signal is governed by a few factors which are described in detail in
+\fBcore\fR(5)\&. In particular, the core dump will only be processed when the related resource limits are sufficient\&.
+.PP
+Core dumps can be written to the journal or saved as a file\&. In both cases, they can be retrieved for further processing, for example in
+\fBgdb\fR(1)\&. See
+\fBcoredumpctl\fR(1), in particular the
+\fBlist\fR
+and
+\fBdebug\fR
+verbs\&.
+.PP
+By default,
+\fBsystemd\-coredump\fR
+will log the core dump to the journal, including a backtrace if possible, and store the core dump (an image of the memory contents of the process) itself in an external file in
+/var/lib/systemd/coredump\&. These core dumps are deleted after a few days by default; see
+/usr/lib/tmpfiles\&.d/systemd\&.conf
+for details\&. Note that the removal of core files from the file system and the purging of journal entries are independent, and the core file may be present without the journal entry, and journal entries may point to since\-removed core files\&. Some metadata is attached to core files in the form of extended attributes, so the core files are useful for some purposes even without the full metadata available in the journal entry\&.
+.SS "Invocation of systemd\-coredump"
+.PP
+The
+\fBsystemd\-coredump\fR
+executable does the actual work\&. It is invoked twice: once as the handler by the kernel, and the second time in the
+systemd\-coredump@\&.service
+to actually write the data to the journal and process and save the core file\&.
+.PP
+When the kernel invokes
+\fBsystemd\-coredump\fR
+to handle a core dump, it runs in privileged mode, and will connect to the socket created by the
+systemd\-coredump\&.socket
+unit, which in turn will spawn an unprivileged
+systemd\-coredump@\&.service
+instance to process the core dump\&. Hence
+systemd\-coredump\&.socket
+and
+systemd\-coredump@\&.service
+are helper units which do the actual processing of core dumps and are subject to normal service management\&.
+.PP
+It is also possible to invoke
+\fBsystemd\-coredump\fR
+with
+\fB\-\-backtrace\fR
+option\&. In this case,
+\fBsystemd\-coredump\fR
+expects a journal entry in the journal
+\m[blue]\fBJournal Export Format\fR\m[]\&\s-2\u[1]\d\s+2
+on standard input\&. The entry should contain a
+\fIMESSAGE=\fR
+field and any additional metadata fields the caller deems reasonable\&.
+\fBsystemd\-coredump\fR
+will append additional metadata fields in the same way it does for core dumps received from the kernel\&. In this mode, no core dump is stored in the journal\&.
+.SH "CONFIGURATION"
+.PP
+For programs started by
+\fBsystemd\fR, process resource limits can be set by directive
+\fILimitCORE=\fR, see
+\fBsystemd.exec\fR(5)\&.
+.PP
+In order to be used by the kernel to handle core dumps,
+\fBsystemd\-coredump\fR
+must be configured in
+\fBsysctl\fR(8)
+parameter
+\fIkernel\&.core_pattern\fR\&. The syntax of this parameter is explained in
+\fBcore\fR(5)\&. systemd installs the file
+/usr/lib/sysctl\&.d/50\-coredump\&.conf
+which configures
+\fIkernel\&.core_pattern\fR
+accordingly\&. This file may be masked or overridden to use a different setting following normal
+\fBsysctl.d\fR(5)
+rules\&. If the sysctl configuration is modified, it must be updated in the kernel before it takes effect, see
+\fBsysctl\fR(8)
+and
+\fBsystemd-sysctl\fR(8)\&.
+.PP
+In order to be used in the
+\fB\-\-backtrace\fR
+mode, an appropriate backtrace handler must be installed on the sender side\&. For example, in case of
+\fBpython\fR(1), this means a
+\fIsys\&.excepthook\fR
+must be installed, see
+\m[blue]\fBsystemd\-coredump\-python\fR\m[]\&\s-2\u[2]\d\s+2\&.
+.PP
+The behavior of
+\fBsystemd\-coredump\fR
+itself is configured through the configuration file
+/etc/systemd/coredump\&.conf
+and corresponding snippets
+/etc/systemd/coredump\&.conf\&.d/*\&.conf, see
+\fBcoredump.conf\fR(5)\&. A new instance of
+\fBsystemd\-coredump\fR
+is invoked upon receiving every core dump\&. Therefore, changes in these files will take effect the next time a core dump is received\&.
+.PP
+Resources used by core dump files are restricted in two ways\&. Parameters like maximum size of acquired core dumps and files can be set in files
+/etc/systemd/coredump\&.conf
+and snippets mentioned above\&. In addition the storage time of core dump files is restricted by
+\fBsystemd\-tmpfiles\fR, corresponding settings are by default in
+/usr/lib/tmpfiles\&.d/systemd\&.conf\&. The default is to delete core dumps after a few days; see the above file for details\&.
+.SS "Disabling coredump processing"
+.PP
+To disable potentially resource\-intensive processing by
+\fBsystemd\-coredump\fR, set
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+Storage=none ProcessSizeMax=0
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+in
+\fBcoredump.conf\fR(5)\&.
+.SH "INFORMATION ABOUT THE CRASHED PROCESS"
+.PP
+\fBcoredumpctl\fR(1)
+can be used to retrieve saved core dumps independently of their location, to display information, and to process them e\&.g\&. by passing to the GNU debugger (gdb)\&.
+.PP
+Data stored in the journal can be also viewed with
+\fBjournalctl\fR(1)
+as usual (or from any other process, using the
+\fBsd-journal\fR(3)
+API)\&. The relevant messages have
+\fBMESSAGE_ID=fc2e22bc6ee647b6b90729ab34a250b1\fR:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ journalctl MESSAGE_ID=fc2e22bc6ee647b6b90729ab34a250b1 \-o verbose
+\&...
+MESSAGE_ID=fc2e22bc6ee647b6b90729ab34a250b1
+COREDUMP_PID=552351
+COREDUMP_UID=1000
+COREDUMP_GID=1000
+COREDUMP_SIGNAL_NAME=SIGSEGV
+COREDUMP_SIGNAL=11
+COREDUMP_TIMESTAMP=1614342930000000
+COREDUMP_COMM=Web Content
+COREDUMP_EXE=/usr/lib64/firefox/firefox
+COREDUMP_USER_UNIT=app\-gnome\-firefox\-552136\&.scope
+COREDUMP_CMDLINE=/usr/lib64/firefox/firefox \-contentproc \-childID 5 \-isForBrowser \&...
+COREDUMP_CGROUP=/user\&.slice/user\-1000\&.slice/user@1000\&.service/app\&.slice/app\-\&...\&.scope
+COREDUMP_FILENAME=/var/lib/systemd/coredump/core\&.Web\&...\&.552351\&.\&...\&.zst
+\&...
+    
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+The following fields are saved (if known) with the journal entry
+.PP
+\fICOREDUMP_UID=\fR, \fICOREDUMP_PID=\fR, \fICOREDUMP_GID=\fR
+.RS 4
+The process number (PID), owner user number (UID), and group number (GID) of the crashed process\&.
+.sp
+When the crashed process was part of a container (or in a process or user namespace in general), those are the values as seen
+\fIoutside\fR, in the namespace where
+systemd\-coredump
+is running\&.
+.RE
+.PP
+\fICOREDUMP_TIMESTAMP=\fR
+.RS 4
+The time of the crash as reported by the kernel (in \(mcs since the epoch)\&.
+.RE
+.PP
+\fICOREDUMP_RLIMIT=\fR
+.RS 4
+The core file size soft resource limit, see
+\fBgetrlimit\fR(2)\&.
+.RE
+.PP
+\fICOREDUMP_UNIT=\fR, \fICOREDUMP_SLICE=\fR
+.RS 4
+The system unit and slice names\&.
+.sp
+When the crashed process was in container, those are the units names
+\fIoutside\fR, in the main system manager\&.
+.RE
+.PP
+\fICOREDUMP_CGROUP=\fR
+.RS 4
+Control group information in the format used in
+/proc/self/cgroup\&. On systems with the unified cgroup hierarchy, this is a single path prefixed with
+"0::", and multiple paths prefixed with controller numbers on legacy systems\&.
+.sp
+When the crashed process was in a container, this is the full path, as seen outside of the container\&.
+.RE
+.PP
+\fICOREDUMP_OWNER_UID=\fR, \fICOREDUMP_USER_UNIT=\fR
+.RS 4
+The numerical UID of the user owning the login session or systemd user unit of the crashed process, and the user manager unit\&. Both fields are only present for user processes\&.
+.sp
+When the crashed process was in container, those are the values
+\fIoutside\fR, in the main system\&.
+.RE
+.PP
+\fICOREDUMP_SIGNAL_NAME=\fR, \fICOREDUMP_SIGNAL=\fR
+.RS 4
+The terminating signal name (with the
+"SIG"
+prefix
+\&\s-2\u[3]\d\s+2) and numerical value\&. (Both are included because signal numbers vary by architecture\&.)
+.RE
+.PP
+\fICOREDUMP_CWD=\fR, \fICOREDUMP_ROOT=\fR
+.RS 4
+The current working directory and root directory of the crashed process\&.
+.sp
+When the crashed process is in a container, those paths are relative to the root of the container\*(Aqs mount namespace\&.
+.RE
+.PP
+\fICOREDUMP_OPEN_FDS=\fR
+.RS 4
+Information about open file descriptors, in the following format:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+\fIfd\fR:\fI/path/to/file\fR
+pos:     \&.\&.\&.
+flags:   \&.\&.\&.
+\&.\&.\&.
+
+\fIfd\fR:\fI/path/to/file\fR
+pos:     \&.\&.\&.
+flags:   \&.\&.\&.
+\&.\&.\&.
+        
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+The first line contains the file descriptor number
+\fIfd\fR
+and the path, while subsequent lines show the contents of
+/proc/\fIpid\fR/fdinfo/\fIfd\fR\&.
+.RE
+.PP
+\fICOREDUMP_EXE=\fR
+.RS 4
+The destination of the
+/proc/\fIpid\fR/exe
+symlink\&.
+.sp
+When the crashed process is in a container, that path is relative to the root of the container\*(Aqs mount namespace\&.
+.RE
+.PP
+\fICOREDUMP_COMM=\fR, \fICOREDUMP_PROC_STATUS=\fR, \fICOREDUMP_PROC_MAPS=\fR, \fICOREDUMP_PROC_LIMITS=\fR, \fICOREDUMP_PROC_MOUNTINFO=\fR, \fICOREDUMP_ENVIRON=\fR
+.RS 4
+Fields that map the per\-process entries in the
+/proc/
+filesystem:
+/proc/\fIpid\fR/comm
+(the command name associated with the process),
+/proc/\fIpid\fR/exe
+(the filename of the executed command),
+/proc/\fIpid\fR/status
+(various metadata about the process),
+/proc/\fIpid\fR/maps
+(memory regions visible to the process and their access permissions),
+/proc/\fIpid\fR/limits
+(the soft and hard resource limits),
+/proc/\fIpid\fR/mountinfo
+(mount points in the process\*(Aqs mount namespace),
+/proc/\fIpid\fR/environ
+(the environment block of the crashed process)\&.
+.sp
+See
+\fBproc\fR(5)
+for more information\&.
+.RE
+.PP
+\fICOREDUMP_HOSTNAME=\fR
+.RS 4
+The system hostname\&.
+.sp
+When the crashed process was in container, this is the container hostname\&.
+.RE
+.PP
+\fICOREDUMP_CONTAINER_CMDLINE=\fR
+.RS 4
+For processes running in a container, the commandline of the process spawning the container (the first parent process with a different mount namespace)\&.
+.RE
+.PP
+\fICOREDUMP=\fR
+.RS 4
+When the core is stored in the journal, the core image itself\&.
+.RE
+.PP
+\fICOREDUMP_FILENAME=\fR
+.RS 4
+When the core is stored externally, the path the the core file\&.
+.RE
+.PP
+\fICOREDUMP_TRUNCATED=\fR
+.RS 4
+Set to
+"1"
+when the saved coredump was truncated\&. (A partial core image may still be processed by some tools, though obviously not all information is available\&.)
+.RE
+.PP
+\fIMESSAGE=\fR
+.RS 4
+The message generated by
+\fBsystemd\-coredump\fR
+that includes the backtrace if it was successfully generated\&. When
+\fBsystemd\-coredump\fR
+is invoked with
+\fB\-\-backtrace\fR, this field is provided by the caller\&.
+.RE
+.PP
+Various other fields exist in the journal entry, but pertain to the logging process, i\&.e\&.
+\fBsystemd\-coredump\fR, not the crashed process\&. See
+\fBsystemd.journal-fields\fR(7)\&.
+.PP
+The following fields are saved (if known) with the external file listed in
+\fICOREDUMP_FILENAME=\fR
+as extended attributes:
+.PP
+\fIuser\&.coredump\&.pid\fR, \fIuser\&.coredump\&.uid\fR, \fIuser\&.coredump\&.gid\fR, \fIuser\&.coredump\&.signal\fR, \fIuser\&.coredump\&.timestamp\fR, \fIuser\&.coredump\&.rlimit\fR, \fIuser\&.coredump\&.hostname\fR, \fIuser\&.coredump\&.comm\fR, \fIuser\&.coredump\&.exe\fR
+.RS 4
+Those are the same as
+\fICOREDUMP_PID=\fR,
+\fICOREDUMP_UID=\fR,
+\fICOREDUMP_GID=\fR,
+\fICOREDUMP_SIGNAL=\fR,
+\fICOREDUMP_TIMESTAMP=\fR,
+\fICOREDUMP_RLIMIT=\fR,
+\fICOREDUMP_HOSTNAME=\fR,
+\fICOREDUMP_COMM=\fR, and
+\fICOREDUMP_EXE=\fR, described above\&.
+.RE
+.PP
+Those can be viewed using
+\fBgetfattr\fR(1)\&. For the core file described in the journal entry shown above:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ getfattr \-\-absolute\-names \-d /var/lib/systemd/coredump/core\&.Web\&...\&.552351\&.\&...\&.zst
+# file: /var/lib/systemd/coredump/core\&.Web\&...\&.552351\&.\&...\&.zst
+user\&.coredump\&.pid="552351"
+user\&.coredump\&.uid="1000"
+user\&.coredump\&.gid="1000"
+user\&.coredump\&.signal="11"
+user\&.coredump\&.timestamp="1614342930000000"
+user\&.coredump\&.comm="Web Content"
+user\&.coredump\&.exe="/usr/lib64/firefox/firefox"
+\&...
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+.SH "SEE ALSO"
+.PP
+\fBcoredump.conf\fR(5),
+\fBcoredumpctl\fR(1),
+\fBsystemd-journald.service\fR(8),
+\fBsystemd-tmpfiles\fR(8),
+\fBcore\fR(5),
+\fBsysctl.d\fR(5),
+\fBsystemd-sysctl.service\fR(8)\&.
+.SH "NOTES"
+.IP " 1." 4
+Journal Export Format
+.RS 4
+\%https://www.freedesktop.org/wiki/Software/systemd/export
+.RE
+.IP " 2." 4
+systemd-coredump-python
+.RS 4
+\%https://github.com/systemd/systemd-coredump-python
+.RE
+.IP " 3." 4
+\fBkill\fR(1)
+expects signal names
+\fIwithout\fR
+the prefix;
+\fBkill\fR(2)
+uses the prefix; all systemd tools accept signal names both with and without the prefix.
+

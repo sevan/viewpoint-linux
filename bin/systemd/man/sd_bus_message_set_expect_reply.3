@@ -1,0 +1,140 @@
+'\" t
+.TH "SD_BUS_MESSAGE_SET_EXPECT_REPLY" "3" "" "systemd 248" "sd_bus_message_set_expect_reply"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_message_set_expect_reply, sd_bus_message_get_expect_reply, sd_bus_message_set_auto_start, sd_bus_message_get_auto_start, sd_bus_message_set_allow_interactive_authorization, sd_bus_message_get_allow_interactive_authorization \- Set and query bus message metadata
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_message_set_expect_reply('u
+.BI "int sd_bus_message_set_expect_reply(sd_bus_message\ *" "message" ", int\ " "b" ");"
+.HP \w'int\ sd_bus_message_get_expect_reply('u
+.BI "int sd_bus_message_get_expect_reply(sd_bus_message\ *" "message" ");"
+.HP \w'int\ sd_bus_message_set_auto_start('u
+.BI "int sd_bus_message_set_auto_start(sd_bus_message\ *" "message" ", int\ " "b" ");"
+.HP \w'int\ sd_bus_message_get_auto_start('u
+.BI "int sd_bus_message_get_auto_start(sd_bus_message\ *" "message" ");"
+.HP \w'int\ sd_bus_message_set_allow_interactive_authorization('u
+.BI "int sd_bus_message_set_allow_interactive_authorization(sd_bus_message\ *" "message" ", int\ " "b" ");"
+.HP \w'int\ sd_bus_message_get_allow_interactive_authorization('u
+.BI "int sd_bus_message_get_allow_interactive_authorization(sd_bus_message\ *" "message" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_message_set_expect_reply()\fR
+sets or clears the
+\fBNO_REPLY_EXPECTED\fR
+flag on the message
+\fIm\fR\&. This flag matters only for method call messages and is used to specify that no method return or error reply is expected\&. It is ignored for other types\&. Thus, for a method call message, calling
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+sd_bus_message_set_expect_reply(\&..., 0)
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+sets the flag and suppresses the reply\&.
+.PP
+\fBsd_bus_message_get_expect_reply()\fR
+checks if the
+\fBNO_REPLY_EXPECTED\fR
+flag is set on the message
+\fIm\fR\&. It will return positive if it is not set, and zero if it is\&.
+.PP
+\fBsd_bus_message_set_auto_start()\fR
+sets or clears the
+\fBNO_AUTO_START\fR
+flag on the message
+\fIm\fR\&. When the flag is set, the bus must not launch an owner for the destination name in response to this message\&. Calling
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+sd_bus_message_set_auto_start(\&..., 0)
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+sets the flag\&.
+.PP
+\fBsd_bus_message_get_auto_start()\fR
+checks if the
+\fBNO_AUTO_START\fR
+flag is set on the message
+\fIm\fR\&. It will return positive if it is not set, and zero if it is\&.
+.PP
+\fBsd_bus_message_set_allow_interactive_authorization()\fR
+sets or clears the
+\fBALLOW_INTERACTIVE_AUTHORIZATION\fR
+flag on the message
+\fIm\fR\&. Setting this flag informs the receiver that the caller is prepared to wait for interactive authorization via polkit or a similar framework\&. Note that setting this flag does not guarantee that the receiver will actually perform interactive authorization\&. Also, make sure to set a suitable message timeout when using this flag since interactive authorization could potentially take a long time as it depends on user input\&. If
+\fIb\fR
+is non\-zero, the flag is set\&.
+.PP
+\fBsd_bus_message_get_allow_interactive_authorization()\fR
+checks if the
+\fBALLOW_INTERACTIVE_AUTHORIZATION\fR
+flag is set on the message
+\fIm\fR\&. It will return a positive integer if the flag is set\&. Otherwise, it returns zero\&.
+.SH "RETURN VALUE"
+.PP
+On success, these functions return a non\-negative integer\&. On failure, they return a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+The
+\fImessage\fR
+parameter is
+\fBNULL\fR\&.
+.RE
+.PP
+\fB\-EPERM\fR
+.RS 4
+The message
+\fImessage\fR
+is sealed when trying to set a flag\&.
+.sp
+The message
+\fImessage\fR
+has wrong type\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd_bus_set_description\fR(3)

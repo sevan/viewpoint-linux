@@ -1,0 +1,100 @@
+'\" t
+.TH "UDEV\&.CONF" "5" "" "systemd 248" "udev.conf"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+udev.conf \- Configuration for device event managing daemon
+.SH "SYNOPSIS"
+.PP
+/etc/udev/udev\&.conf
+.SH "DESCRIPTION"
+.PP
+\fBsystemd-udevd\fR(8)
+expects its main configuration file at
+/etc/udev/udev\&.conf\&. It consists of a set of variables allowing the user to override default udev values\&. All empty lines or lines beginning with \*(Aq#\*(Aq are ignored\&. The following variables can be set:
+.PP
+\fIudev_log=\fR
+.RS 4
+The log level\&. Valid values are the numerical syslog priorities or their textual representations:
+\fBerr\fR,
+\fBinfo\fR
+and
+\fBdebug\fR\&.
+.RE
+.PP
+\fIchildren_max=\fR
+.RS 4
+An integer\&. The maximum number of events executed in parallel\&.
+.sp
+This is the same as the
+\fB\-\-children\-max=\fR
+option\&.
+.RE
+.PP
+\fIexec_delay=\fR
+.RS 4
+An integer\&. Delay the execution of
+\fIRUN\fR
+instructions by the given number of seconds\&. This option might be useful when debugging system crashes during coldplug caused by loading non\-working kernel modules\&.
+.sp
+This is the same as the
+\fB\-\-exec\-delay=\fR
+option\&.
+.RE
+.PP
+\fIevent_timeout=\fR
+.RS 4
+An integer\&. The number of seconds to wait for events to finish\&. After this time, the event will be terminated\&. The default is 180 seconds\&.
+.sp
+This is the same as the
+\fB\-\-event\-timeout=\fR
+option\&.
+.RE
+.PP
+\fIresolve_names=\fR
+.RS 4
+Specifies when systemd\-udevd should resolve names of users and groups\&. When set to
+\fBearly\fR
+(the default), names will be resolved when the rules are parsed\&. When set to
+\fBlate\fR, names will be resolved for every event\&. When set to
+\fBnever\fR, names will never be resolved and all devices will be owned by root\&.
+.sp
+This is the same as the
+\fB\-\-resolve\-names=\fR
+option\&.
+.RE
+.PP
+\fItimeout_signal=\fR
+.RS 4
+Specifies a signal that
+systemd\-udevd
+will send on worker timeouts\&. Note that both workers and spawned processes will be killed using this signal\&. Defaults to
+\fBSIGKILL\fR\&.
+.RE
+.PP
+In addition,
+systemd\-udevd
+can be configured by command line options and the kernel command line (see
+\fBsystemd-udevd\fR(8))\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd-udevd\fR(8),
+\fBudev\fR(7),
+\fBudevadm\fR(8)

@@ -1,0 +1,81 @@
+'\" t
+.TH "SD_BUS_IS_OPEN" "3" "" "systemd 248" "sd_bus_is_open"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_is_open, sd_bus_is_ready \- Check whether the bus connection is open or ready
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_is_open('u
+.BI "int sd_bus_is_open(sd_bus\ *" "bus" ");"
+.HP \w'int\ sd_bus_is_ready('u
+.BI "int sd_bus_is_ready(sd_bus\ *" "bus" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_is_open()\fR
+checks whether the specified bus connection is open, i\&.e\&. in the process of being established, already established or in the process of being torn down\&. It returns zero when the connection has not been started yet (i\&.e\&.
+\fBsd_bus_start\fR(3)
+or some equivalent call has not been invoked yet), or is fully terminated again (for example after
+\fBsd_bus_close\fR(3)), it returns positive otherwise\&.
+.PP
+\fBsd_bus_is_ready()\fR
+checks whether the specified connection is fully established, i\&.e\&. completed the connection and authentication phases of the protocol and received the
+\fBHello()\fR
+method call response, and is not in the process of being torn down again\&. It returns zero outside of this state, and positive otherwise\&. Effectively, this function returns positive while regular messages can be sent or received on the connection\&.
+.PP
+To be notified when the connection is fully established, use
+\fBsd_bus_set_connected_signal\fR(3)
+and install a match for the
+\fBConnected()\fR
+signal on the
+"org\&.freedesktop\&.DBus\&.Local"
+interface\&. To be notified when the connection is torn down again, install a match for the
+\fBDisconnected()\fR
+signal on the
+"org\&.freedesktop\&.DBus\&.Local"
+interface\&.
+.SH "RETURN VALUE"
+.PP
+On success, these functions return 0 or a positive integer\&. On failure, they return a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-ECHILD\fR
+.RS 4
+The bus connection has been created in a different process\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd_bus_start\fR(3),
+\fBsd_bus_close\fR(3),
+\fBsd_bus_set_connected_signal\fR(3)

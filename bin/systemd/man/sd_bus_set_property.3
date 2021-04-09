@@ -1,0 +1,107 @@
+'\" t
+.TH "SD_BUS_SET_PROPERTY" "3" "" "systemd 248" "sd_bus_set_property"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_set_property, sd_bus_set_propertyv, sd_bus_get_property, sd_bus_get_property_trivial, sd_bus_get_property_string, sd_bus_get_property_strv \- Set or query D\-Bus service properties
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_set_property('u
+.BI "int sd_bus_set_property(sd_bus\ *" "bus" ", const\ char\ *" "destination" ", const\ char\ *" "path" ", const\ char\ *" "interface" ", const\ char\ *" "member" ", sd_bus_error\ *" "ret_error" ", sd_bus_message\ **" "reply" ", const\ char\ *" "type" ", \&.\&.\&.);"
+.HP \w'int\ sd_bus_set_propertyv('u
+.BI "int sd_bus_set_propertyv(sd_bus\ *" "bus" ", const\ char\ *" "destination" ", const\ char\ *" "path" ", const\ char\ *" "interface" ", const\ char\ *" "member" ", sd_bus_error\ *" "ret_error" ", sd_bus_message\ **" "reply" ", const\ char\ *" "type" ", va_list\ " "ap" ");"
+.HP \w'int\ sd_bus_get_property('u
+.BI "int sd_bus_get_property(sd_bus\ *" "bus" ", const\ char\ *" "destination" ", const\ char\ *" "path" ", const\ char\ *" "interface" ", const\ char\ *" "member" ", sd_bus_error\ *" "ret_error" ", sd_bus_message\ **" "reply" ", const\ char\ *" "type" ");"
+.HP \w'int\ sd_bus_get_property_trivial('u
+.BI "int sd_bus_get_property_trivial(sd_bus\ *" "bus" ", const\ char\ *" "destination" ", const\ char\ *" "path" ", const\ char\ *" "interface" ", const\ char\ *" "member" ", sd_bus_error\ *" "ret_error" ", char\ " "type" ", void\ *" "ret_ptr" ");"
+.HP \w'int\ sd_bus_get_property_string('u
+.BI "int sd_bus_get_property_string(sd_bus\ *" "bus" ", const\ char\ *" "destination" ", const\ char\ *" "path" ", const\ char\ *" "interface" ", const\ char\ *" "member" ", sd_bus_error\ *" "ret_error" ", char\ **" "ret" ");"
+.HP \w'int\ sd_bus_get_property_strv('u
+.BI "int sd_bus_get_property_strv(sd_bus\ *" "bus" ", const\ char\ *" "destination" ", const\ char\ *" "path" ", const\ char\ *" "interface" ", const\ char\ *" "member" ", sd_bus_error\ *" "ret_error" ", char\ ***" "ret" ");"
+.SH "DESCRIPTION"
+.PP
+These functions set or query D\-Bus properties\&. D\-Bus properties are service fields exposed via the
+\fBorg\&.freedesktop\&.DBus\&.Properties\fR
+interface\&. Under the hood, these functions call methods of the
+\fBorg\&.freedesktop\&.DBus\&.Properties\fR
+interface and as a result their semantics are similar to
+\fBsd_bus_call_method\fR(3)\&.
+.PP
+\fBsd_bus_set_property()\fR
+sets a D\-Bus property\&. On success, the response is stored in
+\fIreply\fR\&. If setting the property fails or an internal error occurs, an error is returned and an extended description of the error is optionally stored in
+\fIret_error\fR
+if it is not
+\fBNULL\fR\&.
+\fItype\fR
+and the arguments that follow it describe the new value of the property and must follow the format described in
+\fBsd_bus_message_append\fR(3)\&.
+.PP
+\fBsd_bus_set_propertyv()\fR
+is equivalent to
+\fBsd_bus_set_property()\fR, except that it is called with a
+"va_list"
+instead of a variable number of arguments\&.
+.PP
+\fBsd_bus_get_property()\fR
+queries a D\-Bus property\&. If retrieving the property fails or an internal error occurs, an error is returned and an extended description of the error is optionally stored in
+\fIret_error\fR
+if it is not
+\fBNULL\fR\&. On success, the property is stored in
+\fIreply\fR\&.
+\fItype\fR
+describes the property type and must follow the format described in
+\fBsd_bus_message_append\fR(3)\&.
+.PP
+\fBsd_bus_get_property_trivial()\fR,
+\fBsd_bus_get_property_string()\fR
+and
+\fBsd_bus_get_property_strv()\fR
+are shorthands for
+\fBsd_bus_get_property()\fR
+that are used to query basic, string and string vector properties respectively\&. The caller is responsible for freeing the string and string vector results stored in
+\fIret\fR
+by
+\fBsd_bus_get_property_string()\fR
+and
+\fBsd_bus_get_property_strv()\fR\&.
+.SH "RETURN VALUE"
+.PP
+On success, these functions return a non\-negative integer\&. On failure, they return a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+See the
+\fBsd_bus_call_method\fR(3)
+man page for a list of possible errors\&.
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd_bus_call_method\fR(3)

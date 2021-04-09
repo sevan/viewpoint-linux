@@ -1,0 +1,493 @@
+'\" t
+.TH "SYSTEMD\&.NSPAWN" "5" "" "systemd 248" "systemd.nspawn"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd.nspawn \- Container settings
+.SH "SYNOPSIS"
+.PP
+/etc/systemd/nspawn/\fImachine\fR\&.nspawn
+.PP
+/run/systemd/nspawn/\fImachine\fR\&.nspawn
+.PP
+/var/lib/machines/\fImachine\fR\&.nspawn
+.SH "DESCRIPTION"
+.PP
+An nspawn container settings file (suffix
+\&.nspawn) contains runtime configuration for a local container, and is used used by
+\fBsystemd-nspawn\fR(1)\&. Files of this type are named after the containers they define settings for\&. They are optional, and only required for containers whose execution environment shall differ from the defaults\&. Files of this type mostly contain settings that may also be set on the
+\fBsystemd\-nspawn\fR
+command line, and make it easier to persistently attach specific settings to specific containers\&. The syntax of these files is inspired by
+\&.desktop
+files, similarly to other configuration files supported by the systemd project\&. See
+\fBsystemd.syntax\fR(7)
+for an overview\&.
+.SH "\&.NSPAWN FILE DISCOVERY"
+.PP
+Files are searched for by appending the
+\&.nspawn
+suffix to the machine name of the container, as specified with the
+\fB\-\-machine=\fR
+switch of
+\fBsystemd\-nspawn\fR, or derived from the directory or image file name\&. This file is first searched for in
+/etc/systemd/nspawn/
+and
+/run/systemd/nspawn/\&. If found there, the settings are read and all of them take full effect (but may still be overridden by corresponding command line arguments)\&. Otherwise, the file will then be searched for next to the image file or in the immediate parent of the root directory of the container\&. If the file is found there, only a subset of the settings will take effect however\&. All settings that possibly elevate privileges or grant additional access to resources of the host (such as files or directories) are ignored\&. To which options this applies is documented below\&.
+.PP
+Persistent settings files created and maintained by the administrator (and thus trusted) should be placed in
+/etc/systemd/nspawn/, while automatically downloaded (and thus potentially untrusted) settings files are placed in
+/var/lib/machines/
+instead (next to the container images), where their security impact is limited\&. In order to add privileged settings to
+\&.nspawn
+files acquired from the image vendor, it is recommended to copy the settings files into
+/etc/systemd/nspawn/
+and edit them there, so that the privileged options become available\&. The precise algorithm for how the files are searched and interpreted may be configured with
+\fBsystemd\-nspawn\fR\*(Aqs
+\fB\-\-settings=\fR
+switch, see
+\fBsystemd-nspawn\fR(1)
+for details\&.
+.SH "[EXEC] SECTION OPTIONS"
+.PP
+Settings files may include an [Exec] section, which carries various execution parameters:
+.PP
+\fIBoot=\fR
+.RS 4
+Takes a boolean argument, which defaults to off\&. If enabled,
+\fBsystemd\-nspawn\fR
+will automatically search for an
+init
+executable and invoke it\&. In this case, the specified parameters using
+\fIParameters=\fR
+are passed as additional arguments to the
+init
+process\&. This setting corresponds to the
+\fB\-\-boot\fR
+switch on the
+\fBsystemd\-nspawn\fR
+command line\&. This option may not be combined with
+\fIProcessTwo=yes\fR\&. This option is specified by default in the
+systemd\-nspawn@\&.service
+template unit\&.
+.RE
+.PP
+\fIEphemeral=\fR
+.RS 4
+Takes a boolean argument, which defaults to off, If enabled, the container is run with a temporary snapshot of its file system that is removed immediately when the container terminates\&. This is equivalent to the
+\fB\-\-ephemeral\fR
+command line switch\&. See
+\fBsystemd-nspawn\fR(1)
+for details about the specific options supported\&.
+.RE
+.PP
+\fIProcessTwo=\fR
+.RS 4
+Takes a boolean argument, which defaults to off\&. If enabled, the specified program is run as PID 2\&. A stub init process is run as PID 1\&. This setting corresponds to the
+\fB\-\-as\-pid2\fR
+switch on the
+\fBsystemd\-nspawn\fR
+command line\&. This option may not be combined with
+\fIBoot=yes\fR\&.
+.RE
+.PP
+\fIParameters=\fR
+.RS 4
+Takes a whitespace\-separated list of arguments\&. Single ("\*(Aq") and double (""") quotes may be used around arguments with whitespace\&. This is either a command line, beginning with the binary name to execute, or \(en if
+\fIBoot=\fR
+is enabled \(en the list of arguments to pass to the init process\&. This setting corresponds to the command line parameters passed on the
+\fBsystemd\-nspawn\fR
+command line\&.
+.sp
+Note:
+\fBBoot=no\fR,
+\fBParameters=a b "c c"\fR
+is the same as
+\fBsystemd\-nspawn a b "c c"\fR, and
+\fBBoot=yes\fR,
+\fBParameters=b \*(Aqc c\*(Aq\fR
+is the same as
+\fBsystemd\-nspawn \-\-boot b \*(Aqc c\*(Aq\fR\&.
+.RE
+.PP
+\fIEnvironment=\fR
+.RS 4
+Takes an environment variable assignment consisting of key and value, separated by
+"="\&. Sets an environment variable for the main process invoked in the container\&. This setting may be used multiple times to set multiple environment variables\&. It corresponds to the
+\fB\-\-setenv=\fR
+command line switch\&.
+.RE
+.PP
+\fIUser=\fR
+.RS 4
+Takes a UNIX user name\&. Specifies the user name to invoke the main process of the container as\&. This user must be known in the container\*(Aqs user database\&. This corresponds to the
+\fB\-\-user=\fR
+command line switch\&.
+.RE
+.PP
+\fIWorkingDirectory=\fR
+.RS 4
+Selects the working directory for the process invoked in the container\&. Expects an absolute path in the container\*(Aqs file system namespace\&. This corresponds to the
+\fB\-\-chdir=\fR
+command line switch\&.
+.RE
+.PP
+\fIPivotRoot=\fR
+.RS 4
+Selects a directory to pivot to
+/
+inside the container when starting up\&. Takes a single path, or a pair of two paths separated by a colon\&. Both paths must be absolute, and are resolved in the container\*(Aqs file system namespace\&. This corresponds to the
+\fB\-\-pivot\-root=\fR
+command line switch\&.
+.RE
+.PP
+\fICapability=\fR, \fIDropCapability=\fR
+.RS 4
+Takes a space\-separated list of Linux process capabilities (see
+\fBcapabilities\fR(7)
+for details)\&. The
+\fICapability=\fR
+setting specifies additional capabilities to pass on top of the default set of capabilities\&. The
+\fIDropCapability=\fR
+setting specifies capabilities to drop from the default set\&. These settings correspond to the
+\fB\-\-capability=\fR
+and
+\fB\-\-drop\-capability=\fR
+command line switches\&. Note that
+\fICapability=\fR
+is a privileged setting, and only takes effect in
+\&.nspawn
+files in
+/etc/systemd/nspawn/
+and
+/run/system/nspawn/
+(see above)\&. On the other hand,
+\fIDropCapability=\fR
+takes effect in all cases\&. If the special value
+"all"
+is passed, all capabilities are retained (or dropped)\&.
+.sp
+These settings change the bounding set of capabilities which also limits the ambient capabilities as given with the
+\fIAmbientCapability=\fR\&.
+.RE
+.PP
+\fIAmbientCapability=\fR
+.RS 4
+Takes a space\-separated list of Linux process capabilities (see
+\fBcapabilities\fR(7)
+for details)\&. The
+\fIAmbientCapability=\fR
+setting specifies capability which will be passed to to started program in the inheritable and ambient capability sets\&. This will grant these capabilities to this process\&. This setting correspond to the
+\fB\-\-ambient\-capability=\fR
+command line switch\&.
+.sp
+The value
+"all"
+is not supported for this setting\&.
+.sp
+The setting of
+\fIAmbientCapability=\fR
+must be covered by the bounding set settings which were established by
+\fICapability=\fR
+and
+\fIDropCapability=\fR\&.
+.sp
+Note that
+\fIAmbientCapability=\fR
+is a privileged setting (see above)\&.
+.RE
+.PP
+\fINoNewPrivileges=\fR
+.RS 4
+Takes a boolean argument that controls the
+\fBPR_SET_NO_NEW_PRIVS\fR
+flag for the container payload\&. This is equivalent to the
+\fB\-\-no\-new\-privileges=\fR
+command line switch\&. See
+\fBsystemd-nspawn\fR(1)
+for details\&.
+.RE
+.PP
+\fIKillSignal=\fR
+.RS 4
+Specify the process signal to send to the container\*(Aqs PID 1 when nspawn itself receives SIGTERM, in order to trigger an orderly shutdown of the container\&. Defaults to SIGRTMIN+3 if
+\fBBoot=\fR
+is used (on systemd\-compatible init systems SIGRTMIN+3 triggers an orderly shutdown)\&. For a list of valid signals, see
+\fBsignal\fR(7)\&.
+.RE
+.PP
+\fIPersonality=\fR
+.RS 4
+Configures the kernel personality for the container\&. This is equivalent to the
+\fB\-\-personality=\fR
+switch\&.
+.RE
+.PP
+\fIMachineID=\fR
+.RS 4
+Configures the 128\-bit machine ID (UUID) to pass to the container\&. This is equivalent to the
+\fB\-\-uuid=\fR
+command line switch\&. This option is privileged (see above)\&.
+.RE
+.PP
+\fIPrivateUsers=\fR
+.RS 4
+Configures support for usernamespacing\&. This is equivalent to the
+\fB\-\-private\-users=\fR
+command line switch, and takes the same options\&. This option is privileged (see above)\&. This option is the default if the
+systemd\-nspawn@\&.service
+template unit file is used\&.
+.RE
+.PP
+\fINotifyReady=\fR
+.RS 4
+Configures support for notifications from the container\*(Aqs init process\&. This is equivalent to the
+\fB\-\-notify\-ready=\fR
+command line switch, and takes the same parameters\&. See
+\fBsystemd-nspawn\fR(1)
+for details about the specific options supported\&.
+.RE
+.PP
+\fISystemCallFilter=\fR
+.RS 4
+Configures the system call filter applied to containers\&. This is equivalent to the
+\fB\-\-system\-call\-filter=\fR
+command line switch, and takes the same list parameter\&. See
+\fBsystemd-nspawn\fR(1)
+for details\&.
+.RE
+.PP
+\fILimitCPU=\fR, \fILimitFSIZE=\fR, \fILimitDATA=\fR, \fILimitSTACK=\fR, \fILimitCORE=\fR, \fILimitRSS=\fR, \fILimitNOFILE=\fR, \fILimitAS=\fR, \fILimitNPROC=\fR, \fILimitMEMLOCK=\fR, \fILimitLOCKS=\fR, \fILimitSIGPENDING=\fR, \fILimitMSGQUEUE=\fR, \fILimitNICE=\fR, \fILimitRTPRIO=\fR, \fILimitRTTIME=\fR
+.RS 4
+Configures various types of resource limits applied to containers\&. This is equivalent to the
+\fB\-\-rlimit=\fR
+command line switch, and takes the same arguments\&. See
+\fBsystemd-nspawn\fR(1)
+for details\&.
+.RE
+.PP
+\fIOOMScoreAdjust=\fR
+.RS 4
+Configures the OOM score adjustment value\&. This is equivalent to the
+\fB\-\-oom\-score\-adjust=\fR
+command line switch, and takes the same argument\&. See
+\fBsystemd-nspawn\fR(1)
+for details\&.
+.RE
+.PP
+\fICPUAffinity=\fR
+.RS 4
+Configures the CPU affinity\&. This is equivalent to the
+\fB\-\-cpu\-affinity=\fR
+command line switch, and takes the same argument\&. See
+\fBsystemd-nspawn\fR(1)
+for details\&.
+.RE
+.PP
+\fIHostname=\fR
+.RS 4
+Configures the kernel hostname set for the container\&. This is equivalent to the
+\fB\-\-hostname=\fR
+command line switch, and takes the same argument\&. See
+\fBsystemd-nspawn\fR(1)
+for details\&.
+.RE
+.PP
+\fIResolvConf=\fR
+.RS 4
+Configures how
+/etc/resolv\&.conf
+in the container shall be handled\&. This is equivalent to the
+\fB\-\-resolv\-conf=\fR
+command line switch, and takes the same argument\&. See
+\fBsystemd-nspawn\fR(1)
+for details\&.
+.RE
+.PP
+\fITimezone=\fR
+.RS 4
+Configures how
+/etc/localtime
+in the container shall be handled\&. This is equivalent to the
+\fB\-\-timezone=\fR
+command line switch, and takes the same argument\&. See
+\fBsystemd-nspawn\fR(1)
+for details\&.
+.RE
+.PP
+\fILinkJournal=\fR
+.RS 4
+Configures how to link host and container journal setups\&. This is equivalent to the
+\fB\-\-link\-journal=\fR
+command line switch, and takes the same parameter\&. See
+\fBsystemd-nspawn\fR(1)
+for details\&.
+.RE
+.SH "[FILES] SECTION OPTIONS"
+.PP
+Settings files may include a [Files] section, which carries various parameters configuring the file system of the container:
+.PP
+\fIReadOnly=\fR
+.RS 4
+Takes a boolean argument, which defaults to off\&. If specified, the container will be run with a read\-only file system\&. This setting corresponds to the
+\fB\-\-read\-only\fR
+command line switch\&.
+.RE
+.PP
+\fIVolatile=\fR
+.RS 4
+Takes a boolean argument, or the special value
+"state"\&. This configures whether to run the container with volatile state and/or configuration\&. This option is equivalent to
+\fB\-\-volatile=\fR, see
+\fBsystemd-nspawn\fR(1)
+for details about the specific options supported\&.
+.RE
+.PP
+\fIBind=\fR, \fIBindReadOnly=\fR
+.RS 4
+Adds a bind mount from the host into the container\&. Takes a single path, a pair of two paths separated by a colon, or a triplet of two paths plus an option string separated by colons\&. This option may be used multiple times to configure multiple bind mounts\&. This option is equivalent to the command line switches
+\fB\-\-bind=\fR
+and
+\fB\-\-bind\-ro=\fR, see
+\fBsystemd-nspawn\fR(1)
+for details about the specific options supported\&. This setting is privileged (see above)\&.
+.RE
+.PP
+\fITemporaryFileSystem=\fR
+.RS 4
+Adds a
+"tmpfs"
+mount to the container\&. Takes a path or a pair of path and option string, separated by a colon\&. This option may be used multiple times to configure multiple
+"tmpfs"
+mounts\&. This option is equivalent to the command line switch
+\fB\-\-tmpfs=\fR, see
+\fBsystemd-nspawn\fR(1)
+for details about the specific options supported\&. This setting is privileged (see above)\&.
+.RE
+.PP
+\fIInaccessible=\fR
+.RS 4
+Masks the specified file or directory in the container, by over\-mounting it with an empty file node of the same type with the most restrictive access mode\&. Takes a file system path as argument\&. This option may be used multiple times to mask multiple files or directories\&. This option is equivalent to the command line switch
+\fB\-\-inaccessible=\fR, see
+\fBsystemd-nspawn\fR(1)
+for details about the specific options supported\&. This setting is privileged (see above)\&.
+.RE
+.PP
+\fIOverlay=\fR, \fIOverlayReadOnly=\fR
+.RS 4
+Adds an overlay mount point\&. Takes a colon\-separated list of paths\&. This option may be used multiple times to configure multiple overlay mounts\&. This option is equivalent to the command line switches
+\fB\-\-overlay=\fR
+and
+\fB\-\-overlay\-ro=\fR, see
+\fBsystemd-nspawn\fR(1)
+for details about the specific options supported\&. This setting is privileged (see above)\&.
+.RE
+.PP
+\fIPrivateUsersChown=\fR
+.RS 4
+Configures whether the ownership of the files and directories in the container tree shall be adjusted to the UID/GID range used, if necessary and user namespacing is enabled\&. This is equivalent to the
+\fB\-\-private\-users\-chown\fR
+command line switch\&. This option is privileged (see above)\&.
+.RE
+.SH "[NETWORK] SECTION OPTIONS"
+.PP
+Settings files may include a [Network] section, which carries various parameters configuring the network connectivity of the container:
+.PP
+\fIPrivate=\fR
+.RS 4
+Takes a boolean argument, which defaults to off\&. If enabled, the container will run in its own network namespace and not share network interfaces and configuration with the host\&. This setting corresponds to the
+\fB\-\-private\-network\fR
+command line switch\&.
+.RE
+.PP
+\fIVirtualEthernet=\fR
+.RS 4
+Takes a boolean argument\&. Configures whether to create a virtual Ethernet connection ("veth") between host and the container\&. This setting implies
+\fIPrivate=yes\fR\&. This setting corresponds to the
+\fB\-\-network\-veth\fR
+command line switch\&. This option is privileged (see above)\&. This option is the default if the
+systemd\-nspawn@\&.service
+template unit file is used\&.
+.RE
+.PP
+\fIVirtualEthernetExtra=\fR
+.RS 4
+Takes a colon\-separated pair of interface names\&. Configures an additional virtual Ethernet connection ("veth") between host and the container\&. The first specified name is the interface name on the host, the second the interface name in the container\&. The latter may be omitted in which case it is set to the same name as the host side interface\&. This setting implies
+\fIPrivate=yes\fR\&. This setting corresponds to the
+\fB\-\-network\-veth\-extra=\fR
+command line switch, and maybe be used multiple times\&. It is independent of
+\fIVirtualEthernet=\fR\&. Note that this option is unrelated to the
+\fIBridge=\fR
+setting below, and thus any connections created this way are not automatically added to any bridge device on the host side\&. This option is privileged (see above)\&.
+.RE
+.PP
+\fIInterface=\fR
+.RS 4
+Takes a space\-separated list of interfaces to add to the container\&. This option corresponds to the
+\fB\-\-network\-interface=\fR
+command line switch and implies
+\fIPrivate=yes\fR\&. This option is privileged (see above)\&.
+.RE
+.PP
+\fIMACVLAN=\fR, \fIIPVLAN=\fR
+.RS 4
+Takes a space\-separated list of interfaces to add MACLVAN or IPVLAN interfaces to, which are then added to the container\&. These options correspond to the
+\fB\-\-network\-macvlan=\fR
+and
+\fB\-\-network\-ipvlan=\fR
+command line switches and imply
+\fIPrivate=yes\fR\&. These options are privileged (see above)\&.
+.RE
+.PP
+\fIBridge=\fR
+.RS 4
+Takes an interface name\&. This setting implies
+\fIVirtualEthernet=yes\fR
+and
+\fIPrivate=yes\fR
+and has the effect that the host side of the created virtual Ethernet link is connected to the specified bridge interface\&. This option corresponds to the
+\fB\-\-network\-bridge=\fR
+command line switch\&. This option is privileged (see above)\&.
+.RE
+.PP
+\fIZone=\fR
+.RS 4
+Takes a network zone name\&. This setting implies
+\fIVirtualEthernet=yes\fR
+and
+\fIPrivate=yes\fR
+and has the effect that the host side of the created virtual Ethernet link is connected to an automatically managed bridge interface named after the passed argument, prefixed with
+"vz\-"\&. This option corresponds to the
+\fB\-\-network\-zone=\fR
+command line switch\&. This option is privileged (see above)\&.
+.RE
+.PP
+\fIPort=\fR
+.RS 4
+Exposes a TCP or UDP port of the container on the host\&. This option corresponds to the
+\fB\-\-port=\fR
+command line switch, see
+\fBsystemd-nspawn\fR(1)
+for the precise syntax of the argument this option takes\&. This option is privileged (see above)\&.
+.RE
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsystemd-nspawn\fR(1),
+\fBsystemd.directives\fR(7)

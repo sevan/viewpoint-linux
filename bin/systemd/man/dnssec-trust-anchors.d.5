@@ -1,0 +1,199 @@
+'\" t
+.TH "DNSSEC\-TRUST\-ANCHORS\&.D" "5" "" "systemd 248" "dnssec-trust-anchors.d"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+dnssec-trust-anchors.d, systemd.positive, systemd.negative \- DNSSEC trust anchor configuration files
+.SH "SYNOPSIS"
+.PP
+/etc/dnssec\-trust\-anchors\&.d/*\&.positive
+.PP
+/run/dnssec\-trust\-anchors\&.d/*\&.positive
+.PP
+/usr/lib/dnssec\-trust\-anchors\&.d/*\&.positive
+.PP
+/etc/dnssec\-trust\-anchors\&.d/*\&.negative
+.PP
+/run/dnssec\-trust\-anchors\&.d/*\&.negative
+.PP
+/usr/lib/dnssec\-trust\-anchors\&.d/*\&.negative
+.SH "DESCRIPTION"
+.PP
+The DNSSEC trust anchor configuration files define positive and negative trust anchors
+\fBsystemd-resolved.service\fR(8)
+bases DNSSEC integrity proofs on\&.
+.SH "POSITIVE TRUST ANCHORS"
+.PP
+Positive trust anchor configuration files contain DNSKEY and DS resource record definitions to use as base for DNSSEC integrity proofs\&. See
+\m[blue]\fBRFC 4035, Section 4\&.4\fR\m[]\&\s-2\u[1]\d\s+2
+for more information about DNSSEC trust anchors\&.
+.PP
+Positive trust anchors are read from files with the suffix
+\&.positive
+located in
+/etc/dnssec\-trust\-anchors\&.d/,
+/run/dnssec\-trust\-anchors\&.d/
+and
+/usr/lib/dnssec\-trust\-anchors\&.d/\&. These directories are searched in the specified order, and a trust anchor file of the same name in an earlier path overrides a trust anchor files in a later path\&. To disable a trust anchor file shipped in
+/usr/lib/dnssec\-trust\-anchors\&.d/
+it is sufficient to provide an identically\-named file in
+/etc/dnssec\-trust\-anchors\&.d/
+or
+/run/dnssec\-trust\-anchors\&.d/
+that is either empty or a symlink to
+/dev/null
+("masked")\&.
+.PP
+Positive trust anchor files are simple text files resembling DNS zone files, as documented in
+\m[blue]\fBRFC 1035, Section 5\fR\m[]\&\s-2\u[2]\d\s+2\&. One DS or DNSKEY resource record may be listed per line\&. Empty lines and lines starting with a semicolon (";") are ignored and considered comments\&. A DS resource record is specified like in the following example:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+\&. IN DS 19036 8 2 49aac11d7b6f6446702e54a1607371607a1a41855200fd2ce1cdde32f24e8fb5
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+The first word specifies the domain, use
+"\&."
+for the root domain\&. The domain may be specified with or without trailing dot, which is considered equivalent\&. The second word must be
+"IN"
+the third word
+"DS"\&. The following words specify the key tag, signature algorithm, digest algorithm, followed by the hex\-encoded key fingerprint\&. See
+\m[blue]\fBRFC 4034, Section 5\fR\m[]\&\s-2\u[3]\d\s+2
+for details about the precise syntax and meaning of these fields\&.
+.PP
+Alternatively, DNSKEY resource records may be used to define trust anchors, like in the following example:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+\&. IN DNSKEY 257 3 8 AwEAAagAIKlVZrpC6Ia7gEzahOR+9W29euxhJhVVLOyQbSEW0O8gcCjFFVQUTf6v58fLjwBd0YI0EzrAcQqBGCzh/RStIoO8g0NfnfL2MTJRkxoXbfDaUeVPQuYEhg37NZWAJQ9VnMVDxP/VHL496M/QZxkjf5/Efucp2gaDX6RS6CXpoY68LsvPVjR0ZSwzz1apAzvN9dlzEheX7ICJBBtuA6G3LQpzW5hOA2hzCTMjJPJ8LbqF6dsV6DoBQzgul0sGIcGOYl7OyQdXfZ57relSQageu+ipAdTTJ25AsRTAoub8ONGcLmqrAmRLKBP1dfwhYB4N7knNnulqQxA+Uk1ihz0=
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+The first word specifies the domain again, the second word must be
+"IN", followed by
+"DNSKEY"\&. The subsequent words encode the DNSKEY flags, protocol and algorithm fields, followed by the key data encoded in Base64\&. See
+\m[blue]\fBRFC 4034, Section 2\fR\m[]\&\s-2\u[4]\d\s+2
+for details about the precise syntax and meaning of these fields\&.
+.PP
+If multiple DS or DNSKEY records are defined for the same domain (possibly even in different trust anchor files), all keys are used and are considered equivalent as base for DNSSEC proofs\&.
+.PP
+Note that
+systemd\-resolved
+will automatically use a built\-in trust anchor key for the Internet root domain if no positive trust anchors are defined for the root domain\&. In most cases it is hence unnecessary to define an explicit key with trust anchor files\&. The built\-in key is disabled as soon as at least one trust anchor key for the root domain is defined in trust anchor files\&.
+.PP
+It is generally recommended to encode trust anchors in DS resource records, rather than DNSKEY resource records\&.
+.PP
+If a trust anchor specified via a DS record is found revoked it is automatically removed from the trust anchor database for the runtime\&. See
+\m[blue]\fBRFC 5011\fR\m[]\&\s-2\u[5]\d\s+2
+for details about revoked trust anchors\&. Note that
+systemd\-resolved
+will not update its trust anchor database from DNS servers automatically\&. Instead, it is recommended to update the resolver software or update the new trust anchor via adding in new trust anchor files\&.
+.PP
+The current DNSSEC trust anchor for the Internet\*(Aqs root domain is available at the
+\m[blue]\fBIANA Trust Anchor and Keys\fR\m[]\&\s-2\u[6]\d\s+2
+page\&.
+.SH "NEGATIVE TRUST ANCHORS"
+.PP
+Negative trust anchors define domains where DNSSEC validation shall be turned off\&. Negative trust anchor files are found at the same location as positive trust anchor files, and follow the same overriding rules\&. They are text files with the
+\&.negative
+suffix\&. Empty lines and lines whose first character is
+";"
+are ignored\&. Each line specifies one domain name which is the root of a DNS subtree where validation shall be disabled\&. For example:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+# Reverse IPv4 mappings
+10\&.in\-addr\&.arpa
+16\&.172\&.in\-addr\&.arpa
+168\&.192\&.in\-addr\&.arpa
+\&.\&.\&.
+# Some custom domains
+prod
+stag
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+Negative trust anchors are useful to support private DNS subtrees that are not referenced from the Internet DNS hierarchy, and not signed\&.
+.PP
+\m[blue]\fBRFC 7646\fR\m[]\&\s-2\u[7]\d\s+2
+for details on negative trust anchors\&.
+.PP
+If no negative trust anchor files are configured a built\-in set of well\-known private DNS zone domains is used as negative trust anchors\&.
+.PP
+It is also possibly to define per\-interface negative trust anchors using the
+\fIDNSSECNegativeTrustAnchors=\fR
+setting in
+\fBsystemd.network\fR(5)
+files\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsystemd-resolved.service\fR(8),
+\fBresolved.conf\fR(5),
+\fBsystemd.network\fR(5)
+.SH "NOTES"
+.IP " 1." 4
+RFC 4035, Section 4.4
+.RS 4
+\%https://tools.ietf.org/html/rfc4035#section-4.4
+.RE
+.IP " 2." 4
+RFC 1035, Section 5
+.RS 4
+\%https://tools.ietf.org/html/rfc1035#section-5
+.RE
+.IP " 3." 4
+RFC 4034, Section 5
+.RS 4
+\%https://tools.ietf.org/html/rfc4034#section-5
+.RE
+.IP " 4." 4
+RFC 4034, Section 2
+.RS 4
+\%https://tools.ietf.org/html/rfc4034#section-2
+.RE
+.IP " 5." 4
+RFC 5011
+.RS 4
+\%https://tools.ietf.org/html/rfc5011
+.RE
+.IP " 6." 4
+IANA Trust Anchor and Keys
+.RS 4
+\%https://data.iana.org/root-anchors/root-anchors.xml
+.RE
+.IP " 7." 4
+RFC 7646
+.RS 4
+\%https://tools.ietf.org/html/rfc7646
+.RE

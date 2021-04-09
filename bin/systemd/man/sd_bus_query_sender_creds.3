@@ -1,0 +1,115 @@
+'\" t
+.TH "SD_BUS_QUERY_SENDER_CREDS" "3" "" "systemd 248" "sd_bus_query_sender_creds"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_query_sender_creds, sd_bus_query_sender_privilege \- Query bus message sender credentials/privileges
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_query_sender_creds('u
+.BI "int sd_bus_query_sender_creds(sd_bus_message\ *" "m" ", uint64_t\ " "mask" ", sd_bus_creds\ **" "creds" ");"
+.HP \w'sd_bus_error*\ sd_bus_query_sender_privilege('u
+.BI "sd_bus_error* sd_bus_query_sender_privilege(sd_bus_message\ *" "m" ", int\ " "capability" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_query_sender_creds()\fR
+returns the credentials of the message
+\fIm\fR\&. The
+\fImask\fR
+parameter is a combo of
+\fBSD_BUS_CREDS_*\fR
+flags that indicate which credential info the caller is interested in\&. See
+\fBsd_bus_creds_new_from_pid\fR(3)
+for a list of possible flags\&. First, this message checks if the requested credentials are attached to the message itself\&. If not, but the message contains the pid of the sender and the caller specified the
+\fBSD_BUS_CREDS_AUGMENT\fR
+flag, this function tries to figure out the missing credentials via other means (starting from the pid)\&. If the pid isn\*(Aqt available but the message has a sender, this function calls
+\fBsd_bus_get_name_creds\fR(3)
+to get the requested credentials\&. If the message has no sender (when a direct connection is used), this function calls
+\fBsd_bus_get_owner_creds\fR(3)
+to get the requested credentials\&. On success, the requested credentials are stored in
+\fIcreds\fR\&. Ownership of the credentials object in
+\fIcreds\fR
+is transferred to the caller and should be freed by calling
+\fBsd_bus_creds_unref\fR(3)\&.
+.PP
+\fBsd_bus_query_sender_privilege()\fR
+checks if the message
+\fIm\fR
+has the requested privileges\&. If
+\fIcapability\fR
+is a non\-negative integer, this function checks if the message has the capability with the same value\&. See
+\fBcapabilities\fR(7)
+for a list of capabilities\&. If
+\fIcapability\fR
+is a negative integer, this function returns whether the sender of the message runs as the same user as the receiver of the message, or if the sender of the message runs as root and the receiver of the message does not run as root\&. On success and if the message has the requested privileges, this function returns a positive integer\&. If the message does not have the requested privileges, this function returns zero\&.
+.SH "RETURN VALUE"
+.PP
+On success, these functions return a non\-negative integer\&. On failure, they return a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+The message
+\fIm\fR
+or an output parameter is
+\fBNULL\fR\&.
+.RE
+.PP
+\fB\-ENOTCONN\fR
+.RS 4
+The bus of
+\fIm\fR
+is not connected\&.
+.RE
+.PP
+\fB\-ECHILD\fR
+.RS 4
+The bus of
+\fIm\fR
+was created in a different process\&.
+.RE
+.PP
+\fB\-EPERM\fR
+.RS 4
+The message
+\fIm\fR
+is not sealed\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd_bus_creds_new_from_pid\fR(3),
+\fBsd_bus_get_name_creds\fR(3),
+\fBsd_bus_get_owner_creds\fR(3),
+\fBsd_bus_creds_unref\fR(3),
+\fBcapabilities\fR(7)

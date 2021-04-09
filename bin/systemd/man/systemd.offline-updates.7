@@ -1,0 +1,251 @@
+'\" t
+.TH "SYSTEMD\&.OFFLINE\-UPDATES" "7" "" "systemd 248" "systemd.offline-updates"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd.offline-updates \- Implementation of offline updates in systemd
+.SH "IMPLEMENTING OFFLINE SYSTEM UPDATES"
+.PP
+This man page describes how to implement "offline" system updates with systemd\&. By "offline" OS updates we mean package installations and updates that are run with the system booted into a special system update mode, in order to avoid problems related to conflicts of libraries and services that are currently running with those on disk\&. This document is inspired by this
+\m[blue]\fBGNOME design whiteboard\fR\m[]\&\s-2\u[1]\d\s+2\&.
+.PP
+The logic:
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 1.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  1." 4.2
+.\}
+The package manager prepares system updates by downloading all (\&.rpm or \&.deb or whatever) packages to update off\-line in a special directory
+/var/lib/system\-update
+(or another directory of the package/upgrade manager\*(Aqs choice)\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 2.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  2." 4.2
+.\}
+When the user OK\*(Aqed the update, the symlink
+/system\-update
+is created that points to
+/var/lib/system\-update
+(or wherever the directory with the upgrade files is located) and the system is rebooted\&. This symlink is in the root directory, since we need to check for it very early at boot, at a time where
+/var/
+is not available yet\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 3.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  3." 4.2
+.\}
+Very early in the new boot
+\fBsystemd-system-update-generator\fR(8)
+checks whether
+/system\-update
+exists\&. If so, it (temporarily and for this boot only) redirects (i\&.e\&. symlinks)
+default\&.target
+to
+system\-update\&.target, a special target that pulls in the base system (i\&.e\&.
+sysinit\&.target, so that all file systems are mounted but little else) and the system update units\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 4.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  4." 4.2
+.\}
+The system now continues to boot into
+default\&.target, and thus into
+system\-update\&.target\&. This target pulls in all system update units\&. Only one service should perform an update (see the next point), and all the other ones should exit cleanly with a "success" return code and without doing anything\&. Update services should be ordered after
+sysinit\&.target
+so that the update starts after all file systems have been mounted\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 5.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  5." 4.2
+.\}
+As the first step, an update service should check if the
+/system\-update
+symlink points to the location used by that update service\&. In case it does not exist or points to a different location, the service must exit without error\&. It is possible for multiple update services to be installed, and for multiple update services to be launched in parallel, and only the one that corresponds to the tool that
+\fIcreated\fR
+the symlink before reboot should perform any actions\&. It is unsafe to run multiple updates in parallel\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 6.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  6." 4.2
+.\}
+The update service should now do its job\&. If applicable and possible, it should create a file system snapshot, then install all packages\&. After completion (regardless whether the update succeeded or failed) the machine must be rebooted, for example by calling
+\fBsystemctl reboot\fR\&. In addition, on failure the script should revert to the old file system snapshot (without the symlink)\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 7.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  7." 4.2
+.\}
+The update scripts should exit only after the update is finished\&. It is expected that the service which performs the update will cause the machine to reboot after it is done\&. If the
+system\-update\&.target
+is successfully reached, i\&.e\&. all update services have run, and the
+/system\-update
+symlink still exists, it will be removed and the machine rebooted as a safety measure\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 8.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  8." 4.2
+.\}
+After a reboot, now that the
+/system\-update
+symlink is gone, the generator won\*(Aqt redirect
+default\&.target
+anymore and the system now boots into the default target again\&.
+.RE
+.SH "RECOMMENDATIONS"
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 1.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  1." 4.2
+.\}
+To make things a bit more robust we recommend hooking the update script into
+system\-update\&.target
+via a
+\&.wants/
+symlink in the distribution package, rather than depending on
+\fBsystemctl enable\fR
+in the postinst scriptlets of your package\&. More specifically, for your update script create a \&.service file, without [Install] section, and then add a symlink like
+/usr/lib/systemd/system/system\-update\&.target\&.wants/foobar\&.service
+→
+\&.\&./foobar\&.service
+to your package\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 2.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  2." 4.2
+.\}
+Make sure to remove the
+/system\-update
+symlink as early as possible in the update script to avoid reboot loops in case the update fails\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 3.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  3." 4.2
+.\}
+Use
+\fIFailureAction=reboot\fR
+in the service file for your update script to ensure that a reboot is automatically triggered if the update fails\&.
+\fIFailureAction=\fR
+makes sure that the specified unit is activated if your script exits uncleanly (by non\-zero error code, or signal/coredump)\&. If your script succeeds you should trigger the reboot in your own code, for example by invoking logind\*(Aqs
+\fBReboot()\fR
+call or calling
+\fBsystemctl reboot\fR\&. See
+\fBorg.freedesktop.login1\fR(5)
+for details about the logind D\-Bus API\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 4.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  4." 4.2
+.\}
+The update service should declare
+\fIDefaultDependencies=no\fR,
+\fIRequires=sysinit\&.target\fR,
+\fIAfter=sysinit\&.target\fR,
+\fIAfter=system\-update\-pre\&.target\fR,
+\fIBefore=system\-update\&.target\fR
+and explicitly pull in any other services it requires\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 5.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  5." 4.2
+.\}
+It may be desirable to always run an auxiliary unit when booting into offline\-updates mode, which itself does not install updates\&. To do this create a \&.service file with
+\fIWants=system\-update\-pre\&.target\fR
+and
+\fIBefore=system\-update\-pre\&.target\fR
+and add a symlink to that file under
+/usr/lib/systemd/system\-update\&.target\&.wants
+\&.
+.RE
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsystemd.generator\fR(7),
+\fBsystemd-system-update-generator\fR(8),
+\fBdnf.plugin.system-upgrade\fR(8)
+.SH "NOTES"
+.IP " 1." 4
+GNOME design whiteboard
+.RS 4
+\%https://wiki.gnome.org/Design/OS/SoftwareUpdates
+.RE

@@ -1,0 +1,109 @@
+'\" t
+.TH "SD_BUS_ADD_NODE_ENUMERATOR" "3" "" "systemd 248" "sd_bus_add_node_enumerator"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_add_node_enumerator \- Add a node enumerator for a D\-Bus object path prefix
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'typedef\ int\ (*sd_bus_node_enumerator_t)('u
+.BI "typedef int (*sd_bus_node_enumerator_t)(sd_bus\ *" "bus" ", const\ char\ *" "prefix" ", void\ *" "userdata" ", char\ ***" "ret_nodes" ", sd_bus_error\ *" "ret_error" ");"
+.HP \w'int\ sd_bus_add_node_enumerator('u
+.BI "int sd_bus_add_node_enumerator(sd_bus\ *" "bus" ", sd_bus_slot\ **" "slot" ", const\ char\ *" "path" ", sd_bus_node_enumerator_t\ " "callback" ", void\ *" "userdata" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_add_node_enumerator()\fR
+adds a D\-Bus node enumerator for the given path prefix\&. The given callback is called to enumerate all the available objects with the given path prefix when required (e\&.g\&. when
+\fBorg\&.freedesktop\&.DBus\&.Introspectable\&.Introspect\fR
+or
+\fBorg\&.freedesktop\&.DBus\&.ObjectManager\&.GetManagedObjects\fR
+are called on a D\-Bus service managed by sd\-bus)\&.
+.PP
+\fIcallback\fR
+is called with the path and userdata pointer registered with
+\fBsd_bus_add_node_enumerator()\fR\&. When called, it should store all the child object paths of the given path prefix in
+\fIret_nodes\fR
+and return the number of child objects under the given prefix\&. If an error occurs, it can either return a negative integer, set
+\fIret_error\fR
+to a non\-empty error or do both\&. Any errors returned by the callback are encoded as D\-Bus errors and sent back to the caller\&. Errors in
+\fIret_error\fR
+take priority over negative return values\&.
+.PP
+Note that a node enumerator callback will only ever be called for a single path prefix and hence, for normal operation,
+\fIprefix\fR
+can be ignored\&. Also, a node enumerator is only used to enumerate the available child objects under a given prefix\&. To install a handler for a set of dynamic child objects, use
+\fBsd_bus_add_fallback_vtable\fR(3)\&.
+.PP
+When
+\fBsd_bus_add_node_enumerator()\fR
+succeeds, a slot is created internally\&. If the output parameter
+\fIslot\fR
+is
+\fBNULL\fR, a "floating" slot object is created, see
+\fBsd_bus_slot_set_floating\fR(3)\&. Otherwise, a pointer to the slot object is returned\&. In that case, the reference to the slot object should be dropped when the node enumerator is not needed anymore, see
+\fBsd_bus_slot_unref\fR(3)\&.
+.SH "RETURN VALUE"
+.PP
+On success,
+\fBsd_bus_add_node_enumerator()\fR
+returns a non\-negative integer\&. On failure, it returns a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+One of the required parameters is
+\fBNULL\fR
+or
+\fIpath\fR
+is not a valid object path\&.
+.RE
+.PP
+\fB\-ENOPKG\fR
+.RS 4
+The bus cannot be resolved\&.
+.RE
+.PP
+\fB\-ECHILD\fR
+.RS 4
+The bus was created in a different process\&.
+.RE
+.PP
+\fB\-ENOMEM\fR
+.RS 4
+Memory allocation failed\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsd-bus\fR(3),
+\fBbusctl\fR(1),
+\fBsd_bus_add_fallback_vtable\fR(3),
+\fBsd_bus_slot_unref\fR(3)

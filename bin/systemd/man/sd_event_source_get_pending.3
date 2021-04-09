@@ -1,0 +1,107 @@
+'\" t
+.TH "SD_EVENT_SOURCE_GET_PENDING" "3" "" "systemd 248" "sd_event_source_get_pending"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_event_source_get_pending \- Determine pending state of event sources
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-event\&.h>
+.fi
+.ft
+.HP \w'int\ sd_event_source_get_pending('u
+.BI "int sd_event_source_get_pending(sd_event_source\ *" "source" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_event_source_get_pending()\fR
+may be used to determine whether the event source object specified as
+\fIsource\fR
+has seen events but has not been dispatched yet (and thus is marked "pending")\&.
+.PP
+Event source objects initially are not marked pending, when they are created with calls such as
+\fBsd_event_add_io\fR(3),
+\fBsd_event_add_time\fR(3), with the exception of those created with
+\fBsd_event_add_defer\fR(3)
+which are immediately marked pending, and
+\fBsd_event_add_exit\fR(3)
+for which the "pending" concept is not defined\&. For details see the respective manual pages\&.
+.PP
+In each event loop iteration one event source of those marked pending is dispatched, in the order defined by the event source priority, as set with
+\fBsd_event_source_set_priority\fR(3)\&.
+.PP
+For I/O event sources, as created with
+\fBsd_event_add_io\fR(3), the call
+\fBsd_event_source_get_io_revents\fR(3)
+may be used to query the type of event pending in more detail\&.
+.SH "RETURN VALUE"
+.PP
+On success,
+\fBsd_event_source_get_pending()\fR
+returns an integer greater than zero when the event source is marked pending, and zero when the event source is not marked pending\&. On failure, it returns a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+\fIsource\fR
+is not a valid pointer to an
+sd_event_source
+object\&.
+.RE
+.PP
+\fB\-EDOM\fR
+.RS 4
+\fIsource\fR
+refers to an event source object created with
+\fBsd_event_add_exit\fR(3)\&.
+.RE
+.PP
+\fB\-ENOMEM\fR
+.RS 4
+Not enough memory\&.
+.RE
+.PP
+\fB\-ESTALE\fR
+.RS 4
+The event loop is already terminated\&.
+.RE
+.PP
+\fB\-ECHILD\fR
+.RS 4
+The event loop has been created in a different process\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsd-event\fR(3),
+\fBsd_event_add_io\fR(3),
+\fBsd_event_add_time\fR(3),
+\fBsd_event_add_signal\fR(3),
+\fBsd_event_add_child\fR(3),
+\fBsd_event_add_inotify\fR(3),
+\fBsd_event_add_defer\fR(3),
+\fBsd_event_source_unref\fR(3)

@@ -1,0 +1,52 @@
+'\" t
+.TH "SYSTEMD\-PORTABLED\&.SERVICE" "8" "" "systemd 248" "systemd-portabled.service"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd-portabled.service, systemd-portabled \- Portable service manager
+.SH "SYNOPSIS"
+.PP
+systemd\-portabled\&.service
+.PP
+/usr/lib/systemd/systemd\-portabled
+.SH "DESCRIPTION"
+.PP
+\fBsystemd\-portabled\fR
+is a system service that may be used to attach, detach and inspect portable service images\&.
+.PP
+Most of
+\fBsystemd\-portabled\fR\*(Aqs functionality is accessible through the
+\fBportablectl\fR(1)
+command\&.
+.PP
+See the
+\m[blue]\fBPortable Services Documentation\fR\m[]\&\s-2\u[1]\d\s+2
+for details about the concepts this service implements\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBportablectl\fR(1),
+\fBorg.freedesktop.portable1\fR(5)
+.SH "NOTES"
+.IP " 1." 4
+Portable Services Documentation
+.RS 4
+\%https://systemd.io/PORTABLE_SERVICES
+.RE

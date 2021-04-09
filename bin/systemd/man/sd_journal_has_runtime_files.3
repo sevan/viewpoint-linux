@@ -1,0 +1,59 @@
+'\" t
+.TH "SD_JOURNAL_HAS_RUNTIME_FILES" "3" "" "systemd 248" "sd_journal_has_runtime_files"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_journal_has_runtime_files, sd_journal_has_persistent_files \- Query availability of runtime or persistent journal files
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-journal\&.h>
+.fi
+.ft
+.HP \w'int\ sd_journal_has_runtime_files('u
+.BI "int sd_journal_has_runtime_files(sd_journal\ *" "j" ");"
+.HP \w'int\ sd_journal_has_persistent_files('u
+.BI "int sd_journal_has_persistent_files(sd_journal\ *" "j" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_journal_has_runtime_files()\fR
+returns a positive value if runtime journal files (present in /run/systemd/journal/) have been found\&. Otherwise returns 0\&.
+.PP
+\fBsd_journal_has_persistent_files()\fR
+returns a positive value if persistent journal files (present in /var/log/journal/) have been found\&. Otherwise returns 0\&.
+.SH "RETURN VALUE"
+.PP
+Both
+\fBsd_journal_has_runtime_files()\fR
+and
+\fBsd_journal_has_persistent_files()\fR
+return \-EINVAL if their argument is
+\fBNULL\fR\&.
+.SH "NOTES"
+.PP
+All functions listed here are thread\-agnostic and only a single specific thread may operate on a given object during its entire lifetime\&. It\*(Aqs safe to allocate multiple independent objects and use each from a specific thread in parallel\&. However, it\*(Aqs not safe to allocate such an object in one thread, and operate or free it from any other, even if locking is used to ensure these threads don\*(Aqt operate on it at the very same time\&.
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsd-journal\fR(3)

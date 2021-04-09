@@ -1,0 +1,79 @@
+'\" t
+.TH "SD_BUS_GET_NAME_MACHINE_ID" "3" "" "systemd 248" "sd_bus_get_name_machine_id"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_get_name_machine_id \- Retrieve a bus client\*(Aqs machine identity
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_get_name_machine_id('u
+.BI "int sd_bus_get_name_machine_id(sd_bus\ *" "bus" ", const\ char\ *" "name" ", sd_id128_t\ *" "machine" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_get_name_machine_id()\fR
+retrieves the D\-Bus machine identity of the machine that the bus client identified by
+\fIname\fR
+is running on\&. Internally, it calls the
+\fBGetMachineId\fR
+method of the
+\fBorg\&.freedesktop\&.DBus\&.Peer\fR
+interface\&. The D\-Bus machine identity is a 128\-bit UUID\&. On Linux systems running systemd, this corresponds to the contents of
+/etc/machine\-id\&. On success, the machine identity is stored in
+\fImachine\fR\&.
+.SH "RETURN VALUE"
+.PP
+On success, this function returns a non\-negative integer\&. On failure, it returns a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+An argument is invalid\&.
+.RE
+.PP
+\fB\-ENOPKG\fR
+.RS 4
+The bus cannot be resolved\&.
+.RE
+.PP
+\fB\-ECHILD\fR
+.RS 4
+The bus was created in a different process\&.
+.RE
+.PP
+\fB\-ENOMEM\fR
+.RS 4
+Memory allocation failed\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3)

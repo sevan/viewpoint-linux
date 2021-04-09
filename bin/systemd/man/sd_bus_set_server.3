@@ -1,0 +1,156 @@
+'\" t
+.TH "SD_BUS_SET_SERVER" "3" "" "systemd 248" "sd_bus_set_server"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_set_server, sd_bus_is_server, sd_bus_get_bus_id, sd_bus_set_bus_client, sd_bus_is_bus_client, sd_bus_set_monitor, sd_bus_is_monitor \- Configure connection mode for a bus object
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_set_server('u
+.BI "int sd_bus_set_server(sd_bus\ *" "bus" ", int\ " "b" ", sd_id128_t\ " "id" ");"
+.HP \w'int\ sd_bus_is_server('u
+.BI "int sd_bus_is_server(sd_bus\ *" "bus" ");"
+.HP \w'int\ sd_bus_get_bus_id('u
+.BI "int sd_bus_get_bus_id(sd_bus\ *" "bus" ", sd_id128_t\ *" "id" ");"
+.HP \w'int\ sd_bus_set_bus_client('u
+.BI "int sd_bus_set_bus_client(sd_bus\ *" "bus" ", int\ " "b" ");"
+.HP \w'int\ sd_bus_is_bus_client('u
+.BI "int sd_bus_is_bus_client(sd_bus\ *" "bus" ");"
+.HP \w'int\ sd_bus_set_monitor('u
+.BI "int sd_bus_set_monitor(sd_bus\ *" "bus" ", int\ " "b" ");"
+.HP \w'int\ sd_bus_is_monitor('u
+.BI "int sd_bus_is_monitor(sd_bus\ *" "bus" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_set_server()\fR
+configures the bus object as a server for direct D\-Bus connections\&.
+\fIb\fR
+enables/disables the server mode\&. If zero, the server mode is disabled\&. Otherwise, the server mode is enabled\&. Configuring a bus object as a server is required to allow establishing direct connections between two peers without going via the D\-Bus daemon\&.
+\fIid\fR
+must contain a 128\-bit integer id for the server\&. If clients add a guid field to their D\-Bus address string, the server id must match this guid or the D\-Bus authentication handshake will fail\&. If no specific id is defined for the server,
+\fBsd_id128_randomize\fR(3)
+can be used to generate a random id instead\&.
+.PP
+\fBsd_bus_is_server()\fR
+returns whether the server mode is enabled for the given bus object\&.
+.PP
+\fBsd_bus_get_bus_id()\fR
+stores the D\-Bus server id configured using
+\fBsd_bus_set_server()\fR
+(for server bus objects) or received during D\-Bus authentication (for client bus objects) in
+\fIid\fR\&.
+.PP
+\fBsd_bus_set_bus_client()\fR
+configures the bus object as a D\-Bus daemon client\&.
+\fIb\fR
+enables/disables the client mode\&. If zero, the client mode is disabled and the bus object should connect directly to a D\-Bus server\&. Otherwise, the client mode is enabled and the bus object should connect to a D\-Bus daemon\&. When connecting to an existing bus using any of the functions in the
+\fBsd_bus_open\fR(3)
+family of functions or any of the functions in the
+\fBsd_bus_default\fR(3)
+family of functions, the bus object is automatically configured as a bus client\&. However, when connecting to a D\-Bus daemon by calling
+\fBsd_bus_set_address\fR(3)
+followed by
+\fBsd_bus_start\fR(3), the bus object should be manually configured as a bus client using
+\fBsd_bus_set_bus_client()\fR\&. By default, a bus object is not configured as a D\-Bus daemon client\&.
+.PP
+\fBsd_bus_is_bus_client()\fR
+returns whether the client mode is enabled/disabled for the given bus object\&.
+.PP
+\fBsd_bus_set_monitor()\fR
+configures the bus object as a D\-Bus monitor object\&.
+\fIb\fR
+enables/disables the monitor mode\&. If zero, the monitor mode is disabled\&. If non\-zero, the monitor mode is enabled\&. When the monitor mode is enabled, no messages may be sent via the bus object and it may not expose any objects on the bus\&. To start monitoring messages, call the
+\fBorg\&.freedesktop\&.DBus\&.Monitoring\&.BecomeMonitor\fR
+method of the D\-Bus daemon and pass a list of matches indicating which messages to intercept\&. See
+\m[blue]\fBThe D\-Bus specification\fR\m[]\&\s-2\u[1]\d\s+2
+for more information\&.
+.PP
+\fBsd_bus_is_monitor()\fR
+returns whether the monitor mode is enabled/disabled for the given bus object\&.
+.SH "RETURN VALUE"
+.PP
+On success,
+\fBsd_bus_set_server()\fR,
+\fBsd_bus_get_bus_id()\fR,
+\fBsd_bus_set_bus_client()\fR
+and
+\fBsd_bus_set_monitor()\fR
+return a non\-negative integer\&. On failure, they return a negative errno\-style error code\&.
+.PP
+\fBsd_bus_is_server()\fR,
+\fBsd_bus_is_bus_client()\fR
+and
+\fBsd_bus_is_monitor()\fR
+return a positive integer when the server or client mode is enabled, respectively\&. Otherwise, they return zero\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-ECHILD\fR
+.RS 4
+The bus connection has been created in a different process\&.
+.RE
+.PP
+\fB\-EPERM\fR
+.RS 4
+The bus connection has already been started\&.
+.RE
+.PP
+\fB\-ENOPKG\fR
+.RS 4
+The bus cannot be resolved\&.
+.RE
+.PP
+\fB\-EINVAL\fR
+.RS 4
+A required parameter was
+\fBNULL\fR
+or
+\fIb\fR
+was zero and
+\fIid\fR
+did not equal
+\fBSD_ID128_NULL\fR\&.
+.RE
+.PP
+\fB\-ENOTCONN\fR
+.RS 4
+The bus is not connected\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3)
+.SH "NOTES"
+.IP " 1." 4
+The D-Bus specification
+.RS 4
+\%https://dbus.freedesktop.org/doc/dbus-specification.html#bus-messages-become-monitor
+.RE

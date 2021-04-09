@@ -1,0 +1,89 @@
+'\" t
+.TH "SYSTEMD\-RUN\-GENERATOR" "8" "" "systemd 248" "systemd-run-generator"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd-run-generator \- Generator for invoking commands specified on the kernel command line as system service
+.SH "SYNOPSIS"
+.PP
+/usr/lib/systemd/system\-generators/systemd\-run\-generator
+.SH "DESCRIPTION"
+.PP
+systemd\-run\-generator
+is a generator that reads the kernel command line and understands three options:
+.PP
+If the
+\fBsystemd\&.run=\fR
+option is specified and followed by a command line, a unit named
+kernel\-command\-line\&.service
+is generated for it and booted into\&. The service has
+\fIType=oneshot\fR
+set, and has
+\fISuccessAction=exit\fR
+and
+\fIFailureAction=exit\fR
+configured by default, thus ensuring that the system is shut down as soon as the command completes\&. The exit status of the command line is propagated to the invoking container manager, if this applies (which might propagate this further, to the calling shell \(em e\&.g\&.
+\fBsystemd-nspawn\fR(7)
+does this)\&. If this option is used multiple times the unit file will contain multiple
+\fIExecStart=\fR
+lines, to execute all commands in order\&. The command is started as regular service, i\&.e\&. with
+\fIDefaultDependencies=\fR
+on\&.
+.PP
+Use
+\fBsystemd\&.run_success_action=\fR
+and
+\fBsystemd\&.run_failure_action=\fR
+to tweak how to react to the process completing\&. In particular assigning
+"none"
+will leave the system running after the command completes\&. For further details on supported arguments, see
+\fBsystemd.unit\fR(5)\&.
+.PP
+systemd\-run\-generator
+implements
+\fBsystemd.generator\fR(7)\&.
+.SH "EXAMPLE"
+.PP
+Use a command like the following to add a user to the user database inside a container run with
+\fBsystemd-nspawn\fR(7):
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+# systemd\-nspawn \-D mycontainer \-b systemd\&.run=\*(Aq"adduser test"\*(Aq
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+(Note the requirement for double quoting in the command line above\&. The first level of quoting (\*(Aq\*(Aq) is processed and removed by the command shell used to invoke
+\fBsystemd\-nspawn\fR\&. The second level of quoting ("") is propagated to the kernel command line of the container and processed and removed by
+\fBsystemd\-run\-generator\fR\&. Both together make sure both words of the specified command line
+\fBadduser test\fR
+end up in the generated unit file together and are neither split apart by the command shell nor by the generator\&.)
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsystemctl\fR(1),
+\fBkernel-command-line\fR(7),
+\fBsystemd-nspawn\fR(7),
+\fBsystemd.unit\fR(5),
+\fBsystemd.service\fR(5)

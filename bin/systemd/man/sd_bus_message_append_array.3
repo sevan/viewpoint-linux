@@ -1,0 +1,173 @@
+'\" t
+.TH "SD_BUS_MESSAGE_APPEND_ARRAY" "3" "" "systemd 248" "sd_bus_message_append_array"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_message_append_array, sd_bus_message_append_array_memfd, sd_bus_message_append_array_iovec, sd_bus_message_append_array_space \- Append an array of fields to a D\-Bus message
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_message_append_array('u
+.BI "int sd_bus_message_append_array(sd_bus_message\ *" "m" ", char\ " "type" ", void\ *" "ptr" ", size_t\ " "size" ");"
+.HP \w'int\ sd_bus_message_append_array_memfd('u
+.BI "int sd_bus_message_append_array_memfd(sd_bus_message\ *" "m" ", char\ " "type" ", int\ " "memfd" ", uint64_t\ " "offset" ", uint64_t\ " "size" ");"
+.HP \w'int\ sd_bus_message_append_array_iovec('u
+.BI "int sd_bus_message_append_array_iovec(sd_bus_message\ *" "m" ", char\ " "type" ", const\ struct\ iovec\ *" "iov" ", unsigned\ " "n" ");"
+.HP \w'int\ sd_bus_message_append_array_space('u
+.BI "int sd_bus_message_append_array_space(sd_bus_message\ *" "m" ", char\ " "type" ", size_t\ " "size" ", void\ **" "ptr" ");"
+.SH "DESCRIPTION"
+.PP
+The
+\fBsd_bus_message_append_array()\fR
+function appends an array to a D\-Bus message
+\fIm\fR\&. A container will be opened, the array contents appended, and the container closed\&. The parameter
+\fItype\fR
+determines how the pointer
+\fIp\fR
+is interpreted\&.
+\fItype\fR
+must be one of the "trivial" types
+"y",
+"n",
+"q",
+"i",
+"u",
+"x",
+"t",
+"d"
+(but not
+"b"), as defined by the
+\m[blue]\fBBasic Types\fR\m[]\&\s-2\u[1]\d\s+2
+section of the D\-Bus specification, and listed in
+\fBsd_bus_message_append_basic\fR(3)\&. Pointer
+\fIp\fR
+must point to an array of size
+\fIsize\fR
+bytes containing items of the respective type\&. Size
+\fIsize\fR
+must be a multiple of the size of the type
+\fItype\fR\&. As a special case,
+\fIp\fR
+may be
+\fBNULL\fR, if
+\fIsize\fR
+is 0\&. The memory pointed to by
+\fIp\fR
+is copied into the memory area containing the message and stays in possession of the caller\&. The caller may hence freely change the data after this call without affecting the message the array was appended to\&.
+.PP
+The
+\fBsd_bus_message_append_array_memfd()\fR
+function appends an array of a trivial type to message
+\fIm\fR, similar to
+\fBsd_bus_message_append_array()\fR\&. The contents of the memory file descriptor
+\fImemfd\fR
+starting at the specified offset and of the specified size is used as the contents of the array\&. The offset and size must be a multiple of the size of the type
+\fItype\fR\&. However, as a special exception, if the offset is specified as zero and the size specified as UINT64_MAX the full memory file descriptor contents is used\&. The memory file descriptor is sealed by this call if it has not been sealed yet, and cannot be modified after this call\&. See
+\fBmemfd_create\fR(2)
+for details about memory file descriptors\&. Appending arrays with memory file descriptors enables efficient zero\-copy data transfer, as the memory file descriptor may be passed as\-is to the destination, without copying the memory in it to the destination process\&. Not all protocol transports support passing memory file descriptors between participants, in which case this call will automatically fall back to copying\&. Also, as memory file descriptor passing is inefficient for smaller amounts of data, copying might still be enforced even where memory file descriptor passing is supported\&.
+.PP
+The
+\fBsd_bus_message_append_array_iovec()\fR
+function appends an array of a trivial type to the message
+\fIm\fR, similar to
+\fBsd_bus_message_append_array()\fR\&. Contents of the I/O vector array
+\fIiov\fR
+are used as the contents of the array\&. The total size of
+\fIiov\fR
+payload (the sum of
+\fIiov_len\fR
+fields) must be a multiple of the size of the type
+\fItype\fR\&. The
+\fIiov\fR
+argument must point to
+\fIn\fR
+I/O vector structures\&. Each structure may have the
+iov_base
+field set, in which case the memory pointed to will be copied into the message, or unset (set to zero), in which case a block of zeros of length
+iov_len
+bytes will be inserted\&. The memory pointed at by
+\fIiov\fR
+may be changed after this call\&.
+.PP
+The
+\fBsd_bus_message_append_array_space()\fR
+function appends space for an array of a trivial type to message
+\fIm\fR\&. It behaves the same as
+\fBsd_bus_message_append_array()\fR, but instead of copying items to the message, it returns a pointer to the destination area to the caller in pointer
+\fIp\fR\&. The caller should subsequently write the array contents to this memory\&. Modifications to the memory pointed to should only occur until the next operation on the bus message is invoked\&. Most importantly, the memory should not be altered anymore when another field has been added to the message or the message has been sealed\&.
+.SH "RETURN VALUE"
+.PP
+On success, these calls return 0 or a positive integer\&. On failure, they return a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+Specified parameter is invalid\&.
+.RE
+.PP
+\fB\-EPERM\fR
+.RS 4
+Message has been sealed\&.
+.RE
+.PP
+\fB\-ESTALE\fR
+.RS 4
+Message is in invalid state\&.
+.RE
+.PP
+\fB\-ENXIO\fR
+.RS 4
+Message cannot be appended to\&.
+.RE
+.PP
+\fB\-ENOMEM\fR
+.RS 4
+Memory allocation failed\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd_bus_message_append\fR(3),
+\fBsd_bus_message_append_basic\fR(3),
+\fBmemfd_create\fR(2),
+\m[blue]\fBThe D\-Bus specification\fR\m[]\&\s-2\u[2]\d\s+2
+.SH "NOTES"
+.IP " 1." 4
+Basic Types
+.RS 4
+\%http://dbus.freedesktop.org/doc/dbus-specification.html#basic-types
+.RE
+.IP " 2." 4
+The D-Bus specification
+.RS 4
+\%http://dbus.freedesktop.org/doc/dbus-specification.html
+.RE

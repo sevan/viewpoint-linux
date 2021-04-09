@@ -1,0 +1,231 @@
+'\" t
+.TH "MACHINE\-ID" "5" "" "systemd 248" "machine-id"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+machine-id \- Local machine ID configuration file
+.SH "SYNOPSIS"
+.PP
+/etc/machine\-id
+.SH "DESCRIPTION"
+.PP
+The
+/etc/machine\-id
+file contains the unique machine ID of the local system that is set during installation or boot\&. The machine ID is a single newline\-terminated, hexadecimal, 32\-character, lowercase ID\&. When decoded from hexadecimal, this corresponds to a 16\-byte/128\-bit value\&. This ID may not be all zeros\&.
+.PP
+The machine ID is usually generated from a random source during system installation or first boot and stays constant for all subsequent boots\&. Optionally, for stateless systems, it is generated during runtime during early boot if necessary\&.
+.PP
+The machine ID may be set, for example when network booting, with the
+\fIsystemd\&.machine_id=\fR
+kernel command line parameter or by passing the option
+\fB\-\-machine\-id=\fR
+to systemd\&. An ID specified in this manner has higher priority and will be used instead of the ID stored in
+/etc/machine\-id\&.
+.PP
+The machine ID does not change based on local or network configuration or when hardware is replaced\&. Due to this and its greater length, it is a more useful replacement for the
+\fBgethostid\fR(3)
+call that POSIX specifies\&.
+.PP
+This machine ID adheres to the same format and logic as the D\-Bus machine ID\&.
+.PP
+This ID uniquely identifies the host\&. It should be considered "confidential", and must not be exposed in untrusted environments, in particular on the network\&. If a stable unique identifier that is tied to the machine is needed for some application, the machine ID or any part of it must not be used directly\&. Instead the machine ID should be hashed with a cryptographic, keyed hash function, using a fixed, application\-specific key\&. That way the ID will be properly unique, and derived in a constant way from the machine ID but there will be no way to retrieve the original machine ID from the application\-specific one\&. The
+\fBsd_id128_get_machine_app_specific\fR(3)
+API provides an implementation of such an algorithm\&.
+.SH "INITIALIZATION"
+.PP
+Each machine should have a non\-empty ID in normal operation\&. The ID of each machine should be unique\&. To achieve those objectives,
+/etc/machine\-id
+can be initialized in a few different ways\&.
+.PP
+For normal operating system installations, where a custom image is created for a specific machine,
+/etc/machine\-id
+should be populated during installation\&.
+.PP
+\fBsystemd-machine-id-setup\fR(1)
+may be used by installer tools to initialize the machine ID at install time, but
+/etc/machine\-id
+may also be written using any other means\&.
+.PP
+For operating system images which are created once and used on multiple machines, for example for containers or in the cloud,
+/etc/machine\-id
+should be either missing or an empty file in the generic file system image (the difference between the two options is described under "First Boot Semantics" below)\&. An ID will be generated during boot and saved to this file if possible\&. Having an empty file in place is useful because it allows a temporary file to be bind\-mounted over the real file, in case the image is used read\-only\&.
+.PP
+\fBsystemd-firstboot\fR(1)
+may be used to initialize
+/etc/machine\-id
+on mounted (but not booted) system images\&.
+.PP
+When a machine is booted with
+\fBsystemd\fR(1)
+the ID of the machine will be established\&. If
+\fIsystemd\&.machine_id=\fR
+or
+\fB\-\-machine\-id=\fR
+options (see first section) are specified, this value will be used\&. Otherwise, the value in
+/etc/machine\-id
+will be used\&. If this file is empty or missing,
+systemd
+will attempt to use the D\-Bus machine ID from
+/var/lib/dbus/machine\-id, the value of the kernel command line option
+\fIcontainer_uuid\fR, the KVM DMI
+product_uuid
+or the devicetree
+vm,uuid
+(on KVM systems), and finally a randomly generated UUID\&.
+.PP
+After the machine ID is established,
+\fBsystemd\fR(1)
+will attempt to save it to
+/etc/machine\-id\&. If this fails, it will attempt to bind\-mount a temporary file over
+/etc/machine\-id\&. It is an error if the file system is read\-only and does not contain a (possibly empty)
+/etc/machine\-id
+file\&.
+.PP
+\fBsystemd-machine-id-commit.service\fR(8)
+will attempt to write the machine ID to the file system if
+/etc/machine\-id
+or
+/etc/
+are read\-only during early boot but become writable later on\&.
+.SH "FIRST BOOT SEMANTICS"
+.PP
+/etc/machine\-id
+is used to decide whether a boot is the first one\&. The rules are as follows:
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 1.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  1." 4.2
+.\}
+If
+/etc/machine\-id
+does not exist, this is a first boot\&. During early boot,
+\fBsystemd\fR
+will write
+"uninitialized\en"
+to this file and overmount a temporary file which contains the actual machine ID\&. Later (after
+first\-boot\-complete\&.target
+has been reached), the real machine ID will be written to disk\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 2.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  2." 4.2
+.\}
+If
+/etc/machine\-id
+contains the string
+"uninitialized", a boot is also considered the first boot\&. The same mechanism as above applies\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 3.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  3." 4.2
+.\}
+If
+/etc/machine\-id
+exists and is empty, a boot is
+\fInot\fR
+considered the first boot\&.
+\fBsystemd\fR
+will still bind\-mount a file containing the actual machine\-id over it and later try to commit it to disk (if
+/etc/
+is writable)\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 4.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  4." 4.2
+.\}
+If
+/etc/machine\-id
+already contains a valid machine\-id, this is not a first boot\&.
+.RE
+.PP
+If by any of the above rules, a first boot is detected, units with
+\fIConditionFirstBoot=yes\fR
+will be run\&.
+.SH "RELATION TO OSF UUIDS"
+.PP
+Note that the machine ID historically is not an OSF UUID as defined by
+\m[blue]\fBRFC 4122\fR\m[]\&\s-2\u[1]\d\s+2, nor a Microsoft GUID; however, starting with systemd v30, newly generated machine IDs do qualify as v4 UUIDs\&.
+.PP
+In order to maintain compatibility with existing installations, an application requiring a UUID should decode the machine ID, and then apply the following operations to turn it into a valid OSF v4 UUID\&. With
+"id"
+being an unsigned character array:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+/* Set UUID version to 4 \-\-\- truly random generation */
+id[6] = (id[6] & 0x0F) | 0x40;
+/* Set the UUID variant to DCE */
+id[8] = (id[8] & 0x3F) | 0x80;
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+(This code is inspired by
+"generate_random_uuid()"
+of
+drivers/char/random\&.c
+from the Linux kernel sources\&.)
+.SH "HISTORY"
+.PP
+The simple configuration file format of
+/etc/machine\-id
+originates in the
+/var/lib/dbus/machine\-id
+file introduced by D\-Bus\&. In fact, this latter file might be a symlink to
+/etc/machine\-id\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsystemd-machine-id-setup\fR(1),
+\fBgethostid\fR(3),
+\fBhostname\fR(5),
+\fBmachine-info\fR(5),
+\fBos-release\fR(5),
+\fBsd-id128\fR(3),
+\fBsd_id128_get_machine\fR(3),
+\fBsystemd-firstboot\fR(1)
+.SH "NOTES"
+.IP " 1." 4
+RFC 4122
+.RS 4
+\%https://tools.ietf.org/html/rfc4122
+.RE

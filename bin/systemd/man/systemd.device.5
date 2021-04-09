@@ -1,0 +1,134 @@
+'\" t
+.TH "SYSTEMD\&.DEVICE" "5" "" "systemd 248" "systemd.device"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd.device \- Device unit configuration
+.SH "SYNOPSIS"
+.PP
+\fIdevice\fR\&.device
+.SH "DESCRIPTION"
+.PP
+A unit configuration file whose name ends in
+"\&.device"
+encodes information about a device unit as exposed in the sysfs/\fBudev\fR(7)
+device tree\&. This may be used to define dependencies between devices and other units\&.
+.PP
+This unit type has no specific options\&. See
+\fBsystemd.unit\fR(5)
+for the common options of all unit configuration files\&. The common configuration items are configured in the generic [Unit] and [Install] sections\&. A separate [Device] section does not exist, since no device\-specific options may be configured\&.
+.PP
+systemd will dynamically create device units for all kernel devices that are marked with the
+"systemd"
+udev tag (by default all block and network devices, and a few others)\&. Note that
+\fIif \fR\fIsystemd\-udev\&.service\fR\fI is not running, no device units will be available (for example in a typical container)\fR\&.
+.PP
+Device units are named after the
+/sys/
+and
+/dev/
+paths they control\&. Example: the device
+/dev/sda5
+is exposed in systemd as
+dev\-sda5\&.device\&. For details about the escaping logic used to convert a file system path to a unit name see
+\fBsystemd.unit\fR(5)\&.
+.PP
+To tag a udev device, use
+"TAG+="systemd""
+in the udev rules file, see
+\fBudev\fR(7)
+for details\&.
+.PP
+Device units will be reloaded by systemd whenever the corresponding device generates a
+"changed"
+event\&. Other units can use
+\fIReloadPropagatedFrom=\fR
+to react to that event\&.
+.SH "AUTOMATIC DEPENDENCIES"
+.SS "Implicit Dependencies"
+.PP
+Many unit types automatically acquire dependencies on device units of devices they require\&. For example,
+\&.socket
+unit acquire dependencies on the device units of the network interface specified in
+\fIBindToDevice=\fR\&. Similar, swap and mount units acquire dependencies on the units encapsulating their backing block devices\&.
+.SS "Default Dependencies"
+.PP
+There are no default dependencies for device units\&.
+.SH "THE UDEV DATABASE"
+.PP
+Unit settings of device units may either be configured via unit files, or directly from the udev database\&. The following udev device properties are understood by the service manager:
+.PP
+\fISYSTEMD_WANTS=\fR, \fISYSTEMD_USER_WANTS=\fR
+.RS 4
+Adds dependencies of type
+\fIWants=\fR
+from the device unit to the specified units\&.
+\fISYSTEMD_WANTS=\fR
+is read by the system service manager,
+\fISYSTEMD_USER_WANTS=\fR
+by user service manager instances\&. These properties may be used to activate arbitrary units when a specific device becomes available\&.
+.sp
+Note that this and the other udev device properties are not taken into account unless the device is tagged with the
+"systemd"
+tag in the udev database, because otherwise the device is not exposed as a systemd unit (see above)\&.
+.sp
+Note that systemd will only act on
+\fIWants=\fR
+dependencies when a device first becomes active\&. It will not act on them if they are added to devices that are already active\&. Use
+\fISYSTEMD_READY=\fR
+(see below) to configure when a udev device shall be considered active, and thus when to trigger the dependencies\&.
+.sp
+The specified property value should be a space\-separated list of valid unit names\&. If a unit template name is specified (that is, a unit name containing an
+"@"
+character indicating a unit name to use for multiple instantiation, but with an empty instance name following the
+"@"), it will be automatically instantiated by the device\*(Aqs
+"sysfs"
+path (that is: the path is escaped and inserted as instance name into the template unit name)\&. This is useful in order to instantiate a specific template unit once for each device that appears and matches specific properties\&.
+.RE
+.PP
+\fISYSTEMD_ALIAS=\fR
+.RS 4
+Adds an additional alias name to the device unit\&. This must be an absolute path that is automatically transformed into a unit name\&. (See above\&.)
+.RE
+.PP
+\fISYSTEMD_READY=\fR
+.RS 4
+If set to 0, systemd will consider this device unplugged even if it shows up in the udev tree\&. If this property is unset or set to 1, the device will be considered plugged if it is visible in the udev tree\&.
+.sp
+This option is useful for devices that initially show up in an uninitialized state in the tree, and for which a
+"changed"
+event is generated the moment they are fully set up\&. Note that
+\fISYSTEMD_WANTS=\fR
+(see above) is not acted on as long as
+\fISYSTEMD_READY=0\fR
+is set for a device\&.
+.RE
+.PP
+\fIID_MODEL_FROM_DATABASE=\fR, \fIID_MODEL=\fR
+.RS 4
+If set, this property is used as description string for the device unit\&.
+.RE
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsystemctl\fR(1),
+\fBsystemd.unit\fR(5),
+\fBudev\fR(7),
+\fBsystemd.directives\fR(7)

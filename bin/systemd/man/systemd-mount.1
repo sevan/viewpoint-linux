@@ -1,0 +1,339 @@
+'\" t
+.TH "SYSTEMD\-MOUNT" "1" "" "systemd 248" "systemd-mount"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd-mount, systemd-umount \- Establish and destroy transient mount or auto\-mount points
+.SH "SYNOPSIS"
+.HP \w'\fBsystemd\-mount\fR\ 'u
+\fBsystemd\-mount\fR [\fIOPTIONS\fR...] \fIWHAT\fR [\fIWHERE\fR]
+.HP \w'\fBsystemd\-mount\fR\ 'u
+\fBsystemd\-mount\fR [\fIOPTIONS\fR...] \fB\-\-list\fR
+.HP \w'\fBsystemd\-mount\fR\ 'u
+\fBsystemd\-mount\fR [\fIOPTIONS\fR...] \fB\-\-umount\fR \fIWHAT|WHERE\fR...
+.SH "DESCRIPTION"
+.PP
+\fBsystemd\-mount\fR
+may be used to create and start a transient
+\&.mount
+or
+\&.automount
+unit of the file system
+\fIWHAT\fR
+on the mount point
+\fIWHERE\fR\&.
+.PP
+In many ways,
+\fBsystemd\-mount\fR
+is similar to the lower\-level
+\fBmount\fR(8)
+command, however instead of executing the mount operation directly and immediately,
+\fBsystemd\-mount\fR
+schedules it through the service manager job queue, so that it may pull in further dependencies (such as parent mounts, or a file system checker to execute a priori), and may make use of the auto\-mounting logic\&.
+.PP
+The command takes either one or two arguments\&. If only one argument is specified it should refer to a block device or regular file containing a file system (e\&.g\&.
+"/dev/sdb1"
+or
+"/path/to/disk\&.img")\&. The block device or image file is then probed for a file system label and other metadata, and is mounted to a directory below
+/run/media/system/
+whose name is generated from the file system label\&. In this mode the block device or image file must exist at the time of invocation of the command, so that it may be probed\&. If the device is found to be a removable block device (e\&.g\&. a USB stick), an automount point is created instead of a regular mount point (i\&.e\&. the
+\fB\-\-automount=\fR
+option is implied, see below)\&.
+.PP
+If two arguments are specified, the first indicates the mount source (the
+\fIWHAT\fR) and the second indicates the path to mount it on (the
+\fIWHERE\fR)\&. In this mode no probing of the source is attempted, and a backing device node doesn\*(Aqt have to exist\&. However, if this mode is combined with
+\fB\-\-discover\fR, device node probing for additional metadata is enabled, and \(en much like in the single\-argument case discussed above \(en the specified device has to exist at the time of invocation of the command\&.
+.PP
+Use the
+\fB\-\-list\fR
+command to show a terse table of all local, known block devices with file systems that may be mounted with this command\&.
+.PP
+\fBsystemd\-umount\fR
+can be used to unmount a mount or automount point\&. It is the same as
+\fBsystemd\-mount\fR
+\fB\-\-umount\fR\&.
+.SH "OPTIONS"
+.PP
+The following options are understood:
+.PP
+\fB\-\-no\-block\fR
+.RS 4
+Do not synchronously wait for the requested operation to finish\&. If this is not specified, the job will be verified, enqueued and
+\fBsystemd\-mount\fR
+will wait until the mount or automount unit\*(Aqs start\-up is completed\&. By passing this argument, it is only verified and enqueued\&.
+.RE
+.PP
+\fB\-l\fR, \fB\-\-full\fR
+.RS 4
+Do not ellipsize the output when
+\fB\-\-list\fR
+is specified\&.
+.RE
+.PP
+\fB\-\-no\-pager\fR
+.RS 4
+Do not pipe output into a pager\&.
+.RE
+.PP
+\fB\-\-no\-legend\fR
+.RS 4
+Do not print the legend, i\&.e\&. column headers and the footer with hints\&.
+.RE
+.PP
+\fB\-\-no\-ask\-password\fR
+.RS 4
+Do not query the user for authentication for privileged operations\&.
+.RE
+.PP
+\fB\-\-quiet\fR, \fB\-q\fR
+.RS 4
+Suppresses additional informational output while running\&.
+.RE
+.PP
+\fB\-\-discover\fR
+.RS 4
+Enable probing of the mount source\&. This switch is implied if a single argument is specified on the command line\&. If passed, additional metadata is read from the device to enhance the unit to create\&. For example, a descriptive string for the transient units is generated from the file system label and device model\&. Moreover if a removable block device (e\&.g\&. USB stick) is detected an automount unit instead of a regular mount unit is created, with a short idle timeout, in order to ensure the file\-system is placed in a clean state quickly after each access\&.
+.RE
+.PP
+\fB\-\-type=\fR, \fB\-t\fR
+.RS 4
+Specifies the file system type to mount (e\&.g\&.
+"vfat"
+or
+"ext4")\&. If omitted or set to
+"auto", the file system type is determined automatically\&.
+.RE
+.PP
+\fB\-\-options=\fR, \fB\-o\fR
+.RS 4
+Additional mount options for the mount point\&.
+.RE
+.PP
+\fB\-\-owner=\fR\fB\fIUSER\fR\fR
+.RS 4
+Let the specified user
+\fIUSER\fR
+own the mounted file system\&. This is done by appending
+\fBuid=\fR
+and
+\fBgid=\fR
+options to the list of mount options\&. Only certain file systems support this option\&.
+.RE
+.PP
+\fB\-\-fsck=\fR
+.RS 4
+Takes a boolean argument, defaults to on\&. Controls whether to run a file system check immediately before the mount operation\&. In the automount case (see
+\fB\-\-automount=\fR
+below) the check will be run the moment the first access to the device is made, which might slightly delay the access\&.
+.RE
+.PP
+\fB\-\-description=\fR
+.RS 4
+Provide a description for the mount or automount unit\&. See
+\fIDescription=\fR
+in
+\fBsystemd.unit\fR(5)\&.
+.RE
+.PP
+\fB\-\-property=\fR, \fB\-p\fR
+.RS 4
+Sets a unit property for the mount unit that is created\&. This takes an assignment in the same format as
+\fBsystemctl\fR(1)\*(Aqs
+\fBset\-property\fR
+command\&.
+.RE
+.PP
+\fB\-\-automount=\fR
+.RS 4
+Takes a boolean argument\&. Controls whether to create an automount point or a regular mount point\&. If true an automount point is created that is backed by the actual file system at the time of first access\&. If false a plain mount point is created that is backed by the actual file system immediately\&. Automount points have the benefit that the file system stays unmounted and hence in clean state until it is first accessed\&. In automount mode the
+\fB\-\-timeout\-idle\-sec=\fR
+switch (see below) may be used to ensure the mount point is unmounted automatically after the last access and an idle period passed\&.
+.sp
+If this switch is not specified it defaults to false\&. If not specified and
+\fB\-\-discover\fR
+is used (or only a single argument passed, which implies
+\fB\-\-discover\fR, see above), and the file system block device is detected to be removable, it is set to true, in order to increase the chance that the file system is in a fully clean state if the device is unplugged abruptly\&.
+.RE
+.PP
+\fB\-A\fR
+.RS 4
+Equivalent to
+\fB\-\-automount=yes\fR\&.
+.RE
+.PP
+\fB\-\-timeout\-idle\-sec=\fR
+.RS 4
+Takes a time value that controls the idle timeout in automount mode\&. If set to
+"infinity"
+(the default) no automatic unmounts are done\&. Otherwise the file system backing the automount point is detached after the last access and the idle timeout passed\&. See
+\fBsystemd.time\fR(7)
+for details on the time syntax supported\&. This option has no effect if only a regular mount is established, and automounting is not used\&.
+.sp
+Note that if
+\fB\-\-discover\fR
+is used (or only a single argument passed, which implies
+\fB\-\-discover\fR, see above), and the file system block device is detected to be removable,
+\fB\-\-timeout\-idle\-sec=1s\fR
+is implied\&.
+.RE
+.PP
+\fB\-\-automount\-property=\fR
+.RS 4
+Similar to
+\fB\-\-property=\fR, but applies additional properties to the automount unit created, instead of the mount unit\&.
+.RE
+.PP
+\fB\-\-bind\-device\fR
+.RS 4
+This option only has an effect in automount mode, and controls whether the automount unit shall be bound to the backing device\*(Aqs lifetime\&. If set, the automount point will be removed automatically when the backing device vanishes\&. By default the automount point stays around, and subsequent accesses will block until backing device is replugged\&. This option has no effect in case of non\-device mounts, such as network or virtual file system mounts\&.
+.sp
+Note that if
+\fB\-\-discover\fR
+is used (or only a single argument passed, which implies
+\fB\-\-discover\fR, see above), and the file system block device is detected to be removable, this option is implied\&.
+.RE
+.PP
+\fB\-\-list\fR
+.RS 4
+Instead of establishing a mount or automount point, print a terse list of block devices containing file systems that may be mounted with
+"systemd\-mount", along with useful metadata such as labels, etc\&.
+.RE
+.PP
+\fB\-u\fR, \fB\-\-umount\fR
+.RS 4
+Stop the mount and automount units corresponding to the specified mount points
+\fIWHERE\fR
+or the devices
+\fIWHAT\fR\&.
+\fBsystemd\-mount\fR
+with this option or
+\fBsystemd\-umount\fR
+can take multiple arguments which can be mount points, devices,
+/etc/fstab
+style node names, or backing files corresponding to loop devices, like
+\fBsystemd\-mount \-\-umount /path/to/umount /dev/sda1 UUID=xxxxxx\-xxxx LABEL=xxxxx /path/to/disk\&.img\fR\&. Note that when
+\fB\-H\fR
+or
+\fB\-M\fR
+is specified, only absolute paths to mount points are supported\&.
+.RE
+.PP
+\fB\-G\fR, \fB\-\-collect\fR
+.RS 4
+Unload the transient unit after it completed, even if it failed\&. Normally, without this option, all mount units that mount and failed are kept in memory until the user explicitly resets their failure state with
+\fBsystemctl reset\-failed\fR
+or an equivalent command\&. On the other hand, units that stopped successfully are unloaded immediately\&. If this option is turned on the "garbage collection" of units is more aggressive, and unloads units regardless if they exited successfully or failed\&. This option is a shortcut for
+\fB\-\-property=CollectMode=inactive\-or\-failed\fR, see the explanation for
+\fICollectMode=\fR
+in
+\fBsystemd.unit\fR(5)
+for further information\&.
+.RE
+.PP
+\fB\-\-user\fR
+.RS 4
+Talk to the service manager of the calling user, rather than the service manager of the system\&.
+.RE
+.PP
+\fB\-\-system\fR
+.RS 4
+Talk to the service manager of the system\&. This is the implied default\&.
+.RE
+.PP
+\fB\-H\fR, \fB\-\-host=\fR
+.RS 4
+Execute the operation remotely\&. Specify a hostname, or a username and hostname separated by
+"@", to connect to\&. The hostname may optionally be suffixed by a port ssh is listening on, separated by
+":", and then a container name, separated by
+"/", which connects directly to a specific container on the specified host\&. This will use SSH to talk to the remote machine manager instance\&. Container names may be enumerated with
+\fBmachinectl \-H \fR\fB\fIHOST\fR\fR\&. Put IPv6 addresses in brackets\&.
+.RE
+.PP
+\fB\-M\fR, \fB\-\-machine=\fR
+.RS 4
+Execute operation on a local container\&. Specify a container name to connect to, optionally prefixed by a user name to connect as and a separating
+"@"
+character\&. If the special string
+"\&.host"
+is used in place of the container name, a connection to the local system is made (which is useful to connect to a specific user\*(Aqs user bus:
+"\-\-user \-\-machine=lennart@\&.host")\&. If the
+"@"
+syntax is not used, the connection is made as root user\&. If the
+"@"
+syntax is used either the left hand side or the right hand side may be omitted (but not both) in which case the local user name and
+"\&.host"
+are implied\&.
+.RE
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+Print a short help text and exit\&.
+.RE
+.PP
+\fB\-\-version\fR
+.RS 4
+Print a short version string and exit\&.
+.RE
+.SH "EXIT STATUS"
+.PP
+On success, 0 is returned, a non\-zero failure code otherwise\&.
+.SH "THE UDEV DATABASE"
+.PP
+If
+\fB\-\-discover\fR
+is used,
+\fBsystemd\-mount\fR
+honors a couple of additional udev properties of block devices:
+.PP
+\fISYSTEMD_MOUNT_OPTIONS=\fR
+.RS 4
+The mount options to use, if
+\fB\-\-options=\fR
+is not used\&.
+.RE
+.PP
+\fISYSTEMD_MOUNT_WHERE=\fR
+.RS 4
+The file system path to place the mount point at, instead of the automatically generated one\&.
+.RE
+.SH "EXAMPLE"
+.PP
+Use a udev rule like the following to automatically mount all USB storage plugged in:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+ACTION=="add", SUBSYSTEMS=="usb", SUBSYSTEM=="block", ENV{ID_FS_USAGE}=="filesystem", \e
+        RUN{program}+="/usr/bin/systemd\-mount \-\-no\-block \-\-automount=yes \-\-collect $devnode"
+.fi
+.if n \{\
+.RE
+.\}
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBmount\fR(8),
+\fBsystemctl\fR(1),
+\fBsystemd.unit\fR(5),
+\fBsystemd.mount\fR(5),
+\fBsystemd.automount\fR(5),
+\fBsystemd-run\fR(1)

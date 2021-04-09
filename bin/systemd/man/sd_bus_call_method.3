@@ -1,0 +1,83 @@
+'\" t
+.TH "SD_BUS_CALL_METHOD" "3" "" "systemd 248" "sd_bus_call_method"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_call_method, sd_bus_call_methodv, sd_bus_call_method_async, sd_bus_call_method_asyncv \- Initialize a bus message object and invoke the corresponding D\-Bus method call
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'typedef\ int\ (*sd_bus_message_handler_t)('u
+.BI "typedef int (*sd_bus_message_handler_t)(sd_bus_message\ *" "m" ", void\ *" "userdata" ", sd_bus_error\ *" "ret_error" ");"
+.HP \w'int\ sd_bus_call_method('u
+.BI "int sd_bus_call_method(sd_bus\ *" "bus" ", const\ char\ *" "destination" ", const\ char\ *" "path" ", const\ char\ *" "interface" ", const\ char\ *" "member" ", sd_bus_error\ *" "ret_error" ", sd_bus_message\ **" "reply" ", const\ char\ *" "types" ", \&.\&.\&.);"
+.HP \w'int\ sd_bus_call_methodv('u
+.BI "int sd_bus_call_methodv(sd_bus\ *" "bus" ", const\ char\ *" "destination" ", const\ char\ *" "path" ", const\ char\ *" "interface" ", const\ char\ *" "member" ", sd_bus_error\ *" "ret_error" ", sd_bus_message\ **" "reply" ", const\ char\ *" "types" ", va_list\ " "ap" ");"
+.HP \w'int\ sd_bus_call_method_async('u
+.BI "int sd_bus_call_method_async(sd_bus\ *" "bus" ", sd_bus_slot\ **" "slot" ", const\ char\ *" "destination" ", const\ char\ *" "path" ", const\ char\ *" "interface" ", const\ char\ *" "member" ", sd_bus_message_handler_t\ " "callback" ", void\ *" "userdata" ", const\ char\ *" "types" ", \&.\&.\&.);"
+.HP \w'int\ sd_bus_call_method_asyncv('u
+.BI "int sd_bus_call_method_asyncv(sd_bus\ *" "bus" ", sd_bus_slot\ **" "slot" ", const\ char\ *" "destination" ", const\ char\ *" "path" ", const\ char\ *" "interface" ", const\ char\ *" "member" ", sd_bus_message_handler_t\ " "callback" ", void\ *" "userdata" ", const\ char\ *" "types" ", va_list\ " "ap" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_call_method()\fR
+is a convenience function for initializing a bus message object and calling the corresponding D\-Bus method\&. It combines the
+\fBsd_bus_message_new_method_call\fR(3),
+\fBsd_bus_message_append\fR(3)
+and
+\fBsd_bus_call\fR(3)
+functions into a single function call\&.
+.PP
+\fBsd_bus_call_method_async()\fR
+is a convenience function for initializing a bus message object and calling the corresponding D\-Bus method asynchronously\&. It combines the
+\fBsd_bus_message_new_method_call\fR(3),
+\fBsd_bus_message_append\fR(3)
+and
+\fBsd_bus_call_async\fR(3)
+functions into a single function call\&.
+.SH "RETURN VALUE"
+.PP
+On success, these functions return a non\-negative integer\&. On failure, they return a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+See the man pages of
+\fBsd_bus_message_new_method_call\fR(3),
+\fBsd_bus_message_append\fR(3),
+\fBsd_bus_call\fR(3)
+and
+\fBsd_bus_call_async\fR(3)
+for a list of possible errors\&.
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd_bus_message_new_method_call\fR(3),
+\fBsd_bus_message_append\fR(3),
+\fBsd_bus_call\fR(3),
+\fBsd_bus_set_property\fR(3),
+\fBsd_bus_emit_signal\fR(3)

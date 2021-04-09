@@ -1,0 +1,144 @@
+'\" t
+.TH "SD_BUS_REPLY_METHOD_ERROR" "3" "" "systemd 248" "sd_bus_reply_method_error"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_reply_method_error, sd_bus_reply_method_errorf, sd_bus_reply_method_errorfv, sd_bus_reply_method_errno, sd_bus_reply_method_errnof, sd_bus_reply_method_errnofv \- Reply with an error to a D\-Bus method call
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_reply_method_error('u
+.BI "int sd_bus_reply_method_error(sd_bus_message\ *" "call" ", const\ sd_bus_error\ *" "e" ");"
+.HP \w'int\ sd_bus_reply_method_errorf('u
+.BI "int sd_bus_reply_method_errorf(sd_bus_message\ *" "call" ", const\ char\ *" "name" ", const\ char\ *" "format" ", \&.\&.\&.);"
+.HP \w'int\ sd_bus_reply_method_errorfv('u
+.BI "int sd_bus_reply_method_errorfv(sd_bus_message\ *" "call" ", const\ char\ *" "name" ", const\ char\ *" "format" ", va_list\ " "ap" ");"
+.HP \w'int\ sd_bus_reply_method_errno('u
+.BI "int sd_bus_reply_method_errno(sd_bus_message\ *" "call" ", int\ " "error" ", const\ sd_bus_error\ *" "p" ");"
+.HP \w'int\ sd_bus_reply_method_errnof('u
+.BI "int sd_bus_reply_method_errnof(sd_bus_message\ *" "call" ", int\ " "error" ", const\ char\ *" "format" ", \&.\&.\&.);"
+.HP \w'int\ sd_bus_reply_method_errnofv('u
+.BI "int sd_bus_reply_method_errnofv(sd_bus_message\ *" "call" ", int\ " "error" ", const\ char\ *" "format" ", va_list\ " "ap" ");"
+.SH "DESCRIPTION"
+.PP
+The
+\fBsd_bus_reply_method_error()\fR
+function sends an error reply to the
+\fIcall\fR
+message\&. The error structure
+\fIe\fR
+specifies the error to send, and is used as described in
+\fBsd_bus_message_new_method_error\fR(3)\&. If no reply is expected to
+\fIcall\fR, this function succeeds without sending a reply\&.
+.PP
+The
+\fBsd_bus_reply_method_errorf()\fR
+is to
+\fBsd_bus_reply_method_error()\fR
+what
+\fBsd_bus_message_new_method_errorf()\fR
+is to
+\fBsd_bus_message_new_method_error()\fR\&.
+.PP
+The
+\fBsd_bus_reply_method_errno()\fR
+is to
+\fBsd_bus_reply_method_error()\fR
+what
+\fBsd_bus_message_new_method_errno()\fR
+is to
+\fBsd_bus_message_new_method_error()\fR\&.
+.PP
+The
+\fBsd_bus_reply_method_errnof()\fR
+is to
+\fBsd_bus_reply_method_error()\fR
+what
+\fBsd_bus_message_new_method_errnof()\fR
+is to
+\fBsd_bus_message_new_method_error()\fR\&.
+.SH "RETURN VALUE"
+.PP
+This function returns a non\-negative integer if the error reply was successfully sent or if
+\fIcall\fR
+does not expect a reply\&. On failure, it returns a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+The input parameter
+\fIcall\fR
+is
+\fBNULL\fR\&.
+.sp
+Message
+\fIcall\fR
+is not a method call message\&.
+.sp
+Message
+\fIcall\fR
+is not attached to a bus\&.
+.sp
+The error parameter
+\fIe\fR
+to
+\fBsd_bus_reply_method_error()\fR
+is not set, see
+\fBsd_bus_error_is_set\fR(3)\&.
+.RE
+.PP
+\fB\-EPERM\fR
+.RS 4
+Message
+\fIcall\fR
+has been sealed\&.
+.RE
+.PP
+\fB\-ENOTCONN\fR
+.RS 4
+The bus to which message
+\fIcall\fR
+is attached is not connected\&.
+.RE
+.PP
+\fB\-ENOMEM\fR
+.RS 4
+Memory allocation failed\&.
+.RE
+.PP
+In addition, any error returned by
+\fBsd_bus_send\fR(1)
+may be returned\&.
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd_bus_message_new_method_error\fR(3)

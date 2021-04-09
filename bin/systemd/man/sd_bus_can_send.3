@@ -1,0 +1,80 @@
+'\" t
+.TH "SD_BUS_CAN_SEND" "3" "" "systemd 248" "sd_bus_can_send"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_can_send \- Check which types can be sent over a bus object
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'void\ sd_bus_can_send('u
+.BI "void sd_bus_can_send(sd_bus\ *" "bus" ", char\ " "type" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_can_send()\fR
+is mostly used for checking if file descriptor passing is available on the given bus\&.
+\fItype\fR
+can be any of the
+\fBSD_BUS_TYPE\fR
+constants\&.
+.SH "RETURN VALUE"
+.PP
+On failure,
+\fBsd_bus_can_send()\fR
+returns a negative errno\-style error code\&. If values of the given type can be sent over the given bus, it returns a positive integer\&. Otherwise, it returns zero\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-ENOPKG\fR
+.RS 4
+The bus object
+\fIbus\fR
+could not be resolved\&.
+.RE
+.PP
+\fB\-ENOTCONN\fR
+.RS 4
+The input parameter
+\fIbus\fR
+is
+\fBNULL\fR
+or the bus is not connected\&.
+.RE
+.PP
+\fB\-ECHILD\fR
+.RS 4
+The bus object
+\fIbus\fR
+was created in a different process\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3)

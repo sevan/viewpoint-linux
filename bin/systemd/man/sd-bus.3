@@ -1,0 +1,195 @@
+'\" t
+.TH "SD\-BUS" "3" "" "systemd 248" "sd-bus"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd-bus \- A lightweight D\-Bus IPC client library
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'\fBpkg\-config\ \-\-cflags\ \-\-libs\ libsystemd\fR\ 'u
+\fBpkg\-config \-\-cflags \-\-libs libsystemd\fR
+.SH "DESCRIPTION"
+.PP
+sd\-bus\&.h
+provides an implementation of a D\-Bus IPC client\&. See
+\m[blue]\fB\%https://www.freedesktop.org/software/dbus/\fR\m[]
+for more information about D\-Bus IPC\&.
+.PP
+See
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+\fBsd_bus_add_match\fR(3),
+\fBsd_bus_add_object\fR(3),
+\fBsd_bus_add_object_manager\fR(3),
+\fBsd_bus_add_object_vtable\fR(3),
+\fBsd_bus_add_fallback\fR(3),
+\fBsd_bus_add_fallback_vtable\fR(3),
+\fBsd_bus_add_filter\fR(3),
+\fBsd_bus_add_node_enumerator\fR(3),
+\fBsd_bus_attach_event\fR(3),
+\fBsd_bus_call\fR(3),
+\fBsd_bus_call_async\fR(3),
+\fBsd_bus_call_method\fR(3),
+\fBsd_bus_call_method_async\fR(3),
+\fBsd_bus_can_send\fR(3),
+\fBsd_bus_close\fR(3),
+\fBsd_bus_creds_get_pid\fR(3),
+\fBsd_bus_creds_new_from_pid\fR(3),
+\fBsd_bus_default\fR(3),
+\fBsd_bus_emit_interfaces_added\fR(3),
+\fBsd_bus_emit_interfaces_added_strv\fR(3),
+\fBsd_bus_emit_interfaces_removed\fR(3),
+\fBsd_bus_emit_interfaces_removed_strv\fR(3),
+\fBsd_bus_emit_object_added\fR(3),
+\fBsd_bus_emit_object_removed\fR(3),
+\fBsd_bus_emit_properties_changed\fR(3),
+\fBsd_bus_emit_properties_changed_strv\fR(3),
+\fBsd_bus_emit_signal\fR(3),
+\fBsd_bus_emit_signalv\fR(3),
+\fBsd-bus-errors\fR(3),
+\fBsd_bus_error\fR(3),
+\fBsd_bus_error_add_map\fR(3),
+\fBsd_bus_get_address\fR(3),
+\fBsd_bus_get_allow_interactive_authorization\fR(3),
+\fBsd_bus_get_bus_id\fR(3),
+\fBsd_bus_get_creds_mask\fR(3),
+\fBsd_bus_get_current_handler\fR(3),
+\fBsd_bus_get_current_message\fR(3),
+\fBsd_bus_get_current_slot\fR(3),
+\fBsd_bus_get_current_userdata\fR(3),
+\fBsd_bus_get_exit_on_disconnect\fR(3),
+\fBsd_bus_get_fd\fR(3),
+\fBsd_bus_get_method_call_timeout\fR(3),
+\fBsd_bus_get_n_queued_read\fR(3),
+\fBsd_bus_get_name_creds\fR(3),
+\fBsd_bus_get_name_machine_id\fR(3),
+\fBsd_bus_get_owner_creds\fR(3),
+\fBsd_bus_get_property\fR(3),
+\fBsd_bus_get_property_string\fR(3),
+\fBsd_bus_get_property_strv\fR(3),
+\fBsd_bus_get_property_trivial\fR(3),
+\fBsd_bus_get_scope\fR(3),
+\fBsd_bus_get_tid\fR(3),
+\fBsd_bus_get_unique_name\fR(3),
+\fBsd_bus_interface_name_is_valid\fR(3),
+\fBsd_bus_is_bus_client\fR(3),
+\fBsd_bus_is_monitor\fR(3),
+\fBsd_bus_is_server\fR(3),
+\fBsd_bus_list_names\fR(3),
+\fBsd_bus_message_append\fR(3),
+\fBsd_bus_message_append_array\fR(3),
+\fBsd_bus_message_append_basic\fR(3),
+\fBsd_bus_message_append_string_memfd\fR(3),
+\fBsd_bus_message_append_strv\fR(3),
+\fBsd_bus_message_at_end\fR(3),
+\fBsd_bus_message_close_container\fR(3),
+\fBsd_bus_message_copy\fR(3),
+\fBsd_bus_message_dump\fR(3),
+\fBsd_bus_message_enter_container\fR(3),
+\fBsd_bus_message_exit_container\fR(3),
+\fBsd_bus_message_get_allow_interactive_authorization\fR(3),
+\fBsd_bus_message_get_cookie\fR(3),
+\fBsd_bus_message_get_creds\fR(3),
+\fBsd_bus_message_get_errno\fR(3),
+\fBsd_bus_message_get_error\fR(3),
+\fBsd_bus_message_get_monotonic_usec\fR(3),
+\fBsd_bus_message_get_sender\fR(3),
+\fBsd_bus_message_get_signature\fR(3),
+\fBsd_bus_message_get_type\fR(3),
+\fBsd_bus_message_new\fR(3),
+\fBsd_bus_message_new_method_call\fR(3),
+\fBsd_bus_message_new_method_error\fR(3),
+\fBsd_bus_message_new_signal\fR(3),
+\fBsd_bus_message_open_container\fR(3),
+\fBsd_bus_message_peek_type\fR(3),
+\fBsd_bus_message_read\fR(3),
+\fBsd_bus_message_read_array\fR(3),
+\fBsd_bus_message_read_basic\fR(3),
+\fBsd_bus_message_read_strv\fR(3),
+\fBsd_bus_message_rewind\fR(3),
+\fBsd_bus_message_seal\fR(3),
+\fBsd_bus_message_send\fR(3),
+\fBsd_bus_message_set_allow_interactive_authorization\fR(3),
+\fBsd_bus_message_set_destination\fR(3),
+\fBsd_bus_message_set_expect_reply\fR(3),
+\fBsd_bus_message_set_sender\fR(3),
+\fBsd_bus_message_skip\fR(3),
+\fBsd_bus_message_verify_type\fR(3),
+\fBsd_bus_negotiate_fds\fR(3),
+\fBsd_bus_new\fR(3),
+\fBsd_bus_path_encode\fR(3),
+\fBsd_bus_process\fR(3),
+\fBsd_bus_query_sender_creds\fR(3),
+\fBsd_bus_query_sender_privilege\fR(3),
+\fBsd_bus_reply_method_error\fR(3),
+\fBsd_bus_reply_method_return\fR(3),
+\fBsd_bus_request_name\fR(3),
+\fBsd_bus_send\fR(3),
+\fBsd_bus_send_to\fR(3),
+\fBsd_bus_set_address\fR(3),
+\fBsd_bus_set_allow_interactive_authorization\fR(3),
+\fBsd_bus_set_bus_client\fR(3),
+\fBsd_bus_set_close_on_exit\fR(3),
+\fBsd_bus_set_connected_signal\fR(3),
+\fBsd_bus_set_description\fR(3),
+\fBsd_bus_set_exit_on_disconnect\fR(3),
+\fBsd_bus_set_method_call_timeout\fR(3),
+\fBsd_bus_set_monitor\fR(3),
+\fBsd_bus_set_property\fR(3),
+\fBsd_bus_set_propertyv\fR(3),
+\fBsd_bus_set_sender\fR(3),
+\fBsd_bus_set_server\fR(3),
+\fBsd_bus_set_watch_bind\fR(3)
+\fBsd_bus_slot_get_current_handler\fR(3),
+\fBsd_bus_slot_get_current_message\fR(3),
+\fBsd_bus_slot_get_current_userdata\fR(3),
+\fBsd_bus_slot_set_description\fR(3),
+\fBsd_bus_slot_set_destroy_callback\fR(3),
+\fBsd_bus_slot_set_floating\fR(3),
+\fBsd_bus_slot_set_userdata\fR(3),
+\fBsd_bus_start\fR(3),
+\fBsd_bus_track_add_name\fR(3),
+\fBsd_bus_track_new\fR(3)
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+for more information about the functions available\&.
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-event\fR(3),
+\fBbusctl\fR(1),
+\fBdbus-daemon\fR(1),
+\fBdbus-send\fR(1)

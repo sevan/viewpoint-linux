@@ -1,0 +1,40 @@
+'\" t
+.TH "SYSTEMD\-BOOT\-CHECK\-NO\-FAILURES\&.SERVICE" "8" "" "systemd 248" "systemd-boot-check-no-failures.service"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd-boot-check-no-failures.service, systemd-boot-check-no-failures \- verify that the system booted up cleanly
+.SH "SYNOPSIS"
+.PP
+systemd\-boot\-check\-no\-failures\&.service
+.PP
+/usr/lib/systemd/system\-boot\-check\-no\-failures
+.SH "DESCRIPTION"
+.PP
+systemd\-boot\-check\-no\-failures\&.service
+is a system service that checks whether the system booted up successfully\&. This service implements a very minimal test only: whether there are any failed units on the system\&. This service is disabled by default\&. When enabled, it is ordered before
+boot\-complete\&.target, thus ensuring the target cannot be reached when the system booted up with failed services\&.
+.PP
+Note that due the simple nature of this check this service is probably not suitable for deployment in most scenarios\&. It is primarily useful only as example for developing more fine\-grained checks to order before
+boot\-complete\&.target\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsystemd.special\fR(7)

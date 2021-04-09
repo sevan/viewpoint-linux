@@ -1,0 +1,160 @@
+'\" t
+.TH "SD_EVENT_ADD_SIGNAL" "3" "" "systemd 248" "sd_event_add_signal"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_event_add_signal, sd_event_source_get_signal, sd_event_signal_handler_t \- Add a UNIX process signal event source to an event loop
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-event\&.h>
+.fi
+.ft
+.sp
+.ft B
+.nf
+typedef struct sd_event_source sd_event_source;
+.fi
+.ft
+.HP \w'typedef\ int\ (*sd_event_signal_handler_t)('u
+.BI "typedef int (*sd_event_signal_handler_t)(sd_event_source\ *" "s" ", const\ struct\ signalfd_siginfo\ *" "si" ", void\ *" "userdata" ");"
+.HP \w'int\ sd_event_add_signal('u
+.BI "int sd_event_add_signal(sd_event\ *" "event" ", sd_event_source\ **" "source" ", int\ " "signal" ", sd_event_signal_handler_t\ " "handler" ", void\ *" "userdata" ");"
+.HP \w'int\ sd_event_source_get_signal('u
+.BI "int sd_event_source_get_signal(sd_event_source\ *" "source" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_event_add_signal()\fR
+adds a new UNIX process signal event source to an event loop\&. The event loop object is specified in the
+\fIevent\fR
+parameter, and the event source object is returned in the
+\fIsource\fR
+parameter\&. The
+\fIsignal\fR
+parameter specifies the numeric signal to be handled (see
+\fBsignal\fR(7))\&. The
+\fIhandler\fR
+parameter must reference a function to call when the signal is received or be
+\fBNULL\fR\&. The handler function will be passed the
+\fIuserdata\fR
+pointer, which may be chosen freely by the caller\&. The handler also receives a pointer to a
+signalfd_siginfo
+structure containing information about the received signal\&. See
+\fBsignalfd\fR(2)
+for further information\&.
+.PP
+Only a single handler may be installed for a specific signal\&. The signal must be blocked in all threads before this function is called (using
+\fBsigprocmask\fR(2)
+or
+\fBpthread_sigmask\fR(3))\&.
+.PP
+By default, the event source is enabled permanently (\fBSD_EVENT_ON\fR), but this may be changed with
+\fBsd_event_source_set_enabled\fR(3)\&. If the handler function returns a negative error code, it will be disabled after the invocation, even if the
+\fBSD_EVENT_ON\fR
+mode was requested before\&.
+.PP
+To destroy an event source object use
+\fBsd_event_source_unref\fR(3), but note that the event source is only removed from the event loop when all references to the event source are dropped\&. To make sure an event source does not fire anymore, even if it is still referenced, disable the event source using
+\fBsd_event_source_set_enabled\fR(3)
+with
+\fBSD_EVENT_OFF\fR\&.
+.PP
+If the second parameter of
+\fBsd_event_add_signal()\fR
+is
+\fBNULL\fR
+no reference to the event source object is returned\&. In this case the event source is considered "floating", and will be destroyed implicitly when the event loop itself is destroyed\&.
+.PP
+If the
+\fIhandler\fR
+parameter to
+\fBsd_event_add_signal()\fR
+is
+\fBNULL\fR, and the event source fires, this will be considered a request to exit the event loop\&. In this case, the
+\fIuserdata\fR
+parameter, cast to an integer, is passed as the exit code parameter to
+\fBsd_event_exit\fR(3)\&.
+.PP
+\fBsd_event_source_get_signal()\fR
+returns the configured signal number of an event source created previously with
+\fBsd_event_add_signal()\fR\&. It takes the event source object as the
+\fIsource\fR
+parameter\&.
+.SH "RETURN VALUE"
+.PP
+On success, these functions return 0 or a positive integer\&. On failure, they return a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-ENOMEM\fR
+.RS 4
+Not enough memory to allocate an object\&.
+.RE
+.PP
+\fB\-EINVAL\fR
+.RS 4
+An invalid argument has been passed\&.
+.RE
+.PP
+\fB\-EBUSY\fR
+.RS 4
+A handler is already installed for this signal or the signal was not blocked previously\&.
+.RE
+.PP
+\fB\-ESTALE\fR
+.RS 4
+The event loop is already terminated\&.
+.RE
+.PP
+\fB\-ECHILD\fR
+.RS 4
+The event loop has been created in a different process\&.
+.RE
+.PP
+\fB\-EDOM\fR
+.RS 4
+The passed event source is not a signal event source\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-event\fR(3),
+\fBsd_event_new\fR(3),
+\fBsd_event_now\fR(3),
+\fBsd_event_add_io\fR(3),
+\fBsd_event_add_time\fR(3),
+\fBsd_event_add_child\fR(3),
+\fBsd_event_add_inotify\fR(3),
+\fBsd_event_add_defer\fR(3),
+\fBsd_event_source_set_enabled\fR(3),
+\fBsd_event_source_set_description\fR(3),
+\fBsd_event_source_set_userdata\fR(3),
+\fBsd_event_source_set_floating\fR(3),
+\fBsignal\fR(7),
+\fBsignalfd\fR(2),
+\fBsigprocmask\fR(2),
+\fBpthread_sigmask\fR(3)

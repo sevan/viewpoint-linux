@@ -1,0 +1,2104 @@
+'\" t
+.TH "SYSTEMD\&.NETDEV" "5" "" "systemd 248" "systemd.network"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd.netdev \- Virtual Network Device configuration
+.SH "SYNOPSIS"
+.PP
+\fInetdev\fR\&.netdev
+.SH "DESCRIPTION"
+.PP
+A plain ini\-style text file that encodes configuration about a virtual network device, used by
+\fBsystemd-networkd\fR(8)\&. See
+\fBsystemd.syntax\fR(7)
+for a general description of the syntax\&.
+.PP
+The main Virtual Network Device file must have the extension
+\&.netdev; other extensions are ignored\&. Virtual network devices are created as soon as networkd is started\&. If a netdev with the specified name already exists, networkd will use that as\-is rather than create its own\&. Note that the settings of the pre\-existing netdev will not be changed by networkd\&.
+.PP
+The
+\&.netdev
+files are read from the files located in the system network directory
+/usr/lib/systemd/network, the volatile runtime network directory
+/run/systemd/network
+and the local administration network directory
+/etc/systemd/network\&. All configuration files are collectively sorted and processed in lexical order, regardless of the directories in which they live\&. However, files with identical filenames replace each other\&. Files in
+/etc/
+have the highest priority, files in
+/run/
+take precedence over files with the same name in
+/usr/lib/\&. This can be used to override a system\-supplied configuration file with a local file if needed\&. As a special case, an empty file (file size 0) or symlink with the same name pointing to
+/dev/null
+disables the configuration file entirely (it is "masked")\&.
+.PP
+Along with the netdev file
+foo\&.netdev, a "drop\-in" directory
+foo\&.netdev\&.d/
+may exist\&. All files with the suffix
+"\&.conf"
+from this directory will be parsed after the file itself is parsed\&. This is useful to alter or add configuration settings, without having to modify the main configuration file\&. Each drop\-in file must have appropriate section headers\&.
+.PP
+In addition to
+/etc/systemd/network, drop\-in
+"\&.d"
+directories can be placed in
+/usr/lib/systemd/network
+or
+/run/systemd/network
+directories\&. Drop\-in files in
+/etc/
+take precedence over those in
+/run/
+which in turn take precedence over those in
+/usr/lib/\&. Drop\-in files under any of these directories take precedence over the main netdev file wherever located\&. (Of course, since
+/run/
+is temporary and
+/usr/lib/
+is for vendors, it is unlikely drop\-ins should be used in either of those places\&.)
+.SH "SUPPORTED NETDEV KINDS"
+.PP
+The following kinds of virtual network devices may be configured in
+\&.netdev
+files:
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+.B Table\ \&1.\ \&Supported kinds of virtual network devices
+.TS
+allbox tab(:);
+lB lB.
+T{
+Kind
+T}:T{
+Description
+T}
+.T&
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l.
+T{
+\fIbond\fR
+T}:T{
+A bond device is an aggregation of all its slave devices\&. See \m[blue]\fBLinux Ethernet Bonding Driver HOWTO\fR\m[]\&\s-2\u[1]\d\s+2 for details\&.
+T}
+T{
+\fIbridge\fR
+T}:T{
+A bridge device is a software switch, and each of its slave devices and the bridge itself are ports of the switch\&.
+T}
+T{
+\fIdummy\fR
+T}:T{
+A dummy device drops all packets sent to it\&.
+T}
+T{
+\fIgre\fR
+T}:T{
+A Level 3 GRE tunnel over IPv4\&. See \m[blue]\fBRFC 2784\fR\m[]\&\s-2\u[2]\d\s+2 for details\&.
+T}
+T{
+\fIgretap\fR
+T}:T{
+A Level 2 GRE tunnel over IPv4\&.
+T}
+T{
+\fIerspan\fR
+T}:T{
+ERSPAN mirrors traffic on one or more source ports and delivers the mirrored traffic to one or more destination ports on another switch\&. The traffic is encapsulated in generic routing encapsulation (GRE) and is therefore routable across a layer 3 network between the source switch and the destination switch\&.
+T}
+T{
+\fIip6gre\fR
+T}:T{
+A Level 3 GRE tunnel over IPv6\&.
+T}
+T{
+\fIip6tnl\fR
+T}:T{
+An IPv4 or IPv6 tunnel over IPv6
+T}
+T{
+\fIip6gretap\fR
+T}:T{
+A Level 2 GRE tunnel over IPv6\&.
+T}
+T{
+\fIipip\fR
+T}:T{
+An IPv4 over IPv4 tunnel\&.
+T}
+T{
+\fIipvlan\fR
+T}:T{
+An IPVLAN device is a stacked device which receives packets from its underlying device based on IP address filtering\&.
+T}
+T{
+\fIipvtap\fR
+T}:T{
+An IPVTAP device is a stacked device which receives packets from its underlying device based on IP address filtering and can be accessed using the tap user space interface\&.
+T}
+T{
+\fImacvlan\fR
+T}:T{
+A macvlan device is a stacked device which receives packets from its underlying device based on MAC address filtering\&.
+T}
+T{
+\fImacvtap\fR
+T}:T{
+A macvtap device is a stacked device which receives packets from its underlying device based on MAC address filtering\&.
+T}
+T{
+\fIsit\fR
+T}:T{
+An IPv6 over IPv4 tunnel\&.
+T}
+T{
+\fItap\fR
+T}:T{
+A persistent Level 2 tunnel between a network device and a device node\&.
+T}
+T{
+\fItun\fR
+T}:T{
+A persistent Level 3 tunnel between a network device and a device node\&.
+T}
+T{
+\fIveth\fR
+T}:T{
+An Ethernet tunnel between a pair of network devices\&.
+T}
+T{
+\fIvlan\fR
+T}:T{
+A VLAN is a stacked device which receives packets from its underlying device based on VLAN tagging\&. See \m[blue]\fBIEEE 802\&.1Q\fR\m[]\&\s-2\u[3]\d\s+2 for details\&.
+T}
+T{
+\fIvti\fR
+T}:T{
+An IPv4 over IPSec tunnel\&.
+T}
+T{
+\fIvti6\fR
+T}:T{
+An IPv6 over IPSec tunnel\&.
+T}
+T{
+\fIvxlan\fR
+T}:T{
+A virtual extensible LAN (vxlan), for connecting Cloud computing deployments\&.
+T}
+T{
+\fIgeneve\fR
+T}:T{
+A GEneric NEtwork Virtualization Encapsulation (GENEVE) netdev driver\&.
+T}
+T{
+\fIl2tp\fR
+T}:T{
+A Layer 2 Tunneling Protocol (L2TP) is a tunneling protocol used to support virtual private networks (VPNs) or as part of the delivery of services by ISPs\&. It does not provide any encryption or confidentiality by itself
+T}
+T{
+\fImacsec\fR
+T}:T{
+Media Access Control Security (MACsec) is an 802\&.1AE IEEE industry\-standard security technology that provides secure communication for all traffic on Ethernet links\&. MACsec provides point\-to\-point security on Ethernet links between directly connected nodes and is capable of identifying and preventing most security threats\&.
+T}
+T{
+\fIvrf\fR
+T}:T{
+A Virtual Routing and Forwarding (\m[blue]\fBVRF\fR\m[]\&\s-2\u[4]\d\s+2) interface to create separate routing and forwarding domains\&.
+T}
+T{
+\fIvcan\fR
+T}:T{
+The virtual CAN driver (vcan)\&. Similar to the network loopback devices, vcan offers a virtual local CAN interface\&.
+T}
+T{
+\fIvxcan\fR
+T}:T{
+The virtual CAN tunnel driver (vxcan)\&. Similar to the virtual ethernet driver veth, vxcan implements a local CAN traffic tunnel between two virtual CAN network devices\&. When creating a vxcan, two vxcan devices are created as pair\&. When one end receives the packet it appears on its pair and vice versa\&. The vxcan can be used for cross namespace communication\&.
+T}
+T{
+\fIwireguard\fR
+T}:T{
+WireGuard Secure Network Tunnel\&.
+T}
+T{
+\fInlmon\fR
+T}:T{
+A Netlink monitor device\&. Use an nlmon device when you want to monitor system Netlink messages\&.
+T}
+T{
+\fIfou\fR
+T}:T{
+Foo\-over\-UDP tunneling\&.
+T}
+T{
+\fIxfrm\fR
+T}:T{
+A virtual tunnel interface like vti/vti6 but with several advantages\&.
+T}
+T{
+\fIifb\fR
+T}:T{
+The Intermediate Functional Block (ifb) pseudo network interface acts as a QoS concentrator for multiple different sources of traffic\&.
+T}
+T{
+\fIbareudp\fR
+T}:T{
+Bare UDP tunnels provide a generic L3 encapsulation support for tunnelling different L3 protocols like MPLS, IP etc\&. inside of an UDP tunnel\&.
+T}
+T{
+\fIbatadv\fR
+T}:T{
+\m[blue]\fBB\&.A\&.T\&.M\&.A\&.N\&. Advanced\fR\m[]\&\s-2\u[5]\d\s+2 is a routing protocol for multi\-hop mobile ad\-hoc networks which operates on layer 2\&.
+T}
+.TE
+.sp 1
+.SH "[MATCH] SECTION OPTIONS"
+.PP
+A virtual network device is only created if the [Match] section matches the current environment, or if the section is empty\&. The following keys are accepted:
+.PP
+\fIHost=\fR
+.RS 4
+Matches against the hostname or machine ID of the host\&. See
+"ConditionHost="
+in
+\fBsystemd.unit\fR(5)
+for details\&. When prefixed with an exclamation mark ("!"), the result is negated\&. If an empty string is assigned, then previously assigned value is cleared\&.
+.RE
+.PP
+\fIVirtualization=\fR
+.RS 4
+Checks whether the system is executed in a virtualized environment and optionally test whether it is a specific implementation\&. See
+"ConditionVirtualization="
+in
+\fBsystemd.unit\fR(5)
+for details\&. When prefixed with an exclamation mark ("!"), the result is negated\&. If an empty string is assigned, then previously assigned value is cleared\&.
+.RE
+.PP
+\fIKernelCommandLine=\fR
+.RS 4
+Checks whether a specific kernel command line option is set\&. See
+"ConditionKernelCommandLine="
+in
+\fBsystemd.unit\fR(5)
+for details\&. When prefixed with an exclamation mark ("!"), the result is negated\&. If an empty string is assigned, then previously assigned value is cleared\&.
+.RE
+.PP
+\fIKernelVersion=\fR
+.RS 4
+Checks whether the kernel version (as reported by
+\fBuname \-r\fR) matches a certain expression\&. See
+"ConditionKernelVersion="
+in
+\fBsystemd.unit\fR(5)
+for details\&. When prefixed with an exclamation mark ("!"), the result is negated\&. If an empty string is assigned, then previously assigned value is cleared\&.
+.RE
+.PP
+\fIArchitecture=\fR
+.RS 4
+Checks whether the system is running on a specific architecture\&. See
+"ConditionArchitecture="
+in
+\fBsystemd.unit\fR(5)
+for details\&. When prefixed with an exclamation mark ("!"), the result is negated\&. If an empty string is assigned, then previously assigned value is cleared\&.
+.RE
+.SH "[NETDEV] SECTION OPTIONS"
+.PP
+The [NetDev] section accepts the following keys:
+.PP
+\fIDescription=\fR
+.RS 4
+A free\-form description of the netdev\&.
+.RE
+.PP
+\fIName=\fR
+.RS 4
+The interface name used when creating the netdev\&. This setting is compulsory\&.
+.RE
+.PP
+\fIKind=\fR
+.RS 4
+The netdev kind\&. This setting is compulsory\&. See the
+"Supported netdev kinds"
+section for the valid keys\&.
+.RE
+.PP
+\fIMTUBytes=\fR
+.RS 4
+The maximum transmission unit in bytes to set for the device\&. The usual suffixes K, M, G are supported and are understood to the base of 1024\&. For
+"tun"
+or
+"tap"
+devices,
+\fIMTUBytes=\fR
+setting is not currently supported in [NetDev] section\&. Please specify it in [Link] section of corresponding
+\fBsystemd.network\fR(5)
+files\&.
+.RE
+.PP
+\fIMACAddress=\fR
+.RS 4
+The MAC address to use for the device\&. For
+"tun"
+or
+"tap"
+devices, setting
+\fIMACAddress=\fR
+in the [NetDev] section is not supported\&. Please specify it in [Link] section of the corresponding
+\fBsystemd.network\fR(5)
+file\&. If this option is not set,
+"vlan"
+devices inherit the MAC address of the physical interface\&. For other kind of netdevs, if this option is not set, then MAC address is generated based on the interface name and the
+\fBmachine-id\fR(5)\&.
+.RE
+.SH "[BRIDGE] SECTION OPTIONS"
+.PP
+The [Bridge] section only applies for netdevs of kind
+"bridge", and accepts the following keys:
+.PP
+\fIHelloTimeSec=\fR
+.RS 4
+HelloTimeSec specifies the number of seconds between two hello packets sent out by the root bridge and the designated bridges\&. Hello packets are used to communicate information about the topology throughout the entire bridged local area network\&.
+.RE
+.PP
+\fIMaxAgeSec=\fR
+.RS 4
+MaxAgeSec specifies the number of seconds of maximum message age\&. If the last seen (received) hello packet is more than this number of seconds old, the bridge in question will start the takeover procedure in attempt to become the Root Bridge itself\&.
+.RE
+.PP
+\fIForwardDelaySec=\fR
+.RS 4
+ForwardDelaySec specifies the number of seconds spent in each of the Listening and Learning states before the Forwarding state is entered\&.
+.RE
+.PP
+\fIAgeingTimeSec=\fR
+.RS 4
+This specifies the number of seconds a MAC Address will be kept in the forwarding database after having a packet received from this MAC Address\&.
+.RE
+.PP
+\fIPriority=\fR
+.RS 4
+The priority of the bridge\&. An integer between 0 and 65535\&. A lower value means higher priority\&. The bridge having the lowest priority will be elected as root bridge\&.
+.RE
+.PP
+\fIGroupForwardMask=\fR
+.RS 4
+A 16\-bit bitmask represented as an integer which allows forwarding of link local frames with 802\&.1D reserved addresses (01:80:C2:00:00:0X)\&. A logical AND is performed between the specified bitmask and the exponentiation of 2^X, the lower nibble of the last octet of the MAC address\&. For example, a value of 8 would allow forwarding of frames addressed to 01:80:C2:00:00:03 (802\&.1X PAE)\&.
+.RE
+.PP
+\fIDefaultPVID=\fR
+.RS 4
+This specifies the default port VLAN ID of a newly attached bridge port\&. Set this to an integer in the range 1\(en4094 or
+"none"
+to disable the PVID\&.
+.RE
+.PP
+\fIMulticastQuerier=\fR
+.RS 4
+Takes a boolean\&. This setting controls the IFLA_BR_MCAST_QUERIER option in the kernel\&. If enabled, the kernel will send general ICMP queries from a zero source address\&. This feature should allow faster convergence on startup, but it causes some multicast\-aware switches to misbehave and disrupt forwarding of multicast packets\&. When unset, the kernel\*(Aqs default will be used\&.
+.RE
+.PP
+\fIMulticastSnooping=\fR
+.RS 4
+Takes a boolean\&. This setting controls the IFLA_BR_MCAST_SNOOPING option in the kernel\&. If enabled, IGMP snooping monitors the Internet Group Management Protocol (IGMP) traffic between hosts and multicast routers\&. When unset, the kernel\*(Aqs default will be used\&.
+.RE
+.PP
+\fIVLANFiltering=\fR
+.RS 4
+Takes a boolean\&. This setting controls the IFLA_BR_VLAN_FILTERING option in the kernel\&. If enabled, the bridge will be started in VLAN\-filtering mode\&. When unset, the kernel\*(Aqs default will be used\&.
+.RE
+.PP
+\fIVLANProtocol=\fR
+.RS 4
+Allows setting the protocol used for VLAN filtering\&. Takes
+\fB802\&.1q\fR
+or,
+\fB802\&.1ad\fR, and defaults to unset and kernel\*(Aqs default is used\&.
+.RE
+.PP
+\fISTP=\fR
+.RS 4
+Takes a boolean\&. This enables the bridge\*(Aqs Spanning Tree Protocol (STP)\&. When unset, the kernel\*(Aqs default will be used\&.
+.RE
+.PP
+\fIMulticastIGMPVersion=\fR
+.RS 4
+Allows changing bridge\*(Aqs multicast Internet Group Management Protocol (IGMP) version\&. Takes an integer 2 or 3\&. When unset, the kernel\*(Aqs default will be used\&.
+.RE
+.SH "[VLAN] SECTION OPTIONS"
+.PP
+The [VLAN] section only applies for netdevs of kind
+"vlan", and accepts the following key:
+.PP
+\fIId=\fR
+.RS 4
+The VLAN ID to use\&. An integer in the range 0\(en4094\&. This setting is compulsory\&.
+.RE
+.PP
+\fIProtocol=\fR
+.RS 4
+Allows setting the protocol used for the VLAN interface\&. Takes
+"802\&.1q"
+or,
+"802\&.1ad", and defaults to unset and kernel\*(Aqs default is used\&.
+.RE
+.PP
+\fIGVRP=\fR
+.RS 4
+Takes a boolean\&. The Generic VLAN Registration Protocol (GVRP) is a protocol that allows automatic learning of VLANs on a network\&. When unset, the kernel\*(Aqs default will be used\&.
+.RE
+.PP
+\fIMVRP=\fR
+.RS 4
+Takes a boolean\&. Multiple VLAN Registration Protocol (MVRP) formerly known as GARP VLAN Registration Protocol (GVRP) is a standards\-based Layer 2 network protocol, for automatic configuration of VLAN information on switches\&. It was defined in the 802\&.1ak amendment to 802\&.1Q\-2005\&. When unset, the kernel\*(Aqs default will be used\&.
+.RE
+.PP
+\fILooseBinding=\fR
+.RS 4
+Takes a boolean\&. The VLAN loose binding mode, in which only the operational state is passed from the parent to the associated VLANs, but the VLAN device state is not changed\&. When unset, the kernel\*(Aqs default will be used\&.
+.RE
+.PP
+\fIReorderHeader=\fR
+.RS 4
+Takes a boolean\&. When enabled, the VLAN reorder header is used and VLAN interfaces behave like physical interfaces\&. When unset, the kernel\*(Aqs default will be used\&.
+.RE
+.PP
+\fIEgressQOSMaps=\fR
+.RS 4
+Defines a mapping of Linux internal packet priority (\fBSO_PRIORITY\fR) to VLAN header PCP field for outgoing frames\&. Takes a whitespace\-separated list of unsigned integer pairs in the format
+"from"\-"to", e\&.g\&.,
+"21\-7 45\-5"
+ranges 1\(en4294967294\&. Note that
+"from"
+must be greater than or equal to
+"to"\&. When unset, the kernel\*(Aqs default will be used\&.
+.RE
+.PP
+\fIIngressQOSMaps=\fR
+.RS 4
+Defines a mapping of Linux internal packet priority (\fBSO_PRIORITY\fR) to VLAN header PCP field for incoming frames\&. Takes a whitespace\-separated list of unsigned integer pairs in the format
+"from"\-"to", e\&.g\&.,
+"21\-7 45\-5"
+ranges 1\(en4294967294\&. Note that
+"from"
+must be greater than or equal to
+"to"\&. When unset, the kernel\*(Aqs default will be used\&.
+.RE
+.SH "[MACVLAN] SECTION OPTIONS"
+.PP
+The [MACVLAN] section only applies for netdevs of kind
+"macvlan", and accepts the following key:
+.PP
+\fIMode=\fR
+.RS 4
+The MACVLAN mode to use\&. The supported options are
+"private",
+"vepa",
+"bridge",
+"passthru", and
+"source"\&.
+.RE
+.PP
+\fISourceMACAddress=\fR
+.RS 4
+A whitespace\-separated list of remote hardware addresses allowed on the MACVLAN\&. This option only has an effect in source mode\&. Use full colon\-, hyphen\- or dot\-delimited hexadecimal\&. This option may appear more than once, in which case the lists are merged\&. If the empty string is assigned to this option, the list of hardware addresses defined prior to this is reset\&. Defaults to unset\&.
+.RE
+.PP
+\fIBroadcastMulticastQueueLength=\fR
+.RS 4
+Specifies the length of the receive queue for broadcast/multicast packets\&. An unsigned integer in the range 0\&...4294967294\&. Defaults to unset\&.
+.RE
+.SH "[MACVTAP] SECTION OPTIONS"
+.PP
+The [MACVTAP] section applies for netdevs of kind
+"macvtap"
+and accepts the same keys as [MACVLAN]\&.
+.SH "[IPVLAN] SECTION OPTIONS"
+.PP
+The [IPVLAN] section only applies for netdevs of kind
+"ipvlan", and accepts the following key:
+.PP
+\fIMode=\fR
+.RS 4
+The IPVLAN mode to use\&. The supported options are
+"L2","L3"
+and
+"L3S"\&.
+.RE
+.PP
+\fIFlags=\fR
+.RS 4
+The IPVLAN flags to use\&. The supported options are
+"bridge","private"
+and
+"vepa"\&.
+.RE
+.SH "[IPVTAP] SECTION OPTIONS"
+.PP
+The [IPVTAP] section only applies for netdevs of kind
+"ipvtap"
+and accepts the same keys as [IPVLAN]\&.
+.SH "[VXLAN] SECTION OPTIONS"
+.PP
+The [VXLAN] section only applies for netdevs of kind
+"vxlan", and accepts the following keys:
+.PP
+\fIVNI=\fR
+.RS 4
+The VXLAN Network Identifier (or VXLAN Segment ID)\&. Takes a number in the range 1\&...16777215\&.
+.RE
+.PP
+\fIRemote=\fR
+.RS 4
+Configures destination IP address\&.
+.RE
+.PP
+\fILocal=\fR
+.RS 4
+Configures local IP address\&.
+.RE
+.PP
+\fIGroup=\fR
+.RS 4
+Configures VXLAN multicast group IP address\&. All members of a VXLAN must use the same multicast group address\&.
+.RE
+.PP
+\fITOS=\fR
+.RS 4
+The Type Of Service byte value for a vxlan interface\&.
+.RE
+.PP
+\fITTL=\fR
+.RS 4
+A fixed Time To Live N on Virtual eXtensible Local Area Network packets\&. Takes
+"inherit"
+or a number in the range 0\(en255\&. 0 is a special value meaning inherit the inner protocol\*(Aqs TTL value\&.
+"inherit"
+means that it will inherit the outer protocol\*(Aqs TTL value\&.
+.RE
+.PP
+\fIMacLearning=\fR
+.RS 4
+Takes a boolean\&. When true, enables dynamic MAC learning to discover remote MAC addresses\&.
+.RE
+.PP
+\fIFDBAgeingSec=\fR
+.RS 4
+The lifetime of Forwarding Database entry learnt by the kernel, in seconds\&.
+.RE
+.PP
+\fIMaximumFDBEntries=\fR
+.RS 4
+Configures maximum number of FDB entries\&.
+.RE
+.PP
+\fIReduceARPProxy=\fR
+.RS 4
+Takes a boolean\&. When true, bridge\-connected VXLAN tunnel endpoint answers ARP requests from the local bridge on behalf of remote Distributed Overlay Virtual Ethernet
+\m[blue]\fB(DVOE)\fR\m[]\&\s-2\u[6]\d\s+2
+clients\&. Defaults to false\&.
+.RE
+.PP
+\fIL2MissNotification=\fR
+.RS 4
+Takes a boolean\&. When true, enables netlink LLADDR miss notifications\&.
+.RE
+.PP
+\fIL3MissNotification=\fR
+.RS 4
+Takes a boolean\&. When true, enables netlink IP address miss notifications\&.
+.RE
+.PP
+\fIRouteShortCircuit=\fR
+.RS 4
+Takes a boolean\&. When true, route short circuiting is turned on\&.
+.RE
+.PP
+\fIUDPChecksum=\fR
+.RS 4
+Takes a boolean\&. When true, transmitting UDP checksums when doing VXLAN/IPv4 is turned on\&.
+.RE
+.PP
+\fIUDP6ZeroChecksumTx=\fR
+.RS 4
+Takes a boolean\&. When true, sending zero checksums in VXLAN/IPv6 is turned on\&.
+.RE
+.PP
+\fIUDP6ZeroChecksumRx=\fR
+.RS 4
+Takes a boolean\&. When true, receiving zero checksums in VXLAN/IPv6 is turned on\&.
+.RE
+.PP
+\fIRemoteChecksumTx=\fR
+.RS 4
+Takes a boolean\&. When true, remote transmit checksum offload of VXLAN is turned on\&.
+.RE
+.PP
+\fIRemoteChecksumRx=\fR
+.RS 4
+Takes a boolean\&. When true, remote receive checksum offload in VXLAN is turned on\&.
+.RE
+.PP
+\fIGroupPolicyExtension=\fR
+.RS 4
+Takes a boolean\&. When true, it enables Group Policy VXLAN extension security label mechanism across network peers based on VXLAN\&. For details about the Group Policy VXLAN, see the
+\m[blue]\fBVXLAN Group Policy\fR\m[]\&\s-2\u[7]\d\s+2
+document\&. Defaults to false\&.
+.RE
+.PP
+\fIGenericProtocolExtension=\fR
+.RS 4
+Takes a boolean\&. When true, Generic Protocol Extension extends the existing VXLAN protocol to provide protocol typing, OAM, and versioning capabilities\&. For details about the VXLAN GPE Header, see the
+\m[blue]\fBGeneric Protocol Extension for VXLAN\fR\m[]\&\s-2\u[8]\d\s+2
+document\&. If destination port is not specified and Generic Protocol Extension is set then default port of 4790 is used\&. Defaults to false\&.
+.RE
+.PP
+\fIDestinationPort=\fR
+.RS 4
+Configures the default destination UDP port\&. If the destination port is not specified then Linux kernel default will be used\&. Set to 4789 to get the IANA assigned value\&.
+.RE
+.PP
+\fIPortRange=\fR
+.RS 4
+Configures the source port range for the VXLAN\&. The kernel assigns the source UDP port based on the flow to help the receiver to do load balancing\&. When this option is not set, the normal range of local UDP ports is used\&.
+.RE
+.PP
+\fIFlowLabel=\fR
+.RS 4
+Specifies the flow label to use in outgoing packets\&. The valid range is 0\-1048575\&.
+.RE
+.PP
+\fIIPDoNotFragment=\fR
+.RS 4
+Allows setting the IPv4 Do not Fragment (DF) bit in outgoing packets, or to inherit its value from the IPv4 inner header\&. Takes a boolean value, or
+"inherit"\&. Set to
+"inherit"
+if the encapsulated protocol is IPv6\&. When unset, the kernel\*(Aqs default will be used\&.
+.RE
+.SH "[GENEVE] SECTION OPTIONS"
+.PP
+The [GENEVE] section only applies for netdevs of kind
+"geneve", and accepts the following keys:
+.PP
+\fIId=\fR
+.RS 4
+Specifies the Virtual Network Identifier (VNI) to use, a number between 0 and 16777215\&. This field is mandatory\&.
+.RE
+.PP
+\fIRemote=\fR
+.RS 4
+Specifies the unicast destination IP address to use in outgoing packets\&.
+.RE
+.PP
+\fITOS=\fR
+.RS 4
+Specifies the TOS value to use in outgoing packets\&. Takes a number between 1 and 255\&.
+.RE
+.PP
+\fITTL=\fR
+.RS 4
+Accepts the same values as in the [VXLAN] section, except that when unset or set to 0, the kernel\*(Aqs default will be used, meaning that packet TTL will be set from
+/proc/sys/net/ipv4/ip_default_ttl\&.
+.RE
+.PP
+\fIUDPChecksum=\fR
+.RS 4
+Takes a boolean\&. When true, specifies that UDP checksum is calculated for transmitted packets over IPv4\&.
+.RE
+.PP
+\fIUDP6ZeroChecksumTx=\fR
+.RS 4
+Takes a boolean\&. When true, skip UDP checksum calculation for transmitted packets over IPv6\&.
+.RE
+.PP
+\fIUDP6ZeroChecksumRx=\fR
+.RS 4
+Takes a boolean\&. When true, allows incoming UDP packets over IPv6 with zero checksum field\&.
+.RE
+.PP
+\fIDestinationPort=\fR
+.RS 4
+Specifies destination port\&. Defaults to 6081\&. If not set or assigned the empty string, the default port of 6081 is used\&.
+.RE
+.PP
+\fIFlowLabel=\fR
+.RS 4
+Specifies the flow label to use in outgoing packets\&.
+.RE
+.PP
+\fIIPDoNotFragment=\fR
+.RS 4
+Accepts the same key as in [VXLAN] section\&.
+.RE
+.PP
+\fIIndependent=\fR
+.RS 4
+Takes a boolean\&. When true, the vxlan interface is created without any underlying network interface\&. Defaults to false, which means that a \&.network file that requests this tunnel using
+\fITunnel=\fR
+is required for the tunnel to be created\&.
+.RE
+.SH "[BAREUDP] SECTION OPTIONS"
+.PP
+The [BareUDP] section only applies for netdevs of kind
+"bareudp", and accepts the following keys:
+.PP
+\fIDestinationPort=\fR
+.RS 4
+Specifies the destination UDP port (in range 1\&...65535)\&. This is mandatory\&.
+.RE
+.PP
+\fIEtherType=\fR
+.RS 4
+Specifies the L3 protocol\&. Takes one of
+"ipv4",
+"ipv6",
+"mpls\-uc"
+or
+"mpls\-mc"\&. This is mandatory\&.
+.RE
+.SH "[L2TP] SECTION OPTIONS"
+.PP
+The [L2TP] section only applies for netdevs of kind
+"l2tp", and accepts the following keys:
+.PP
+\fITunnelId=\fR
+.RS 4
+Specifies the tunnel identifier\&. Takes an number in the range 1\(en4294967295\&. The value used must match the
+"PeerTunnelId="
+value being used at the peer\&. This setting is compulsory\&.
+.RE
+.PP
+\fIPeerTunnelId=\fR
+.RS 4
+Specifies the peer tunnel id\&. Takes a number in the range 1\&...4294967295\&. The value used must match the
+"TunnelId="
+value being used at the peer\&. This setting is compulsory\&.
+.RE
+.PP
+\fIRemote=\fR
+.RS 4
+Specifies the IP address of the remote peer\&. This setting is compulsory\&.
+.RE
+.PP
+\fILocal=\fR
+.RS 4
+Specifies the IP address of the local interface\&. Takes an IP address, or the special values
+"auto",
+"static", or
+"dynamic"\&. When an address is set, then the local interface must have the address\&. If
+"auto", then one of the addresses on the local interface is used\&. Similarly, if
+"static"
+or
+"dynamic"
+is set, then one of the static or dynamic addresses on the local interface is used\&. Defaults to
+"auto"\&.
+.RE
+.PP
+\fIEncapsulationType=\fR
+.RS 4
+Specifies the encapsulation type of the tunnel\&. Takes one of
+"udp"
+or
+"ip"\&.
+.RE
+.PP
+\fIUDPSourcePort=\fR
+.RS 4
+Specifies the UDP source port to be used for the tunnel\&. When UDP encapsulation is selected it\*(Aqs mandatory\&. Ignored when IP encapsulation is selected\&.
+.RE
+.PP
+\fIUDPDestinationPort=\fR
+.RS 4
+Specifies destination port\&. When UDP encapsulation is selected it\*(Aqs mandatory\&. Ignored when IP encapsulation is selected\&.
+.RE
+.PP
+\fIUDPChecksum=\fR
+.RS 4
+Takes a boolean\&. When true, specifies that UDP checksum is calculated for transmitted packets over IPv4\&.
+.RE
+.PP
+\fIUDP6ZeroChecksumTx=\fR
+.RS 4
+Takes a boolean\&. When true, skip UDP checksum calculation for transmitted packets over IPv6\&.
+.RE
+.PP
+\fIUDP6ZeroChecksumRx=\fR
+.RS 4
+Takes a boolean\&. When true, allows incoming UDP packets over IPv6 with zero checksum field\&.
+.RE
+.SH "[L2TPSESSION] SECTION OPTIONS"
+.PP
+The [L2TPSession] section only applies for netdevs of kind
+"l2tp", and accepts the following keys:
+.PP
+\fIName=\fR
+.RS 4
+Specifies the name of the session\&. This setting is compulsory\&.
+.RE
+.PP
+\fISessionId=\fR
+.RS 4
+Specifies the session identifier\&. Takes an number in the range 1\(en4294967295\&. The value used must match the
+"SessionId="
+value being used at the peer\&. This setting is compulsory\&.
+.RE
+.PP
+\fIPeerSessionId=\fR
+.RS 4
+Specifies the peer session identifier\&. Takes an number in the range 1\(en4294967295\&. The value used must match the
+"PeerSessionId="
+value being used at the peer\&. This setting is compulsory\&.
+.RE
+.PP
+\fILayer2SpecificHeader=\fR
+.RS 4
+Specifies layer2specific header type of the session\&. One of
+"none"
+or
+"default"\&. Defaults to
+"default"\&.
+.RE
+.SH "[MACSEC] SECTION OPTIONS"
+.PP
+The [MACsec] section only applies for network devices of kind
+"macsec", and accepts the following keys:
+.PP
+\fIPort=\fR
+.RS 4
+Specifies the port to be used for the MACsec transmit channel\&. The port is used to make secure channel identifier (SCI)\&. Takes a value between 1 and 65535\&. Defaults to unset\&.
+.RE
+.PP
+\fIEncrypt=\fR
+.RS 4
+Takes a boolean\&. When true, enable encryption\&. Defaults to unset\&.
+.RE
+.SH "[MACSECRECEIVECHANNEL] SECTION OPTIONS"
+.PP
+The [MACsecReceiveChannel] section only applies for network devices of kind
+"macsec", and accepts the following keys:
+.PP
+\fIPort=\fR
+.RS 4
+Specifies the port to be used for the MACsec receive channel\&. The port is used to make secure channel identifier (SCI)\&. Takes a value between 1 and 65535\&. This option is compulsory, and is not set by default\&.
+.RE
+.PP
+\fIMACAddress=\fR
+.RS 4
+Specifies the MAC address to be used for the MACsec receive channel\&. The MAC address used to make secure channel identifier (SCI)\&. This setting is compulsory, and is not set by default\&.
+.RE
+.SH "[MACSECTRANSMITASSOCIATION] SECTION OPTIONS"
+.PP
+The [MACsecTransmitAssociation] section only applies for network devices of kind
+"macsec", and accepts the following keys:
+.PP
+\fIPacketNumber=\fR
+.RS 4
+Specifies the packet number to be used for replay protection and the construction of the initialization vector (along with the secure channel identifier [SCI])\&. Takes a value between 1\-4,294,967,295\&. Defaults to unset\&.
+.RE
+.PP
+\fIKeyId=\fR
+.RS 4
+Specifies the identification for the key\&. Takes a number between 0\-255\&. This option is compulsory, and is not set by default\&.
+.RE
+.PP
+\fIKey=\fR
+.RS 4
+Specifies the encryption key used in the transmission channel\&. The same key must be configured on the peer\(cqs matching receive channel\&. This setting is compulsory, and is not set by default\&. Takes a 128\-bit key encoded in a hexadecimal string, for example
+"dffafc8d7b9a43d5b9a3dfbbf6a30c16"\&.
+.RE
+.PP
+\fIKeyFile=\fR
+.RS 4
+Takes a absolute path to a file which contains a 128\-bit key encoded in a hexadecimal string, which will be used in the transmission channel\&. When this option is specified,
+\fIKey=\fR
+is ignored\&. Note that the file must be readable by the user
+"systemd\-network", so it should be, e\&.g\&., owned by
+"root:systemd\-network"
+with a
+"0640"
+file mode\&. If the path refers to an
+\fBAF_UNIX\fR
+stream socket in the file system a connection is made to it and the key read from it\&.
+.RE
+.PP
+\fIActivate=\fR
+.RS 4
+Takes a boolean\&. If enabled, then the security association is activated\&. Defaults to unset\&.
+.RE
+.PP
+\fIUseForEncoding=\fR
+.RS 4
+Takes a boolean\&. If enabled, then the security association is used for encoding\&. Only one [MACsecTransmitAssociation] section can enable this option\&. When enabled,
+\fIActivate=yes\fR
+is implied\&. Defaults to unset\&.
+.RE
+.SH "[MACSECRECEIVEASSOCIATION] SECTION OPTIONS"
+.PP
+The [MACsecReceiveAssociation] section only applies for network devices of kind
+"macsec", and accepts the following keys:
+.PP
+\fIPort=\fR
+.RS 4
+Accepts the same key as in [MACsecReceiveChannel] section\&.
+.RE
+.PP
+\fIMACAddress=\fR
+.RS 4
+Accepts the same key as in [MACsecReceiveChannel] section\&.
+.RE
+.PP
+\fIPacketNumber=\fR
+.RS 4
+Accepts the same key as in [MACsecTransmitAssociation] section\&.
+.RE
+.PP
+\fIKeyId=\fR
+.RS 4
+Accepts the same key as in [MACsecTransmitAssociation] section\&.
+.RE
+.PP
+\fIKey=\fR
+.RS 4
+Accepts the same key as in [MACsecTransmitAssociation] section\&.
+.RE
+.PP
+\fIKeyFile=\fR
+.RS 4
+Accepts the same key as in [MACsecTransmitAssociation] section\&.
+.RE
+.PP
+\fIActivate=\fR
+.RS 4
+Accepts the same key as in [MACsecTransmitAssociation] section\&.
+.RE
+.SH "[TUNNEL] SECTION OPTIONS"
+.PP
+The [Tunnel] section only applies for netdevs of kind
+"ipip",
+"sit",
+"gre",
+"gretap",
+"ip6gre",
+"ip6gretap",
+"vti",
+"vti6",
+"ip6tnl", and
+"erspan"
+and accepts the following keys:
+.PP
+\fILocal=\fR
+.RS 4
+A static local address for tunneled packets\&. It must be an address on another interface of this host, or the special value
+"any"\&.
+.RE
+.PP
+\fIRemote=\fR
+.RS 4
+The remote endpoint of the tunnel\&. Takes an IP address or the special value
+"any"\&.
+.RE
+.PP
+\fITOS=\fR
+.RS 4
+The Type Of Service byte value for a tunnel interface\&. For details about the TOS, see the
+\m[blue]\fBType of Service in the Internet Protocol Suite\fR\m[]\&\s-2\u[9]\d\s+2
+document\&.
+.RE
+.PP
+\fITTL=\fR
+.RS 4
+A fixed Time To Live N on tunneled packets\&. N is a number in the range 1\(en255\&. 0 is a special value meaning that packets inherit the TTL value\&. The default value for IPv4 tunnels is 0 (inherit)\&. The default value for IPv6 tunnels is 64\&.
+.RE
+.PP
+\fIDiscoverPathMTU=\fR
+.RS 4
+Takes a boolean\&. When true, enables Path MTU Discovery on the tunnel\&.
+.RE
+.PP
+\fIIPv6FlowLabel=\fR
+.RS 4
+Configures the 20\-bit flow label (see
+\m[blue]\fBRFC 6437\fR\m[]\&\s-2\u[10]\d\s+2) field in the IPv6 header (see
+\m[blue]\fBRFC 2460\fR\m[]\&\s-2\u[11]\d\s+2), which is used by a node to label packets of a flow\&. It is only used for IPv6 tunnels\&. A flow label of zero is used to indicate packets that have not been labeled\&. It can be configured to a value in the range 0\(en0xFFFFF, or be set to
+"inherit", in which case the original flowlabel is used\&.
+.RE
+.PP
+\fICopyDSCP=\fR
+.RS 4
+Takes a boolean\&. When true, the Differentiated Service Code Point (DSCP) field will be copied to the inner header from outer header during the decapsulation of an IPv6 tunnel packet\&. DSCP is a field in an IP packet that enables different levels of service to be assigned to network traffic\&. Defaults to
+"no"\&.
+.RE
+.PP
+\fIEncapsulationLimit=\fR
+.RS 4
+The Tunnel Encapsulation Limit option specifies how many additional levels of encapsulation are permitted to be prepended to the packet\&. For example, a Tunnel Encapsulation Limit option containing a limit value of zero means that a packet carrying that option may not enter another tunnel before exiting the current tunnel\&. (see
+\m[blue]\fBRFC 2473\fR\m[]\&\s-2\u[12]\d\s+2)\&. The valid range is 0\(en255 and
+"none"\&. Defaults to 4\&.
+.RE
+.PP
+\fIKey=\fR
+.RS 4
+The
+\fIKey=\fR
+parameter specifies the same key to use in both directions (\fIInputKey=\fR
+and
+\fIOutputKey=\fR)\&. The
+\fIKey=\fR
+is either a number or an IPv4 address\-like dotted quad\&. It is used as mark\-configured SAD/SPD entry as part of the lookup key (both in data and control path) in IP XFRM (framework used to implement IPsec protocol)\&. See
+\m[blue]\fBip\-xfrm \(em transform configuration\fR\m[]\&\s-2\u[13]\d\s+2
+for details\&. It is only used for VTI/VTI6, GRE, GRETAP, and ERSPAN tunnels\&.
+.RE
+.PP
+\fIInputKey=\fR
+.RS 4
+The
+\fIInputKey=\fR
+parameter specifies the key to use for input\&. The format is same as
+\fIKey=\fR\&. It is only used for VTI/VTI6, GRE, GRETAP, and ERSPAN tunnels\&.
+.RE
+.PP
+\fIOutputKey=\fR
+.RS 4
+The
+\fIOutputKey=\fR
+parameter specifies the key to use for output\&. The format is same as
+\fIKey=\fR\&. It is only used for VTI/VTI6, GRE, GRETAP, and ERSPAN tunnels\&.
+.RE
+.PP
+\fIMode=\fR
+.RS 4
+An
+"ip6tnl"
+tunnel can be in one of three modes
+"ip6ip6"
+for IPv6 over IPv6,
+"ipip6"
+for IPv4 over IPv6 or
+"any"
+for either\&.
+.RE
+.PP
+\fIIndependent=\fR
+.RS 4
+Takes a boolean\&. When false (the default), the tunnel is always created over some network device, and a \&.network file that requests this tunnel using
+\fITunnel=\fR
+is required for the tunnel to be created\&. When true, the tunnel is created independently of any network as "tunnel@NONE"\&.
+.RE
+.PP
+\fIAssignToLoopback=\fR
+.RS 4
+Takes a boolean\&. If set to
+"yes", the loopback interface
+"lo"
+is used as the underlying device of the tunnel interface\&. Defaults to
+"no"\&.
+.RE
+.PP
+\fIAllowLocalRemote=\fR
+.RS 4
+Takes a boolean\&. When true allows tunnel traffic on
+\fIip6tnl\fR
+devices where the remote endpoint is a local host address\&. When unset, the kernel\*(Aqs default will be used\&.
+.RE
+.PP
+\fIFooOverUDP=\fR
+.RS 4
+Takes a boolean\&. Specifies whether
+\fIFooOverUDP=\fR
+tunnel is to be configured\&. Defaults to false\&. This takes effects only for IPIP, SIT, GRE, and GRETAP tunnels\&. For more detail information see
+\m[blue]\fBFoo over UDP\fR\m[]\&\s-2\u[14]\d\s+2
+.RE
+.PP
+\fIFOUDestinationPort=\fR
+.RS 4
+This setting specifies the UDP destination port for encapsulation\&. This field is mandatory when
+\fIFooOverUDP=yes\fR, and is not set by default\&.
+.RE
+.PP
+\fIFOUSourcePort=\fR
+.RS 4
+This setting specifies the UDP source port for encapsulation\&. Defaults to
+\fB0\fR
+\(em that is, the source port for packets is left to the network stack to decide\&.
+.RE
+.PP
+\fIEncapsulation=\fR
+.RS 4
+Accepts the same key as in the [FooOverUDP] section\&.
+.RE
+.PP
+\fIIPv6RapidDeploymentPrefix=\fR
+.RS 4
+Reconfigure the tunnel for
+\m[blue]\fBIPv6 Rapid Deployment\fR\m[]\&\s-2\u[15]\d\s+2, also known as 6rd\&. The value is an ISP\-specific IPv6 prefix with a non\-zero length\&. Only applicable to SIT tunnels\&.
+.RE
+.PP
+\fIISATAP=\fR
+.RS 4
+Takes a boolean\&. If set, configures the tunnel as Intra\-Site Automatic Tunnel Addressing Protocol (ISATAP) tunnel\&. Only applicable to SIT tunnels\&. When unset, the kernel\*(Aqs default will be used\&.
+.RE
+.PP
+\fISerializeTunneledPackets=\fR
+.RS 4
+Takes a boolean\&. If set to yes, then packets are serialized\&. Only applies for GRE, GRETAP, and ERSPAN tunnels\&. When unset, the kernel\*(Aqs default will be used\&.
+.RE
+.PP
+\fIERSPANIndex=\fR
+.RS 4
+Specifies the ERSPAN index field for the interface, an integer in the range 1\&...1048575 associated with the ERSPAN traffic\*(Aqs source port and direction\&. This field is mandatory\&.
+.RE
+.SH "[FOOOVERUDP] SECTION OPTIONS"
+.PP
+The [FooOverUDP] section only applies for netdevs of kind
+"fou"
+and accepts the following keys:
+.PP
+\fIEncapsulation=\fR
+.RS 4
+Specifies the encapsulation mechanism used to store networking packets of various protocols inside the UDP packets\&. Supports the following values:
+"FooOverUDP"
+provides the simplest no\-frills model of UDP encapsulation, it simply encapsulates packets directly in the UDP payload\&.
+"GenericUDPEncapsulation"
+is a generic and extensible encapsulation, it allows encapsulation of packets for any IP protocol and optional data as part of the encapsulation\&. For more detailed information see
+\m[blue]\fBGeneric UDP Encapsulation\fR\m[]\&\s-2\u[16]\d\s+2\&. Defaults to
+"FooOverUDP"\&.
+.RE
+.PP
+\fIPort=\fR
+.RS 4
+Specifies the port number where the encapsulated packets will arrive\&. Those packets will be removed and manually fed back into the network stack with the encapsulation removed to be sent to the real destination\&. This option is mandatory\&.
+.RE
+.PP
+\fIPeerPort=\fR
+.RS 4
+Specifies the peer port number\&. Defaults to unset\&. Note that when peer port is set
+"Peer="
+address is mandatory\&.
+.RE
+.PP
+\fIProtocol=\fR
+.RS 4
+The
+\fIProtocol=\fR
+specifies the protocol number of the packets arriving at the UDP port\&. When
+\fIEncapsulation=FooOverUDP\fR, this field is mandatory and is not set by default\&. Takes an IP protocol name such as
+"gre"
+or
+"ipip", or an integer within the range 1\&...255\&. When
+\fIEncapsulation=GenericUDPEncapsulation\fR, this must not be specified\&.
+.RE
+.PP
+\fIPeer=\fR
+.RS 4
+Configures peer IP address\&. Note that when peer address is set
+"PeerPort="
+is mandatory\&.
+.RE
+.PP
+\fILocal=\fR
+.RS 4
+Configures local IP address\&.
+.RE
+.SH "[PEER] SECTION OPTIONS"
+.PP
+The [Peer] section only applies for netdevs of kind
+"veth"
+and accepts the following keys:
+.PP
+\fIName=\fR
+.RS 4
+The interface name used when creating the netdev\&. This setting is compulsory\&.
+.RE
+.PP
+\fIMACAddress=\fR
+.RS 4
+The peer MACAddress, if not set, it is generated in the same way as the MAC address of the main interface\&.
+.RE
+.SH "[VXCAN] SECTION OPTIONS"
+.PP
+The [VXCAN] section only applies for netdevs of kind
+"vxcan"
+and accepts the following key:
+.PP
+\fIPeer=\fR
+.RS 4
+The peer interface name used when creating the netdev\&. This setting is compulsory\&.
+.RE
+.SH "[TUN] SECTION OPTIONS"
+.PP
+The [Tun] section only applies for netdevs of kind
+"tun", and accepts the following keys:
+.PP
+\fIMultiQueue=\fR
+.RS 4
+Takes a boolean\&. Configures whether to use multiple file descriptors (queues) to parallelize packets sending and receiving\&. Defaults to
+"no"\&.
+.RE
+.PP
+\fIPacketInfo=\fR
+.RS 4
+Takes a boolean\&. Configures whether packets should be prepended with four extra bytes (two flag bytes and two protocol bytes)\&. If disabled, it indicates that the packets will be pure IP packets\&. Defaults to
+"no"\&.
+.RE
+.PP
+\fIVNetHeader=\fR
+.RS 4
+Takes a boolean\&. Configures IFF_VNET_HDR flag for a tun or tap device\&. It allows sending and receiving larger Generic Segmentation Offload (GSO) packets\&. This may increase throughput significantly\&. Defaults to
+"no"\&.
+.RE
+.PP
+\fIUser=\fR
+.RS 4
+User to grant access to the
+/dev/net/tun
+device\&.
+.RE
+.PP
+\fIGroup=\fR
+.RS 4
+Group to grant access to the
+/dev/net/tun
+device\&.
+.RE
+.SH "[TAP] SECTION OPTIONS"
+.PP
+The [Tap] section only applies for netdevs of kind
+"tap", and accepts the same keys as the [Tun] section\&.
+.SH "[WIREGUARD] SECTION OPTIONS"
+.PP
+The [WireGuard] section accepts the following keys:
+.PP
+\fIPrivateKey=\fR
+.RS 4
+The Base64 encoded private key for the interface\&. It can be generated using the
+\fBwg genkey\fR
+command (see
+\fBwg\fR(8))\&. This option or
+\fIPrivateKeyFile=\fR
+is mandatory to use WireGuard\&. Note that because this information is secret, you may want to set the permissions of the \&.netdev file to be owned by
+"root:systemd\-network"
+with a
+"0640"
+file mode\&.
+.RE
+.PP
+\fIPrivateKeyFile=\fR
+.RS 4
+Takes an absolute path to a file which contains the Base64 encoded private key for the interface\&. When this option is specified, then
+\fIPrivateKey=\fR
+is ignored\&. Note that the file must be readable by the user
+"systemd\-network", so it should be, e\&.g\&., owned by
+"root:systemd\-network"
+with a
+"0640"
+file mode\&. If the path refers to an
+\fBAF_UNIX\fR
+stream socket in the file system a connection is made to it and the key read from it\&.
+.RE
+.PP
+\fIListenPort=\fR
+.RS 4
+Sets UDP port for listening\&. Takes either value between 1 and 65535 or
+"auto"\&. If
+"auto"
+is specified, the port is automatically generated based on interface name\&. Defaults to
+"auto"\&.
+.RE
+.PP
+\fIFirewallMark=\fR
+.RS 4
+Sets a firewall mark on outgoing WireGuard packets from this interface\&. Takes a number between 1 and 4294967295\&.
+.RE
+.SH "[WIREGUARDPEER] SECTION OPTIONS"
+.PP
+The [WireGuardPeer] section accepts the following keys:
+.PP
+\fIPublicKey=\fR
+.RS 4
+Sets a Base64 encoded public key calculated by
+\fBwg pubkey\fR
+(see
+\fBwg\fR(8)) from a private key, and usually transmitted out of band to the author of the configuration file\&. This option is mandatory for this section\&.
+.RE
+.PP
+\fIPresharedKey=\fR
+.RS 4
+Optional preshared key for the interface\&. It can be generated by the
+\fBwg genpsk\fR
+command\&. This option adds an additional layer of symmetric\-key cryptography to be mixed into the already existing public\-key cryptography, for post\-quantum resistance\&. Note that because this information is secret, you may want to set the permissions of the \&.netdev file to be owned by
+"root:systemd\-network"
+with a
+"0640"
+file mode\&.
+.RE
+.PP
+\fIPresharedKeyFile=\fR
+.RS 4
+Takes an absolute path to a file which contains the Base64 encoded preshared key for the peer\&. When this option is specified, then
+\fIPresharedKey=\fR
+is ignored\&. Note that the file must be readable by the user
+"systemd\-network", so it should be, e\&.g\&., owned by
+"root:systemd\-network"
+with a
+"0640"
+file mode\&. If the path refers to an
+\fBAF_UNIX\fR
+stream socket in the file system a connection is made to it and the key read from it\&.
+.RE
+.PP
+\fIAllowedIPs=\fR
+.RS 4
+Sets a comma\-separated list of IP (v4 or v6) addresses with CIDR masks from which this peer is allowed to send incoming traffic and to which outgoing traffic for this peer is directed\&.
+.sp
+The catch\-all 0\&.0\&.0\&.0/0 may be specified for matching all IPv4 addresses, and ::/0 may be specified for matching all IPv6 addresses\&.
+.sp
+Note that this only affects "routing inside the network interface itself", as in, which wireguard peer packets with a specific destination address are sent to, and what source addresses are accepted from which peer\&.
+.sp
+To cause packets to be sent via wireguard in first place, a route needs to be added, as well \- either in the
+"[Routes]"
+section on the
+"\&.network"
+matching the wireguard interface, or outside of networkd\&.
+.RE
+.PP
+\fIEndpoint=\fR
+.RS 4
+Sets an endpoint IP address or hostname, followed by a colon, and then a port number\&. This endpoint will be updated automatically once to the most recent source IP address and port of correctly authenticated packets from the peer at configuration time\&.
+.RE
+.PP
+\fIPersistentKeepalive=\fR
+.RS 4
+Sets a seconds interval, between 1 and 65535 inclusive, of how often to send an authenticated empty packet to the peer for the purpose of keeping a stateful firewall or NAT mapping valid persistently\&. For example, if the interface very rarely sends traffic, but it might at anytime receive traffic from a peer, and it is behind NAT, the interface might benefit from having a persistent keepalive interval of 25 seconds\&. If set to 0 or "off", this option is disabled\&. By default or when unspecified, this option is off\&. Most users will not need this\&.
+.RE
+.SH "[BOND] SECTION OPTIONS"
+.PP
+The [Bond] section accepts the following key:
+.PP
+\fIMode=\fR
+.RS 4
+Specifies one of the bonding policies\&. The default is
+"balance\-rr"
+(round robin)\&. Possible values are
+"balance\-rr",
+"active\-backup",
+"balance\-xor",
+"broadcast",
+"802\&.3ad",
+"balance\-tlb", and
+"balance\-alb"\&.
+.RE
+.PP
+\fITransmitHashPolicy=\fR
+.RS 4
+Selects the transmit hash policy to use for slave selection in balance\-xor, 802\&.3ad, and tlb modes\&. Possible values are
+"layer2",
+"layer3+4",
+"layer2+3",
+"encap2+3", and
+"encap3+4"\&.
+.RE
+.PP
+\fILACPTransmitRate=\fR
+.RS 4
+Specifies the rate with which link partner transmits Link Aggregation Control Protocol Data Unit packets in 802\&.3ad mode\&. Possible values are
+"slow", which requests partner to transmit LACPDUs every 30 seconds, and
+"fast", which requests partner to transmit LACPDUs every second\&. The default value is
+"slow"\&.
+.RE
+.PP
+\fIMIIMonitorSec=\fR
+.RS 4
+Specifies the frequency that Media Independent Interface link monitoring will occur\&. A value of zero disables MII link monitoring\&. This value is rounded down to the nearest millisecond\&. The default value is 0\&.
+.RE
+.PP
+\fIUpDelaySec=\fR
+.RS 4
+Specifies the delay before a link is enabled after a link up status has been detected\&. This value is rounded down to a multiple of MIIMonitorSec\&. The default value is 0\&.
+.RE
+.PP
+\fIDownDelaySec=\fR
+.RS 4
+Specifies the delay before a link is disabled after a link down status has been detected\&. This value is rounded down to a multiple of MIIMonitorSec\&. The default value is 0\&.
+.RE
+.PP
+\fILearnPacketIntervalSec=\fR
+.RS 4
+Specifies the number of seconds between instances where the bonding driver sends learning packets to each slave peer switch\&. The valid range is 1\(en0x7fffffff; the default value is 1\&. This option has an effect only for the balance\-tlb and balance\-alb modes\&.
+.RE
+.PP
+\fIAdSelect=\fR
+.RS 4
+Specifies the 802\&.3ad aggregation selection logic to use\&. Possible values are
+"stable",
+"bandwidth"
+and
+"count"\&.
+.RE
+.PP
+\fIAdActorSystemPriority=\fR
+.RS 4
+Specifies the 802\&.3ad actor system priority\&. Takes a number in the range 1\&...65535\&.
+.RE
+.PP
+\fIAdUserPortKey=\fR
+.RS 4
+Specifies the 802\&.3ad user defined portion of the port key\&. Takes a number in the range 0\(en1023\&.
+.RE
+.PP
+\fIAdActorSystem=\fR
+.RS 4
+Specifies the 802\&.3ad system MAC address\&. This cannot be a null or multicast address\&.
+.RE
+.PP
+\fIFailOverMACPolicy=\fR
+.RS 4
+Specifies whether the active\-backup mode should set all slaves to the same MAC address at the time of enslavement or, when enabled, to perform special handling of the bond\*(Aqs MAC address in accordance with the selected policy\&. The default policy is none\&. Possible values are
+"none",
+"active"
+and
+"follow"\&.
+.RE
+.PP
+\fIARPValidate=\fR
+.RS 4
+Specifies whether or not ARP probes and replies should be validated in any mode that supports ARP monitoring, or whether non\-ARP traffic should be filtered (disregarded) for link monitoring purposes\&. Possible values are
+"none",
+"active",
+"backup"
+and
+"all"\&.
+.RE
+.PP
+\fIARPIntervalSec=\fR
+.RS 4
+Specifies the ARP link monitoring frequency\&. A value of 0 disables ARP monitoring\&. The default value is 0, and the default unit seconds\&.
+.RE
+.PP
+\fIARPIPTargets=\fR
+.RS 4
+Specifies the IP addresses to use as ARP monitoring peers when ARPIntervalSec is greater than 0\&. These are the targets of the ARP request sent to determine the health of the link to the targets\&. Specify these values in IPv4 dotted decimal format\&. At least one IP address must be given for ARP monitoring to function\&. The maximum number of targets that can be specified is 16\&. The default value is no IP addresses\&.
+.RE
+.PP
+\fIARPAllTargets=\fR
+.RS 4
+Specifies the quantity of ARPIPTargets that must be reachable in order for the ARP monitor to consider a slave as being up\&. This option affects only active\-backup mode for slaves with ARPValidate enabled\&. Possible values are
+"any"
+and
+"all"\&.
+.RE
+.PP
+\fIPrimaryReselectPolicy=\fR
+.RS 4
+Specifies the reselection policy for the primary slave\&. This affects how the primary slave is chosen to become the active slave when failure of the active slave or recovery of the primary slave occurs\&. This option is designed to prevent flip\-flopping between the primary slave and other slaves\&. Possible values are
+"always",
+"better"
+and
+"failure"\&.
+.RE
+.PP
+\fIResendIGMP=\fR
+.RS 4
+Specifies the number of IGMP membership reports to be issued after a failover event\&. One membership report is issued immediately after the failover, subsequent packets are sent in each 200ms interval\&. The valid range is 0\(en255\&. Defaults to 1\&. A value of 0 prevents the IGMP membership report from being issued in response to the failover event\&.
+.RE
+.PP
+\fIPacketsPerSlave=\fR
+.RS 4
+Specify the number of packets to transmit through a slave before moving to the next one\&. When set to 0, then a slave is chosen at random\&. The valid range is 0\(en65535\&. Defaults to 1\&. This option only has effect when in balance\-rr mode\&.
+.RE
+.PP
+\fIGratuitousARP=\fR
+.RS 4
+Specify the number of peer notifications (gratuitous ARPs and unsolicited IPv6 Neighbor Advertisements) to be issued after a failover event\&. As soon as the link is up on the new slave, a peer notification is sent on the bonding device and each VLAN sub\-device\&. This is repeated at each link monitor interval (ARPIntervalSec or MIIMonitorSec, whichever is active) if the number is greater than 1\&. The valid range is 0\(en255\&. The default value is 1\&. These options affect only the active\-backup mode\&.
+.RE
+.PP
+\fIAllSlavesActive=\fR
+.RS 4
+Takes a boolean\&. Specifies that duplicate frames (received on inactive ports) should be dropped when false, or delivered when true\&. Normally, bonding will drop duplicate frames (received on inactive ports), which is desirable for most users\&. But there are some times it is nice to allow duplicate frames to be delivered\&. The default value is false (drop duplicate frames received on inactive ports)\&.
+.RE
+.PP
+\fIDynamicTransmitLoadBalancing=\fR
+.RS 4
+Takes a boolean\&. Specifies if dynamic shuffling of flows is enabled\&. Applies only for balance\-tlb mode\&. Defaults to unset\&.
+.RE
+.PP
+\fIMinLinks=\fR
+.RS 4
+Specifies the minimum number of links that must be active before asserting carrier\&. The default value is 0\&.
+.RE
+.PP
+For more detail information see
+\m[blue]\fBLinux Ethernet Bonding Driver HOWTO\fR\m[]\&\s-2\u[1]\d\s+2
+.SH "[XFRM] SECTION OPTIONS"
+.PP
+The [Xfrm] section accepts the following keys:
+.PP
+\fIInterfaceId=\fR
+.RS 4
+Sets the ID/key of the xfrm interface which needs to be associated with a SA/policy\&. Can be decimal or hexadecimal, valid range is 0\-0xffffffff, defaults to 0\&.
+.RE
+.PP
+\fIIndependent=\fR
+.RS 4
+Takes a boolean\&. If false (the default), the xfrm interface must have an underlying device which can be used for hardware offloading\&.
+.RE
+.PP
+For more detail information see
+\m[blue]\fBVirtual XFRM Interfaces\fR\m[]\&\s-2\u[17]\d\s+2\&.
+.SH "[VRF] SECTION OPTIONS"
+.PP
+The [VRF] section only applies for netdevs of kind
+"vrf"
+and accepts the following key:
+.PP
+\fITable=\fR
+.RS 4
+The numeric routing table identifier\&. This setting is compulsory\&.
+.RE
+.SH "[BATMANADVANCED] SECTION OPTIONS"
+.PP
+The [BatmanAdvanced] section only applies for netdevs of kind
+"batadv"
+and accepts the following keys:
+.PP
+\fIGatewayMode=\fR
+.RS 4
+Takes one of
+"off",
+"server", or
+"client"\&. A batman\-adv node can either run in server mode (sharing its internet connection with the mesh) or in client mode (searching for the most suitable internet connection in the mesh) or having the gateway support turned off entirely (which is the default setting)\&.
+.RE
+.PP
+\fIAggregation=\fR
+.RS 4
+Takes a boolean value\&. Enables or disables aggregation of originator messages\&. Defaults to true\&.
+.RE
+.PP
+\fIBridgeLoopAvoidance=\fR
+.RS 4
+Takes a boolean value\&. Enables or disables avoidance of loops on bridges\&. Defaults to true\&.
+.RE
+.PP
+\fIDistributedArpTable=\fR
+.RS 4
+Takes a boolean value\&. Enables or disables the distributed ARP table\&. Defaults to true\&.
+.RE
+.PP
+\fIFragmentation=\fR
+.RS 4
+Takes a boolean value\&. Enables or disables fragmentation\&. Defaults to true\&.
+.RE
+.PP
+\fIHopPenalty=\fR
+.RS 4
+The hop penalty setting allows to modify
+\fBbatctl\fR(8)
+preference for multihop routes vs\&. short routes\&. This integer value is applied to the TQ (Transmit Quality) of each forwarded OGM (Originator Message), thereby propagating the cost of an extra hop (the packet has to be received and retransmitted which costs airtime)\&. A higher hop penalty will make it more unlikely that other nodes will choose this node as intermediate hop towards any given destination\&. The default hop penalty of \*(Aq15\*(Aq is a reasonable value for most setups and probably does not need to be changed\&. However, mobile nodes could choose a value of 255 (maximum value) to avoid being chosen as a router by other nodes\&. The minimum value is 0\&.
+.RE
+.PP
+\fIOriginatorIntervalSec=\fR
+.RS 4
+The value specifies the interval in seconds, unless another time unit is specified in which batman\-adv floods the network with its protocol information\&. See
+\fBsystemd.time\fR(7)
+for more information\&.
+.RE
+.PP
+\fIGatewayBandwidthDown=\fR
+.RS 4
+If the node is a server, this parameter is used to inform other nodes in the network about this node\*(Aqs internet connection download bandwidth in bits per second\&. Just enter any number suffixed with K, M, G or T (base 1000) and the batman\-adv module will propagate the entered value in the mesh\&.
+.RE
+.PP
+\fIGatewayBandwidthUp=\fR
+.RS 4
+If the node is a server, this parameter is used to inform other nodes in the network about this node\*(Aqs internet connection upload bandwidth in bits per second\&. Just enter any number suffixed with K, M, G or T (base 1000) and the batman\-adv module will propagate the entered value in the mesh\&.
+.RE
+.PP
+\fIRoutingAlgorithm=\fR
+.RS 4
+This can be either
+"batman\-v"
+or
+"batman\-iv"
+and describes which routing_algo of
+\fBbatctl\fR(8)
+to use\&. The algorithm cannot be changed after interface creation\&. Defaults to
+"batman\-v"\&.
+.RE
+.SH "EXAMPLES"
+.PP
+\fBExample\ \&1.\ \&/etc/systemd/network/25\-bridge\&.netdev\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+[NetDev]
+Name=bridge0
+Kind=bridge
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBExample\ \&2.\ \&/etc/systemd/network/25\-vlan1\&.netdev\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+[Match]
+Virtualization=no
+
+[NetDev]
+Name=vlan1
+Kind=vlan
+
+[VLAN]
+Id=1
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBExample\ \&3.\ \&/etc/systemd/network/25\-ipip\&.netdev\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+[NetDev]
+Name=ipip\-tun
+Kind=ipip
+MTUBytes=1480
+
+[Tunnel]
+Local=192\&.168\&.223\&.238
+Remote=192\&.169\&.224\&.239
+TTL=64
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBExample\ \&4.\ \&/etc/systemd/network/1\-fou\-tunnel\&.netdev\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+[NetDev]
+Name=fou\-tun
+Kind=fou
+
+[FooOverUDP]
+Port=5555
+Protocol=4
+      
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBExample\ \&5.\ \&/etc/systemd/network/25\-fou\-ipip\&.netdev\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+[NetDev]
+Name=ipip\-tun
+Kind=ipip
+
+[Tunnel]
+Independent=yes
+Local=10\&.65\&.208\&.212
+Remote=10\&.65\&.208\&.211
+FooOverUDP=yes
+FOUDestinationPort=5555
+      
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBExample\ \&6.\ \&/etc/systemd/network/25\-tap\&.netdev\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+[NetDev]
+Name=tap\-test
+Kind=tap
+
+[Tap]
+MultiQueue=yes
+PacketInfo=yes
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBExample\ \&7.\ \&/etc/systemd/network/25\-sit\&.netdev\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+[NetDev]
+Name=sit\-tun
+Kind=sit
+MTUBytes=1480
+
+[Tunnel]
+Local=10\&.65\&.223\&.238
+Remote=10\&.65\&.223\&.239
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBExample\ \&8.\ \&/etc/systemd/network/25\-6rd\&.netdev\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+[NetDev]
+Name=6rd\-tun
+Kind=sit
+MTUBytes=1480
+
+[Tunnel]
+Local=10\&.65\&.223\&.238
+IPv6RapidDeploymentPrefix=2602::/24
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBExample\ \&9.\ \&/etc/systemd/network/25\-gre\&.netdev\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+[NetDev]
+Name=gre\-tun
+Kind=gre
+MTUBytes=1480
+
+[Tunnel]
+Local=10\&.65\&.223\&.238
+Remote=10\&.65\&.223\&.239
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBExample\ \&10.\ \&/etc/systemd/network/25\-ip6gre\&.netdev\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+[NetDev]
+Name=ip6gre\-tun
+Kind=ip6gre
+
+[Tunnel]
+Key=123
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBExample\ \&11.\ \&/etc/systemd/network/25\-vti\&.netdev\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+[NetDev]
+Name=vti\-tun
+Kind=vti
+MTUBytes=1480
+
+[Tunnel]
+Local=10\&.65\&.223\&.238
+Remote=10\&.65\&.223\&.239
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBExample\ \&12.\ \&/etc/systemd/network/25\-veth\&.netdev\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+[NetDev]
+Name=veth\-test
+Kind=veth
+
+[Peer]
+Name=veth\-peer
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBExample\ \&13.\ \&/etc/systemd/network/25\-bond\&.netdev\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+[NetDev]
+Name=bond1
+Kind=bond
+
+[Bond]
+Mode=802\&.3ad
+TransmitHashPolicy=layer3+4
+MIIMonitorSec=1s
+LACPTransmitRate=fast
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBExample\ \&14.\ \&/etc/systemd/network/25\-dummy\&.netdev\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+[NetDev]
+Name=dummy\-test
+Kind=dummy
+MACAddress=12:34:56:78:9a:bc
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBExample\ \&15.\ \&/etc/systemd/network/25\-vrf\&.netdev\fR
+.PP
+Create a VRF interface with table 42\&.
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+[NetDev]
+Name=vrf\-test
+Kind=vrf
+
+[VRF]
+Table=42
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBExample\ \&16.\ \&/etc/systemd/network/25\-macvtap\&.netdev\fR
+.PP
+Create a MacVTap device\&.
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+[NetDev]
+Name=macvtap\-test
+Kind=macvtap
+      
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBExample\ \&17.\ \&/etc/systemd/network/25\-wireguard\&.netdev\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+[NetDev]
+Name=wg0
+Kind=wireguard
+
+[WireGuard]
+PrivateKey=EEGlnEPYJV//kbvvIqxKkQwOiS+UENyPncC4bF46ong=
+ListenPort=51820
+
+[WireGuardPeer]
+PublicKey=RDf+LSpeEre7YEIKaxg+wbpsNV7du+ktR99uBEtIiCA=
+AllowedIPs=fd31:bf08:57cb::/48,192\&.168\&.26\&.0/24
+Endpoint=wireguard\&.example\&.com:51820
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBExample\ \&18.\ \&/etc/systemd/network/27\-xfrm\&.netdev\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+[NetDev]
+Name=xfrm0
+Kind=xfrm
+
+[Xfrm]
+Independent=yes
+.fi
+.if n \{\
+.RE
+.\}
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsystemd-networkd\fR(8),
+\fBsystemd.link\fR(5),
+\fBsystemd.network\fR(5)
+.SH "NOTES"
+.IP " 1." 4
+Linux Ethernet Bonding Driver HOWTO
+.RS 4
+\%https://www.kernel.org/doc/Documentation/networking/bonding.txt
+.RE
+.IP " 2." 4
+RFC 2784
+.RS 4
+\%https://tools.ietf.org/html/rfc2784
+.RE
+.IP " 3." 4
+IEEE 802.1Q
+.RS 4
+\%http://www.ieee802.org/1/pages/802.1Q.html
+.RE
+.IP " 4." 4
+VRF
+.RS 4
+\%https://www.kernel.org/doc/Documentation/networking/vrf.txt
+.RE
+.IP " 5." 4
+B.A.T.M.A.N. Advanced
+.RS 4
+\%https://www.open-mesh.org/projects/open-mesh/wiki
+.RE
+.IP " 6." 4
+(DVOE)
+.RS 4
+\%https://en.wikipedia.org/wiki/Distributed_Overlay_Virtual_Ethernet
+.RE
+.IP " 7." 4
+VXLAN Group Policy
+.RS 4
+\%https://tools.ietf.org/html/draft-smith-vxlan-group-policy
+.RE
+.IP " 8." 4
+Generic Protocol Extension for VXLAN
+.RS 4
+\%https://tools.ietf.org/html/draft-ietf-nvo3-vxlan-gpe-07
+.RE
+.IP " 9." 4
+Type of Service in the Internet Protocol Suite
+.RS 4
+\%http://tools.ietf.org/html/rfc1349
+.RE
+.IP "10." 4
+RFC 6437
+.RS 4
+\%https://tools.ietf.org/html/rfc6437
+.RE
+.IP "11." 4
+RFC 2460
+.RS 4
+\%https://tools.ietf.org/html/rfc2460
+.RE
+.IP "12." 4
+RFC 2473
+.RS 4
+\%https://tools.ietf.org/html/rfc2473#section-4.1.1
+.RE
+.IP "13." 4
+ip-xfrm \(em transform configuration
+.RS 4
+\%http://man7.org/linux/man-pages/man8/ip-xfrm.8.html
+.RE
+.IP "14." 4
+Foo over UDP
+.RS 4
+\%https://lwn.net/Articles/614348
+.RE
+.IP "15." 4
+IPv6 Rapid Deployment
+.RS 4
+\%https://tools.ietf.org/html/rfc5569
+.RE
+.IP "16." 4
+Generic UDP Encapsulation
+.RS 4
+\%https://lwn.net/Articles/615044
+.RE
+.IP "17." 4
+Virtual XFRM Interfaces
+.RS 4
+\%https://lwn.net/Articles/757391
+.RE

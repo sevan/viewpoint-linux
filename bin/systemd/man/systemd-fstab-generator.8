@@ -1,0 +1,269 @@
+'\" t
+.TH "SYSTEMD\-FSTAB\-GENERATOR" "8" "" "systemd 248" "systemd-fstab-generator"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd-fstab-generator \- Unit generator for /etc/fstab
+.SH "SYNOPSIS"
+.PP
+/usr/lib/systemd/system\-generators/systemd\-fstab\-generator
+.SH "DESCRIPTION"
+.PP
+systemd\-fstab\-generator
+is a generator that translates
+/etc/fstab
+(see
+\fBfstab\fR(5)
+for details) into native systemd units early at boot and when configuration of the system manager is reloaded\&. This will instantiate mount and swap units as necessary\&.
+.PP
+The
+\fIpassno\fR
+field is treated like a simple boolean, and the ordering information is discarded\&. However, if the root file system is checked, it is checked before all the other file systems\&.
+.PP
+See
+\fBsystemd.mount\fR(5)
+and
+\fBsystemd.swap\fR(5)
+for more information about special
+/etc/fstab
+mount options this generator understands\&.
+.PP
+One special topic is handling of symbolic links\&. Historical init implementations supported symlinks in
+/etc/fstab\&. Because mount units will refuse mounts where the target is a symbolic link, this generator will resolve any symlinks as far as possible when processing
+/etc/fstab
+in order to enhance backwards compatibility\&. If a symlink target does not exist at the time that this generator runs, it is assumed that the symlink target is the final target of the mount\&.
+.PP
+systemd\-fstab\-generator
+implements
+\fBsystemd.generator\fR(7)\&.
+.SH "KERNEL COMMAND LINE"
+.PP
+systemd\-fstab\-generator
+understands the following kernel command line parameters:
+.PP
+\fIfstab=\fR, \fIrd\&.fstab=\fR
+.RS 4
+Takes a boolean argument\&. Defaults to
+"yes"\&. If
+"no", causes the generator to ignore any mounts or swap devices configured in
+/etc/fstab\&.
+\fIrd\&.fstab=\fR
+is honored only by the initial RAM disk (initrd) while
+\fIfstab=\fR
+is honored by both the main system and the initrd\&.
+.RE
+.PP
+\fIroot=\fR
+.RS 4
+Configures the operating system\*(Aqs root filesystem to mount when running in the initrd\&. This accepts a device node path (usually
+/dev/disk/by\-uuid/\&...
+or
+/dev/disk/by\-label/\&...
+or similar), or the special values
+"gpt\-auto"
+and
+"tmpfs"\&.
+.sp
+Use
+"gpt\-auto"
+to explicitly request automatic root file system discovery via
+\fBsystemd-gpt-auto-generator\fR(8)\&.
+.sp
+Use
+"tmpfs"
+in order to mount a
+\fBtmpfs\fR(5)
+file system as root file system of the OS\&. This is useful in combination with
+\fImount\&.usr=\fR
+(see below) in order to combine a volatile root file system with a separate, immutable
+/usr/
+file system\&. Also see
+\fIsystemd\&.volatile=\fR
+below\&.
+.RE
+.PP
+\fIrootfstype=\fR
+.RS 4
+Takes the root filesystem type that will be passed to the mount command\&.
+\fIrootfstype=\fR
+is honored by the initrd\&.
+.RE
+.PP
+\fIrootflags=\fR
+.RS 4
+Takes the root filesystem mount options to use\&.
+\fIrootflags=\fR
+is honored by the initrd\&.
+.sp
+Note that unlike most kernel command line options this setting does not override settings made in configuration files (specifically: the mount option string in
+/etc/fstab)\&. See
+\fBsystemd-remount-fs.service\fR(8)\&.
+.RE
+.PP
+\fImount\&.usr=\fR
+.RS 4
+Takes the
+/usr/
+filesystem to be mounted by the initrd\&. If
+\fImount\&.usrfstype=\fR
+or
+\fImount\&.usrflags=\fR
+is set, then
+\fImount\&.usr=\fR
+will default to the value set in
+\fIroot=\fR\&.
+.sp
+Otherwise, this parameter defaults to the
+/usr/
+entry found in
+/etc/fstab
+on the root filesystem\&.
+.sp
+\fImount\&.usr=\fR
+is honored by the initrd\&.
+.RE
+.PP
+\fImount\&.usrfstype=\fR
+.RS 4
+Takes the
+/usr/
+filesystem type that will be passed to the mount command\&. If
+\fImount\&.usr=\fR
+or
+\fImount\&.usrflags=\fR
+is set, then
+\fImount\&.usrfstype=\fR
+will default to the value set in
+\fIrootfstype=\fR\&.
+.sp
+Otherwise, this value will be read from the
+/usr/
+entry in
+/etc/fstab
+on the root filesystem\&.
+.sp
+\fImount\&.usrfstype=\fR
+is honored by the initrd\&.
+.RE
+.PP
+\fImount\&.usrflags=\fR
+.RS 4
+Takes the
+/usr/
+filesystem mount options to use\&. If
+\fImount\&.usr=\fR
+or
+\fImount\&.usrfstype=\fR
+is set, then
+\fImount\&.usrflags=\fR
+will default to the value set in
+\fIrootflags=\fR\&.
+.sp
+Otherwise, this value will be read from the
+/usr/
+entry in
+/etc/fstab
+on the root filesystem\&.
+.sp
+\fImount\&.usrflags=\fR
+is honored by the initrd\&.
+.RE
+.PP
+\fIsystemd\&.volatile=\fR
+.RS 4
+Controls whether the system shall boot up in volatile mode\&. Takes a boolean argument or the special value
+\fBstate\fR\&.
+.sp
+If false (the default), this generator makes no changes to the mount tree and the system is booted up in normal mode\&.
+.sp
+If true the generator ensures
+\fBsystemd-volatile-root.service\fR(8)
+is run as part of the initial RAM disk ("initrd")\&. This service changes the mount table before transitioning to the host system, so that a volatile memory file system ("tmpfs") is used as root directory, with only
+/usr/
+mounted into it from the configured root file system, in read\-only mode\&. This way the system operates in fully stateless mode, with all configuration and state reset at boot and lost at shutdown, as
+/etc/
+and
+/var/
+will be served from the (initially unpopulated) volatile memory file system\&.
+.sp
+If set to
+\fBstate\fR
+the generator will leave the root directory mount point unaltered, however will mount a
+"tmpfs"
+file system to
+/var/\&. In this mode the normal system configuration (i\&.e\&. the contents of
+"/etc/") is in effect (and may be modified during system runtime), however the system state (i\&.e\&. the contents of
+"/var/") is reset at boot and lost at shutdown\&.
+.sp
+If this setting is set to
+"overlay"
+the root file system is set up as
+"overlayfs"
+mount combining the read\-only root directory with a writable
+"tmpfs", so that no modifications are made to disk, but the file system may be modified nonetheless with all changes being lost at reboot\&.
+.sp
+Note that in none of these modes the root directory,
+/etc/,
+/var/
+or any other resources stored in the root file system are physically removed\&. It\*(Aqs thus safe to boot a system that is normally operated in non\-volatile mode temporarily into volatile mode, without losing data\&.
+.sp
+Note that with the exception of
+"overlay"
+mode, enabling this setting will only work correctly on operating systems that can boot up with only
+/usr/
+mounted, and are able to automatically populate
+/etc/, and also
+/var/
+in case of
+"systemd\&.volatile=yes"\&.
+.sp
+Also see
+\fIroot=tmpfs\fR
+above, for a method to combine a
+"tmpfs"
+file system with a regular
+/usr/
+file system (as configured via
+\fImount\&.usr=\fR)\&. The main distinction between
+\fIsystemd\&.volatile=yes\fR, and
+\fIroot=tmpfs\fR
+in combination
+\fImount\&.usr=\fR
+is that the former operates on top of a regular root file system and temporarily obstructs the files and directories above its
+/usr/
+subdirectory, while the latter does not hide any files, but simply mounts a unpopulated tmpfs as root file system and combines it with a user picked
+/usr/
+file system\&.
+.RE
+.PP
+\fIsystemd\&.swap\fR
+.RS 4
+Takes a boolean argument or enables the option if specified without an argument\&. If disabled, causes the generator to ignore any swap devices configured in
+/etc/fstab\&. Defaults to enabled\&.
+.RE
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBfstab\fR(5),
+\fBsystemd.mount\fR(5),
+\fBsystemd.swap\fR(5),
+\fBsystemd-cryptsetup-generator\fR(8),
+\fBsystemd-gpt-auto-generator\fR(8),
+\fBkernel-command-line\fR(7)

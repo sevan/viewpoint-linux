@@ -1,0 +1,392 @@
+'\" t
+.TH "SD_NOTIFY" "3" "" "systemd 248" "sd_notify"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_notify, sd_notifyf, sd_pid_notify, sd_pid_notifyf, sd_pid_notify_with_fds, sd_notify_barrier \- Notify service manager about start\-up completion and other service status changes
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-daemon\&.h>
+.fi
+.ft
+.HP \w'int\ sd_notify('u
+.BI "int sd_notify(int\ " "unset_environment" ", const\ char\ *" "state" ");"
+.HP \w'int\ sd_notifyf('u
+.BI "int sd_notifyf(int\ " "unset_environment" ", const\ char\ *" "format" ", \&...);"
+.HP \w'int\ sd_pid_notify('u
+.BI "int sd_pid_notify(pid_t\ " "pid" ", int\ " "unset_environment" ", const\ char\ *" "state" ");"
+.HP \w'int\ sd_pid_notifyf('u
+.BI "int sd_pid_notifyf(pid_t\ " "pid" ", int\ " "unset_environment" ", const\ char\ *" "format" ", \&...);"
+.HP \w'int\ sd_pid_notify_with_fds('u
+.BI "int sd_pid_notify_with_fds(pid_t\ " "pid" ", int\ " "unset_environment" ", const\ char\ *" "state" ", const\ int\ *" "fds" ", unsigned\ " "n_fds" ");"
+.HP \w'int\ sd_notify_barrier('u
+.BI "int sd_notify_barrier(int\ " "unset_environment" ", uint64_t\ " "timeout" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_notify()\fR
+may be called by a service to notify the service manager about state changes\&. It can be used to send arbitrary information, encoded in an environment\-block\-like string\&. Most importantly, it can be used for start\-up completion notification\&.
+.PP
+If the
+\fIunset_environment\fR
+parameter is non\-zero,
+\fBsd_notify()\fR
+will unset the
+\fI$NOTIFY_SOCKET\fR
+environment variable before returning (regardless of whether the function call itself succeeded or not)\&. Further calls to
+\fBsd_notify()\fR
+will then fail, but the variable is no longer inherited by child processes\&.
+.PP
+The
+\fIstate\fR
+parameter should contain a newline\-separated list of variable assignments, similar in style to an environment block\&. A trailing newline is implied if none is specified\&. The string may contain any kind of variable assignments, but the following shall be considered well\-known:
+.PP
+READY=1
+.RS 4
+Tells the service manager that service startup is finished, or the service finished loading its configuration\&. This is only used by systemd if the service definition file has
+\fIType=notify\fR
+set\&. Since there is little value in signaling non\-readiness, the only value services should send is
+"READY=1"
+(i\&.e\&.
+"READY=0"
+is not defined)\&.
+.RE
+.PP
+RELOADING=1
+.RS 4
+Tells the service manager that the service is reloading its configuration\&. This is useful to allow the service manager to track the service\*(Aqs internal state, and present it to the user\&. Note that a service that sends this notification must also send a
+"READY=1"
+notification when it completed reloading its configuration\&. Reloads are propagated in the same way as they are when initiated by the user\&.
+.RE
+.PP
+STOPPING=1
+.RS 4
+Tells the service manager that the service is beginning its shutdown\&. This is useful to allow the service manager to track the service\*(Aqs internal state, and present it to the user\&.
+.RE
+.PP
+STATUS=\&...
+.RS 4
+Passes a single\-line UTF\-8 status string back to the service manager that describes the service state\&. This is free\-form and can be used for various purposes: general state feedback, fsck\-like programs could pass completion percentages and failing programs could pass a human\-readable error message\&. Example:
+"STATUS=Completed 66% of file system check\&..."
+.RE
+.PP
+ERRNO=\&...
+.RS 4
+If a service fails, the errno\-style error code, formatted as string\&. Example:
+"ERRNO=2"
+for ENOENT\&.
+.RE
+.PP
+BUSERROR=\&...
+.RS 4
+If a service fails, the D\-Bus error\-style error code\&. Example:
+"BUSERROR=org\&.freedesktop\&.DBus\&.Error\&.TimedOut"
+.RE
+.PP
+MAINPID=\&...
+.RS 4
+The main process ID (PID) of the service, in case the service manager did not fork off the process itself\&. Example:
+"MAINPID=4711"
+.RE
+.PP
+WATCHDOG=1
+.RS 4
+Tells the service manager to update the watchdog timestamp\&. This is the keep\-alive ping that services need to issue in regular intervals if
+\fIWatchdogSec=\fR
+is enabled for it\&. See
+\fBsystemd.service\fR(5)
+for information how to enable this functionality and
+\fBsd_watchdog_enabled\fR(3)
+for the details of how the service can check whether the watchdog is enabled\&.
+.RE
+.PP
+WATCHDOG=trigger
+.RS 4
+Tells the service manager that the service detected an internal error that should be handled by the configured watchdog options\&. This will trigger the same behaviour as if
+\fIWatchdogSec=\fR
+is enabled and the service did not send
+"WATCHDOG=1"
+in time\&. Note that
+\fIWatchdogSec=\fR
+does not need to be enabled for
+"WATCHDOG=trigger"
+to trigger the watchdog action\&. See
+\fBsystemd.service\fR(5)
+for information about the watchdog behavior\&.
+.RE
+.PP
+WATCHDOG_USEC=\&...
+.RS 4
+Reset
+\fIwatchdog_usec\fR
+value during runtime\&. Notice that this is not available when using
+\fBsd_event_set_watchdog()\fR
+or
+\fBsd_watchdog_enabled()\fR\&. Example :
+"WATCHDOG_USEC=20000000"
+.RE
+.PP
+EXTEND_TIMEOUT_USEC=\&...
+.RS 4
+Tells the service manager to extend the startup, runtime or shutdown service timeout corresponding the current state\&. The value specified is a time in microseconds during which the service must send a new message\&. A service timeout will occur if the message isn\*(Aqt received, but only if the runtime of the current state is beyond the original maximum times of
+\fITimeoutStartSec=\fR,
+\fIRuntimeMaxSec=\fR, and
+\fITimeoutStopSec=\fR\&. See
+\fBsystemd.service\fR(5)
+for effects on the service timeouts\&.
+.RE
+.PP
+FDSTORE=1
+.RS 4
+Stores additional file descriptors in the service manager\&. File descriptors sent this way will be maintained per\-service by the service manager and will later be handed back using the usual file descriptor passing logic at the next invocation of the service, see
+\fBsd_listen_fds\fR(3)\&. This is useful for implementing services that can restart after an explicit request or a crash without losing state\&. Any open sockets and other file descriptors which should not be closed during the restart may be stored this way\&. Application state can either be serialized to a file in
+/run/, or better, stored in a
+\fBmemfd_create\fR(2)
+memory file descriptor\&. Note that the service manager will accept messages for a service only if its
+\fIFileDescriptorStoreMax=\fR
+setting is non\-zero (defaults to zero, see
+\fBsystemd.service\fR(5))\&. If
+\fIFDPOLL=0\fR
+is not set and the file descriptors sent are pollable (see
+\fBepoll_ctl\fR(2)), then any
+\fBEPOLLHUP\fR
+or
+\fBEPOLLERR\fR
+event seen on them will result in their automatic removal from the store\&. Multiple arrays of file descriptors may be sent in separate messages, in which case the arrays are combined\&. Note that the service manager removes duplicate (pointing to the same object) file descriptors before passing them to the service\&. Use
+\fBsd_pid_notify_with_fds()\fR
+to send messages with
+"FDSTORE=1", see below\&.
+.RE
+.PP
+FDSTOREREMOVE=1
+.RS 4
+Removes file descriptors from the file descriptor store\&. This field needs to be combined with
+\fIFDNAME=\fR
+to specify the name of the file descriptors to remove\&.
+.RE
+.PP
+FDNAME=\&...
+.RS 4
+When used in combination with
+\fIFDSTORE=1\fR, specifies a name for the submitted file descriptors\&. When used with
+\fIFDSTOREREMOVE=1\fR, specifies the name for the file descriptors to remove\&. This name is passed to the service during activation, and may be queried using
+\fBsd_listen_fds_with_names\fR(3)\&. File descriptors submitted without this field set, will implicitly get the name
+"stored"
+assigned\&. Note that, if multiple file descriptors are submitted at once, the specified name will be assigned to all of them\&. In order to assign different names to submitted file descriptors, submit them in separate invocations of
+\fBsd_pid_notify_with_fds()\fR\&. The name may consist of arbitrary ASCII characters except control characters or
+":"\&. It may not be longer than 255 characters\&. If a submitted name does not follow these restrictions, it is ignored\&.
+.RE
+.PP
+FDPOLL=0
+.RS 4
+When used in combination with
+\fIFDSTORE=1\fR, disables polling of the stored file descriptors regardless of whether or not they are pollable\&. As this option disables automatic cleanup of the stored file descriptors on EPOLLERR and EPOLLHUP, care must be taken to ensure proper manual cleanup\&. Use of this option is not generally recommended except for when automatic cleanup has unwanted behavior such as prematurely discarding file descriptors from the store\&.
+.RE
+.PP
+BARRIER=1
+.RS 4
+Tells the service manager that the client is explicitly requesting synchronization by means of closing the file descriptor sent with this command\&. The service manager guarantees that the processing of a
+\fI BARRIER=1\fR
+command will only happen after all previous notification messages sent before this command have been processed\&. Hence, this command accompanied with a single file descriptor can be used to synchronize against reception of all previous status messages\&. Note that this command cannot be mixed with other notifications, and has to be sent in a separate message to the service manager, otherwise all assignments will be ignored\&. Note that sending 0 or more than 1 file descriptor with this command is a violation of the protocol\&.
+.RE
+.PP
+It is recommended to prefix variable names that are not listed above with
+\fIX_\fR
+to avoid namespace clashes\&.
+.PP
+Note that systemd will accept status data sent from a service only if the
+\fINotifyAccess=\fR
+option is correctly set in the service definition file\&. See
+\fBsystemd.service\fR(5)
+for details\&.
+.PP
+Note that
+\fBsd_notify()\fR
+notifications may be attributed to units correctly only if either the sending process is still around at the time PID 1 processes the message, or if the sending process is explicitly runtime\-tracked by the service manager\&. The latter is the case if the service manager originally forked off the process, i\&.e\&. on all processes that match
+\fINotifyAccess=\fR\fBmain\fR
+or
+\fINotifyAccess=\fR\fBexec\fR\&. Conversely, if an auxiliary process of the unit sends an
+\fBsd_notify()\fR
+message and immediately exits, the service manager might not be able to properly attribute the message to the unit, and thus will ignore it, even if
+\fINotifyAccess=\fR\fBall\fR
+is set for it\&.
+.PP
+Hence, to eliminate all race conditions involving lookup of the client\*(Aqs unit and attribution of notifications to units correctly,
+\fBsd_notify_barrier()\fR
+may be used\&. This call acts as a synchronization point and ensures all notifications sent before this call have been picked up by the service manager when it returns successfully\&. Use of
+\fBsd_notify_barrier()\fR
+is needed for clients which are not invoked by the service manager, otherwise this synchronization mechanism is unnecessary for attribution of notifications to the unit\&.
+.PP
+\fBsd_notifyf()\fR
+is similar to
+\fBsd_notify()\fR
+but takes a
+\fBprintf()\fR\-like format string plus arguments\&.
+.PP
+\fBsd_pid_notify()\fR
+and
+\fBsd_pid_notifyf()\fR
+are similar to
+\fBsd_notify()\fR
+and
+\fBsd_notifyf()\fR
+but take a process ID (PID) to use as originating PID for the message as first argument\&. This is useful to send notification messages on behalf of other processes, provided the appropriate privileges are available\&. If the PID argument is specified as 0, the process ID of the calling process is used, in which case the calls are fully equivalent to
+\fBsd_notify()\fR
+and
+\fBsd_notifyf()\fR\&.
+.PP
+\fBsd_pid_notify_with_fds()\fR
+is similar to
+\fBsd_pid_notify()\fR
+but takes an additional array of file descriptors\&. These file descriptors are sent along the notification message to the service manager\&. This is particularly useful for sending
+"FDSTORE=1"
+messages, as described above\&. The additional arguments are a pointer to the file descriptor array plus the number of file descriptors in the array\&. If the number of file descriptors is passed as 0, the call is fully equivalent to
+\fBsd_pid_notify()\fR, i\&.e\&. no file descriptors are passed\&. Note that sending file descriptors to the service manager on messages that do not expect them (i\&.e\&. without
+"FDSTORE=1") they are immediately closed on reception\&.
+.PP
+\fBsd_notify_barrier()\fR
+allows the caller to synchronize against reception of previously sent notification messages and uses the
+"BARRIER=1"
+command\&. It takes a relative
+\fItimeout\fR
+value in microseconds which is passed to
+\fBppoll\fR(2)\&. A value of UINT64_MAX is interpreted as infinite timeout\&.
+.SH "RETURN VALUE"
+.PP
+On failure, these calls return a negative errno\-style error code\&. If
+\fI$NOTIFY_SOCKET\fR
+was not set and hence no status message could be sent, 0 is returned\&. If the status was sent, these functions return a positive value\&. In order to support both service managers that implement this scheme and those which do not, it is generally recommended to ignore the return value of this call\&. Note that the return value simply indicates whether the notification message was enqueued properly, it does not reflect whether the message could be processed successfully\&. Specifically, no error is returned when a file descriptor is attempted to be stored using
+\fIFDSTORE=1\fR
+but the service is not actually configured to permit storing of file descriptors (see above)\&.
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.PP
+These functions send a single datagram with the state string as payload to the
+\fBAF_UNIX\fR
+socket referenced in the
+\fI$NOTIFY_SOCKET\fR
+environment variable\&. If the first character of
+\fI$NOTIFY_SOCKET\fR
+is
+"@", the string is understood as Linux abstract namespace socket\&. The datagram is accompanied by the process credentials of the sending service, using SCM_CREDENTIALS\&.
+.SH "ENVIRONMENT"
+.PP
+\fI$NOTIFY_SOCKET\fR
+.RS 4
+Set by the service manager for supervised processes for status and start\-up completion notification\&. This environment variable specifies the socket
+\fBsd_notify()\fR
+talks to\&. See above for details\&.
+.RE
+.SH "EXAMPLES"
+.PP
+\fBExample\ \&1.\ \&Start\-up Notification\fR
+.PP
+When a service finished starting up, it might issue the following call to notify the service manager:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+sd_notify(0, "READY=1");
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBExample\ \&2.\ \&Extended Start\-up Notification\fR
+.PP
+A service could send the following after completing initialization:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+sd_notifyf(0, "READY=1\en"
+        "STATUS=Processing requests\&...\en"
+        "MAINPID=%lu",
+        (unsigned long) getpid());
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBExample\ \&3.\ \&Error Cause Notification\fR
+.PP
+A service could send the following shortly before exiting, on failure:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+sd_notifyf(0, "STATUS=Failed to start up: %s\en"
+        "ERRNO=%i",
+        strerror(errno),
+        errno);
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBExample\ \&4.\ \&Store a File Descriptor in the Service Manager\fR
+.PP
+To store an open file descriptor in the service manager, in order to continue operation after a service restart without losing state, use
+"FDSTORE=1":
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+sd_pid_notify_with_fds(0, 0, "FDSTORE=1\enFDNAME=foobar", &fd, 1);
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBExample\ \&5.\ \&Eliminating race conditions\fR
+.PP
+When the client sending the notifications is not spawned by the service manager, it may exit too quickly and the service manager may fail to attribute them correctly to the unit\&. To prevent such races, use
+\fBsd_notify_barrier()\fR
+to synchronize against reception of all notifications sent before this call is made\&.
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+sd_notify(0, "READY=1");
+      /* set timeout to 5 seconds */
+      sd_notify_barrier(0, 5 * 1000000);
+      
+.fi
+.if n \{\
+.RE
+.\}
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-daemon\fR(3),
+\fBsd_listen_fds\fR(3),
+\fBsd_listen_fds_with_names\fR(3),
+\fBsd_watchdog_enabled\fR(3),
+\fBdaemon\fR(7),
+\fBsystemd.service\fR(5)

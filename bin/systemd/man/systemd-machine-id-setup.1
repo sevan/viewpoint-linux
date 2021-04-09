@@ -1,0 +1,161 @@
+'\" t
+.TH "SYSTEMD\-MACHINE\-ID\-SETUP" "1" "" "systemd 248" "systemd-machine-id-setup"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd-machine-id-setup \- Initialize the machine ID in /etc/machine\-id
+.SH "SYNOPSIS"
+.HP \w'\fBsystemd\-machine\-id\-setup\fR\ 'u
+\fBsystemd\-machine\-id\-setup\fR
+.SH "DESCRIPTION"
+.PP
+\fBsystemd\-machine\-id\-setup\fR
+may be used by system installer tools to initialize the machine ID stored in
+/etc/machine\-id
+at install time, with a provisioned or randomly generated ID\&. See
+\fBmachine-id\fR(5)
+for more information about this file\&.
+.PP
+If the tool is invoked without the
+\fB\-\-commit\fR
+switch,
+/etc/machine\-id
+is initialized with a valid, new machined ID if it is missing or empty\&. The new machine ID will be acquired in the following fashion:
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 1.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  1." 4.2
+.\}
+If a valid D\-Bus machine ID is already configured for the system, the D\-Bus machine ID is copied and used to initialize the machine ID in
+/etc/machine\-id\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 2.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  2." 4.2
+.\}
+If run inside a KVM virtual machine and a UUID is configured (via the
+\fB\-uuid\fR
+option), this UUID is used to initialize the machine ID\&. The caller must ensure that the UUID passed is sufficiently unique and is different for every booted instance of the VM\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 3.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  3." 4.2
+.\}
+Similarly, if run inside a Linux container environment and a UUID is configured for the container, this is used to initialize the machine ID\&. For details, see the documentation of the
+\m[blue]\fBContainer Interface\fR\m[]\&\s-2\u[1]\d\s+2\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 4.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  4." 4.2
+.\}
+Otherwise, a new ID is randomly generated\&.
+.RE
+.PP
+The
+\fB\-\-commit\fR
+switch may be used to commit a transient machined ID to disk, making it persistent\&. For details, see below\&.
+.PP
+Use
+\fBsystemd-firstboot\fR(1)
+to initialize the machine ID on mounted (but not booted) system images\&.
+.SH "OPTIONS"
+.PP
+The following options are understood:
+.PP
+\fB\-\-root=\fR\fB\fIroot\fR\fR
+.RS 4
+Takes a directory path as argument\&. All paths operated will be prefixed with the given alternate
+\fIroot\fR
+path, including the path for
+/etc/machine\-id
+itself\&.
+.RE
+.PP
+\fB\-\-commit\fR
+.RS 4
+Commit a transient machine ID to disk\&. This command may be used to convert a transient machine ID into a persistent one\&. A transient machine ID file is one that was bind mounted from a memory file system (usually
+"tmpfs") to
+/etc/machine\-id
+during the early phase of the boot process\&. This may happen because
+/etc/
+is initially read\-only and was missing a valid machine ID file at that point\&.
+.sp
+This command will execute no operation if
+/etc/machine\-id
+is not mounted from a memory file system, or if
+/etc/
+is read\-only\&. The command will write the current transient machine ID to disk and unmount the
+/etc/machine\-id
+mount point in a race\-free manner to ensure that this file is always valid and accessible for other processes\&.
+.sp
+This command is primarily used by the
+\fBsystemd-machine-id-commit.service\fR(8)
+early boot service\&.
+.RE
+.PP
+\fB\-\-print\fR
+.RS 4
+Print the machine ID generated or committed after the operation is complete\&.
+.RE
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+Print a short help text and exit\&.
+.RE
+.PP
+\fB\-\-version\fR
+.RS 4
+Print a short version string and exit\&.
+.RE
+.SH "EXIT STATUS"
+.PP
+On success, 0 is returned, a non\-zero failure code otherwise\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBmachine-id\fR(5),
+\fBsystemd-machine-id-commit.service\fR(8),
+\fBdbus-uuidgen\fR(1),
+\fBsystemd-firstboot\fR(1)
+.SH "NOTES"
+.IP " 1." 4
+Container Interface
+.RS 4
+\%https://systemd.io/CONTAINER_INTERFACE
+.RE

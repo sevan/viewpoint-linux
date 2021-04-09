@@ -1,0 +1,57 @@
+'\" t
+.TH "SYSTEMD\-VCONSOLE\-SETUP\&.SERVICE" "8" "" "systemd 248" "systemd-vconsole-setup.service"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd-vconsole-setup.service, systemd-vconsole-setup \- Configure the virtual consoles
+.SH "SYNOPSIS"
+.PP
+systemd\-vconsole\-setup\&.service
+.HP \w'\fB/usr/lib/systemd/systemd\-vconsole\-setup\fR\ 'u
+\fB/usr/lib/systemd/systemd\-vconsole\-setup\fR [TTY]
+.SH "DESCRIPTION"
+.PP
+systemd\-vconsole\-setup
+sets up and configures either all virtual consoles, or \(em if the optional
+\fITTY\fR
+parameter is provided \(em a specific one\&. When the system is booting up, it\*(Aqs called by
+\fBsystemd-udevd\fR(8)
+during VT console subsystem initialization\&. Also,
+\fBsystemd-localed.service\fR(8)
+invokes it as needed when language or console changes are made\&. Internally, this program calls
+\fBloadkeys\fR(1)
+and
+\fBsetfont\fR(8)\&.
+.PP
+Execute
+\fBsystemctl restart systemd\-vconsole\-setup\&.service\fR
+in order to apply any manual changes made to
+/etc/vconsole\&.conf\&.
+.PP
+See
+\fBvconsole.conf\fR(5)
+for information about the configuration files and kernel command line options understood by this program\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBvconsole.conf\fR(5),
+\fBloadkeys\fR(1),
+\fBsetfont\fR(8),
+\fBsystemd-localed.service\fR(8)

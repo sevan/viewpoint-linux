@@ -1,0 +1,77 @@
+'\" t
+.TH "SD_BUS_SET_CLOSE_ON_EXIT" "3" "" "systemd 248" "sd_bus_set_close_on_exit"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_set_close_on_exit, sd_bus_get_close_on_exit \- Control whether to close the bus connection during the event loop exit phase
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_set_close_on_exit('u
+.BI "int sd_bus_set_close_on_exit(sd_bus\ *" "bus" ", int\ " "b" ");"
+.HP \w'int\ sd_bus_get_close_on_exit('u
+.BI "int sd_bus_get_close_on_exit(sd_bus\ *" "bus" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_set_close_on_exit()\fR
+may be used to enable or disable whether the bus connection is automatically flushed (as in
+\fBsd_bus_flush\fR(3)) and closed (as in
+\fBsd_bus_close\fR(3)) during the exit phase of the event loop\&. This logic only applies to bus connections that are attached to an
+\fBsd-event\fR(3)
+event loop, see
+\fBsd_bus_attach_event\fR(3)\&. By default this mechanism is enabled and makes sure that any pending messages that have not been written to the bus connection are written out when the event loop is shutting down\&. In some cases this behaviour is not desirable, for example when the bus connection shall remain usable until after the event loop exited\&. If
+\fIb\fR
+is true, the feature is enabled (which is the default), otherwise disabled\&.
+.PP
+\fBsd_bus_get_close_on_exit()\fR
+may be used to query the current setting of this feature\&. It returns zero when the feature is disabled, and positive if enabled\&.
+.SH "RETURN VALUE"
+.PP
+On success,
+\fBsd_bus_set_close_on_exit()\fR
+returns a non\-negative integer\&. On failure, it returns a negative errno\-style error code\&.
+.PP
+\fBsd_bus_get_close_on_exit()\fR
+returns 0 if the feature is currently disabled or a positive integer if it is enabled\&. On failure, it returns a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-ECHILD\fR
+.RS 4
+The bus connection was created in a different process\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd_bus_flush\fR(3),
+\fBsd_bus_attach_event\fR(3),
+\fBsd-event\fR(3),
+\fBsd_event_add_exit\fR(3)

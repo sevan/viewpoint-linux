@@ -1,0 +1,382 @@
+'\" t
+.TH "SYSTEMD\-JOURNALD\&.SERVICE" "8" "" "systemd 248" "systemd-journald.service"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd-journald.service, systemd-journald.socket, systemd-journald-dev-log.socket, systemd-journald-audit.socket, systemd-journald@.service, systemd-journald@.socket, systemd-journald-varlink@.socket, systemd-journald \- Journal service
+.SH "SYNOPSIS"
+.PP
+systemd\-journald\&.service
+.PP
+systemd\-journald\&.socket
+.PP
+systemd\-journald\-dev\-log\&.socket
+.PP
+systemd\-journald\-audit\&.socket
+.PP
+systemd\-journald@\&.service
+.PP
+systemd\-journald@\&.socket
+.PP
+systemd\-journald\-varlink@\&.socket
+.PP
+/usr/lib/systemd/systemd\-journald
+.SH "DESCRIPTION"
+.PP
+systemd\-journald
+is a system service that collects and stores logging data\&. It creates and maintains structured, indexed journals based on logging information that is received from a variety of sources:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Kernel log messages, via kmsg
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Simple system log messages, via the
+libc
+\fBsyslog\fR(3)
+call
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Structured system log messages via the native Journal API, see
+\fBsd_journal_print\fR(3)
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Standard output and standard error of service units\&. For further details see below\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Audit records, originating from the kernel audit subsystem
+.RE
+.PP
+The daemon will implicitly collect numerous metadata fields for each log messages in a secure and unfakeable way\&. See
+\fBsystemd.journal-fields\fR(7)
+for more information about the collected metadata\&.
+.PP
+Log data collected by the journal is primarily text\-based but can also include binary data where necessary\&. Individual fields making up a log record stored in the journal may be up to 2^64\-1 bytes in size\&.
+.PP
+The journal service stores log data either persistently below
+/var/log/journal
+or in a volatile way below
+/run/log/journal/
+(in the latter case it is lost at reboot)\&. By default, log data is stored persistently if
+/var/log/journal/
+exists during boot, with an implicit fallback to volatile storage otherwise\&. Use
+\fIStorage=\fR
+in
+\fBjournald.conf\fR(5)
+to configure where log data is placed, independently of the existence of
+/var/log/journal/\&.
+.PP
+On systems where
+/var/log/journal/
+does not exist yet but where persistent logging is desired (and the default
+journald\&.conf
+is used), it is sufficient to create the directory, and ensure it has the correct access modes and ownership:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+mkdir \-p /var/log/journal
+systemd\-tmpfiles \-\-create \-\-prefix /var/log/journal
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+See
+\fBjournald.conf\fR(5)
+for information about the configuration of this service\&.
+.SH "STREAM LOGGING"
+.PP
+The systemd service manager invokes all service processes with standard output and standard error connected to the journal by default\&. This behaviour may be altered via the
+\fIStandardOutput=\fR/\fIStandardError=\fR
+unit file settings, see
+\fBsystemd.exec\fR(5)
+for details\&. The journal converts the log byte stream received this way into individual log records, splitting the stream at newline ("\en", ASCII
+\fB10\fR) and
+\fBNUL\fR
+bytes\&.
+.PP
+If
+systemd\-journald\&.service
+is stopped, the stream connections associated with all services are terminated\&. Further writes to those streams by the service will result in
+\fBEPIPE\fR
+errors\&. In order to react gracefully in this case it is recommended that programs logging to standard output/error ignore such errors\&. If the
+\fBSIGPIPE\fR
+UNIX signal handler is not blocked or turned off, such write attempts will also result in such process signals being generated, see
+\fBsignal\fR(7)\&. To mitigate this issue, systemd service manager explicitly turns off the
+\fBSIGPIPE\fR
+signal for all invoked processes by default (this may be changed for each unit individually via the
+\fIIgnoreSIGPIPE=\fR
+option, see
+\fBsystemd.exec\fR(5)
+for details)\&. After the standard output/standard error streams have been terminated they may not be recovered until the services they are associated with are restarted\&. Note that during normal operation,
+systemd\-journald\&.service
+stores copies of the file descriptors for those streams in the service manager\&. If
+systemd\-journald\&.service
+is restarted using
+\fBsystemctl restart\fR
+or equivalent operation instead of a pair of separate
+\fBsystemctl stop\fR
+and
+\fBsystemctl start\fR
+commands (or equivalent operations), these stream connections are not terminated and survive the restart\&. It is thus safe to restart
+systemd\-journald\&.service, but stopping it is not recommended\&.
+.PP
+Note that the log record metadata for records transferred via such standard output/error streams reflect the metadata of the peer the stream was originally created for\&. If the stream connection is passed on to other processes (such as further child processes forked off the main service process), the log records will not reflect their metadata, but will continue to describe the original process\&. This is different from the other logging transports listed above, which are inherently record based and where the metadata is always associated with the individual record\&.
+.PP
+In addition to the implicit standard output/error logging of services, stream logging is also available via the
+\fBsystemd-cat\fR(1)
+command line tool\&.
+.PP
+Currently, the number of parallel log streams
+systemd\-journald
+will accept is limited to 4096\&. When this limit is reached further log streams may be established but will receive
+\fBEPIPE\fR
+right from the beginning\&.
+.SH "JOURNAL NAMESPACES"
+.PP
+Journal \*(Aqnamespaces\*(Aq are both a mechanism for logically isolating the log stream of projects consisting of one or more services from the rest of the system and a mechanism for improving performance\&. Multiple journal namespaces may exist simultaneously, each defining its own, independent log stream managed by its own instance of
+\fBsystemd\-journald\fR\&. Namespaces are independent of each other, both in the data store and in the IPC interface\&. By default only a single \*(Aqdefault\*(Aq namespace exists, managed by
+systemd\-journald\&.service
+(and its associated socket units)\&. Additional namespaces are created by starting an instance of the
+systemd\-journald@\&.service
+service template\&. The instance name is the namespace identifier, which is a short string used for referencing the journal namespace\&. Service units may be assigned to a specific journal namespace through the
+\fILogNamespace=\fR
+unit file setting, see
+\fBsystemd.exec\fR(5)
+for details\&. The
+\fB\-\-namespace=\fR
+switch of
+\fBjournalctl\fR(1)
+may be used to view the log stream of a specific namespace\&. If the switch is not used the log stream of the default namespace is shown, i\&.e\&. log data from other namespaces is not visible\&.
+.PP
+Services associated with a specific log namespace may log via syslog, the native logging protocol of the journal and via stdout/stderr; the logging from all three transports is associated with the namespace\&.
+.PP
+By default only the default namespace will collect kernel and audit log messages\&.
+.PP
+The
+\fBsystemd\-journald\fR
+instance of the default namespace is configured through
+/etc/systemd/journald\&.conf
+(see below), while the other instances are configured through
+/etc/systemd/journald@\fINAMESPACE\fR\&.conf\&. The journal log data for the default namespace is placed in
+/var/log/journal/\fIMACHINE_ID\fR
+(see below) while the data for the other namespaces is located in
+/var/log/journal/\fIMACHINE_ID\fR\&.\fINAMESPACE\fR\&.
+.SH "SIGNALS"
+.PP
+SIGUSR1
+.RS 4
+Request that journal data from
+/run/
+is flushed to
+/var/
+in order to make it persistent (if this is enabled)\&. This must be used after
+/var/
+is mounted, as otherwise log data from
+/run/
+is never flushed to
+/var/
+regardless of the configuration\&. Use the
+\fBjournalctl \-\-flush\fR
+command to request flushing of the journal files, and wait for the operation to complete\&. See
+\fBjournalctl\fR(1)
+for details\&.
+.RE
+.PP
+SIGUSR2
+.RS 4
+Request immediate rotation of the journal files\&. Use the
+\fBjournalctl \-\-rotate\fR
+command to request journal file rotation, and wait for the operation to complete\&.
+.RE
+.PP
+SIGRTMIN+1
+.RS 4
+Request that all unwritten log data is written to disk\&. Use the
+\fBjournalctl \-\-sync\fR
+command to trigger journal synchronization, and wait for the operation to complete\&.
+.RE
+.SH "KERNEL COMMAND LINE"
+.PP
+A few configuration parameters from
+journald\&.conf
+may be overridden on the kernel command line:
+.PP
+\fIsystemd\&.journald\&.forward_to_syslog=\fR, \fIsystemd\&.journald\&.forward_to_kmsg=\fR, \fIsystemd\&.journald\&.forward_to_console=\fR, \fIsystemd\&.journald\&.forward_to_wall=\fR
+.RS 4
+Enables/disables forwarding of collected log messages to syslog, the kernel log buffer, the system console or wall\&.
+.sp
+See
+\fBjournald.conf\fR(5)
+for information about these settings\&.
+.RE
+.PP
+Note that these kernel command line options are only honoured by the default namespace, see above\&.
+.SH "ACCESS CONTROL"
+.PP
+Journal files are, by default, owned and readable by the
+"systemd\-journal"
+system group but are not writable\&. Adding a user to this group thus enables them to read the journal files\&.
+.PP
+By default, each user, with a UID outside the range of system users, dynamic service users, and the nobody user, will get their own set of journal files in
+/var/log/journal/\&. See
+\m[blue]\fBUsers, Groups, UIDs and GIDs on systemd systems\fR\m[]\&\s-2\u[1]\d\s+2
+for more details about UID ranges\&. These journal files will not be owned by the user, however, in order to avoid that the user can write to them directly\&. Instead, file system ACLs are used to ensure the user gets read access only\&.
+.PP
+Additional users and groups may be granted access to journal files via file system access control lists (ACL)\&. Distributions and administrators may choose to grant read access to all members of the
+"wheel"
+and
+"adm"
+system groups with a command such as the following:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+# setfacl \-Rnm g:wheel:rx,d:g:wheel:rx,g:adm:rx,d:g:adm:rx /var/log/journal/
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+Note that this command will update the ACLs both for existing journal files and for future journal files created in the
+/var/log/journal/
+directory\&.
+.SH "FILES"
+.PP
+/etc/systemd/journald\&.conf
+.RS 4
+Configure
+\fBsystemd\-journald\fR
+behavior\&. See
+\fBjournald.conf\fR(5)\&.
+.RE
+.PP
+/run/log/journal/\fImachine\-id\fR/*\&.journal, /run/log/journal/\fImachine\-id\fR/*\&.journal~, /var/log/journal/\fImachine\-id\fR/*\&.journal, /var/log/journal/\fImachine\-id\fR/*\&.journal~
+.RS 4
+\fBsystemd\-journald\fR
+writes entries to files in
+/run/log/journal/\fImachine\-id\fR/
+or
+/var/log/journal/\fImachine\-id\fR/
+with the
+"\&.journal"
+suffix\&. If the daemon is stopped uncleanly, or if the files are found to be corrupted, they are renamed using the
+"\&.journal~"
+suffix, and
+\fBsystemd\-journald\fR
+starts writing to a new file\&.
+/run/
+is used when
+/var/log/journal
+is not available, or when
+\fBStorage=volatile\fR
+is set in the
+\fBjournald.conf\fR(5)
+configuration file\&.
+.sp
+When
+systemd\-journald
+ceases writing to a journal file, it will be renamed to
+"\fIoriginal\-name\fR@\fIsuffix\&.journal\fR"
+(or
+"\fIoriginal\-name\fR@\fIsuffix\&.journal~\fR")\&. Such files are "archived" and will not be written to any more\&.
+.sp
+In general, it is safe to read or copy any journal file (active or archived)\&.
+\fBjournalctl\fR(1)
+and the functions in the
+\fBsd-journal\fR(3)
+library should be able to read all entries that have been fully written\&.
+.sp
+systemd\-journald
+will automatically remove the oldest archived journal files to limit disk use\&. See
+\fISystemMaxUse=\fR
+and related settings in
+\fBjournald.conf\fR(5)\&.
+.RE
+.PP
+/dev/kmsg, /dev/log, /run/systemd/journal/dev\-log, /run/systemd/journal/socket, /run/systemd/journal/stdout
+.RS 4
+Sockets and other file node paths that
+\fBsystemd\-journald\fR
+will listen on and are visible in the file system\&. In addition to these,
+\fBsystemd\-journald\fR
+can listen for audit events using
+\fBnetlink\fR(7)\&.
+.RE
+.PP
+If journal namespacing is used these paths are slightly altered to include a namespace identifier, see above\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBjournalctl\fR(1),
+\fBjournald.conf\fR(5),
+\fBsystemd.journal-fields\fR(7),
+\fBsd-journal\fR(3),
+\fBsystemd-coredump\fR(8),
+\fBsetfacl\fR(1),
+\fBsd_journal_print\fR(3),
+\fBpydoc systemd\&.journal\fR
+.SH "NOTES"
+.IP " 1." 4
+Users, Groups, UIDs and GIDs on systemd systems
+.RS 4
+\%https://systemd.io/UIDS-GIDS
+.RE

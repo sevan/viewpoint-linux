@@ -1,0 +1,149 @@
+'\" t
+.TH "ENVIRONMENT\&.D" "5" "" "systemd 248" "environment.d"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+environment.d \- Definition of user service environment
+.SH "SYNOPSIS"
+.PP
+~/\&.config/environment\&.d/*\&.conf
+.PP
+/etc/environment\&.d/*\&.conf
+.PP
+/run/environment\&.d/*\&.conf
+.PP
+/usr/lib/environment\&.d/*\&.conf
+.PP
+/etc/environment
+.SH "DESCRIPTION"
+.PP
+Configuration files in the
+environment\&.d/
+directories contain lists of environment variable assignments for services started by the systemd user instance\&.
+\fBsystemd-environment-d-generator\fR(8)
+parses them and updates the environment exported by the systemd user instance\&. See below for an discussion of which processes inherit those variables\&.
+.PP
+It is recommended to use numerical prefixes for file names to simplify ordering\&.
+.PP
+For backwards compatibility, a symlink to
+/etc/environment
+is installed, so this file is also parsed\&.
+.SH "CONFIGURATION DIRECTORIES AND PRECEDENCE"
+.PP
+Configuration files are read from directories in
+/etc/,
+/run/,
+/usr/local/lib/, and
+/usr/lib/, in order of precedence, as listed in the SYNOPSIS section above\&. Files must have the
+"\&.conf"
+extension\&. Files in
+/etc/
+override files with the same name in
+/run/,
+/usr/local/lib/, and
+/usr/lib/\&. Files in
+/run/
+override files with the same name under
+/usr/\&.
+.PP
+All configuration files are sorted by their filename in lexicographic order, regardless of which of the directories they reside in\&. If multiple files specify the same option, the entry in the file with the lexicographically latest name will take precedence\&. Thus, the configuration in a certain file may either be replaced completely (by placing a file with the same name in a directory with higher priority), or individual settings might be changed (by specifying additional settings in a file with a different name that is ordered later)\&.
+.PP
+Packages should install their configuration files in
+/usr/lib/
+(distribution packages) or
+/usr/local/lib/
+(local installs)\&. Files in
+/etc/
+are reserved for the local administrator, who may use this logic to override the configuration files installed by vendor packages\&. It is recommended to prefix all filenames with a two\-digit number and a dash, to simplify the ordering of the files\&.
+.PP
+If the administrator wants to disable a configuration file supplied by the vendor, the recommended way is to place a symlink to
+/dev/null
+in the configuration directory in
+/etc/, with the same filename as the vendor configuration file\&. If the vendor configuration file is included in the initrd image, the image has to be regenerated\&.
+.SH "CONFIGURATION FORMAT"
+.PP
+The configuration files contain a list of
+"\fIKEY\fR=\fIVALUE\fR"
+environment variable assignments, separated by newlines\&. The right hand side of these assignments may reference previously defined environment variables, using the
+"${OTHER_KEY}"
+and
+"$OTHER_KEY"
+format\&. It is also possible to use
+"${\fIFOO\fR:\-\fIDEFAULT_VALUE\fR}"
+to expand in the same way as
+"${\fIFOO\fR}"
+unless the expansion would be empty, in which case it expands to
+\fIDEFAULT_VALUE\fR, and use
+"${\fIFOO\fR:+\fIALTERNATE_VALUE\fR}"
+to expand to
+\fIALTERNATE_VALUE\fR
+as long as
+"${\fIFOO\fR}"
+would have expanded to a non\-empty value\&. No other elements of shell syntax are supported\&.
+.PP
+Each
+\fIKEY\fR
+must be a valid variable name\&. Empty lines and lines beginning with the comment character
+"#"
+are ignored\&.
+.SS "Example"
+.PP
+\fBExample\ \&1.\ \&Setup environment to allow access to a program installed in /opt/foo\fR
+.PP
+/etc/environment\&.d/60\-foo\&.conf:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+        FOO_DEBUG=force\-software\-gl,log\-verbose
+        PATH=/opt/foo/bin:$PATH
+        LD_LIBRARY_PATH=/opt/foo/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
+        XDG_DATA_DIRS=/opt/foo/share:${XDG_DATA_DIRS:\-/usr/local/share/:/usr/share/}
+        
+.fi
+.if n \{\
+.RE
+.\}
+.SH "APPLICABILITY"
+.PP
+Environment variables exported by the user manager (\fBsystemd \-\-user\fR
+instance started in the
+user@\fIuid\fR\&.service
+system service) apply to any services started by that manager\&. In particular, this may include services which run user shells\&. For example in the GNOME environment, the graphical terminal emulator runs as the
+gnome\-terminal\-server\&.service
+user unit, which in turn runs the user shell, so that shell will inherit environment variables exported by the user manager\&. For other instances of the shell, not launched by the user manager, the environment they inherit is defined by the program that starts them\&. Hint: in general,
+\fBsystemd.service\fR(5)
+units contain programs launched by systemd, and
+\fBsystemd.scope\fR(5)
+units contain programs launched by something else\&.
+.PP
+Specifically, for ssh logins, the
+\fBsshd\fR(8)
+service builds an environment that is a combination of variables forwarded from the remote system and defined by
+\fBsshd\fR, see the discussion in
+\fBssh\fR(1)\&. A graphical display session will have an analogous mechanism to define the environment\&. Note that some managers query the systemd user instance for the exported environment and inject this configuration into programs they start, using
+\fBsystemctl show\-environment\fR
+or the underlying D\-Bus call\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsystemd-environment-d-generator\fR(8),
+\fBsystemd.environment-generator\fR(7)

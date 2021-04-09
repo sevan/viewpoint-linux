@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!ENTITY MOUNT_PATH "/bin/mount">
+<!ENTITY UMOUNT_PATH "/bin/umount">
+<!ENTITY systemgeneratordir "/lib/systemd/system-generators">
+<!ENTITY usergeneratordir "/usr/lib/systemd/user-generators">
+<!ENTITY systemenvgeneratordir "/usr/lib/systemd/system-environment-generators">
+<!ENTITY userenvgeneratordir "/usr/lib/systemd/user-environment-generators">
+<!ENTITY CERTIFICATE_ROOT "/etc/ssl">
+<!ENTITY FALLBACK_HOSTNAME "localhost">
+<!ENTITY MEMORY_ACCOUNTING_DEFAULT "yes">
+<!ENTITY KILL_USER_PROCESSES "yes">
+<!ENTITY DEBUGTTY "/dev/tty9">
+<!ENTITY RC_LOCAL_PATH "/etc/rc.local">
+<!ENTITY fedora_latest_version "33">
+<!ENTITY fedora_cloud_release "1.2">

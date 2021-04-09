@@ -1,0 +1,294 @@
+'\" t
+.TH "SD_BUS_MESSAGE_APPEND_BASIC" "3" "" "systemd 248" "sd_bus_message_append_basic"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_message_append_basic \- Attach a single field to a message
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_message_append_basic('u
+.BI "int sd_bus_message_append_basic(sd_bus_message\ *" "m" ", char\ " "type" ", const\ void\ *" "p" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_message_append_basic()\fR
+appends a single field to the message
+\fIm\fR\&. The parameter
+\fItype\fR
+determines how the pointer
+\fIp\fR
+is interpreted\&.
+\fItype\fR
+must be one of the basic types as defined by the
+\m[blue]\fBBasic Types\fR\m[]\&\s-2\u[1]\d\s+2
+section of the D\-Bus specification, and listed in the table below\&.
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+.B Table\ \&1.\ \&Item type specifiers
+.TS
+allbox tab(:);
+lB lB lB lB lB.
+T{
+Specifier
+T}:T{
+Constant
+T}:T{
+Description
+T}:T{
+Size
+T}:T{
+Expected C Type
+T}
+.T&
+l l l l l
+l l l l l
+l l l l l
+l l l l l
+l l l l l
+l l l l l
+l l l l l
+l l l l l
+l l l l l
+l l l l l
+l l l l l
+l l l l l
+l l l l l.
+T{
+"y"
+T}:T{
+\fBSD_BUS_TYPE_BYTE\fR
+T}:T{
+unsigned integer
+T}:T{
+1 byte
+T}:T{
+uint8_t
+T}
+T{
+"b"
+T}:T{
+\fBSD_BUS_TYPE_BOOLEAN\fR
+T}:T{
+boolean
+T}:T{
+4 bytes
+T}:T{
+int
+T}
+T{
+"n"
+T}:T{
+\fBSD_BUS_TYPE_INT16\fR
+T}:T{
+signed integer
+T}:T{
+2 bytes
+T}:T{
+int16_t
+T}
+T{
+"q"
+T}:T{
+\fBSD_BUS_TYPE_UINT16\fR
+T}:T{
+unsigned integer
+T}:T{
+2 bytes
+T}:T{
+uint16_t
+T}
+T{
+"i"
+T}:T{
+\fBSD_BUS_TYPE_INT32\fR
+T}:T{
+signed integer
+T}:T{
+4 bytes
+T}:T{
+int32_t
+T}
+T{
+"u"
+T}:T{
+\fBSD_BUS_TYPE_UINT32\fR
+T}:T{
+unsigned integer
+T}:T{
+4 bytes
+T}:T{
+uint32_t
+T}
+T{
+"x"
+T}:T{
+\fBSD_BUS_TYPE_INT64\fR
+T}:T{
+signed integer
+T}:T{
+8 bytes
+T}:T{
+int64_t
+T}
+T{
+"t"
+T}:T{
+\fBSD_BUS_TYPE_UINT64\fR
+T}:T{
+unsigned integer
+T}:T{
+8 bytes
+T}:T{
+uint64_t
+T}
+T{
+"d"
+T}:T{
+\fBSD_BUS_TYPE_DOUBLE\fR
+T}:T{
+floating\-point
+T}:T{
+8 bytes
+T}:T{
+double
+T}
+T{
+"s"
+T}:T{
+\fBSD_BUS_TYPE_STRING\fR
+T}:T{
+Unicode string
+T}:T{
+variable
+T}:T{
+char[]
+T}
+T{
+"o"
+T}:T{
+\fBSD_BUS_TYPE_OBJECT_PATH\fR
+T}:T{
+object path
+T}:T{
+variable
+T}:T{
+char[]
+T}
+T{
+"g"
+T}:T{
+\fBSD_BUS_TYPE_SIGNATURE\fR
+T}:T{
+signature
+T}:T{
+variable
+T}:T{
+char[]
+T}
+T{
+"h"
+T}:T{
+\fBSD_BUS_TYPE_UNIX_FD\fR
+T}:T{
+UNIX file descriptor
+T}:T{
+4 bytes
+T}:T{
+int
+T}
+.TE
+.sp 1
+.PP
+The value of the parameter is copied into a memory area held by the message object, stays in the possession of the caller and may hence be freely changed after this call without affecting the bus message it has been added to\&. If
+\fItype\fR
+is
+"h"
+(UNIX file descriptor), the descriptor is duplicated by this call and the passed descriptor stays in possession of the caller\&.
+.PP
+For types
+"s",
+"o", and
+"g", the parameter
+\fIp\fR
+is interpreted as a pointer to a
+\fBNUL\fR\-terminated character sequence\&. As a special case, a
+\fBNULL\fR
+pointer is interpreted as an empty string\&. The string should be valid Unicode string encoded as UTF\-8\&. In case of the two latter types, the additional requirements for a D\-Bus object path or type signature should be satisfied\&. Those requirements should be verified by the recipient of the message\&.
+.SH "RETURN VALUE"
+.PP
+On success, this call returns 0 or a positive integer\&. On failure, it returns a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+Specified parameter is invalid\&.
+.RE
+.PP
+\fB\-EPERM\fR
+.RS 4
+Message has been sealed\&.
+.RE
+.PP
+\fB\-ESTALE\fR
+.RS 4
+Message is in invalid state\&.
+.RE
+.PP
+\fB\-ENXIO\fR
+.RS 4
+Message cannot be appended to\&.
+.RE
+.PP
+\fB\-ENOMEM\fR
+.RS 4
+Memory allocation failed\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd_bus_message_read_basic\fR(3),
+\fBsd_bus_message_append\fR(3),
+\m[blue]\fBThe D\-Bus specification\fR\m[]\&\s-2\u[2]\d\s+2
+.SH "NOTES"
+.IP " 1." 4
+Basic Types
+.RS 4
+\%http://dbus.freedesktop.org/doc/dbus-specification.html#basic-types
+.RE
+.IP " 2." 4
+The D-Bus specification
+.RS 4
+\%http://dbus.freedesktop.org/doc/dbus-specification.html
+.RE

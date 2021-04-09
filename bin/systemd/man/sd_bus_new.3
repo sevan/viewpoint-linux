@@ -1,0 +1,176 @@
+'\" t
+.TH "SD_BUS_NEW" "3" "" "systemd 248" "sd_bus_new"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_new, sd_bus_ref, sd_bus_unref, sd_bus_unrefp, sd_bus_close_unref, sd_bus_close_unrefp, sd_bus_flush_close_unref, sd_bus_flush_close_unrefp \- Create a new bus object and create or destroy references to it
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_new('u
+.BI "int sd_bus_new(sd_bus\ **" "bus" ");"
+.HP \w'sd_bus\ *sd_bus_ref('u
+.BI "sd_bus *sd_bus_ref(sd_bus\ *" "bus" ");"
+.HP \w'sd_bus\ *sd_bus_unref('u
+.BI "sd_bus *sd_bus_unref(sd_bus\ *" "bus" ");"
+.HP \w'sd_bus\ *sd_bus_close_unref('u
+.BI "sd_bus *sd_bus_close_unref(sd_bus\ *" "bus" ");"
+.HP \w'sd_bus\ *sd_bus_flush_close_unref('u
+.BI "sd_bus *sd_bus_flush_close_unref(sd_bus\ *" "bus" ");"
+.HP \w'void\ sd_bus_unrefp('u
+.BI "void sd_bus_unrefp(sd_bus\ **" "busp" ");"
+.HP \w'void\ sd_bus_close_unrefp('u
+.BI "void sd_bus_close_unrefp(sd_bus\ **" "busp" ");"
+.HP \w'void\ sd_bus_flush_close_unrefp('u
+.BI "void sd_bus_flush_close_unrefp(sd_bus\ **" "busp" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_new()\fR
+creates a new bus object\&. This object is reference\-counted, and will be destroyed when all references are gone\&. Initially, the caller of this function owns the sole reference and the bus object will not be connected to any bus\&. To connect it to a bus, make sure to set an address with
+\fBsd_bus_set_address\fR(3)
+or a related call, and then start the connection with
+\fBsd_bus_start\fR(3)\&.
+.PP
+In most cases, it is better to use
+\fBsd_bus_default_user\fR(3),
+\fBsd_bus_default_system\fR(3)
+or related calls instead of the more low\-level
+\fBsd_bus_new()\fR
+and
+\fBsd_bus_start()\fR\&. The higher\-level functions not only allocate a bus object but also start the connection to a well\-known bus in a single function call\&.
+.PP
+\fBsd_bus_ref()\fR
+increases the reference counter of
+\fIbus\fR
+by one\&.
+.PP
+\fBsd_bus_unref()\fR
+decreases the reference counter of
+\fIbus\fR
+by one\&. Once the reference count has dropped to zero,
+\fIbus\fR
+is destroyed and cannot be used anymore, so further calls to
+\fBsd_bus_ref()\fR
+or
+\fBsd_bus_unref()\fR
+are illegal\&.
+.PP
+\fBsd_bus_unrefp()\fR
+is similar to
+\fBsd_bus_unref()\fR
+but takes a pointer to a pointer to an
+\fBsd_bus\fR
+object\&. This call is useful in conjunction with GCC\*(Aqs and LLVM\*(Aqs
+\m[blue]\fBClean\-up Variable Attribute\fR\m[]\&\s-2\u[1]\d\s+2\&. Note that this function is defined as inline function\&. Use a declaration like the following, in order to allocate a bus object that is freed automatically as the code block is left:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+{
+  __attribute__((cleanup(sd_bus_unrefp))) sd_bus *bus = NULL;
+  int r;
+  \&...
+  r = sd_bus_default(&bus);
+  if (r < 0)
+    fprintf(stderr, "Failed to allocate bus: %s\en", strerror(\-r));
+  \&...
+}
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBsd_bus_ref()\fR
+and
+\fBsd_bus_unref()\fR
+execute no operation if the passed in bus object address is
+\fBNULL\fR\&.
+\fBsd_bus_unrefp()\fR
+will first dereference its argument, which must not be
+\fBNULL\fR, and will execute no operation if
+\fIthat\fR
+is
+\fBNULL\fR\&.
+.PP
+\fBsd_bus_close_unref()\fR
+is similar to
+\fBsd_bus_unref()\fR, but first executes
+\fBsd_bus_close\fR(3), ensuring that the connection is terminated before the reference to the connection is dropped and possibly the object freed\&.
+.PP
+\fBsd_bus_flush_close_unref()\fR
+is similar to
+\fBsd_bus_unref()\fR, but first executes
+\fBsd_bus_flush\fR(3)
+as well as
+\fBsd_bus_close\fR(3), ensuring that any pending messages are synchronously flushed out before the reference to the connection is dropped and possibly the object freed\&. This call is particularly useful immediately before exiting from a program as it ensures that any pending outgoing messages are written out, and unprocessed but queued incoming messages released before the connection is terminated and released\&.
+.PP
+\fBsd_bus_close_unrefp()\fR
+is similar to
+\fBsd_bus_close_unref()\fR, but may be used in GCC\*(Aqs and LLVM\*(Aqs Clean\-up Variable Attribute, see above\&. Similarly,
+\fBsd_bus_flush_close_unrefp()\fR
+is similar to
+\fBsd_bus_flush_close_unref()\fR\&.
+.SH "RETURN VALUE"
+.PP
+On success,
+\fBsd_bus_new()\fR
+returns 0 or a positive integer\&. On failure, it returns a negative errno\-style error code\&.
+.PP
+\fBsd_bus_ref()\fR
+always returns the argument\&.
+.PP
+\fBsd_bus_unref()\fR
+and
+\fBsd_bus_flush_close_unref()\fR
+always return
+\fBNULL\fR\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-ENOMEM\fR
+.RS 4
+Memory allocation failed\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd_bus_default_user\fR(3),
+\fBsd_bus_default_system\fR(3),
+\fBsd_bus_open_user\fR(3),
+\fBsd_bus_open_system\fR(3),
+\fBsd_bus_close\fR(3)
+.SH "NOTES"
+.IP " 1." 4
+Clean-up Variable Attribute
+.RS 4
+\%https://gcc.gnu.org/onlinedocs/gcc/Common-Variable-Attributes.html
+.RE

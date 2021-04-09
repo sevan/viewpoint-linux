@@ -1,0 +1,87 @@
+'\" t
+.TH "SYSTEMD\-NETWORKD\&.SERVICE" "8" "" "systemd 248" "systemd-networkd.service"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd-networkd.service, systemd-networkd \- Network manager
+.SH "SYNOPSIS"
+.PP
+systemd\-networkd\&.service
+.PP
+/usr/lib/systemd/systemd\-networkd
+.SH "DESCRIPTION"
+.PP
+\fBsystemd\-networkd\fR
+is a system service that manages networks\&. It detects and configures network devices as they appear, as well as creating virtual network devices\&.
+.PP
+To configure low\-level link settings independently of networks, see
+\fBsystemd.link\fR(5)\&.
+.PP
+\fBsystemd\-networkd\fR
+will create network devices based on the configuration in
+\fBsystemd.netdev\fR(5)
+files, respecting the [Match] sections in those files\&.
+.PP
+\fBsystemd\-networkd\fR
+will manage network addresses and routes for any link for which it finds a
+\&.network
+file with an appropriate [Match] section, see
+\fBsystemd.network\fR(5)\&. For those links, it will flush existing network addresses and routes when bringing up the device\&. Any links not matched by one of the
+\&.network
+files will be ignored\&. It is also possible to explicitly tell
+systemd\-networkd
+to ignore a link by using
+\fIUnmanaged=yes\fR
+option, see
+\fBsystemd.network\fR(5)\&.
+.PP
+When
+systemd\-networkd
+exits, it generally leaves existing network devices and configuration intact\&. This makes it possible to transition from the initramfs and to restart the service without breaking connectivity\&. This also means that when configuration is updated and
+systemd\-networkd
+is restarted, netdev interfaces for which configuration was removed will not be dropped, and may need to be cleaned up manually\&.
+.PP
+\fBsystemd\-networkd\fR
+may be introspected and controlled at runtime using
+\fBnetworkctl\fR(1)\&.
+.SH "CONFIGURATION FILES"
+.PP
+The configuration files are read from the files located in the system network directory
+/usr/lib/systemd/network, the volatile runtime network directory
+/run/systemd/network
+and the local administration network directory
+/etc/systemd/network\&.
+.PP
+Networks are configured in
+\&.network
+files, see
+\fBsystemd.network\fR(5), and virtual network devices are configured in
+\&.netdev
+files, see
+\fBsystemd.netdev\fR(5)\&.
+.SH "SEE ALSO"
+.PP
+\fBnetworkctl\fR(1),
+\fBsystemd\fR(1),
+\fBsystemd.link\fR(5),
+\fBsystemd.network\fR(5),
+\fBsystemd.netdev\fR(5),
+\fBsystemd-networkd-wait-online.service\fR(8),
+\fBsystemd-network-generator.service\fR(8)

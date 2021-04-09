@@ -1,0 +1,128 @@
+'\" t
+.TH "RUNLEVEL" "8" "" "systemd 248" "runlevel"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+runlevel \- Print previous and current SysV runlevel
+.SH "SYNOPSIS"
+.HP \w'\fBrunlevel\fR\ 'u
+\fBrunlevel\fR [options...]
+.SH "OVERVIEW"
+.PP
+"Runlevels" are an obsolete way to start and stop groups of services used in SysV init\&. systemd provides a compatibility layer that maps runlevels to targets, and associated binaries like
+\fBrunlevel\fR\&. Nevertheless, only one runlevel can be "active" at a given time, while systemd can activate multiple targets concurrently, so the mapping to runlevels is confusing and only approximate\&. Runlevels should not be used in new code, and are mostly useful as a shorthand way to refer the matching systemd targets in kernel boot parameters\&.
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+.B Table\ \&1.\ \&Mapping between runlevels and systemd targets
+.TS
+allbox tab(:);
+lB lB.
+T{
+Runlevel
+T}:T{
+Target
+T}
+.T&
+l l
+l l
+l l
+l l
+l l.
+T{
+0
+T}:T{
+poweroff\&.target
+T}
+T{
+1
+T}:T{
+rescue\&.target
+T}
+T{
+2, 3, 4
+T}:T{
+multi\-user\&.target
+T}
+T{
+5
+T}:T{
+graphical\&.target
+T}
+T{
+6
+T}:T{
+reboot\&.target
+T}
+.TE
+.sp 1
+.SH "DESCRIPTION"
+.PP
+\fBrunlevel\fR
+prints the previous and current SysV runlevel if they are known\&.
+.PP
+The two runlevel characters are separated by a single space character\&. If a runlevel cannot be determined, N is printed instead\&. If neither can be determined, the word "unknown" is printed\&.
+.PP
+Unless overridden in the environment, this will check the utmp database for recent runlevel changes\&.
+.SH "OPTIONS"
+.PP
+The following option is understood:
+.PP
+\fB\-\-help\fR
+.RS 4
+Print a short help text and exit\&.
+.RE
+.SH "EXIT STATUS"
+.PP
+If one or both runlevels could be determined, 0 is returned, a non\-zero failure code otherwise\&.
+.SH "ENVIRONMENT"
+.PP
+\fI$RUNLEVEL\fR
+.RS 4
+If
+\fI$RUNLEVEL\fR
+is set,
+\fBrunlevel\fR
+will print this value as current runlevel and ignore utmp\&.
+.RE
+.PP
+\fI$PREVLEVEL\fR
+.RS 4
+If
+\fI$PREVLEVEL\fR
+is set,
+\fBrunlevel\fR
+will print this value as previous runlevel and ignore utmp\&.
+.RE
+.SH "FILES"
+.PP
+/run/utmp
+.RS 4
+The utmp database
+\fBrunlevel\fR
+reads the previous and current runlevel from\&.
+.RE
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsystemd.target\fR(5),
+\fBsystemctl\fR(1)

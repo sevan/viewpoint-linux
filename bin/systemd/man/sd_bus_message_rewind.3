@@ -1,0 +1,73 @@
+'\" t
+.TH "SD_BUS_MESSAGE_REWIND" "3" "" "systemd 248" "sd_bus_message_rewind"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_message_rewind \- Return to beginning of message or current container
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_message_rewind('u
+.BI "int sd_bus_message_rewind(sd_bus_message\ *" "m" ", int\ " "complete" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_message_rewind()\fR
+moves the "read pointer" in the message
+\fIm\fR
+to either the beginning of the message (if
+\fIcomplete\fR
+is true) or to the beginning of the currently open container\&. If no container is open,
+\fIcomplete\fR
+has no effect\&.
+.SH "RETURN VALUE"
+.PP
+On success, this function returns 0 or a positive integer\&. The value is zero if the current container or whole message in case no container is open is empty, and positive otherwise\&. On failure, it returns a negative errno\-style error code\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+The
+\fIm\fR
+parameter is
+\fBNULL\fR\&.
+.RE
+.PP
+\fB\-EPERM\fR
+.RS 4
+The message
+\fIm\fR
+has not been sealed\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd_bus_message_read\fR(3)

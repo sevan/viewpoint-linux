@@ -1,0 +1,303 @@
+'\" t
+.TH "SYSTEMD\&.DNSSD" "5" "" "systemd 248" "systemd.dnssd"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd.dnssd \- DNS\-SD configuration
+.SH "SYNOPSIS"
+.PP
+\fInetwork_service\fR\&.dnssd
+.SH "DESCRIPTION"
+.PP
+DNS\-SD setup is performed by
+\fBsystemd-resolved\fR(8)\&.
+.PP
+The main network service file must have the extension
+\&.dnssd; other extensions are ignored\&.
+.PP
+The
+\&.dnssd
+files are read from the files located in the system network directories
+/usr/lib/systemd/dnssd
+and
+/usr/local/lib/systemd/dnssd, the volatile runtime network directory
+/run/systemd/dnssd
+and the local administration network directory
+/etc/systemd/dnssd\&. All configuration files are collectively sorted and processed in lexical order, regardless of the directories in which they live\&. However, files with identical filenames replace each other\&. Files in
+/etc/
+have the highest priority, files in
+/run/
+take precedence over files with the same name in
+/usr/lib/\&. This can be used to override a system\-supplied configuration file with a local file if needed\&.
+.PP
+Along with the network service file
+foo\&.dnssd, a "drop\-in" directory
+foo\&.dnssd\&.d/
+may exist\&. All files with the suffix
+"\&.conf"
+from this directory will be parsed after the file itself is parsed\&. This is useful to alter or add configuration settings, without having to modify the main configuration file\&. Each drop\-in file must have appropriate section headers\&.
+.PP
+In addition to
+/etc/systemd/dnssd, drop\-in
+"\&.d"
+directories can be placed in
+/usr/lib/systemd/dnssd
+or
+/run/systemd/dnssd
+directories\&. Drop\-in files in
+/etc/
+take precedence over those in
+/run/
+which in turn take precedence over those in
+/usr/lib/
+or
+/usr/local/lib\&. Drop\-in files under any of these directories take precedence over the main network service file wherever located\&.
+.SH "[SERVICE] SECTION OPTIONS"
+.PP
+The network service file contains a [Service] section, which specifies a discoverable network service announced in a local network with Multicast DNS broadcasts\&.
+.PP
+\fIName=\fR
+.RS 4
+An instance name of the network service as defined in the section 4\&.1\&.1 of
+\m[blue]\fBRFC 6763\fR\m[]\&\s-2\u[1]\d\s+2, e\&.g\&.
+"webserver"\&.
+.sp
+The option supports simple specifier expansion\&. The following expansions are understood:
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+.B Table\ \&1.\ \&Specifiers available
+.TS
+allbox tab(:);
+lB lB lB.
+T{
+Specifier
+T}:T{
+Meaning
+T}:T{
+Details
+T}
+.T&
+l l l
+l l l
+l l l
+l l l
+l l l
+l l l
+l l l
+l l l
+l l l
+l l l.
+T{
+"%a"
+T}:T{
+Architecture
+T}:T{
+A short string identifying the architecture of the local system\&. A string such as \fBx86\fR, \fBx86\-64\fR or \fBarm64\fR\&. See the architectures defined for \fIConditionArchitecture=\fR in \fBsystemd.unit\fR(5) for a full list\&.
+T}
+T{
+"%b"
+T}:T{
+Boot ID
+T}:T{
+The boot ID of the running system, formatted as string\&. See \fBrandom\fR(4) for more information\&.
+T}
+T{
+"%B"
+T}:T{
+Operating system build ID
+T}:T{
+The operating system build identifier of the running system, as read from the \fIBUILD_ID=\fR field of /etc/os\-release\&. If not set, resolves to an empty string\&. See \fBos-release\fR(5) for more information\&.
+T}
+T{
+"%H"
+T}:T{
+Host name
+T}:T{
+The hostname of the running system\&.
+T}
+T{
+"%m"
+T}:T{
+Machine ID
+T}:T{
+The machine ID of the running system, formatted as string\&. See \fBmachine-id\fR(5) for more information\&.
+T}
+T{
+"%o"
+T}:T{
+Operating system ID
+T}:T{
+The operating system identifier of the running system, as read from the \fIID=\fR field of /etc/os\-release\&. See \fBos-release\fR(5) for more information\&.
+T}
+T{
+"%v"
+T}:T{
+Kernel release
+T}:T{
+Identical to \fBuname \-r\fR output\&.
+T}
+T{
+"%w"
+T}:T{
+Operating system version ID
+T}:T{
+The operating system version identifier of the running system, as read from the \fIVERSION_ID=\fR field of /etc/os\-release\&. If not set, resolves to an empty string\&. See \fBos-release\fR(5) for more information\&.
+T}
+T{
+"%W"
+T}:T{
+Operating system variant ID
+T}:T{
+The operating system variant identifier of the running system, as read from the \fIVARIANT_ID=\fR field of /etc/os\-release\&. If not set, resolves to an empty string\&. See \fBos-release\fR(5) for more information\&.
+T}
+T{
+"%%"
+T}:T{
+Single percent sign
+T}:T{
+Use "%%" in place of "%" to specify a single percent sign\&.
+T}
+.TE
+.sp 1
+.RE
+.PP
+\fIType=\fR
+.RS 4
+A type of the network service as defined in the section 4\&.1\&.2 of
+\m[blue]\fBRFC 6763\fR\m[]\&\s-2\u[1]\d\s+2, e\&.g\&.
+"_http\&._tcp"\&.
+.RE
+.PP
+\fIPort=\fR
+.RS 4
+An IP port number of the network service\&.
+.RE
+.PP
+\fIPriority=\fR
+.RS 4
+A priority number set in SRV resource records corresponding to the network service\&.
+.RE
+.PP
+\fIWeight=\fR
+.RS 4
+A weight number set in SRV resource records corresponding to the network service\&.
+.RE
+.PP
+\fITxtText=\fR
+.RS 4
+A whitespace\-separated list of arbitrary key/value pairs conveying additional information about the named service in the corresponding TXT resource record, e\&.g\&.
+"path=/portal/index\&.html"\&. Keys and values can contain C\-style escape sequences which get translated upon reading configuration files\&.
+.sp
+This option together with
+\fITxtData=\fR
+may be specified more than once, in which case multiple TXT resource records will be created for the service\&. If the empty string is assigned to this option, the list is reset and all prior assignments will have no effect\&.
+.RE
+.PP
+\fITxtData=\fR
+.RS 4
+A whitespace\-separated list of arbitrary key/value pairs conveying additional information about the named service in the corresponding TXT resource record where values are base64\-encoded string representing any binary data, e\&.g\&.
+"data=YW55IGJpbmFyeSBkYXRhCg=="\&. Keys can contain C\-style escape sequences which get translated upon reading configuration files\&.
+.sp
+This option together with
+\fITxtText=\fR
+may be specified more than once, in which case multiple TXT resource records will be created for the service\&. If the empty string is assigned to this option, the list is reset and all prior assignments will have no effect\&.
+.RE
+.SH "EXAMPLES"
+.PP
+\fBExample\ \&1.\ \&HTTP service\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+# /etc/systemd/dnssd/http\&.dnssd
+[Service]
+Name=%H
+Type=_http\&._tcp
+Port=80
+TxtText=path=/stats/index\&.html t=temperature_sensor
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+This makes the http server running on the host discoverable in the local network given MulticastDNS is enabled on the network interface\&.
+.PP
+Now the utility
+"resolvectl"
+should be able to resolve the service to the host\*(Aqs name:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ resolvectl service meteo\&._http\&._tcp\&.local
+meteo\&._http\&._tcp\&.local: meteo\&.local:80 [priority=0, weight=0]
+                        169\&.254\&.208\&.106%senp0s21f0u2u4
+                        fe80::213:3bff:fe49:8aa%senp0s21f0u2u4
+                        path=/stats/index\&.html
+                        t=temperature_sensor
+                        (meteo/_http\&._tcp/local)
+
+\-\- Information acquired via protocol mDNS/IPv6 in 4\&.0ms\&.
+\-\- Data is authenticated: yes
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+"Avahi"
+running on a different host in the same local network should see the service as well:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ avahi\-browse \-a \-r
++ enp3s0 IPv6 meteo                                         Web Site             local
++ enp3s0 IPv4 meteo                                         Web Site             local
+= enp3s0 IPv6 meteo                                         Web Site             local
+   hostname = [meteo\&.local]
+   address = [fe80::213:3bff:fe49:8aa]
+   port = [80]
+   txt = ["path=/stats/index\&.html" "t=temperature_sensor"]
+= enp3s0 IPv4 meteo                                         Web Site             local
+   hostname = [meteo\&.local]
+   address = [169\&.254\&.208\&.106]
+   port = [80]
+   txt = ["path=/stats/index\&.html" "t=temperature_sensor"]
+.fi
+.if n \{\
+.RE
+.\}
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsystemd-resolved.service\fR(8),
+\fBresolvectl\fR(1)
+.SH "NOTES"
+.IP " 1." 4
+RFC 6763
+.RS 4
+\%https://tools.ietf.org/html/rfc6763
+.RE

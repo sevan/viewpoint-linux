@@ -1,0 +1,402 @@
+'\" t
+.TH "SYSTEMD\-SYSTEM\&.CONF" "5" "" "systemd 248" "systemd-system.conf"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+systemd-system.conf, system.conf.d, systemd-user.conf, user.conf.d \- System and session service manager configuration files
+.SH "SYNOPSIS"
+.PP
+/etc/systemd/system\&.conf,
+/etc/systemd/system\&.conf\&.d/*\&.conf,
+/run/systemd/system\&.conf\&.d/*\&.conf,
+/usr/lib/systemd/system\&.conf\&.d/*\&.conf
+.PP
+~/\&.config/systemd/user\&.conf,
+/etc/systemd/user\&.conf,
+/etc/systemd/user\&.conf\&.d/*\&.conf,
+/run/systemd/user\&.conf\&.d/*\&.conf,
+/usr/lib/systemd/user\&.conf\&.d/*\&.conf
+.SH "DESCRIPTION"
+.PP
+When run as a system instance,
+\fBsystemd\fR
+interprets the configuration file
+system\&.conf
+and the files in
+system\&.conf\&.d
+directories; when run as a user instance, it interprets the configuration file
+user\&.conf
+(either in the home directory of the user, or if not found, under
+/etc/systemd/) and the files in
+user\&.conf\&.d
+directories\&. These configuration files contain a few settings controlling basic manager operations\&.
+.PP
+See
+\fBsystemd.syntax\fR(7)
+for a general description of the syntax\&.
+.SH "CONFIGURATION DIRECTORIES AND PRECEDENCE"
+.PP
+The default configuration is set during compilation, so configuration is only needed when it is necessary to deviate from those defaults\&. Initially, the main configuration file in
+/etc/systemd/
+contains commented out entries showing the defaults as a guide to the administrator\&. Local overrides can be created by editing this file or by creating drop\-ins, as described below\&. Using drop\-ins for local configuration is recommended over modifications to the main configuration file\&.
+.PP
+In addition to the "main" configuration file, drop\-in configuration snippets are read from
+/usr/lib/systemd/*\&.conf\&.d/,
+/usr/local/lib/systemd/*\&.conf\&.d/, and
+/etc/systemd/*\&.conf\&.d/\&. Those drop\-ins have higher precedence and override the main configuration file\&. Files in the
+*\&.conf\&.d/
+configuration subdirectories are sorted by their filename in lexicographic order, regardless of in which of the subdirectories they reside\&. When multiple files specify the same option, for options which accept just a single value, the entry in the file sorted last takes precedence, and for options which accept a list of values, entries are collected as they occur in the sorted files\&.
+.PP
+When packages need to customize the configuration, they can install drop\-ins under
+/usr/\&. Files in
+/etc/
+are reserved for the local administrator, who may use this logic to override the configuration files installed by vendor packages\&. Drop\-ins have to be used to override package drop\-ins, since the main configuration file has lower precedence\&. It is recommended to prefix all filenames in those subdirectories with a two\-digit number and a dash, to simplify the ordering of the files\&.
+.PP
+To disable a configuration file supplied by the vendor, the recommended way is to place a symlink to
+/dev/null
+in the configuration directory in
+/etc/, with the same filename as the vendor configuration file\&.
+.SH "OPTIONS"
+.PP
+All options are configured in the [Manager] section:
+.PP
+\fILogColor=\fR, \fILogLevel=\fR, \fILogLocation=\fR, \fILogTarget=\fR, \fILogTime=\fR, \fIDumpCore=yes\fR, \fICrashChangeVT=no\fR, \fICrashShell=no\fR, \fICrashReboot=no\fR, \fIShowStatus=yes\fR, \fIDefaultStandardOutput=journal\fR, \fIDefaultStandardError=inherit\fR
+.RS 4
+Configures various parameters of basic manager operation\&. These options may be overridden by the respective process and kernel command line arguments\&. See
+\fBsystemd\fR(1)
+for details\&.
+.RE
+.PP
+\fICtrlAltDelBurstAction=\fR
+.RS 4
+Defines what action will be performed if user presses Ctrl\-Alt\-Delete more than 7 times in 2s\&. Can be set to
+"reboot\-force",
+"poweroff\-force",
+"reboot\-immediate",
+"poweroff\-immediate"
+or disabled with
+"none"\&. Defaults to
+"reboot\-force"\&.
+.RE
+.PP
+\fICPUAffinity=\fR
+.RS 4
+Configures the CPU affinity for the service manager as well as the default CPU affinity for all forked off processes\&. Takes a list of CPU indices or ranges separated by either whitespace or commas\&. CPU ranges are specified by the lower and upper CPU indices separated by a dash\&. This option may be specified more than once, in which case the specified CPU affinity masks are merged\&. If the empty string is assigned, the mask is reset, all assignments prior to this will have no effect\&. Individual services may override the CPU affinity for their processes with the
+\fICPUAffinity=\fR
+setting in unit files, see
+\fBsystemd.exec\fR(5)\&.
+.RE
+.PP
+\fINUMAPolicy=\fR
+.RS 4
+Configures the NUMA memory policy for the service manager and the default NUMA memory policy for all forked off processes\&. Individual services may override the default policy with the
+\fINUMAPolicy=\fR
+setting in unit files, see
+\fBsystemd.exec\fR(5)\&.
+.RE
+.PP
+\fINUMAMask=\fR
+.RS 4
+Configures the NUMA node mask that will be associated with the selected NUMA policy\&. Note that
+\fBdefault\fR
+and
+\fBlocal\fR
+NUMA policies don\*(Aqt require explicit NUMA node mask and value of the option can be empty\&. Similarly to
+\fINUMAPolicy=\fR, value can be overridden by individual services in unit files, see
+\fBsystemd.exec\fR(5)\&.
+.RE
+.PP
+\fIRuntimeWatchdogSec=\fR, \fIRebootWatchdogSec=\fR, \fIKExecWatchdogSec=\fR
+.RS 4
+Configure the hardware watchdog at runtime and at reboot\&. Takes a timeout value in seconds (or in other time units if suffixed with
+"ms",
+"min",
+"h",
+"d",
+"w")\&. If
+\fIRuntimeWatchdogSec=\fR
+is set to a non\-zero value, the watchdog hardware (/dev/watchdog
+or the path specified with
+\fIWatchdogDevice=\fR
+or the kernel option
+\fIsystemd\&.watchdog\-device=\fR) will be programmed to automatically reboot the system if it is not contacted within the specified timeout interval\&. The system manager will ensure to contact it at least once in half the specified timeout interval\&. This feature requires a hardware watchdog device to be present, as it is commonly the case in embedded and server systems\&. Not all hardware watchdogs allow configuration of all possible reboot timeout values, in which case the closest available timeout is picked\&.
+\fIRebootWatchdogSec=\fR
+may be used to configure the hardware watchdog when the system is asked to reboot\&. It works as a safety net to ensure that the reboot takes place even if a clean reboot attempt times out\&. Note that the
+\fIRebootWatchdogSec=\fR
+timeout applies only to the second phase of the reboot, i\&.e\&. after all regular services are already terminated, and after the system and service manager process (PID 1) got replaced by the
+systemd\-shutdown
+binary, see system
+\fBbootup\fR(7)
+for details\&. During the first phase of the shutdown operation the system and service manager remains running and hence
+\fIRuntimeWatchdogSec=\fR
+is still honoured\&. In order to define a timeout on this first phase of system shutdown, configure
+\fIJobTimeoutSec=\fR
+and
+\fIJobTimeoutAction=\fR
+in the [Unit] section of the
+shutdown\&.target
+unit\&. By default
+\fIRuntimeWatchdogSec=\fR
+defaults to 0 (off), and
+\fIRebootWatchdogSec=\fR
+to 10min\&.
+\fIKExecWatchdogSec=\fR
+may be used to additionally enable the watchdog when kexec is being executed rather than when rebooting\&. Note that if the kernel does not reset the watchdog on kexec (depending on the specific hardware and/or driver), in this case the watchdog might not get disabled after kexec succeeds and thus the system might get rebooted, unless
+\fIRuntimeWatchdogSec=\fR
+is also enabled at the same time\&. For this reason it is recommended to enable
+\fIKExecWatchdogSec=\fR
+only if
+\fIRuntimeWatchdogSec=\fR
+is also enabled\&. These settings have no effect if a hardware watchdog is not available\&.
+.RE
+.PP
+\fIWatchdogDevice=\fR
+.RS 4
+Configure the hardware watchdog device that the runtime and shutdown watchdog timers will open and use\&. Defaults to
+/dev/watchdog\&. This setting has no effect if a hardware watchdog is not available\&.
+.RE
+.PP
+\fICapabilityBoundingSet=\fR
+.RS 4
+Controls which capabilities to include in the capability bounding set for PID 1 and its children\&. See
+\fBcapabilities\fR(7)
+for details\&. Takes a whitespace\-separated list of capability names as read by
+\fBcap_from_name\fR(3)\&. Capabilities listed will be included in the bounding set, all others are removed\&. If the list of capabilities is prefixed with ~, all but the listed capabilities will be included, the effect of the assignment inverted\&. Note that this option also affects the respective capabilities in the effective, permitted and inheritable capability sets\&. The capability bounding set may also be individually configured for units using the
+\fICapabilityBoundingSet=\fR
+directive for units, but note that capabilities dropped for PID 1 cannot be regained in individual units, they are lost for good\&.
+.RE
+.PP
+\fINoNewPrivileges=\fR
+.RS 4
+Takes a boolean argument\&. If true, ensures that PID 1 and all its children can never gain new privileges through
+\fBexecve\fR(2)
+(e\&.g\&. via setuid or setgid bits, or filesystem capabilities)\&. Defaults to false\&. General purpose distributions commonly rely on executables with setuid or setgid bits and will thus not function properly with this option enabled\&. Individual units cannot disable this option\&. Also see
+\m[blue]\fBNo New Privileges Flag\fR\m[]\&\s-2\u[1]\d\s+2\&.
+.RE
+.PP
+\fISystemCallArchitectures=\fR
+.RS 4
+Takes a space\-separated list of architecture identifiers\&. Selects from which architectures system calls may be invoked on this system\&. This may be used as an effective way to disable invocation of non\-native binaries system\-wide, for example to prohibit execution of 32\-bit x86 binaries on 64\-bit x86\-64 systems\&. This option operates system\-wide, and acts similar to the
+\fISystemCallArchitectures=\fR
+setting of unit files, see
+\fBsystemd.exec\fR(5)
+for details\&. This setting defaults to the empty list, in which case no filtering of system calls based on architecture is applied\&. Known architecture identifiers are
+"x86",
+"x86\-64",
+"x32",
+"arm"
+and the special identifier
+"native"\&. The latter implicitly maps to the native architecture of the system (or more specifically, the architecture the system manager was compiled for)\&. Set this setting to
+"native"
+to prohibit execution of any non\-native binaries\&. When a binary executes a system call of an architecture that is not listed in this setting, it will be immediately terminated with the SIGSYS signal\&.
+.RE
+.PP
+\fITimerSlackNSec=\fR
+.RS 4
+Sets the timer slack in nanoseconds for PID 1, which is inherited by all executed processes, unless overridden individually, for example with the
+\fITimerSlackNSec=\fR
+setting in service units (for details see
+\fBsystemd.exec\fR(5))\&. The timer slack controls the accuracy of wake\-ups triggered by system timers\&. See
+\fBprctl\fR(2)
+for more information\&. Note that in contrast to most other time span definitions this parameter takes an integer value in nano\-seconds if no unit is specified\&. The usual time units are understood too\&.
+.RE
+.PP
+\fIStatusUnitFormat=\fR
+.RS 4
+Takes either
+\fBname\fR
+or
+\fBdescription\fR
+as the value\&. If
+\fBname\fR, the system manager will use unit names in status messages, instead of the longer and more informative descriptions set with
+\fIDescription=\fR, see
+\fBsystemd.unit\fR(5)\&.
+.RE
+.PP
+\fIDefaultTimerAccuracySec=\fR
+.RS 4
+Sets the default accuracy of timer units\&. This controls the global default for the
+\fIAccuracySec=\fR
+setting of timer units, see
+\fBsystemd.timer\fR(5)
+for details\&.
+\fIAccuracySec=\fR
+set in individual units override the global default for the specific unit\&. Defaults to 1min\&. Note that the accuracy of timer units is also affected by the configured timer slack for PID 1, see
+\fITimerSlackNSec=\fR
+above\&.
+.RE
+.PP
+\fIDefaultTimeoutStartSec=\fR, \fIDefaultTimeoutStopSec=\fR, \fIDefaultTimeoutAbortSec=\fR, \fIDefaultRestartSec=\fR
+.RS 4
+Configures the default timeouts for starting, stopping and aborting of units, as well as the default time to sleep between automatic restarts of units, as configured per\-unit in
+\fITimeoutStartSec=\fR,
+\fITimeoutStopSec=\fR,
+\fITimeoutAbortSec=\fR
+and
+\fIRestartSec=\fR
+(for services, see
+\fBsystemd.service\fR(5)
+for details on the per\-unit settings)\&. Disabled by default, when service with
+\fIType=oneshot\fR
+is used\&. For non\-service units,
+\fIDefaultTimeoutStartSec=\fR
+sets the default
+\fITimeoutSec=\fR
+value\&.
+\fIDefaultTimeoutStartSec=\fR
+and
+\fIDefaultTimeoutStopSec=\fR
+default to 90s\&.
+\fIDefaultTimeoutAbortSec=\fR
+is not set by default so that all units fall back to
+\fITimeoutStopSec=\fR\&.
+\fIDefaultRestartSec=\fR
+defaults to 100ms\&.
+.RE
+.PP
+\fIDefaultStartLimitIntervalSec=\fR, \fIDefaultStartLimitBurst=\fR
+.RS 4
+Configure the default unit start rate limiting, as configured per\-service by
+\fIStartLimitIntervalSec=\fR
+and
+\fIStartLimitBurst=\fR\&. See
+\fBsystemd.service\fR(5)
+for details on the per\-service settings\&.
+\fIDefaultStartLimitIntervalSec=\fR
+defaults to 10s\&.
+\fIDefaultStartLimitBurst=\fR
+defaults to 5\&.
+.RE
+.PP
+\fIDefaultEnvironment=\fR
+.RS 4
+Configures environment variables passed to all executed processes\&. Takes a space\-separated list of variable assignments\&. See
+\fBenviron\fR(7)
+for details about environment variables\&.
+.sp
+Example:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+DefaultEnvironment="VAR1=word1 word2" VAR2=word3 "VAR3=word 5 6"
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+Sets three variables
+"VAR1",
+"VAR2",
+"VAR3"\&.
+.RE
+.PP
+\fIManagerEnvironment=\fR
+.RS 4
+Takes the same arguments as
+\fIDefaultEnvironment=\fR, see above\&. Sets environment variables just for the manager process itself\&. These variables are not inherited by processes spawned by the service manager, use
+\fIDefaultEnvironment=\fR
+for that\&. Note that these variables are merged into the existing environment block\&. In particular, in case of the system manager, this includes variables set by the kernel based on the kernel command line\&.
+.sp
+Setting environment variables for the manager process may be useful to modify its behaviour\&. See
+\m[blue]\fBENVIRONMENT\fR\m[]\&\s-2\u[2]\d\s+2
+for a descriptions of some variables understood by
+\fBsystemd\fR\&.
+.RE
+.PP
+\fIDefaultCPUAccounting=\fR, \fIDefaultBlockIOAccounting=\fR, \fIDefaultMemoryAccounting=\fR, \fIDefaultTasksAccounting=\fR, \fIDefaultIOAccounting=\fR, \fIDefaultIPAccounting=\fR
+.RS 4
+Configure the default resource accounting settings, as configured per\-unit by
+\fICPUAccounting=\fR,
+\fIBlockIOAccounting=\fR,
+\fIMemoryAccounting=\fR,
+\fITasksAccounting=\fR,
+\fIIOAccounting=\fR
+and
+\fIIPAccounting=\fR\&. See
+\fBsystemd.resource-control\fR(5)
+for details on the per\-unit settings\&.
+\fIDefaultTasksAccounting=\fR
+defaults to yes,
+\fIDefaultMemoryAccounting=\fR
+to yes\&.
+\fIDefaultCPUAccounting=\fR
+defaults to yes if enabling CPU accounting doesn\*(Aqt require the CPU controller to be enabled (Linux 4\&.15+ using the unified hierarchy for resource control), otherwise it defaults to no\&. The other three settings default to no\&.
+.RE
+.PP
+\fIDefaultTasksMax=\fR
+.RS 4
+Configure the default value for the per\-unit
+\fITasksMax=\fR
+setting\&. See
+\fBsystemd.resource-control\fR(5)
+for details\&. This setting applies to all unit types that support resource control settings, with the exception of slice units\&. Defaults to 15% of the minimum of
+\fIkernel\&.pid_max=\fR,
+\fIkernel\&.threads\-max=\fR
+and root cgroup
+\fIpids\&.max\fR\&. Kernel has a default value for
+\fIkernel\&.pid_max=\fR
+and an algorithm of counting in case of more than 32 cores\&. For example with the default
+\fIkernel\&.pid_max=\fR,
+\fIDefaultTasksMax=\fR
+defaults to 4915, but might be greater in other systems or smaller in OS containers\&.
+.RE
+.PP
+\fIDefaultLimitCPU=\fR, \fIDefaultLimitFSIZE=\fR, \fIDefaultLimitDATA=\fR, \fIDefaultLimitSTACK=\fR, \fIDefaultLimitCORE=\fR, \fIDefaultLimitRSS=\fR, \fIDefaultLimitNOFILE=\fR, \fIDefaultLimitAS=\fR, \fIDefaultLimitNPROC=\fR, \fIDefaultLimitMEMLOCK=\fR, \fIDefaultLimitLOCKS=\fR, \fIDefaultLimitSIGPENDING=\fR, \fIDefaultLimitMSGQUEUE=\fR, \fIDefaultLimitNICE=\fR, \fIDefaultLimitRTPRIO=\fR, \fIDefaultLimitRTTIME=\fR
+.RS 4
+These settings control various default resource limits for processes executed by units\&. See
+\fBsetrlimit\fR(2)
+for details\&. These settings may be overridden in individual units using the corresponding
+\fILimitXXX=\fR
+directives and they accept the same parameter syntax, see
+\fBsystemd.exec\fR(5)
+for details\&. Note that these resource limits are only defaults for units, they are not applied to the service manager process (i\&.e\&. PID 1) itself\&.
+.RE
+.PP
+\fIDefaultOOMPolicy=\fR
+.RS 4
+Configure the default policy for reacting to processes being killed by the Linux Out\-Of\-Memory (OOM) killer\&. This may be used to pick a global default for the per\-unit
+\fIOOMPolicy=\fR
+setting\&. See
+\fBsystemd.service\fR(5)
+for details\&. Note that this default is not used for services that have
+\fIDelegate=\fR
+turned on\&.
+.RE
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsystemd.directives\fR(7),
+\fBsystemd.exec\fR(5),
+\fBsystemd.service\fR(5),
+\fBenviron\fR(7),
+\fBcapabilities\fR(7)
+.SH "NOTES"
+.IP " 1." 4
+No New Privileges Flag
+.RS 4
+\%https://www.kernel.org/doc/html/latest/userspace-api/no_new_privs.html
+.RE
+.IP " 2." 4
+ENVIRONMENT
+.RS 4
+\%https://systemd.io/ENVIRONMENT
+.RE

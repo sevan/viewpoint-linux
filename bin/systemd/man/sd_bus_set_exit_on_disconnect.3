@@ -1,0 +1,93 @@
+'\" t
+.TH "SD_BUS_SET_EXIT_ON_DISCONNECT" "3" "" "systemd 248" "sd_bus_set_exit_on_disconnect"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd_bus_set_exit_on_disconnect, sd_bus_get_exit_on_disconnect \- Control the exit behavior when the bus object disconnects
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.HP \w'int\ sd_bus_set_exit_on_disconnect('u
+.BI "int sd_bus_set_exit_on_disconnect(sd_bus\ *" "bus" ", int\ " "b" ");"
+.HP \w'int\ sd_bus_get_exit_on_disconnect('u
+.BI "int sd_bus_get_exit_on_disconnect(sd_bus\ *" "bus" ");"
+.SH "DESCRIPTION"
+.PP
+\fBsd_bus_set_exit_on_disconnect()\fR
+may be used to configure the exit behavior when the given bus object disconnects\&. If
+\fIb\fR
+is zero, no special logic is executed when the bus object disconnects\&. If
+\fIb\fR
+is non\-zero, the behavior on disconnect depends on whether the bus object is attached to an event loop or not\&. If the bus object is attached to an event loop (see
+\fBsd_bus_attach_event\fR(3)), the event loop is closed when the bus object disconnects (as if calling
+\fBsd_event_exit\fR(3))\&. Otherwise,
+\fBexit\fR(3)
+is called\&. The exit code passed to
+\fBsd_event_exit()\fR
+and
+\fBexit()\fR
+is
+\fBEXIT_FAILURE\fR\&. If the bus object has already disconnected when enabling the exit behavior, the exit behavior is executed immediately\&. By default, the exit behavior is disabled\&.
+.PP
+\fBsd_bus_get_exit_on_disconnect()\fR
+returns whether the exit on disconnect behavior is enabled for the given bus object\&.
+.SH "RETURN VALUE"
+.PP
+On success,
+\fBsd_bus_set_exit_on_disconnect()\fR
+returns a non\-negative integer\&. On failure, it returns a negative errno\-style error code\&.
+.PP
+\fBsd_bus_get_exit_on_disconnect()\fR
+returns a positive integer if the exit on disconnect behavior is enabled\&. Otherwise, it returns zero\&.
+.SS "Errors"
+.PP
+Returned errors may indicate the following problems:
+.PP
+\fB\-EINVAL\fR
+.RS 4
+A required parameter was
+\fBNULL\fR\&.
+.RE
+.PP
+\fB\-ENOPKG\fR
+.RS 4
+The bus object could not be resolved\&.
+.RE
+.PP
+\fB\-ECHILD\fR
+.RS 4
+The bus connection was created in a different process\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd_bus_attach_event\fR(3),
+\fBsd-event\fR(3),
+\fBsd_event_exit\fR(3)

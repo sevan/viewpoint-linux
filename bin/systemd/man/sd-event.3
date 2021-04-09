@@ -1,0 +1,211 @@
+'\" t
+.TH "SD\-EVENT" "3" "" "systemd 248" "sd-event"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd-event \- A generic event loop implementation
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-event\&.h>
+.fi
+.ft
+.HP \w'\fBpkg\-config\ \-\-cflags\ \-\-libs\ libsystemd\fR\ 'u
+\fBpkg\-config \-\-cflags \-\-libs libsystemd\fR
+.SH "DESCRIPTION"
+.PP
+sd\-event\&.h
+provides a generic event loop implementation, based on Linux
+\fBepoll\fR(7)\&.
+.PP
+See
+\fBsd_event_new\fR(3),
+\fBsd_event_run\fR(3),
+\fBsd_event_add_io\fR(3),
+\fBsd_event_add_time\fR(3),
+\fBsd_event_add_signal\fR(3),
+\fBsd_event_add_child\fR(3),
+\fBsd_event_add_inotify\fR(3),
+\fBsd_event_add_defer\fR(3),
+\fBsd_event_source_unref\fR(3),
+\fBsd_event_source_set_priority\fR(3),
+\fBsd_event_source_set_enabled\fR(3),
+\fBsd_event_source_set_userdata\fR(3),
+\fBsd_event_source_get_event\fR(3),
+\fBsd_event_source_get_pending\fR(3),
+\fBsd_event_source_set_description\fR(3),
+\fBsd_event_source_set_prepare\fR(3),
+\fBsd_event_source_set_ratelimit\fR(3),
+\fBsd_event_wait\fR(3),
+\fBsd_event_get_fd\fR(3),
+\fBsd_event_set_watchdog\fR(3),
+\fBsd_event_exit\fR(3),
+\fBsd_event_now\fR(3)
+for more information about the functions available\&.
+.PP
+The event loop design is targeted on running a separate instance of the event loop in each thread; it has no concept of distributing events from a single event loop instance onto multiple worker threads\&. Dispatching events is strictly ordered and subject to configurable priorities\&. In each event loop iteration a single event source is dispatched\&. Each time an event source is dispatched the kernel is polled for new events, before the next event source is dispatched\&. The event loop is designed to honor priorities and provide fairness within each priority\&. It is not designed to provide optimal throughput, as this contradicts these goals due the limitations of the underlying
+\fBepoll\fR(7)
+primitives\&.
+.PP
+The event loop implementation provides the following features:
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 1.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  1." 4.2
+.\}
+I/O event sources, based on
+\fBepoll\fR(7)\*(Aqs file descriptor watching, including edge triggered events (\fBEPOLLET\fR)\&. See
+\fBsd_event_add_io\fR(3)\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 2.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  2." 4.2
+.\}
+Timer event sources, based on
+\fBtimerfd_create\fR(2), supporting the
+\fBCLOCK_MONOTONIC\fR,
+\fBCLOCK_REALTIME\fR,
+\fBCLOCK_BOOTIME\fR
+clocks, as well as the
+\fBCLOCK_REALTIME_ALARM\fR
+and
+\fBCLOCK_BOOTTIME_ALARM\fR
+clocks that can resume the system from suspend\&. When creating timer events a required accuracy parameter may be specified which allows coalescing of timer events to minimize power consumption\&. See
+\fBsd_event_add_time\fR(3)\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 3.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  3." 4.2
+.\}
+UNIX process signal events, based on
+\fBsignalfd\fR(2), including full support for real\-time signals, and queued parameters\&. See
+\fBsd_event_add_signal\fR(3)\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 4.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  4." 4.2
+.\}
+Child process state change events, based on
+\fBwaitid\fR(2)\&. See
+\fBsd_event_add_child\fR(3)\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 5.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  5." 4.2
+.\}
+Static event sources, of three types: defer, post and exit, for invoking calls in each event loop, after other event sources or at event loop termination\&. See
+\fBsd_event_add_defer\fR(3)\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 6.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  6." 4.2
+.\}
+Event sources may be assigned a 64bit priority value, that controls the order in which event sources are dispatched if multiple are pending simultaneously\&. See
+\fBsd_event_source_set_priority\fR(3)\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 7.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  7." 4.2
+.\}
+The event loop may automatically send watchdog notification messages to the service manager\&. See
+\fBsd_event_set_watchdog\fR(3)\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 8.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  8." 4.2
+.\}
+The event loop may be integrated into foreign event loops, such as the GLib one\&. See
+\fBsd_event_get_fd\fR(3)
+for an example\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd_event_new\fR(3),
+\fBsd_event_run\fR(3),
+\fBsd_event_add_io\fR(3),
+\fBsd_event_add_time\fR(3),
+\fBsd_event_add_signal\fR(3),
+\fBsd_event_add_child\fR(3),
+\fBsd_event_add_inotify\fR(3),
+\fBsd_event_add_defer\fR(3),
+\fBsd_event_source_unref\fR(3),
+\fBsd_event_source_set_priority\fR(3),
+\fBsd_event_source_set_enabled\fR(3),
+\fBsd_event_source_set_userdata\fR(3),
+\fBsd_event_source_get_event\fR(3),
+\fBsd_event_source_get_pending\fR(3),
+\fBsd_event_source_set_description\fR(3),
+\fBsd_event_source_set_prepare\fR(3),
+\fBsd_event_source_set_ratelimit\fR(3),
+\fBsd_event_wait\fR(3),
+\fBsd_event_get_fd\fR(3),
+\fBsd_event_set_watchdog\fR(3),
+\fBsd_event_exit\fR(3),
+\fBsd_event_now\fR(3),
+\fBepoll\fR(7),
+\fBtimerfd_create\fR(2),
+\fBsignalfd\fR(2),
+\fBwaitid\fR(2)

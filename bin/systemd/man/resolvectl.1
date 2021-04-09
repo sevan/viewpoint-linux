@@ -1,0 +1,562 @@
+'\" t
+.TH "RESOLVECTL" "1" "" "systemd 248" "resolvectl"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+resolvectl, resolvconf \- Resolve domain names, IPV4 and IPv6 addresses, DNS resource records, and services; introspect and reconfigure the DNS resolver
+.SH "SYNOPSIS"
+.HP \w'\fBresolvectl\fR\ 'u
+\fBresolvectl\fR [OPTIONS...] {COMMAND} [NAME...]
+.SH "DESCRIPTION"
+.PP
+\fBresolvectl\fR
+may be used to resolve domain names, IPv4 and IPv6 addresses, DNS resource records and services with the
+\fBsystemd-resolved.service\fR(8)
+resolver service\&. By default, the specified list of parameters will be resolved as hostnames, retrieving their IPv4 and IPv6 addresses\&. If the parameters specified are formatted as IPv4 or IPv6 operation the reverse operation is done, and a hostname is retrieved for the specified addresses\&.
+.PP
+The program\*(Aqs output contains information about the protocol used for the look\-up and on which network interface the data was discovered\&. It also contains information on whether the information could be authenticated\&. All data for which local DNSSEC validation succeeds is considered authenticated\&. Moreover all data originating from local, trusted sources is also reported authenticated, including resolution of the local host name, the
+"localhost"
+hostname or all data from
+/etc/hosts\&.
+.SH "COMMANDS"
+.PP
+\fBquery\fR \fIHOSTNAME|ADDRESS\fR\&...
+.RS 4
+Resolve domain names, as well as IPv4 and IPv6 addresses\&. When used in conjunction with
+\fB\-\-type=\fR
+or
+\fB\-\-class=\fR
+(see below), resolves low\-level DNS resource records\&.
+.sp
+If a single\-label domain name is specified it is searched for according to the configured search domains \(em unless
+\fB\-\-search=no\fR
+or
+\fB\-\-type=\fR/\fB\-\-class=\fR
+are specified, both of which turn this logic off\&.
+.sp
+If an international domain name is specified, it is automatically translated according to IDNA rules when resolved via classic DNS \(em but not for look\-ups via MulticastDNS or LLMNR\&. If
+\fB\-\-type=\fR/\fB\-\-class=\fR
+is used IDNA translation is turned off and domain names are processed as specified\&.
+.RE
+.PP
+\fBservice\fR [[\fINAME\fR] \fITYPE\fR] \fIDOMAIN\fR
+.RS 4
+Resolve
+\m[blue]\fBDNS\-SD\fR\m[]\&\s-2\u[1]\d\s+2
+and
+\m[blue]\fBSRV\fR\m[]\&\s-2\u[2]\d\s+2
+services, depending on the specified list of parameters\&. If three parameters are passed the first is assumed to be the DNS\-SD service name, the second the SRV service type, and the third the domain to search in\&. In this case a full DNS\-SD style SRV and TXT lookup is executed\&. If only two parameters are specified, the first is assumed to be the SRV service type, and the second the domain to look in\&. In this case no TXT RR is requested\&. Finally, if only one parameter is specified, it is assumed to be a domain name, that is already prefixed with an SRV type, and an SRV lookup is done (no TXT)\&.
+.RE
+.PP
+\fBopenpgp\fR \fIEMAIL@DOMAIN\fR\&...
+.RS 4
+Query PGP keys stored as
+\m[blue]\fBOPENPGPKEY\fR\m[]\&\s-2\u[3]\d\s+2
+resource records\&. Specified e\-mail addresses are converted to the corresponding DNS domain name, and any OPENPGPKEY keys are printed\&.
+.RE
+.PP
+\fBtlsa\fR [\fIFAMILY\fR] \fIDOMAIN\fR[:\fIPORT\fR]\&...
+.RS 4
+Query TLS public keys stored as
+\m[blue]\fBTLSA\fR\m[]\&\s-2\u[4]\d\s+2
+resource records\&. A query will be performed for each of the specified names prefixed with the port and family ("_\fIport\fR\&._\fIfamily\fR\&.\fIdomain\fR")\&. The port number may be specified after a colon (":"), otherwise
+\fB443\fR
+will be used by default\&. The family may be specified as the first argument, otherwise
+\fBtcp\fR
+will be used\&.
+.RE
+.PP
+\fBstatus\fR [\fILINK\fR\&...]
+.RS 4
+Shows the global and per\-link DNS settings currently in effect\&. If no command is specified, this is the implied default\&.
+.RE
+.PP
+\fBstatistics\fR
+.RS 4
+Shows general resolver statistics, including information whether DNSSEC is enabled and available, as well as resolution and validation statistics\&.
+.RE
+.PP
+\fBreset\-statistics\fR
+.RS 4
+Resets the statistics counters shown in
+\fBstatistics\fR
+to zero\&. This operation requires root privileges\&.
+.RE
+.PP
+\fBflush\-caches\fR
+.RS 4
+Flushes all DNS resource record caches the service maintains locally\&. This is mostly equivalent to sending the
+\fBSIGUSR2\fR
+to the
+\fBsystemd\-resolved\fR
+service\&.
+.RE
+.PP
+\fBreset\-server\-features\fR
+.RS 4
+Flushes all feature level information the resolver learnt about specific servers, and ensures that the server feature probing logic is started from the beginning with the next look\-up request\&. This is mostly equivalent to sending the
+\fBSIGRTMIN+1\fR
+to the
+\fBsystemd\-resolved\fR
+service\&.
+.RE
+.PP
+\fBdns\fR [\fILINK\fR [\fISERVER\fR\&...]], \fBdomain\fR [\fILINK\fR [\fIDOMAIN\fR\&...]], \fBdefault\-route\fR [\fILINK\fR [\fIBOOL\fR\&...]], \fBllmnr\fR [\fILINK\fR [\fIMODE\fR]], \fBmdns\fR [\fILINK\fR [\fIMODE\fR]], \fBdnssec\fR [\fILINK\fR [\fIMODE\fR]], \fBdnsovertls\fR [\fILINK\fR [\fIMODE\fR]], \fBnta\fR [\fILINK\fR [\fIDOMAIN\fR\&...]]
+.RS 4
+Get/set per\-interface DNS configuration\&. These commands may be used to configure various DNS settings for network interfaces\&. These commands may be used to inform
+\fBsystemd\-resolved\fR
+or
+\fBsystemd\-networkd\fR
+about per\-interface DNS configuration determined through external means\&. The
+\fBdns\fR
+command expects IPv4 or IPv6 address specifications of DNS servers to use\&. Each address can optionally take a port number separated with
+":", a network interface name or index separated with
+"%", and a Server Name Indication (SNI) separated with
+"#"\&. When IPv6 address is specified with a port number, then the address must be in the square brackets\&. That is, the acceptable full formats are
+"111\&.222\&.333\&.444:9953%ifname#example\&.com"
+for IPv4 and
+"[1111:2222::3333]:9953%ifname#example\&.com"
+for IPv6\&. The
+\fBdomain\fR
+command expects valid DNS domains, possibly prefixed with
+"~", and configures a per\-interface search or route\-only domain\&. The
+\fBdefault\-route\fR
+command expects a boolean parameter, and configures whether the link may be used as default route for DNS lookups, i\&.e\&. if it is suitable for lookups on domains no other link explicitly is configured for\&. The
+\fBllmnr\fR,
+\fBmdns\fR,
+\fBdnssec\fR
+and
+\fBdnsovertls\fR
+commands may be used to configure the per\-interface LLMNR, MulticastDNS, DNSSEC and DNSOverTLS settings\&. Finally,
+\fBnta\fR
+command may be used to configure additional per\-interface DNSSEC NTA domains\&.
+.sp
+Commands
+\fBdns\fR,
+\fBdomain\fR
+and
+\fBnta\fR
+can take a single empty string argument to clear their respective value lists\&.
+.sp
+For details about these settings, their possible values and their effect, see the corresponding settings in
+\fBsystemd.network\fR(5)\&.
+.RE
+.PP
+\fBrevert \fR\fB\fILINK\fR\fR
+.RS 4
+Revert the per\-interface DNS configuration\&. If the DNS configuration is reverted all per\-interface DNS setting are reset to their defaults, undoing all effects of
+\fBdns\fR,
+\fBdomain\fR,
+\fBdefault\-route\fR,
+\fBllmnr\fR,
+\fBmdns\fR,
+\fBdnssec\fR,
+\fBdnsovertls\fR,
+\fBnta\fR\&. Note that when a network interface disappears all configuration is lost automatically, an explicit reverting is not necessary in that case\&.
+.RE
+.PP
+\fBlog\-level\fR [\fILEVEL\fR]
+.RS 4
+If no argument is given, print the current log level of the manager\&. If an optional argument
+\fILEVEL\fR
+is provided, then the command changes the current log level of the manager to
+\fILEVEL\fR
+(accepts the same values as
+\fB\-\-log\-level=\fR
+described in
+\fBsystemd\fR(1))\&.
+.RE
+.SH "OPTIONS"
+.PP
+\fB\-4\fR, \fB\-6\fR
+.RS 4
+By default, when resolving a hostname, both IPv4 and IPv6 addresses are acquired\&. By specifying
+\fB\-4\fR
+only IPv4 addresses are requested, by specifying
+\fB\-6\fR
+only IPv6 addresses are requested\&.
+.RE
+.PP
+\fB\-i\fR \fIINTERFACE\fR, \fB\-\-interface=\fR\fIINTERFACE\fR
+.RS 4
+Specifies the network interface to execute the query on\&. This may either be specified as numeric interface index or as network interface string (e\&.g\&.
+"en0")\&. Note that this option has no effect if system\-wide DNS configuration (as configured in
+/etc/resolv\&.conf
+or
+/etc/systemd/resolved\&.conf) in place of per\-link configuration is used\&.
+.RE
+.PP
+\fB\-p\fR \fIPROTOCOL\fR, \fB\-\-protocol=\fR\fIPROTOCOL\fR
+.RS 4
+Specifies the network protocol for the query\&. May be one of
+"dns"
+(i\&.e\&. classic unicast DNS),
+"llmnr"
+(\m[blue]\fBLink\-Local Multicast Name Resolution\fR\m[]\&\s-2\u[5]\d\s+2),
+"llmnr\-ipv4",
+"llmnr\-ipv6"
+(LLMNR via the indicated underlying IP protocols),
+"mdns"
+(\m[blue]\fBMulticast DNS\fR\m[]\&\s-2\u[6]\d\s+2),
+"mdns\-ipv4",
+"mdns\-ipv6"
+(MDNS via the indicated underlying IP protocols)\&. By default the lookup is done via all protocols suitable for the lookup\&. If used, limits the set of protocols that may be used\&. Use this option multiple times to enable resolving via multiple protocols at the same time\&. The setting
+"llmnr"
+is identical to specifying this switch once with
+"llmnr\-ipv4"
+and once via
+"llmnr\-ipv6"\&. Note that this option does not force the service to resolve the operation with the specified protocol, as that might require a suitable network interface and configuration\&. The special value
+"help"
+may be used to list known values\&.
+.RE
+.PP
+\fB\-t\fR \fITYPE\fR, \fB\-\-type=\fR\fITYPE\fR, \fB\-c\fR \fICLASS\fR, \fB\-\-class=\fR\fICLASS\fR
+.RS 4
+When used in conjunction with the
+\fBquery\fR
+command, specifies the DNS resource record type (e\&.g\&. A, AAAA, MX, \&...) and class (e\&.g\&. IN, ANY, \&...) to look up\&. If these options are used a DNS resource record set matching the specified class and type is requested\&. The class defaults to IN if only a type is specified\&. The special value
+"help"
+may be used to list known values\&.
+.sp
+Without these options
+\fBresolvectl query\fR
+provides high\-level domain name to address and address to domain name resolution\&. With these options it provides low\-level DNS resource record resolution\&. The search domain logic is automatically turned off when these options are used, i\&.e\&. specified domain names need to be fully qualified domain names\&. Moreover, IDNA internal domain name translation is turned off as well, i\&.e\&. international domain names should be specified in
+"xn\-\-\&..."
+notation, unless look\-up in MulticastDNS/LLMNR is desired, in which case UTF\-8 characters should be used\&.
+.RE
+.PP
+\fB\-\-service\-address=\fR\fIBOOL\fR
+.RS 4
+Takes a boolean parameter\&. If true (the default), when doing a service lookup with
+\fB\-\-service\fR
+the hostnames contained in the SRV resource records are resolved as well\&.
+.RE
+.PP
+\fB\-\-service\-txt=\fR\fIBOOL\fR
+.RS 4
+Takes a boolean parameter\&. If true (the default), when doing a DNS\-SD service lookup with
+\fB\-\-service\fR
+the TXT service metadata record is resolved as well\&.
+.RE
+.PP
+\fB\-\-cname=\fR\fIBOOL\fR
+.RS 4
+Takes a boolean parameter\&. If true (the default), DNS CNAME or DNAME redirections are followed\&. Otherwise, if a CNAME or DNAME record is encountered while resolving, an error is returned\&.
+.RE
+.PP
+\fB\-\-validate=\fR\fIBOOL\fR
+.RS 4
+Takes a boolean parameter; used in conjunction with
+\fBquery\fR\&. If true (the default), DNSSEC validation is applied as usual \(em under the condition that it is enabled for the network and for
+systemd\-resolved\&.service
+as a whole\&. If false, DNSSEC validation is disabled for the specific query, regardless of whether it is enabled for the network or in the service\&. Note that setting this option to true does not force DNSSEC validation on systems/networks where DNSSEC is turned off\&. This option is only suitable to turn off such validation where otherwise enabled, not enable validation where otherwise disabled\&.
+.RE
+.PP
+\fB\-\-synthesize=\fR\fIBOOL\fR
+.RS 4
+Takes a boolean parameter; used in conjunction with
+\fBquery\fR\&. If true (the default), select domains are resolved on the local system, among them
+"localhost"
+and
+"_gateway"
+or entries from
+/etc/hosts\&. If false these domains are not resolved locally, and either fail (in case of
+"localhost"
+or
+"_gateway"
+and suchlike) or go to the network via regular DNS/mDNS/LLMNR lookups (in case of
+/etc/hosts
+entries)\&.
+.RE
+.PP
+\fB\-\-cache=\fR\fIBOOL\fR
+.RS 4
+Takes a boolean parameter; used in conjunction with
+\fBquery\fR\&. If true (the default), lookups use the local DNS resource record cache\&. If false, lookups are routed to the network instead, regardless if already available in the local cache\&.
+.RE
+.PP
+\fB\-\-zone=\fR\fIBOOL\fR
+.RS 4
+Takes a boolean parameter; used in conjunction with
+\fBquery\fR\&. If true (the default), lookups are answered from locally registered LLMNR or mDNS resource records, if defined\&. If false, locally registered LLMNR/mDNS records are not considered for the lookup request\&.
+.RE
+.PP
+\fB\-\-trust\-anchor=\fR\fIBOOL\fR
+.RS 4
+Takes a boolean parameter; used in conjunction with
+\fBquery\fR\&. If true (the default), lookups for DS and DNSKEY are answered from the local DNSSEC trust anchors if possible\&. If false, the local trust store is not considered for the lookup request\&.
+.RE
+.PP
+\fB\-\-network=\fR\fIBOOL\fR
+.RS 4
+Takes a boolean parameter; used in conjunction with
+\fBquery\fR\&. If true (the default), lookups are answered via DNS, LLMNR or mDNS network requests if they cannot be synthesized locally, or be answered from the local cache, zone or trust anchors (see above)\&. If false, the request is not answered from the network and will thus fail if none of the indicated sources can answer them\&.
+.RE
+.PP
+\fB\-\-search=\fR\fIBOOL\fR
+.RS 4
+Takes a boolean parameter\&. If true (the default), any specified single\-label hostnames will be searched in the domains configured in the search domain list, if it is non\-empty\&. Otherwise, the search domain logic is disabled\&. Note that this option has no effect if
+\fB\-\-type=\fR
+is used (see above), in which case the search domain logic is unconditionally turned off\&.
+.RE
+.PP
+\fB\-\-raw\fR[=payload|packet]
+.RS 4
+Dump the answer as binary data\&. If there is no argument or if the argument is
+"payload", the payload of the packet is exported\&. If the argument is
+"packet", the whole packet is dumped in wire format, prefixed by length specified as a little\-endian 64\-bit number\&. This format allows multiple packets to be dumped and unambiguously parsed\&.
+.RE
+.PP
+\fB\-\-legend=\fR\fIBOOL\fR
+.RS 4
+Takes a boolean parameter\&. If true (the default), column headers and meta information about the query response are shown\&. Otherwise, this output is suppressed\&.
+.RE
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+Print a short help text and exit\&.
+.RE
+.PP
+\fB\-\-version\fR
+.RS 4
+Print a short version string and exit\&.
+.RE
+.PP
+\fB\-\-no\-pager\fR
+.RS 4
+Do not pipe output into a pager\&.
+.RE
+.SH "COMPATIBILITY WITH RESOLVCONF(8)"
+.PP
+\fBresolvectl\fR
+is a multi\-call binary\&. When invoked as
+"resolvconf"
+(generally achieved by means of a symbolic link of this name to the
+\fBresolvectl\fR
+binary) it is run in a limited
+\fBresolvconf\fR(8)
+compatibility mode\&. It accepts mostly the same arguments and pushes all data into
+\fBsystemd-resolved.service\fR(8), similar to how
+\fBdns\fR
+and
+\fBdomain\fR
+commands operate\&. Note that
+\fBsystemd\-resolved\&.service\fR
+is the only supported backend, which is different from other implementations of this command\&.
+.PP
+/etc/resolv\&.conf
+will only be updated with servers added with this command when
+/etc/resolv\&.conf
+is a symlink to
+/run/systemd/resolve/resolv\&.conf, and not a static file\&. See the discussion of
+/etc/resolv\&.conf
+handling in
+\fBsystemd-resolved.service\fR(8)\&.
+.PP
+Not all operations supported by other implementations are supported natively\&. Specifically:
+.PP
+\fB\-a\fR
+.RS 4
+Registers per\-interface DNS configuration data with
+\fBsystemd\-resolved\fR\&. Expects a network interface name as only command line argument\&. Reads
+\fBresolv.conf\fR(5)\-compatible DNS configuration data from its standard input\&. Relevant fields are
+"nameserver"
+and
+"domain"/"search"\&. This command is mostly identical to invoking
+\fBresolvectl\fR
+with a combination of
+\fBdns\fR
+and
+\fBdomain\fR
+commands\&.
+.RE
+.PP
+\fB\-d\fR
+.RS 4
+Unregisters per\-interface DNS configuration data with
+\fBsystemd\-resolved\fR\&. This command is mostly identical to invoking
+\fBresolvectl revert\fR\&.
+.RE
+.PP
+\fB\-f\fR
+.RS 4
+When specified
+\fB\-a\fR
+and
+\fB\-d\fR
+will not complain about missing network interfaces and will silently execute no operation in that case\&.
+.RE
+.PP
+\fB\-x\fR
+.RS 4
+This switch for "exclusive" operation is supported only partially\&. It is mapped to an additional configured search domain of
+"~\&."
+\(em i\&.e\&. ensures that DNS traffic is preferably routed to the DNS servers on this interface, unless there are other, more specific domains configured on other interfaces\&.
+.RE
+.PP
+\fB\-m\fR, \fB\-p\fR
+.RS 4
+These switches are not supported and are silently ignored\&.
+.RE
+.PP
+\fB\-u\fR, \fB\-I\fR, \fB\-i\fR, \fB\-l\fR, \fB\-R\fR, \fB\-r\fR, \fB\-v\fR, \fB\-V\fR, \fB\-\-enable\-updates\fR, \fB\-\-disable\-updates\fR, \fB\-\-are\-updates\-enabled\fR
+.RS 4
+These switches are not supported and the command will fail if used\&.
+.RE
+.PP
+See
+\fBresolvconf\fR(8)
+for details on those command line options\&.
+.SH "EXAMPLES"
+.PP
+\fBExample\ \&1.\ \&Retrieve the addresses of the "www\&.0pointer\&.net" domain\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ resolvectl query www\&.0pointer\&.net
+www\&.0pointer\&.net: 2a01:238:43ed:c300:10c3:bcf3:3266:da74
+                  85\&.214\&.157\&.71
+
+\-\- Information acquired via protocol DNS in 611\&.6ms\&.
+\-\- Data is authenticated: no
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBExample\ \&2.\ \&Retrieve the domain of the "85\&.214\&.157\&.71" IP address\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ resolvectl query 85\&.214\&.157\&.71
+85\&.214\&.157\&.71: gardel\&.0pointer\&.net
+
+\-\- Information acquired via protocol DNS in 1\&.2997s\&.
+\-\- Data is authenticated: no
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBExample\ \&3.\ \&Retrieve the MX record of the "yahoo\&.com" domain\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ resolvectl \-\-legend=no \-t MX query yahoo\&.com
+yahoo\&.com\&. IN MX    1 mta7\&.am0\&.yahoodns\&.net
+yahoo\&.com\&. IN MX    1 mta6\&.am0\&.yahoodns\&.net
+yahoo\&.com\&. IN MX    1 mta5\&.am0\&.yahoodns\&.net
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBExample\ \&4.\ \&Resolve an SRV service\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ resolvectl service _xmpp\-server\&._tcp gmail\&.com
+_xmpp\-server\&._tcp/gmail\&.com: alt1\&.xmpp\-server\&.l\&.google\&.com:5269 [priority=20, weight=0]
+                             173\&.194\&.210\&.125
+                             alt4\&.xmpp\-server\&.l\&.google\&.com:5269 [priority=20, weight=0]
+                             173\&.194\&.65\&.125
+                             \&...
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBExample\ \&5.\ \&Retrieve a PGP key\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ resolvectl openpgp zbyszek@fedoraproject\&.org
+d08ee310438ca124a6149ea5cc21b6313b390dce485576eff96f8722\&._openpgpkey\&.fedoraproject\&.org\&. IN OPENPGPKEY
+        mQINBFBHPMsBEACeInGYJCb+7TurKfb6wGyTottCDtiSJB310i37/6ZYoeIay/5soJjlMyf
+        MFQ9T2XNT/0LM6gTa0MpC1st9LnzYTMsT6tzRly1D1UbVI6xw0g0vE5y2Cjk3xUwAynCsSs
+        \&...
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fBExample\ \&6.\ \&Retrieve a TLS key ("tcp" and ":443" could be skipped)\fR
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ resolvectl tlsa tcp fedoraproject\&.org:443
+_443\&._tcp\&.fedoraproject\&.org IN TLSA 0 0 1 19400be5b7a31fb733917700789d2f0a2471c0c9d506c0e504c06c16d7cb17c0
+        \-\- Cert\&. usage: CA constraint
+        \-\- Selector: Full Certificate
+        \-\- Matching type: SHA\-256
+.fi
+.if n \{\
+.RE
+.\}
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsystemd-resolved.service\fR(8),
+\fBsystemd.dnssd\fR(5),
+\fBsystemd-networkd.service\fR(8),
+\fBresolvconf\fR(8)
+.SH "NOTES"
+.IP " 1." 4
+DNS-SD
+.RS 4
+\%https://tools.ietf.org/html/rfc6763
+.RE
+.IP " 2." 4
+SRV
+.RS 4
+\%https://tools.ietf.org/html/rfc2782
+.RE
+.IP " 3." 4
+OPENPGPKEY
+.RS 4
+\%https://tools.ietf.org/html/rfc7929
+.RE
+.IP " 4." 4
+TLSA
+.RS 4
+\%https://tools.ietf.org/html/rfc6698
+.RE
+.IP " 5." 4
+Link-Local Multicast Name Resolution
+.RS 4
+\%https://tools.ietf.org/html/rfc4795
+.RE
+.IP " 6." 4
+Multicast DNS
+.RS 4
+\%https://www.ietf.org/rfc/rfc6762.txt
+.RE

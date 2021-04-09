@@ -1,0 +1,244 @@
+'\" t
+.TH "SD\-BUS\-ERRORS" "3" "" "systemd 248" "sd-bus-errors"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sd-bus-errors, SD_BUS_ERROR_FAILED, SD_BUS_ERROR_NO_MEMORY, SD_BUS_ERROR_SERVICE_UNKNOWN, SD_BUS_ERROR_NAME_HAS_NO_OWNER, SD_BUS_ERROR_NO_REPLY, SD_BUS_ERROR_IO_ERROR, SD_BUS_ERROR_BAD_ADDRESS, SD_BUS_ERROR_NOT_SUPPORTED, SD_BUS_ERROR_LIMITS_EXCEEDED, SD_BUS_ERROR_ACCESS_DENIED, SD_BUS_ERROR_AUTH_FAILED, SD_BUS_ERROR_NO_SERVER, SD_BUS_ERROR_TIMEOUT, SD_BUS_ERROR_NO_NETWORK, SD_BUS_ERROR_ADDRESS_IN_USE, SD_BUS_ERROR_DISCONNECTED, SD_BUS_ERROR_INVALID_ARGS, SD_BUS_ERROR_FILE_NOT_FOUND, SD_BUS_ERROR_FILE_EXISTS, SD_BUS_ERROR_UNKNOWN_METHOD, SD_BUS_ERROR_UNKNOWN_OBJECT, SD_BUS_ERROR_UNKNOWN_INTERFACE, SD_BUS_ERROR_UNKNOWN_PROPERTY, SD_BUS_ERROR_PROPERTY_READ_ONLY, SD_BUS_ERROR_UNIX_PROCESS_ID_UNKNOWN, SD_BUS_ERROR_INVALID_SIGNATURE, SD_BUS_ERROR_INCONSISTENT_MESSAGE, SD_BUS_ERROR_MATCH_RULE_NOT_FOUND, SD_BUS_ERROR_MATCH_RULE_INVALID, SD_BUS_ERROR_INTERACTIVE_AUTHORIZATION_REQUIRED \- Standard D\-Bus error names
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <systemd/sd\-bus\&.h>
+.fi
+.ft
+.sp
+.ft B
+.nf
+#define SD_BUS_ERROR_FAILED                     "org\&.freedesktop\&.DBus\&.Error\&.Failed"
+#define SD_BUS_ERROR_NO_MEMORY                  "org\&.freedesktop\&.DBus\&.Error\&.NoMemory"
+#define SD_BUS_ERROR_SERVICE_UNKNOWN            "org\&.freedesktop\&.DBus\&.Error\&.ServiceUnknown"
+#define SD_BUS_ERROR_NAME_HAS_NO_OWNER          "org\&.freedesktop\&.DBus\&.Error\&.NameHasNoOwner"
+#define SD_BUS_ERROR_NO_REPLY                   "org\&.freedesktop\&.DBus\&.Error\&.NoReply"
+#define SD_BUS_ERROR_IO_ERROR                   "org\&.freedesktop\&.DBus\&.Error\&.IOError"
+#define SD_BUS_ERROR_BAD_ADDRESS                "org\&.freedesktop\&.DBus\&.Error\&.BadAddress"
+#define SD_BUS_ERROR_NOT_SUPPORTED              "org\&.freedesktop\&.DBus\&.Error\&.NotSupported"
+#define SD_BUS_ERROR_LIMITS_EXCEEDED            "org\&.freedesktop\&.DBus\&.Error\&.LimitsExceeded"
+#define SD_BUS_ERROR_ACCESS_DENIED              "org\&.freedesktop\&.DBus\&.Error\&.AccessDenied"
+#define SD_BUS_ERROR_AUTH_FAILED                "org\&.freedesktop\&.DBus\&.Error\&.AuthFailed"
+#define SD_BUS_ERROR_NO_SERVER                  "org\&.freedesktop\&.DBus\&.Error\&.NoServer"
+#define SD_BUS_ERROR_TIMEOUT                    "org\&.freedesktop\&.DBus\&.Error\&.Timeout"
+#define SD_BUS_ERROR_NO_NETWORK                 "org\&.freedesktop\&.DBus\&.Error\&.NoNetwork"
+#define SD_BUS_ERROR_ADDRESS_IN_USE             "org\&.freedesktop\&.DBus\&.Error\&.AddressInUse"
+#define SD_BUS_ERROR_DISCONNECTED               "org\&.freedesktop\&.DBus\&.Error\&.Disconnected"
+#define SD_BUS_ERROR_INVALID_ARGS               "org\&.freedesktop\&.DBus\&.Error\&.InvalidArgs"
+#define SD_BUS_ERROR_FILE_NOT_FOUND             "org\&.freedesktop\&.DBus\&.Error\&.FileNotFound"
+#define SD_BUS_ERROR_FILE_EXISTS                "org\&.freedesktop\&.DBus\&.Error\&.FileExists"
+#define SD_BUS_ERROR_UNKNOWN_METHOD             "org\&.freedesktop\&.DBus\&.Error\&.UnknownMethod"
+#define SD_BUS_ERROR_UNKNOWN_OBJECT             "org\&.freedesktop\&.DBus\&.Error\&.UnknownObject"
+#define SD_BUS_ERROR_UNKNOWN_INTERFACE          "org\&.freedesktop\&.DBus\&.Error\&.UnknownInterface"
+#define SD_BUS_ERROR_UNKNOWN_PROPERTY           "org\&.freedesktop\&.DBus\&.Error\&.UnknownProperty"
+#define SD_BUS_ERROR_PROPERTY_READ_ONLY         "org\&.freedesktop\&.DBus\&.Error\&.PropertyReadOnly"
+#define SD_BUS_ERROR_UNIX_PROCESS_ID_UNKNOWN    "org\&.freedesktop\&.DBus\&.Error\&.UnixProcessIdUnknown"
+#define SD_BUS_ERROR_INVALID_SIGNATURE          "org\&.freedesktop\&.DBus\&.Error\&.InvalidSignature"
+#define SD_BUS_ERROR_INCONSISTENT_MESSAGE       "org\&.freedesktop\&.DBus\&.Error\&.InconsistentMessage"
+#define SD_BUS_ERROR_MATCH_RULE_NOT_FOUND       "org\&.freedesktop\&.DBus\&.Error\&.MatchRuleNotFound"
+#define SD_BUS_ERROR_MATCH_RULE_INVALID         "org\&.freedesktop\&.DBus\&.Error\&.MatchRuleInvalid"
+#define SD_BUS_ERROR_INTERACTIVE_AUTHORIZATION_REQUIRED \e
+                                                "org\&.freedesktop\&.DBus\&.Error\&.InteractiveAuthorizationRequired"
+.fi
+.ft
+.SH "DESCRIPTION"
+.PP
+In addition to the error names user programs define, D\-Bus knows a number of generic, standardized error names that are listed below\&.
+.PP
+In addition to this list, in sd\-bus, the special error namespace
+"System\&.Error\&."
+is used to map arbitrary Linux system errors (as defined by
+\fBerrno\fR(3)) to D\-Bus errors and back\&. For example, the error
+\fBEUCLEAN\fR
+is mapped to
+"System\&.Error\&.EUCLEAN"
+and back\&.
+.PP
+\fBSD_BUS_ERROR_FAILED\fR
+.RS 4
+A generic error indication\&. See the error message for further details\&. This error name should be avoided, in favor of a more expressive error name\&.
+.RE
+.PP
+\fBSD_BUS_ERROR_NO_MEMORY\fR
+.RS 4
+A memory allocation failed, and the requested operation could not be completed\&.
+.RE
+.PP
+\fBSD_BUS_ERROR_SERVICE_UNKNOWN\fR
+.RS 4
+The contacted bus service is unknown and cannot be activated\&.
+.RE
+.PP
+\fBSD_BUS_ERROR_NAME_HAS_NO_OWNER\fR
+.RS 4
+The specified bus service name currently has no owner\&.
+.RE
+.PP
+\fBSD_BUS_ERROR_NO_REPLY\fR
+.RS 4
+A message did not receive a reply\&. This error is usually generated after a timeout\&.
+.RE
+.PP
+\fBSD_BUS_ERROR_IO_ERROR\fR
+.RS 4
+Generic input/output error, for example when accessing a socket or other I/O context\&.
+.RE
+.PP
+\fBSD_BUS_ERROR_BAD_ADDRESS\fR
+.RS 4
+The specified D\-Bus bus address string is malformed\&.
+.RE
+.PP
+\fBSD_BUS_ERROR_NOT_SUPPORTED\fR
+.RS 4
+The requested operation is not supported on the local system\&.
+.RE
+.PP
+\fBSD_BUS_ERROR_LIMITS_EXCEEDED\fR
+.RS 4
+Some limited resource has been exhausted\&.
+.RE
+.PP
+\fBSD_BUS_ERROR_ACCESS_DENIED\fR
+.RS 4
+Access to a resource has been denied due to security restrictions\&.
+.RE
+.PP
+\fBSD_BUS_ERROR_AUTH_FAILED\fR
+.RS 4
+Authentication did not complete successfully\&.
+.RE
+.PP
+\fBSD_BUS_ERROR_NO_SERVER\fR
+.RS 4
+Unable to connect to the specified server\&.
+.RE
+.PP
+\fBSD_BUS_ERROR_TIMEOUT\fR
+.RS 4
+An operation timed out\&. Note that method calls which timeout generate a
+\fBSD_BUS_ERROR_NO_REPLY\fR\&.
+.RE
+.PP
+\fBSD_BUS_ERROR_NO_NETWORK\fR
+.RS 4
+No network available to execute requested network operation on\&.
+.RE
+.PP
+\fBSD_BUS_ERROR_ADDRESS_IN_USE\fR
+.RS 4
+The specified network address is already being listened on\&.
+.RE
+.PP
+\fBSD_BUS_ERROR_DISCONNECTED\fR
+.RS 4
+The connection has been terminated\&.
+.RE
+.PP
+\fBSD_BUS_ERROR_INVALID_ARGS\fR
+.RS 4
+One or more invalid arguments have been passed\&.
+.RE
+.PP
+\fBSD_BUS_ERROR_FILE_NOT_FOUND\fR
+.RS 4
+The requested file could not be found\&.
+.RE
+.PP
+\fBSD_BUS_ERROR_FILE_EXISTS\fR
+.RS 4
+The requested file already exists\&.
+.RE
+.PP
+\fBSD_BUS_ERROR_UNKNOWN_METHOD\fR
+.RS 4
+The requested method does not exist in the selected interface\&.
+.RE
+.PP
+\fBSD_BUS_ERROR_UNKNOWN_OBJECT\fR
+.RS 4
+The requested object does not exist in the selected service\&.
+.RE
+.PP
+\fBSD_BUS_ERROR_UNKNOWN_INTERFACE\fR
+.RS 4
+The requested interface does not exist on the selected object\&.
+.RE
+.PP
+\fBSD_BUS_ERROR_UNKNOWN_PROPERTY\fR
+.RS 4
+The requested property does not exist in the selected interface\&.
+.RE
+.PP
+\fBSD_BUS_ERROR_PROPERTY_READ_ONLY\fR
+.RS 4
+A write operation was requested on a read\-only property\&.
+.RE
+.PP
+\fBSD_BUS_ERROR_UNIX_PROCESS_ID_UNKNOWN\fR
+.RS 4
+The requested PID is not known\&.
+.RE
+.PP
+\fBSD_BUS_ERROR_INVALID_SIGNATURE\fR
+.RS 4
+The specified message signature is not valid\&.
+.RE
+.PP
+\fBSD_BUS_ERROR_INCONSISTENT_MESSAGE\fR
+.RS 4
+The passed message does not validate correctly\&.
+.RE
+.PP
+\fBSD_BUS_ERROR_MATCH_RULE_NOT_FOUND\fR
+.RS 4
+The specified match rule does not exist\&.
+.RE
+.PP
+\fBSD_BUS_ERROR_MATCH_RULE_INVALID\fR
+.RS 4
+The specified match rule is invalid\&.
+.RE
+.PP
+\fBSD_BUS_ERROR_INTERACTIVE_AUTHORIZATION_REQUIRED\fR
+.RS 4
+Access to the requested operation is not permitted\&. However, it might be available after interactive authentication\&. This is usually returned by method calls supporting a framework for additional interactive authorization, when interactive authorization was not enabled with the
+\fBsd_bus_message_set_allow_interactive_authorization\fR(3)
+for the method call message\&.
+.RE
+.SH "NOTES"
+.PP
+These APIs are implemented as a shared library, which can be compiled and linked to with the
+\fBlibsystemd\fR\ \&\fBpkg-config\fR(1)
+file\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsd-bus\fR(3),
+\fBsd_bus_error\fR(3),
+\fBsd_bus_message_set_allow_interactive_authorization\fR(3),
+\fBerrno\fR(3),
+\fBstrerror\fR(3)

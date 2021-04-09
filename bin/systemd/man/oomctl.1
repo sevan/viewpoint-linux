@@ -1,0 +1,68 @@
+'\" t
+.TH "OOMCTL" "1" "" "systemd 248" "oomctl"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+oomctl \- Analyze the state stored in \fBsystemd\-oomd\fR
+.SH "SYNOPSIS"
+.HP \w'\fBoomctl\fR\ 'u
+\fBoomctl\fR [OPTIONS...] {COMMAND}
+.SH "DESCRIPTION"
+.PP
+\fBoomctl\fR
+may be used to get information about the various contexts read in by the
+\fBsystemd\fR(1)
+userspace out\-of\-memory (OOM) killer,
+\fBsystemd-oomd\fR(8)\&.
+.SH "COMMANDS"
+.PP
+The following commands are understood:
+.PP
+\fBdump\fR
+.RS 4
+Show the current state of the cgroup(s) and system context(s) stored by
+\fBsystemd\-oomd\fR\&.
+.RE
+.SH "OPTIONS"
+.PP
+The following options are understood:
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+Print a short help text and exit\&.
+.RE
+.PP
+\fB\-\-version\fR
+.RS 4
+Print a short version string and exit\&.
+.RE
+.PP
+\fB\-\-no\-pager\fR
+.RS 4
+Do not pipe output into a pager\&.
+.RE
+.SH "EXIT STATUS"
+.PP
+On success, 0 is returned, a non\-zero failure code otherwise\&.
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBsystemd-oomd.service\fR(8),
+\fBoomd.conf\fR(5)

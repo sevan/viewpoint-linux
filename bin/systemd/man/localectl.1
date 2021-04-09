@@ -1,0 +1,372 @@
+'\" t
+.TH "LOCALECTL" "1" "" "systemd 248" "localectl"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+localectl \- Control the system locale and keyboard layout settings
+.SH "SYNOPSIS"
+.HP \w'\fBlocalectl\fR\ 'u
+\fBlocalectl\fR [OPTIONS...] {COMMAND}
+.SH "DESCRIPTION"
+.PP
+\fBlocalectl\fR
+may be used to query and change the system locale and keyboard layout settings\&. It communicates with
+\fBsystemd-localed\fR(8)
+to modify files such as
+/etc/locale\&.conf
+and
+/etc/vconsole\&.conf\&.
+.PP
+The system locale controls the language settings of system services and of the UI before the user logs in, such as the display manager, as well as the default for users after login\&.
+.PP
+The keyboard settings control the keyboard layout used on the text console and of the graphical UI before the user logs in, such as the display manager, as well as the default for users after login\&.
+.PP
+Note that the changes performed using this tool might require the initramfs to be rebuilt to take effect during early system boot\&. The initramfs is not rebuilt automatically by
+localectl\&.
+.PP
+Note that
+\fBsystemd-firstboot\fR(1)
+may be used to initialize the system locale for mounted (but not booted) system images\&.
+.SH "COMMANDS"
+.PP
+The following commands are understood:
+.PP
+\fBstatus\fR
+.RS 4
+Show current settings of the system locale and keyboard mapping\&. If no command is specified, this is the implied default\&.
+.RE
+.PP
+\fBset\-locale LOCALE\fR, \fBset\-locale VARIABLE=LOCALE\&...\fR
+.RS 4
+Set the system locale\&. This takes one locale such as
+"en_US\&.UTF\-8", or takes one or more locale assignments such as
+"LANG=de_DE\&.utf8",
+"LC_MESSAGES=en_GB\&.utf8", and so on\&. If one locale without variable name is provided, then
+"LANG="
+locale variable will be set\&. See
+\fBlocale\fR(7)
+for details on the available settings and their meanings\&. Use
+\fBlist\-locales\fR
+for a list of available locales (see below)\&.
+.RE
+.PP
+\fBlist\-locales\fR
+.RS 4
+List available locales useful for configuration with
+\fBset\-locale\fR\&.
+.RE
+.PP
+\fBset\-keymap MAP [TOGGLEMAP]\fR
+.RS 4
+Set the system keyboard mapping for the console and X11\&. This takes a mapping name (such as "de" or "us"), and possibly a second one to define a toggle keyboard mapping\&. Unless
+\fB\-\-no\-convert\fR
+is passed, the selected setting is also applied as the default system keyboard mapping of X11, after converting it to the closest matching X11 keyboard mapping\&. Use
+\fBlist\-keymaps\fR
+for a list of available keyboard mappings (see below)\&.
+.RE
+.PP
+\fBlist\-keymaps\fR
+.RS 4
+List available keyboard mappings for the console, useful for configuration with
+\fBset\-keymap\fR\&.
+.RE
+.PP
+\fBset\-x11\-keymap LAYOUT [MODEL [VARIANT [OPTIONS]]]\fR
+.RS 4
+Set the system default keyboard mapping for X11 and the virtual console\&. This takes a keyboard mapping name (such as
+"de"
+or
+"us"), and possibly a model, variant, and options, see
+\fBkbd\fR(4)
+for details\&. Unless
+\fB\-\-no\-convert\fR
+is passed, the selected setting is also applied as the system console keyboard mapping, after converting it to the closest matching console keyboard mapping\&.
+.RE
+.PP
+\fBlist\-x11\-keymap\-models\fR, \fBlist\-x11\-keymap\-layouts\fR, \fBlist\-x11\-keymap\-variants [LAYOUT]\fR, \fBlist\-x11\-keymap\-options\fR
+.RS 4
+List available X11 keymap models, layouts, variants and options, useful for configuration with
+\fBset\-keymap\fR\&. The command
+\fBlist\-x11\-keymap\-variants\fR
+optionally takes a layout parameter to limit the output to the variants suitable for the specific layout\&.
+.RE
+.SH "OPTIONS"
+.PP
+The following options are understood:
+.PP
+\fB\-\-no\-ask\-password\fR
+.RS 4
+Do not query the user for authentication for privileged operations\&.
+.RE
+.PP
+\fB\-\-no\-convert\fR
+.RS 4
+If
+\fBset\-keymap\fR
+or
+\fBset\-x11\-keymap\fR
+is invoked and this option is passed, then the keymap will not be converted from the console to X11, or X11 to console, respectively\&.
+.RE
+.PP
+\fB\-H\fR, \fB\-\-host=\fR
+.RS 4
+Execute the operation remotely\&. Specify a hostname, or a username and hostname separated by
+"@", to connect to\&. The hostname may optionally be suffixed by a port ssh is listening on, separated by
+":", and then a container name, separated by
+"/", which connects directly to a specific container on the specified host\&. This will use SSH to talk to the remote machine manager instance\&. Container names may be enumerated with
+\fBmachinectl \-H \fR\fB\fIHOST\fR\fR\&. Put IPv6 addresses in brackets\&.
+.RE
+.PP
+\fB\-M\fR, \fB\-\-machine=\fR
+.RS 4
+Execute operation on a local container\&. Specify a container name to connect to, optionally prefixed by a user name to connect as and a separating
+"@"
+character\&. If the special string
+"\&.host"
+is used in place of the container name, a connection to the local system is made (which is useful to connect to a specific user\*(Aqs user bus:
+"\-\-user \-\-machine=lennart@\&.host")\&. If the
+"@"
+syntax is not used, the connection is made as root user\&. If the
+"@"
+syntax is used either the left hand side or the right hand side may be omitted (but not both) in which case the local user name and
+"\&.host"
+are implied\&.
+.RE
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+Print a short help text and exit\&.
+.RE
+.PP
+\fB\-\-version\fR
+.RS 4
+Print a short version string and exit\&.
+.RE
+.PP
+\fB\-\-no\-pager\fR
+.RS 4
+Do not pipe output into a pager\&.
+.RE
+.SH "EXIT STATUS"
+.PP
+On success, 0 is returned, a non\-zero failure code otherwise\&.
+.SH "ENVIRONMENT"
+.PP
+\fI$SYSTEMD_LOG_LEVEL\fR
+.RS 4
+The maximum log level of emitted messages (messages with a higher log level, i\&.e\&. less important ones, will be suppressed)\&. Either one of (in order of decreasing importance)
+\fBemerg\fR,
+\fBalert\fR,
+\fBcrit\fR,
+\fBerr\fR,
+\fBwarning\fR,
+\fBnotice\fR,
+\fBinfo\fR,
+\fBdebug\fR, or an integer in the range 0\&...7\&. See
+\fBsyslog\fR(3)
+for more information\&.
+.RE
+.PP
+\fI$SYSTEMD_LOG_COLOR\fR
+.RS 4
+A boolean\&. If true, messages written to the tty will be colored according to priority\&.
+.sp
+This setting is only useful when messages are written directly to the terminal, because
+\fBjournalctl\fR(1)
+and other tools that display logs will color messages based on the log level on their own\&.
+.RE
+.PP
+\fI$SYSTEMD_LOG_TIME\fR
+.RS 4
+A boolean\&. If true, log messages will be prefixed with a timestamp\&.
+.sp
+This setting is only useful when messages are written directly to the terminal or a file, because
+\fBjournalctl\fR(1)
+and other tools that display logs will attach timestamps based on the entry metadata on their own\&.
+.RE
+.PP
+\fI$SYSTEMD_LOG_LOCATION\fR
+.RS 4
+A boolean\&. If true, messages will be prefixed with a filename and line number in the source code where the message originates\&.
+.sp
+Note that the log location is often attached as metadata to journal entries anyway\&. Including it directly in the message text can nevertheless be convenient when debugging programs\&.
+.RE
+.PP
+\fI$SYSTEMD_LOG_TID\fR
+.RS 4
+A boolean\&. If true, messages will be prefixed with the current numerical thread ID (TID)\&.
+.sp
+Note that the this information is attached as metadata to journal entries anyway\&. Including it directly in the message text can nevertheless be convenient when debugging programs\&.
+.RE
+.PP
+\fI$SYSTEMD_LOG_TARGET\fR
+.RS 4
+The destination for log messages\&. One of
+\fBconsole\fR
+(log to the attached tty),
+\fBconsole\-prefixed\fR
+(log to the attached tty but with prefixes encoding the log level and "facility", see
+\fBsyslog\fR(3),
+\fBkmsg\fR
+(log to the kernel circular log buffer),
+\fBjournal\fR
+(log to the journal),
+\fBjournal\-or\-kmsg\fR
+(log to the journal if available, and to kmsg otherwise),
+\fBauto\fR
+(determine the appropriate log target automatically, the default),
+\fBnull\fR
+(disable log output)\&.
+.RE
+.PP
+\fI$SYSTEMD_PAGER\fR
+.RS 4
+Pager to use when
+\fB\-\-no\-pager\fR
+is not given; overrides
+\fI$PAGER\fR\&. If neither
+\fI$SYSTEMD_PAGER\fR
+nor
+\fI$PAGER\fR
+are set, a set of well\-known pager implementations are tried in turn, including
+\fBless\fR(1)
+and
+\fBmore\fR(1), until one is found\&. If no pager implementation is discovered no pager is invoked\&. Setting this environment variable to an empty string or the value
+"cat"
+is equivalent to passing
+\fB\-\-no\-pager\fR\&.
+.RE
+.PP
+\fI$SYSTEMD_LESS\fR
+.RS 4
+Override the options passed to
+\fBless\fR
+(by default
+"FRSXMK")\&.
+.sp
+Users might want to change two options in particular:
+.PP
+\fBK\fR
+.RS 4
+This option instructs the pager to exit immediately when
+Ctrl+C
+is pressed\&. To allow
+\fBless\fR
+to handle
+Ctrl+C
+itself to switch back to the pager command prompt, unset this option\&.
+.sp
+If the value of
+\fI$SYSTEMD_LESS\fR
+does not include
+"K", and the pager that is invoked is
+\fBless\fR,
+Ctrl+C
+will be ignored by the executable, and needs to be handled by the pager\&.
+.RE
+.PP
+\fBX\fR
+.RS 4
+This option instructs the pager to not send termcap initialization and deinitialization strings to the terminal\&. It is set by default to allow command output to remain visible in the terminal even after the pager exits\&. Nevertheless, this prevents some pager functionality from working, in particular paged output cannot be scrolled with the mouse\&.
+.RE
+.sp
+See
+\fBless\fR(1)
+for more discussion\&.
+.RE
+.PP
+\fI$SYSTEMD_LESSCHARSET\fR
+.RS 4
+Override the charset passed to
+\fBless\fR
+(by default
+"utf\-8", if the invoking terminal is determined to be UTF\-8 compatible)\&.
+.RE
+.PP
+\fI$SYSTEMD_PAGERSECURE\fR
+.RS 4
+Takes a boolean argument\&. When true, the "secure" mode of the pager is enabled; if false, disabled\&. If
+\fI$SYSTEMD_PAGERSECURE\fR
+is not set at all, secure mode is enabled if the effective UID is not the same as the owner of the login session, see
+\fBgeteuid\fR(2)
+and
+\fBsd_pid_get_owner_uid\fR(3)\&. In secure mode,
+\fBLESSSECURE=1\fR
+will be set when invoking the pager, and the pager shall disable commands that open or create new files or start new subprocesses\&. When
+\fI$SYSTEMD_PAGERSECURE\fR
+is not set at all, pagers which are not known to implement secure mode will not be used\&. (Currently only
+\fBless\fR(1)
+implements secure mode\&.)
+.sp
+Note: when commands are invoked with elevated privileges, for example under
+\fBsudo\fR(8)
+or
+\fBpkexec\fR(1), care must be taken to ensure that unintended interactive features are not enabled\&. "Secure" mode for the pager may be enabled automatically as describe above\&. Setting
+\fISYSTEMD_PAGERSECURE=0\fR
+or not removing it from the inherited environment allows the user to invoke arbitrary commands\&. Note that if the
+\fI$SYSTEMD_PAGER\fR
+or
+\fI$PAGER\fR
+variables are to be honoured,
+\fI$SYSTEMD_PAGERSECURE\fR
+must be set too\&. It might be reasonable to completely disable the pager using
+\fB\-\-no\-pager\fR
+instead\&.
+.RE
+.PP
+\fI$SYSTEMD_COLORS\fR
+.RS 4
+Takes a boolean argument\&. When true,
+\fBsystemd\fR
+and related utilities will use colors in their output, otherwise the output will be monochrome\&. Additionally, the variable can take one of the following special values:
+"16",
+"256"
+to restrict the use of colors to the base 16 or 256 ANSI colors, respectively\&. This can be specified to override the automatic decision based on
+\fI$TERM\fR
+and what the console is connected to\&.
+.RE
+.PP
+\fI$SYSTEMD_URLIFY\fR
+.RS 4
+The value must be a boolean\&. Controls whether clickable links should be generated in the output for terminal emulators supporting this\&. This can be specified to override the decision that
+\fBsystemd\fR
+makes based on
+\fI$TERM\fR
+and other conditions\&.
+.RE
+.SH "SEE ALSO"
+.PP
+\fBsystemd\fR(1),
+\fBlocale\fR(7),
+\fBlocale.conf\fR(5),
+\fBvconsole.conf\fR(5),
+\fBloadkeys\fR(1),
+\fBkbd\fR(4),
+\m[blue]\fBThe XKB Configuration Guide\fR\m[]\&\s-2\u[1]\d\s+2,
+\fBsystemctl\fR(1),
+\fBsystemd-localed.service\fR(8),
+\fBsystemd-firstboot\fR(1),
+\fBmkinitrd\fR(8)
+.SH "NOTES"
+.IP " 1." 4
+The XKB Configuration Guide
+.RS 4
+\%http://www.x.org/releases/current/doc/xorg-docs/input/XKB-Config.html
+.RE
