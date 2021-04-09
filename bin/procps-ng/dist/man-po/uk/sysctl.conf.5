@@ -1,0 +1,83 @@
+.\" Copyright 1999, George Staikos (staikos@0wned.org)
+.\" This file may be used subject to the terms and conditions of the
+.\" GNU General Public License Version 2, or any later version
+.\" at your option, as published by the Free Software Foundation.
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+.\" GNU General Public License for more details."
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH SYSCTL.CONF 5 "4 червня 2020 року" procps\-ng "Формати файлів"
+.SH НАЗВА
+sysctl.conf — файл попереднього завантаження або налаштувань sysctl.
+.SH ОПИС
+\fBsysctl.conf\fP — простий файл, що містить значення sysctl, які слід
+прочитати і встановити за допомогою \fBsysctl\fP. Синтаксис є простим:
+.RS
+.sp
+.nf
+.ne 7
+# коментар
+; коментар
+
+ключ = значення
+.fi
+.RE
+.PP
+Зауважте, що порожні рядки буде проігноровано так само, як пробіли перед і
+після ключа або значення, хоча самі значення можуть містити пробіли. Рядки,
+що починаються із символу \fI#\fP або \fI;\fP вважатимуться коментарями і
+ігноруватимуться.
+
+Якщо рядок починається з одинарного \-, будь\-які невдалі спроби встановити
+значення буде проігноровано.
+
+.SH ЗАУВАЖЕННЯ
+Оскільки файл \fB/etc/sysctl.conf\fP використовується для перевизначення
+типових значень параметрів ядра, у цьому файлі попередньо визначається лише
+незначна кількість параметрів. Щоб ознайомитися зі списком усіх можливих
+параметрів, скористайтеся командою \fI/sbin/sysctl\ \-a\fP або підручником із
+\fBsysctl\fP(8). Опис окремих параметрів можна знайти у документації до ядра
+системи.
+.SH ПРИКЛАД
+.RS
+.sp
+.nf
+.ne 7
+# Зразок sysctl.conf
+#
+  kernel.domainname = example.com
+; тут є пробіл, який буде записано до sysctl!
+  kernel.modprobe = /sbin/mod probe
+.fi
+.RE
+.PP
+.SH ФАЙЛИ
+\fI/etc/sysctl.d/*.conf\fP
+.br
+\fI/run/sysctl.d/*.conf\fP
+.br
+\fI/usr/local/lib/sysctl.d/*.conf\fP
+.br
+\fI/usr/lib/sysctl.d/*.conf\fP
+.br
+\fI/lib/sysctl.d/*.conf\fP
+.br
+\fI/etc/sysctl.conf\fP
+
+Шляхи, де зазвичай зберігаються файли попереднього завантаження
+\fBsysctl\fP. Див. також параметр \fBsysctl\fP \fI\-\-system\fP.
+.SH "ТАКОЖ ПЕРЕГЛЯНЬТЕ"
+\fBsysctl\fP(8)
+.SH АВТОР
+.UR staikos@0wned.org
+George Staikos
+.UE
+.SH "Як надіслати звіт про вади"
+Про вади, будь ласка, повідомляйте на адресу
+.UR procps@freelists.org
+.UE

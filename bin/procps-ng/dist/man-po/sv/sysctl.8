@@ -1,0 +1,166 @@
+.\" Copyright 1999, George Staikos (staikos@0wned.org)
+.\" This file may be used subject to the terms and conditions of the
+.\" GNU General Public License Version 2, or any later version
+.\" at your option, as published by the Free Software Foundation.
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+.\" GNU General Public License for more details."
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH SYSCTL 8 2020\-02\-27 procps\-ng Systemadministration
+.SH NAMN
+sysctl — konfigurera kärnparametrar under gång
+.SH SYNOPSIS
+\fBsysctl\fP [\fIflaggor\fP] [\fIvariabel\fP[\fB=\fP\fIvärde\fP]] […]
+.br
+\fBsysctl \-p\fP [\fIfil\fP eller \fIreguttr\fP] […]
+.SH BESKRIVNING
+\fBsysctl\fP används för att ändra kärnparametrar under gång.  De tillgängliga
+parametrarna är de som listas under /proc/sys/.  Procfs krävs för att stödja
+\fBsysctl\fP i Linux.  Du kan använda \fBsysctl\fP både för att läsa och skriva
+sysctl\-data.
+.SH PARAMETRAR
+.TP 
+\fIvariabel\fP
+Namnet på en nyckel att läsa ifrån.  Ett exempel är kernel.ostype.
+Separatorn ”/” godkänns också istället för en ”.”.
+.TP 
+\fIvariabel\fP=\fIvärde\fP
+För att sätta en nyckel, använd formen \fIvariabel\fP=\fIvärde\fP där \fIvariabel\fP
+är nyckeln och \fIvärde\fP är värdet att sätta den till.  Om värdet innehåller
+citationstecken eller tecken som tolkas av skalet kan du behöva omge värdet
+med citationstecken.
+.TP 
+\fB\-n\fP, \fB\-\-values\fP
+Använd denna flagga för att slå av utskrift av nyckelnamnet när värden
+skrivs.
+.TP 
+\fB\-e\fP, \fB\-\-ignore\fP
+Använd denna flagga för att ignorera fel för okända nycklar.
+.TP 
+\fB\-N\fP, \fB\-\-names\fP
+Använd denna flagga för att bara skriva namnen.  Det kan vara användbart med
+skal som har programmerbar komplettering.
+.TP 
+\fB\-q\fP, \fB\-\-quiet\fP
+Använd denna flagga för att inte visa värdena som sätts på standard ut.
+.TP 
+\fB\-w\fP, \fB\-\-write\fP
+Använd denna flagga när alla argument föreskriver att en nyckel skall
+sättas.
+.TP 
+\fB\-p\fP[\fIFIL\fP], \fB\-\-load\fP[=\fIFIL\fP]
+Läs in sysctl\-inställningar från filen som anges eller /etc/sysctl.conf om
+ingen anges.  Att ange \- som ett filnamn betyder att läsa data från standard
+in.  Användning av denna flagga kommer betyda att argument till \fBsysctl\fP är
+filer, vilka läses i den ordning de anges.  Filargumentet kan anges som ett
+reguljärt uttryck.
+.TP 
+\fB\-a\fP, \fB\-\-all\fP
+Visa alla värden som för närvarande är tillgängliga.
+.TP 
+\fB\-\-deprecated\fP
+Inkludera utgående parametrar i värdelistningen med \fB\-\-all\fP.
+.TP 
+\fB\-b\fP, \fB\-\-binary\fP
+Skriv värdet utan nyrad.
+.TP 
+\fB\-\-system\fP
+Läs in inställningar från alla systemkonfigurationsfiler.  Filer läses från
+kataloger i följande lista i den givna ordningen uppifrån och ner.  När en
+fil med ett givet namn är inläst ignoreras eventuella filer med samma namn i
+följande kataloger.
+.br
+/etc/sysctl.d/*.conf
+.br
+/run/sysctl.d/*.conf
+.br
+/usr/local/lib/sysctl.d/*.conf
+.br
+/usr/lib/sysctl.d/*.conf
+.br
+/lib/sysctl.d/*.conf
+.br
+/etc/sysctl.conf
+.TP 
+\fB\-r\fP, \fB\-\-pattern\fP \fImönster\fP
+Verkställ endast inställningar som matchar \fImönster\fP.  \fIMönstret\fP använder
+syntaxen för utökade reguljära uttryck.
+.TP 
+\fB\-A\fP
+Alias för \fB\-a\fP
+.TP 
+\fB\-d\fP
+Alias för \fB\-h\fP
+.TP 
+\fB\-f\fP
+Alias för \fB\-p\fP
+.TP 
+\fB\-X\fP
+Alias för \fB\-a\fP
+.TP 
+\fB\-o\fP
+Gör ingenting, finns för kompatibilitet med BSD.
+.TP 
+\fB\-x\fP
+Gör ingenting, finns för kompatibilitet med BSD.
+.TP 
+\fB\-h\fP, \fB\-\-help\fP
+Visa hjälptext och avsluta.
+.TP 
+\fB\-V\fP, \fB\-\-version\fP
+Visa versionsinformation och avsluta.
+.SH EXEMPEL
+/sbin/sysctl \-a
+.br
+/sbin/sysctl \-n kernel.hostname
+.br
+/sbin/sysctl \-w kernel.domainname="example.com"
+.br
+/sbin/sysctl \-p/etc/sysctl.conf
+.br
+/sbin/sysctl \-a \-\-pattern forward
+.br
+/sbin/sysctl \-a \-\-pattern forward$
+.br
+/sbin/sysctl \-a \-\-pattern 'net.ipv4.conf.(eth|wlan)0.arp'
+.br
+/sbin/sysctl \-\-system \-\-pattern '^net.ipv6'
+.SH "FÖRÅLDRADE PARAMETRAR"
+The \fBbase_reachable_time\fP and \fBretrans_time\fP are deprecated.  The
+\fBsysctl\fP command does not allow changing values of these parameters.  Users
+who insist to use deprecated kernel interfaces should push values to /proc
+file system by other means.  For example:
+.PP
+echo 256 > /proc/sys/net/ipv6/neigh/eth0/base_reachable_time
+.SH FILER
+\fI/proc/sys\fP
+.br
+\fI/etc/sysctl.d/*.conf\fP
+.br
+\fI/run/sysctl.d/*.conf\fP
+.br
+\fI/usr/local/lib/sysctl.d/*.conf\fP
+.br
+\fI/usr/lib/sysctl.d/*.conf\fP
+.br
+\fI/lib/sysctl.d/*.conf\fP
+.br
+\fI/etc/sysctl.conf\fP
+.SH "SE ÄVEN"
+\fBsysctl.conf\fP(5)  \fBregex\fP(7)
+.SH UPPHOVSMAN
+.UR staikos@0wned.org
+George Staikos
+.UE
+.SH "RAPPORTERA FEL"
+Skicka felrapporter till
+.UR procps@freelists.org
+.UE
+Skicka synpunkter på översättningen till
+.UR tp\-sv@listor.tp\-sv.se
+.UE

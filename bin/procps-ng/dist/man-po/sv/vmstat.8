@@ -1,0 +1,205 @@
+.\"  This page Copyright (C) 1994 Henry Ware <al172@yfn.ysu.edu>
+.\"  Distributed under the GPL, Copyleft 1994.
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH VMSTAT 8 2020\-06\-04 procps\-ng Systemadministration
+.SH NAMN
+vmstat — Rapportera statistik över virtuellt minne
+.SH SYNOPSIS
+\fBvmstat\fP [flaggor] [\fIfördröjning\fP [\fIantal\fP]]
+.SH BESKRIVNING
+\fBvmstat\fP rapporterar information om processer, minne, sidväxling,
+block\-I/O, fällor, disk\- och cpu\-aktivitet.
+.PP
+Den första producerade rapporten ger genomsnitt sedan senaste omstarten.
+Följande rapporter ger information om en samplingsperiod med längden
+\fIfördröjning\fP.  Process\- och minnesrapporterna är ögonblickliga i båda
+fallen.
+.SH FLAGGOR
+.TP 
+\fIfördröjning\fP
+\fIFördröjningen\fP mellan uppdateringar i sekunder.  Om ingen \fIfördröjning\fP
+anges skrivs endast en rapport med genomsnittsvärdena sedan start.
+.TP 
+\fIantal\fP
+Antal uppdateringar.  I avsaknad av \fIantal\fP, när \fIfördröjning\fP är
+definierad, är standardvärdet oändligt.
+.TP 
+\fB\-a\fP, \fB\-\-active\fP
+Visa aktivt och inaktivt minne, förutsatt en kärna 2.5.41 eller bättre.
+.TP 
+\fB\-f\fP, \fB\-\-forks\fP
+Flaggan \fB\-f\fP visar antalet avgreningar sedan start.  Detta inkluderar
+systemanropen fork, vfork och clone, och är likvärdigt med antalet skapade
+uppgifter.  Varje process representeras av en eller flera uppgifter,
+beroende på trådanvändning.  Denna visning uppdateras inte.
+.TP 
+\fB\-m\fP, \fB\-\-slabs\fP
+Visa skivinformation.
+.TP 
+\fB\-n\fP, \fB\-\-one\-header\fP
+Visa endast huvudet en gång istället för periodiskt.
+.TP 
+\fB\-s\fP, \fB\-\-stats\fP
+Visar en tabell över olika händelseräknare och minnesstatistik.  Denna
+visning upprepas inte.
+.TP 
+\fB\-d\fP, \fB\-\-disk\fP
+Rapportera diskstatistik (2.5.70 eller senare krävs).
+.TP 
+\fB\-D\fP, \fB\-\-disk\-sum\fP
+Rapportera en del sammanfattande statistik om diskaktivitet.
+.TP 
+\fB\-p\fP, \fB\-\-partition\fP \fIenhet\fP
+Detaljerad statistik om partitioner (2.5.70 eller senare krävs).
+.TP 
+\fB\-S\fP, \fB\-\-unit\fP \fItecken\fP
+Byter utmatning mellan 1000 (\fIk\fP), 1024 (\fIK\fP), 1000000 (\fIm\fP) eller
+1048576 (\fIM\fP) byte.  Observera att detta inte ändrar fälten för block
+(bi/bu), som alltid mäts i block.
+.TP 
+\fB\-t\fP, \fB\-\-timestamp\fP
+Lägg till en tidsstämpel till varje rad
+.TP 
+\fB\-w\fP, \fB\-\-wide\fP
+Brett utmatningsläge (användbart för system med större mängder minne, där
+standardläget för utmatning drabbas av oönskade trasiga kolumner).
+Utmatningen är bredare än 80 tecken per rad.
+.TP 
+\fB\-V\fP, \fB\-\-version\fP
+Visa versionsinformation och avsluta.
+.TP 
+\fB\-h\fP, \fB\-\-help\fP
+Visa hjälp och avsluta.
+.PD
+.SH "FÄLTBESKRIVNING FÖR VM\-LÄGET"
+.SS Procs
+.nf
+r: The number of runnable processes (running or waiting for run time).
+b: The number of processes blocked waiting for I/O to complete.
+.fi
+.PP
+.SS Minne
+These are affected by the \fB\-\-unit\fP option.
+.nf
+swpd: the amount of swap memory used.
+free: the amount of idle memory.
+buff: the amount of memory used as buffers.
+cache: the amount of memory used as cache.
+inact: the amount of inactive memory.  (\fB\-a\fP option)
+active: the amount of active memory.  (\fB\-a\fP option)
+.fi
+.PP
+.SS Växling
+These are affected by the \fB\-\-unit\fP option.
+.nf
+vi: Mängden minne växlat in från disk (/s).
+vu: Mängden minne växlat ut till disk (/s).
+.fi
+.PP
+.SS IO
+.nf
+bi: Block mottagna från en blockenhet (block/s).
+bu: Block skickade till en blockenhet (block/s).
+.fi
+.PP
+.SS System
+.nf
+avb: Antalet avbrott per sekund, inklusive klockan.
+ktxb: Antalet kontextbyten per sekund.
+.fi
+.PP
+.SS CPU
+Detta är procentandelar av total CPU\-tid.
+.nf
+an: Tid tillbringad att köra icke\-kärnkod.  (användartid, inklusive nice\-tid)
+sy: Tid tillbringad att köra kärnkod.  (systemtid)
+in: Tid tillbringad inaktiv.  Före Linux 2.5.41 inkluderar detta IO\-väntetid.
+vä: Tid tillbringad väntande på IO.  Före Linux 2.5.41 inkluderat i inaktiv.
+st: Tid stulen från en virtuell maskin.  Före Linux 2.6.11, okänd.
+.fi
+.PP
+.SH "FÄLTBESKRIVNING FÖR DISK\-LÄGET"
+.SS Läsningar
+.nf
+totalt: Totalt avslutade lyckade läsningar
+grupp: grupperade läsningar (resulterar i en I/O)
+sektor: Sektorer lyckat lästa
+ms: millisekunder tillbringat med läsningar
+.fi
+.PP
+.SS Skrivningar
+.nf
+totalt: Totalt avslutade lyckade skrivningar
+grupp: grupperade skrivningar (resulterar i en I/O)
+sektor: Sektorer lyckat skrivna
+ms: millisekunder tillbringat med skrivningar
+.fi
+.PP
+.SS IO
+.nf
+akt: pågående I/O
+s: sekunder tillbringat i I/O
+.fi
+.PP
+.SH "FÄLTBESKRIVNING FÖR DISKPARTITIONSLÄGET"
+.nf
+läsningar: Totalt antal läsningar skickade till denna partition
+lästa sektorer: Totalt lästa sektorer från partitionen
+skrivningr: Totalt antal skrivningar skickade till denna partition
+beg skrivn: Totalt antal skrivbegäranden gjorda för partitionen
+.fi
+.PP
+.SH "FÄLTBESKRIVNING FÖR SKIVLÄGET"
+.nf
+cache: Cachenamn
+antal: Antal för närvarande aktiva objekt
+totalt: Totalt antal tillgängliga objekt
+strlk: Storlek på varje objekt
+sidor: Antal sidor med åtminstone ett aktivt objekt
+.fi
+.SH OBSERVERA
+\fBvmstat\fP does not require special permissions.
+.PP
+Dessa rapporter är avsedda att hjälpa till att hitta flaskhalsar i
+systemet.  Linux \fBvmstat\fP räknar inte sig själv som en körande process.
+.PP
+Alla linuxblock är för närvarande 1024 byte.  Gamla kärnor kan rapportera
+block som 512 byte, 2048 byte eller 4096 byte.
+.PP
+Sedan procps 3.1.9 låter vmstat dig välja enheter (k, K, m, M).  Standard är
+K (1024 byte) i standardläget.
+.PP
+vmstat använder slabinfo 1.1
+.SH FILER
+.ta 
+.nf
+/proc/meminfo
+/proc/stat
+/proc/*/stat
+.fi
+.SH "SE ÄVEN"
+\fBfree\fP(1), \fBiostat\fP(1), \fBmpstat\fP(1), \fBps\fP(1), \fBsar\fP(1), \fBtop\fP(1)
+.PP
+.SH FEL
+Tabellerar inte block\-io per enhet eller antalet systemanrop.
+.SH UPPHOVSMÄN
+Skriven av
+.UR al172@yfn.\:ysu.\:edu
+Henry Ware
+.UE .
+.br
+.UR ffrederick@users.\:sourceforge.\:net
+Fabian Fr\('ed\('erick
+.UE
+(diskstat, slab, partitions…)
+.SH "RAPPORTERA FEL"
+Skicka felrapporter till
+.UR procps@freelists.org
+.UE
+Skicka synpunkter på översättningen till
+.UR tp\-sv@listor.tp\-sv.se
+.UE

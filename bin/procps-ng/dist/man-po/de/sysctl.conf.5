@@ -1,0 +1,82 @@
+.\" Copyright 1999, George Staikos (staikos@0wned.org)
+.\" This file may be used subject to the terms and conditions of the
+.\" GNU General Public License Version 2, or any later version
+.\" at your option, as published by the Free Software Foundation.
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+.\" GNU General Public License for more details."
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH SYSCTL.CONF 5 "4. April 2020" procps\-ng Dateiformate
+.SH BEZEICHNUNG
+sysctl.conf \- Vorlade\-/Konfigurationsdatei für Sysctl
+.SH BESCHREIBUNG
+\fBsysctl.conf\fP ist eine einfache Datei, welche Sysctl\-Werte enthält, die in
+\fBsysctl\fP gelesen und gesetzt werden. Die Syntax ist einfach, wie folgt:
+.RS
+.sp
+.nf
+.ne 7
+# Kommentar
+; Kommentar
+
+Token = Wert
+.fi
+.RE
+.PP
+Beachten Sie, dass leere Zeilen sowie Leerräume vor und nach einem Token
+oder einem Wert ignoriert werden, obwohl ein Token auch Leerraum enthalten
+kann. Zeilen, die mit einem \fI#\fP oder \fI;\fP beginnen, werden als
+Kommentarzeilen angesehen und ignoriert.
+
+Falls eine Zeile mit einem einzelnen \fB\-\fP beginnt, werden alle
+fehlschlagenden Versuche, den Wert zu setzen, ignoriert.
+
+.SH ANMERKUNGEN
+Da die Datei \fB/etc/sysctl.conf\fP zur Außerkraftsetzung standardmäßiger Werte
+der Kernelparameter verwendet wird, ist in der Datei nur eine kleine Anzahl
+Parameter vordefiniert. Verwenden Sie \fI/sbin/sysctl\ \-a\fP oder folgen Sie
+\fBsysctl\fP(8), um alle möglichen Parameter aufzulisten. Die Beschreibungen
+der einzelnen Parameter finden Sie in der Kerneldokumentation.
+.SH BEISPIEL
+.RS
+.sp
+.nf
+.ne 7
+# sysctl.conf sample
+#
+  kernel.domainname = example.com
+; this one has a space which will be written to the sysctl!
+  kernel.modprobe = /sbin/mod probe
+.fi
+.RE
+.PP
+.SH DATEIEN
+\fI/etc/sysctl.d/*.conf\fP
+.br
+\fI/run/sysctl.d/*.conf\fP
+.br
+\fI/usr/local/lib/sysctl.d/*.conf\fP
+.br
+\fI/usr/lib/sysctl.d/*.conf\fP
+.br
+\fI/lib/sysctl.d/*.conf\fP
+.br
+\fI/etc/sysctl.conf\fP
+
+Die Pfade, aus denen \fBsysctl\fP Dateien vorlädt, existieren
+üblicherweise. Siehe auch die Option \fB\-\-system\fP zu \fBsysctl\fP.
+.SH "SIEHE AUCH"
+\fBsysctl\fP(8)
+.SH AUTOR
+.UR staikos@0wned.org
+George Staikos
+.UE
+.SH "FEHLER MELDEN"
+Bitte schicken Sie Fehlermeldungen (auf Englisch) an
+.UR procps@freelists.org
+.UE

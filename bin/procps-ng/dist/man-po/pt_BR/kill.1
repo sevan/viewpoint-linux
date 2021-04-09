@@ -1,0 +1,89 @@
+.ig
+Written by Albert Cahalan, converted to a man page by Michael K. Johnson
+
+This manpage is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+..
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH KILL 1 2020\-04\-24 procps\-ng "Comandos de usuário"
+.SH NOME
+kill \- envia um sinal para um processo
+.SH SINOPSE
+\fBkill\fP [opções] <pid> [...]
+.SH DESCRIÇÃO
+O sinal padrão do kill é TERM. Use \fB\-l\fP ou \fB\-L\fP para listar os sinais
+disponíveis. Os sinais particularmente úteis incluem HUP, INT, KILL, STOP,
+CONT e 0. Os sinais alternativos podem ser especificados de três maneiras:
+\fB\-9\fP, \fB\-SIGKILL\fP ou \fB\-KILL\fP. Valores de PID negativos podem ser usados
+para escolher todos os grupos de processo; veja a coluna PGID na saída do
+comando ps. Um PID de \fB\-1\fP é especial; indica todos os processos, exceto o
+próprio processo do kill e o init.
+.SH OPÇÕES
+.TP 
+\fB<pid> [...]\fP
+Envia sinal para tod <pid> listado.
+.TP 
+\fB\-<sinal>\fP
+.TQ
+\fB\-s <sinal>\fP
+.TQ
+\fB\-\-signal <sinal>\fP
+Especifica o \fBsinal\fP a ser enviado. O sinal pode ser especificado usando um
+nome ou número. O comportamento dos sinais é explicado na página de manual
+\fBsignal\fP(7).
+.TP 
+\fB\-q\fP, \fB\-\-queue \fP\fIvalue\fP
+Use \fBsigqueue(3)\fP rather than \fBkill(2)\fP and the value argument is used to
+specify an integer to be sent with the signal. If the receiving process has
+installed a handler for this signal using the SA_SIGINFO flag to
+\fBsigaction(2)\fP , then it can obtain this data via the si_value field of the
+siginfo_t structure.
+.TP 
+\fB\-l\fP, \fB\-\-list\fP [\fIsinal\fP]
+Lista nomes de sinais. Essa opção possui um argumento opcional, que vai
+converter o número do sinal para um nome de sinal, e vice\-versa.
+.TP 
+\fB\-L\fP,\fB\ \-\-table\fP
+Lista nomes de sinais em uma tabela legal.
+.TP 
+.PD
+.SH NOTAS
+Seu shell (interpretador de linha de comando) pode ter um comando kill
+embutido. Você pode precisar executar o comando descrito aqui como /bin/kill
+para resolver o conflito.
+.SH EXEMPLOS
+.TP 
+\fBkill \-9 \-1\fP
+Termina todos os processos que você pode terminar.
+.TP 
+\fBkill \-l 11\fP
+Traduz o número 11 para um nome de sinal.
+.TP 
+\fBkill \-L\fP
+Lista as escolhas de sinais disponíveis em uma tabela legal.
+.TP 
+\fBkill 123 543 2341 3453\fP
+Envia um sinal padrão, SIGTERM, para todos esses processos.
+.SH "VEJA TAMBÉM"
+\fBkill\fP(2), \fBkillall\fP(1), \fBnice\fP(1), \fBpkill\fP(1), \fBrenice\fP(1),
+\fBsignal\fP(7), \fBsigqueue\fP(3), \fBskill\fP(1)
+.SH PADRÕES
+Esse comando atende as padrões apropriados. A opção \fB\-L\fP é específica do
+Linux.
+.SH AUTOR
+.MT albert@users.sf.net
+Albert Cahalan
+.ME
+escreveu kill em 1999 para
+substituir um do bsdutils que não estava em conformidade com os padrões. O
+do The util\-linux também pode funcionar corretamente.
+.SH "RELATANDO ERROS"
+Por favor, envie relatórios de erros para
+.MT procps@freelists.org
+.ME

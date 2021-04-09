@@ -1,0 +1,2620 @@
+.ig
+. manual page for NEW and IMPROVED linux top
+.
+. Copyright (c) 2002-2020, by: James C. Warner
+.
+. This file may be copied under the terms of the GNU Public License.
+..
+.\"  Setup ////////////////////////////////////////////////////////////////
+.\"                      Commonly used strings (for consistency) ----------
+.\"                           - our em-dashes
+.ds Em \ —\ 
+.ds EM \fB\ —\ \fP
+.\"                           - our program name (makes great grammar)
+.ds We top
+.ds WE \fBtop\fP
+.\"                           - other misc strs for consistent usage
+.ds F \fIInactif\fP
+.ds O \fIActif\fP
+.
+.ds AK astérisque («\ *\ »)
+.ds AM mode d'affichage alternatif
+.ds AS dispositif de stockage auxiliaire
+.ds CF fichier de configuration
+.ds CG groupe de fenêtres ou champs «\ actifs\ »
+.ds CI commande interactive
+.\"                           - Note: our 'Command Line' used in 2 places
+.\"                           ( and managed to fit in an 80x24 terminal )
+.ds CL \-\fBhv\fP|\-\fBbcEeHiOSs1\fP \-\fBd\fP secs \-\fBn\fP max \-\fBu\fP|\fBU\fP user \-\fBp\fP pids \-\fBo\fP field \-\fBw\fP [cols] 
+.ds CO option de ligne de commande
+.ds CT commande de basculement
+.ds CW fenêtre «\ active\ »
+.ds FG groupe de champs
+.ds FM mode plein écran
+.ds KA flèche
+.ds KS touches de déplacement
+.ds MP mémoire physique
+.ds MS fichier d'échange
+.ds MV mémoire virtuelle
+.ds NT \fBRemarque\fP\ :
+.ds PU CPU
+.ds Pu processeur
+.ds SA zone de résumé
+.ds TA zone de tâches
+.ds TD écran de tâches
+.ds TT \fBprocessus\fP ou \fBtâches\fP
+.ds TW fenêtre de tâches
+.\"                      Reference to the various widths/sizes ------------
+.\"                           - the max screen width limit
+.ds WX 512
+.\"                           - the header width w/ all fields
+.ds WF environ 250
+.\"                           - pid monitoring limit
+.ds WP 20
+.\"                      Xref's that depend on/mention other stuff --------
+.ds Xa consultez
+.ds XC Consultez
+.ds Xc consultez
+.ds XT Consultez la section
+.ds Xt consultez la section
+.ds XX Consultez « \fBVUE D'ENSEMBLE\fP – \fBTypes de mémoire Linux\fP » pour plus de détails
+.
+.\" Document /////////////////////////////////////////////////////////////
+.\" ----------------------------------------------------------------------
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH TOP 1 "septembre 2020" procps\-ng "Commandes de l'utilisateur"
+.\" ----------------------------------------------------------------------
+.nh
+
+.\" ----------------------------------------------------------------------
+.SH NOM
+.\" ----------------------------------------------------------------------
+top \- Afficher les processus Linux
+
+.\" ----------------------------------------------------------------------
+.SH SYNOPSIS
+.\" ----------------------------------------------------------------------
+\*(WE \*(CL
+
+Le commutateur traditionnel «\ \-\ » et les espaces sont facultatifs.
+
+.\" ----------------------------------------------------------------------
+.SH DESCRIPTION
+.\" ----------------------------------------------------------------------
+Le programme \*(WE fournit une vue dynamique en temps réel du système en
+cours d'exécution. Il peut afficher un résumé des informations du \fBsystème\fP
+aussi bien qu'une liste de \*(TT gérés sur le moment par le
+noyau. L'affichage des différents types de résumés d'informations du système
+ainsi que la présentation des types, de l'ordonnancement et de la taille des
+informations sur les processus sont tous réglables et ces paramètres peuvent
+être conservés pour les démarrages ultérieurs.
+
+Le programme fournit une interface interactive aux fonctions limitées pour
+la manipulation de processus ainsi qu'une interface plus riche pour
+personnaliser sa propre configuration \*(Em\ l'interface couvrant toutes les
+facettes de ces opérations. Alors que vous vous référez à \*(WE tout au long
+de ce document, vous avez la liberté de le renommer comme vous
+l'entendez. Ce nouveau nom, probablement un alias, sera répercuté dans
+l'affichage de \*(WE et utilisé lors de la lecture et de l'écriture du
+\*(CF.
+
+.\" ----------------------------------------------------------------------
+.SH "VUE D'ENSEMBLE"
+.\" ----------------------------------------------------------------------
+.\" ......................................................................
+.SS Documentation
+.\" ----------------------------------------------------------------------
+Table des matières
+
+.nf
+    VUE D'ENSEMBLE
+       Manipulation
+       Types de mémoire Linux
+    1. Options de la LIGNE de COMMANDE
+    2. Affichage du RÉSUMÉ
+       a. Moyennes de CHARGE et TEMPS D'ACTIVITÉ
+       b. États des TÂCHES et des PROCESSEURS
+       c. Utilisation de la MÉMOIRE
+    3. CHAMPS et COLONNES
+       a. DESCRIPTIONS des champs
+       b. GESTION des champs
+    4. Commandes INTERACTIVES
+       a. Commandes GLOBALES
+       b. Commandes de la ZONE de RÉSUMÉ
+       c. Commandes de la ZONE de TÂCHES
+          1. Présentation
+          2. Contenu
+          3. Taille
+          4. Tri
+       d. Palette de COULEURS
+    5. Dispositions d'AFFICHAGE ALTERNATIF
+       a. Vue d'ensemble du FENÊTRAGE
+       b. COMMANDES de fenêtrage
+       c. DÉPLACEMENT dans une fenêtre
+       d. RECHERCHE dans une fenêtre
+       e. FILTRE dans une fenêtre
+    6. FICHIERS
+       a. Fichier de configuration PERSONNEL
+       b. AJOUT d'entrées d'INSPECTION
+       c. Fichier de configuration SYSTÈME
+       d. Fichier de restriction SYSTÈME
+    7. Échantillons d'ASTUCES IDIOTES
+       a. Magie du noyau
+       b. Fenêtres rebondissantes
+       c. La fenêtre du grand oiseau
+       d. Le coup de l'échange
+    8. BOGUES, 9. VOIR AUSSI
+.fi
+
+.\" ......................................................................
+.SS Manipulation
+.\" ----------------------------------------------------------------------
+Lors de la manipulation de \*(WE, les deux touches les plus importantes sont
+celles qui permettent d'accéder à l'aide («\ h\ » ou «\ ?\ ») et de quitter
+le programme («\ q\ »). Vous pouvez tout aussi bien utiliser la combinaison
+des touches d'interruption classiques («\ ^C\ ») quand vous avez terminé.
+
+Au premier démarrage, \*(WE présente ces éléments d'écran habituels sur
+l'écran principal\ :
+  1) zone de résumé\ ;
+  2) en\-tête de colonnes ou de champs\ ;
+  3) zone de tâches.
+
+Ils seront tous présentés dans les sections suivantes. Une ligne d'invite ou
+de message existe entre les deux premières zones et ne mérite pas de plus
+amples explications.
+
+L'écran principal de \*(WE s'adapte \fIgénéralement\fP plutôt bien aux
+modifications de dimensions du terminal sous X\ Window. D'autres écrans de
+\*(WE pourraient moins bien s'adapter, en particulier ceux contenant du
+texte statique. Cela dépend, au final, du gestionnaire de fenêtres et en
+particulier de l'émulateur de terminal. Leur vue de la taille du terminal et
+de son contenu pourrait éventuellement être différente de celle de \*(WE,
+qui est toujours basée sur les appels du système d'exploitation.
+
+Suite à une opération de redimensionnement, si un écran de \*(WE est
+corrompu, paraît incomplet ou désordonné, taper simplement quelque chose
+d'inoffensif, comme un signe de ponctuation ou une touche de déplacement de
+curseur, le restaurera normalement. Dans des cas extrêmes, l'enchaînement
+suivant devrait sans doute fonctionner\ :
+.nf
+       \fItche/cmd objectif\fP
+       ^Z       \fBsuspendre\fP \*(WE
+       fg       \fBreprendre\fP \*(WE
+       <Gauche> forcer un \fBredessin\fP de l'écran (si nécessaire)
+.fi
+
+Si l'affichage est toujours corrompu, une étape peut encore être
+essayée. Insérez cette commande après avoir suspendu \*(WE mais avant de le
+reprendre.
+.nf
+       \fItche/cmd objectif\fP
+       reset    restaurer les \fBréglages du terminal\fP
+.fi
+
+\*(NT la largeur de l'affichage de \*(WE sera limitée à
+\*(WX\ positions. L'affichage de tous les champs nécessite \*(WF\ colonnes. Le
+reste de la largeur d'écran est normalement alloué à n'importe quelles
+colonnes de largeur variable actuellement visibles. Les colonnes de largeur
+variable, comme \fICOMMANDE\fP, sont notées comme telles en \fB3a.\ DESCRIPTIONS
+des champs\fP. La largeur de colonne peut aussi être modifiée par l'option
+\fB\-w\fP, comme c'est présenté en \fB1.\ Options de la LIGNE de COMMANDE\fP.
+
+Enfin, certains écrans ou fonctions de \*(WE nécessitent l'utilisation des
+touches de déplacement du curseur comme les \*(KAs classiques et les touches
+\fBOrig\fP, \fBFin\fP, \fBPg.Préc\fP et \fBPg.Suiv\fP. Si votre terminal ou émulateur ne
+fournit pas ces touches, elles sont remplaçables par les combinaisons
+suivantes\ :
+.nf
+       \fItouche   combinaisons équivalentes de touches\fP
+       Gauche   Alt + \fBh\fP
+       Bas      Alt + \fBj\fP
+       Haut     Alt + \fBk\fP
+       Droite   Alt + \fBl\fP
+       Orig     Alt + Ctrl + \fBh\fP
+       Pg.Suiv  Alt + Ctrl + \fBj\fP
+       Pg.Préc  Alt + Ctrl + \fBk\fP
+       Fin      Alt + Ctrl + \fBl\fP
+.fi
+
+Les \*(KAs \fBHaut\fP et \fBBas\fP ont une signification particulière lors d'une
+invite de ligne d'entrée se terminant par <Entrée>. Ces touches, ou
+leurs alias, peuvent être utilisées pour récupérer les lignes entrées
+précédemment, avec possibilité de les éditer et de les rentrer. Quatre
+touches supplémentaires sont disponibles avec les lignes d'entrée.
+.nf
+       \fItouche   signification particulière\fP
+       Haut     rappeler chaînes \fBplus anciennes\fP pour réédition
+       Bas      rappeler chaînes \fBplus récentes\fP ou \fBeffacer\fP ligne
+       Inser    basculer entre modes \fBinsertion\fP et \fBremplacement\fP
+       Suppr    caractère \fBsupprimé\fP au curseur, déplacement à gauche
+       Orig     sauter au \fBdébut\fP de la ligne d'entrée
+       Fin      sauter à la \fBfin\fP de la ligne d'entrée
+.fi
+
+.\" ......................................................................
+.SS "Types de mémoire Linux"
+.\" ----------------------------------------------------------------------
+Pour nos fins, il y a trois types de mémoire dont une est optionnelle. Le
+premier est la \*(MP, une ressource limitée où le code et les données
+doivent être situés quand ils sont exécutés ou référencés. Le second est le
+\*(MS optionnel où la mémoire modifiée («\ dirty\ ») peut être sauvegardée
+puis récupérée si il y a trop de demandes sur la \*(MP. Enfin, il y a la
+\*(MV, une ressource presque illimitée servant aux objectifs suivants\ :
+
+.nf
+   1. abstraction, libérée des adresses et des limites de la mémoire physique
+   2. isolation, chaque processus dans un espace d'adresses distinct
+   3. partage, un mappage unique peut répondre à plusieurs besoins
+   4. souplesse, assignation d'une adresse virtuelle à un fichier
+.fi
+
+Indépendamment de la forme que ces mémoires peuvent prendre, toutes sont
+gérées par pages (habituellement de 4096\ octets) mais exprimées par défaut
+dans \*(WE en KiO (kibioctets). La mémoire examinée dans la section
+\fB2c.\ Utilisation de la MÉMOIRE\fP a trait à la \*(MP et au \*(MS pour le
+système dans son ensemble. La mémoire examinée dans la section \fB3.\ CHAMPS
+et COLONNES\fP inclut les trois types de mémoire, mais pour des processus
+individuels.
+
+Pour chaque processus, chaque page de mémoire est limitée à un seul quadrant
+du tableau ci\-dessous. La \*(MP et la \*(MV peuvent intégrer les quatre
+types tandis que le \*(MS intègre seulement les types nº\ 1 à nº\ 3. La
+mémoire dans le quadrant nº\ 4, quand elle est modifiée, se comporte comme
+son propre \*(MS dédié.
+
+.nf
+                               \fBPrivée\fP | \fBPartagée\fP
+                          \fB1\fP           |          \fB2\fP
+       \fBAnonyme\fP  . pile                |
+                . malloc()            |
+                . brk()/sbrk()        | . POSIX shm*
+                . mmap(PRIVÉE, ANON)  | . mmap(PARTAG, ANON)
+               \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
+                . mmap(PRIVÉE, fd)    | . mmap(PARTAG, fd)
+   \fBsauv/fichier\fP . prog/bibl partag    |
+                          \fB3\fP           |          \fB4\fP
+.fi
+
+Ce qui suit peut aider à l'interprétation des valeurs de mémoire au niveau
+des processus affichées dans des colonnes extensibles et discutées dans la
+section \fB3a.\ DESCRIPTIONS des champs\fP.
+
+.nf
+   %MEM \- simplement RES divisé par le total de \*(MP
+   CODE \- La partie «\ prog\ » du quadrant \fB3\fP
+   DATA \- la partie entière du quadrant \fB1\fP de VIRT plus toutes les
+          pages mmap sauvées sur fichier explicites du quadrant \fB3\fP
+   RES  \- tout ce qui occupe la \*(MP, ce qui, à partir de Linux\-4.5,
+          est la somme des trois champs suivants\ :
+          RSan \- pages du quadrant \fB1\fP qui comprennent toutes les
+                 anciennes pages du quadrant \fB3\fP si modifiées
+          RSfd \- pages du quadrant \fB3\fP et du quadrant \fB4\fP
+          RSsh \- pages du quadrant \fB2\fP
+   RSlk \- sous\-ensemble de RES qui ne peut pas être transféré (tous quadrants)
+   SHR  \- sous\-ensemble de RES (sauf \fB1\fP, comprend tout \fB2\fP & \fB4\fP, et une
+                 partie de \fB3\fP)
+   SWAP \- potentiellement tous les quadrants sauf \fB4\fP
+   USED \- simplement la somme de RES et de SWAP
+   VIRT \- tout ce qui est utilisé et/ou réservé (tous les quadrants)
+.fi
+
+\*(NT Même si les images de programme et les bibliothèques partagées sont
+considérées comme \fIprivées\fP pour un processus, elles peuvent être comptées
+comme \fIpartagées\fP (SHR) par le noyau.
+
+.\" ----------------------------------------------------------------------
+.SH "1. Options de la LIGNE de COMMANDE"
+.\" ----------------------------------------------------------------------
+Voici la syntaxe de la ligne de commande de \*(WE\ :
+
+  \*(CL
+
+Le caractère utilisé comme commutateur («\ \-\ ») habituellement obligatoire
+et même les espaces sont totalement optionnels.
+
+.TP  5
+\-\fBh\fP | \-\fBv\fP\ \ : \fIaide et version\fP
+Afficher la version de bibliothèque et l'utilisation, puis quitter.
+
+.TP  5
+\-\fBb\fP\ \ : \fItraitement par lot\fP («\ batch mode\ »)
+Lancer \*(WE en mode «\ traitement par lot\ », utile pour envoyer, par
+exemple, le résultat de \*(WE vers une autre application ou dans un
+fichier. Dans ce mode, \*(WE n'accepte aucune entrée et s'exécutera jusqu'à
+atteindre la limite d'itérations déterminée par l'\*(CO  «\ \fB\-n\fP\ » ou
+jusqu'à ce qu'il soit tué.
+
+.TP  5
+\-\fBc\fP\ \ : basculer entre \fIligne de commande ou nom du programme\fP
+Lancer \*(WE en inversant le dernier état «\ c\ » connu. Donc, si \*(We
+affichait des lignes de commandes, maintenant, ce champ montrera le nom des
+applications, et vice versa. \*(XC la \*(CI «\ c\ » pour plus
+d'informations.
+
+.TP  5
+\-\fBd\fP\ \ : \fIdurée\fP de l'intervalle\ :\ \ \fB\-d\fP \fIdélai\fP (sous la forme \fIsecondes\fP\fB.\fP\fIdixièmes\fP)
+Configurer le \fIdélai\fP de rafraîchissement de l'écran, remplaçant la valeur
+correspondante du \*(CF personnel ou la valeur par défaut au démarrage. Par
+la suite, cette valeur peut être modifiée avec les commandes interactives «\ d\ » ou «\ s\ ».
+
+Les fractions de seconde sont prises en compte, contrairement aux valeurs
+négatives. Quoiqu'il en soit, cependant, de telles modifications sont
+interdites quand \*(WE fonctionne en «\ mode sécurisé\ », sauf pour le
+superutilisateur (à moins que l'\*(CO «\ s\ » ne soit utilisée). Pour plus
+de renseignements sur le «\ mode sécurisé\ », \*(Xt \fB6d.\ Fichier de
+restriction SYSTÈME\fP.
+
+.TP  5
+\-\fBe\fP\ \ :\fIEnforce\-Task\-Memory\-Scaling\fP as:\ \ \fB\-e  k\fP | \fBm\fP | \fBg\fP | \fBt\fP | \fBp\fP
+Instructs \*(We to force \*(TA memory to be scaled as:
+.nf
+   k \- kibibytes
+   m \- mebibytes
+   g \- gibibytes
+   t \- tebibytes
+   p \- pebibytes
+.fi
+
+Later this can be changed with the `e' \*(CT.
+
+.TP  5
+\-\fBE\fP\ \ :\fIEnforce\-Summary\-Memory\-Scaling\fP as:\ \ \fB\-E  k\fP | \fBm\fP | \fBg\fP | \fBt\fP | \fBp\fP | \fBe\fP
+Demander à \*(WE de contraindre l'affichage de la mémoire dans la \*(SA en
+.nf
+   k – kibioctets
+   m – mebioctets
+   g – gibioctets
+   t – tebioctets
+   p – pebioctets
+   e – exbioctets
+.fi
+
+Cela peut être modifié plus tard avec la \*(CI «\ E\ ».
+
+.TP  5
+\-\fBH\fP\ \ : opération en \fImode processus légers\fP
+Demander à \*(We d'afficher les processus légers («\ threads\ »)
+individuels. Sans cette \*(CO, un résumé de tous les processus légers de
+chaque processus est montré. Cela peut être modifié plus tard avec la \*(CI
+«\ H\ ».
+
+.TP  5
+\-\fBi\fP\ \ : option \fIprocessus en veille\fP
+Lancer \*(WE en inversant l'état connu de la dernière option «\ i\ ». En
+\*F, les tâches qui n'ont pas utilisé de \*(PU depuis la dernière mise à
+jour ne seront pas affichées. Pour plus de renseignements sur cette option,
+\*(Xt \fB4c.\ Commandes de la ZONE de TÂCHES\fP —\ \fBTAILLE\fP.
+
+.TP  5
+\-\fBn\fP\ \ : \fInombre d'itérations\fP maximal\ :\ \ \fB\-n\fP \fIlimite\fP
+Plafonner le nombre d'itérations ou de rafraîchissements que \*(WE doit
+réaliser avant de se terminer.
+
+.TP  5
+\-\fBo\fP\ \ : \fIremplacer le champ de tri\fP\ :\ \ \fB\-o\fP \fIchamp\fP
+Indiquer le nom du champ par rapport auquel les tâches seront ordonnées,
+indépendamment de ce que contient le fichier de configuration. Un «\ +\ » ou
+un «\ \-\ » peut précéder le nom de champ pour remplacer aussi le sens du
+tri. Un «\ +\ » forcera un tri du plus grand au plus petit tandis qu'un «\ \-\ »
+assurera un tri du plus petit au plus grand.
+
+Cette option existe surtout pour permettre le mode traitement par lots
+automatisé.
+
+.TP  5
+\-\fBO\fP\ \ : \fIafficher les noms de champ\fP
+Cette option agit sous forme d'aide à l'option \fB\-o\fP précédente. Cela
+forcera \*(WE à afficher tous les noms de champs sur des lignes séparées
+avant de quitter. Ces noms peuvent être traduits (internationalisation).
+
+.TP  5
+\-\fBp\fP\ \ : mode de \fIsuivi des PID\fP :\ \fB\-p\fP\fIPID1\fP \fB\-p\fP\fIPID2\fP ... ou \fB\-p\fP\fIPID1\fP\fB,\fP\fIPID2\fP[\fB,\fP\fIPID3\fP ...]
+Surveiller seulement les processus déterminés par leurs identifiants. Cette
+option peut être réitérée jusqu'à \*(WP\ fois. Vous avez aussi la possibilité
+de fournir une liste d'au plus \*(WP\ PID séparés par des virgules. Une
+approche mixte est aussi autorisée.
+
+Une valeur de PID nulle sera traitée comme l'identifiant de processus du
+programme \*(WE lui\-même une fois en cours d'exécution.
+
+Ça ne concerne que l'\*(CO. Au cas où vous souhaiteriez revenir à un
+fonctionnement classique, il n'est pas nécessaire de quitter et de relancer
+\*(We \*(Em\ saisissez simplement n'importe quelle \*(CI\ : «\ =\ », «\ u\ » ou
+«\ U\ ».
+
+Les options «\ p\ », «\ u\ » et «\ U\ » de la ligne de commande sont mutuellement
+exclusives.
+
+.TP  5
+\-\fBs\fP\ \ : opération en \fImode sécurisé\fP
+Lancer \*(WE en forçant le mode sécurisé, même pour le superutilisateur. Ce
+mode est plus finement contrôlé par le \*(CF (\*(Xt \fB6.\ FICHIERS\fP).
+
+.TP  5
+\-\fBS\fP\ \ : basculer en \fIcumul de temps\fP
+Lancer \*(WE en inversant la valeur du dernier état de «\ S\ »
+connu. Lorsque le mode «\ cumul de temps\ » est \*O, chaque processus est
+affiché avec le temps \*(Pu consommé par lui\-même et ses enfants
+morts. \*(XC la \*(CI «\ S\ » pour plus d'informations sur ce mode.
+
+.TP  5
+\-\fBu\fP | \-\fBU\fP\ \ : mode \fIfiltre utilisateur\fP\ :\ \ \fB\-u\fP | \fB\-U\fP \fIutilisateur\fP
+N'afficher que les processus avec l'identifiant utilisateur ou le nom
+utilisateur correspondant à celui donné. L'option «\ \-u\ » correspond à
+l'utilisateur \fIeffectif\fP tandis que l'option «\ \-U\ » correspond à
+\fIn'importe quel\fP utilisateur (réel, effectif, sauvegardé ou système de
+fichiers).
+
+Un point d'exclamation («\ !\ ») précédant l'identifiant ou le nom
+d'utilisateur indique à \*(WE de n'afficher que les processus avec des
+utilisateurs ne correspondant pas à celui fourni.
+
+Les options «\ p\ », «\ u\ » et «\ U\ » de la ligne de commande sont mutuellement
+exclusives.
+
+.TP  5
+\-\fBw\fP\ \ : \fIlargeur de l'affichage\fP\ :\ \ \fB\-w\fP [ \fIcolonnes\fP ] 
+En mode traitement par lot, si utilisé sans paramètre, \*(WE formatera la
+sortie en utilisant les variables d'environnement \fBCOLUMNS\fP et \fBLINES\fP si
+elles sont configurées. Sinon, la largeur sera configurée à \*(WX\ colonnes
+au maximum. Avec un paramètre, la largeur de la sortie sera diminuée ou
+augmentée (jusqu'à \*(WX) mais le nombre de lignes est considéré sans
+limite.
+
+En mode d'affichage normal, si utilisé sans paramètre, \*(WE \fIessayera\fP de
+formater la sortie en utilisant les variables d'environnement \fBCOLUMNS\fP et
+\fBLINES\fP si elles sont configurées. Avec un paramètre, la largeur de la
+sortie ne sera que diminuée, pas augmentée. Que ce soit avec les variables
+d'environnement ou avec un paramètre à \fB\-w\fP, \fIsauf\fP en mode «\ traitement
+par lot\ s», les dimensions réelles du terminal ne peuvent jamais être
+dépassées.
+
+\*(NT sans utiliser cette \*(CO, la largeur de la sortie est toujours
+relative à la largeur du terminal dans lequel \*(WE a été appelé, que ce
+soit en mode «\ traitement par lots\ » ou non.
+
+.TP  5
+\-\fB1\fP\ \ : basculer entre \fIétats CPU simple et séparé\fP
+Lancer \*(WE en inversant la dernière zone des états CPU de la \*(SA. Soit
+la totalité des informations des \*(Pus seront affichés sur une seule ligne,
+soit chaque \*(Pu sera affiché séparément, selon l'état de la \*(CT du nœud
+NUMA («\ 2\ »)
+
+\*(XC les \*(CIs «\ 1\ » et «\ 2\ » pour plus de renseignements.
+
+.\" ----------------------------------------------------------------------
+.SH "2. Affichage du RÉSUMÉ"
+.\" ----------------------------------------------------------------------
+Chacune des trois zones suivantes est contrôlée individuellement à l'aide
+d'au moins une \*(CI. \*(XT \fB4b.\ Commandes de la ZONE de RÉSUMÉ\fP pour
+obtenir plus de renseignements sur ces dispositions.
+
+.\" ......................................................................
+.SS "2a. Moyennes de CHARGE et TEMPS D'ACTIVITÉ"
+.\" ----------------------------------------------------------------------
+Cette partie n'est qu'une simple ligne contenant\ :
+.nf
+ \- nom du \fBprogramme\fP ou de \fBfenêtre\fP, suivant le mode d'affichage\ ;
+ \- heure actuelle et temps passé depuis le démarrage\ ;
+ \- nombre total d'utilisateurs\ ;
+ \- charge moyenne du système lors des dernières 1, 5 et 15\ minutes.
+.fi
+
+.\" ......................................................................
+.SS "2b. États des TÂCHES et des PROCESSEURS"
+.\" ----------------------------------------------------------------------
+Cette partie est composée d'au moins deux lignes. En environnement SMP, des
+lignes supplémentaires peuvent refléter les pourcentages individuels d'état
+\*(PU.
+
+La première ligne montre le total de \fBtâches\fP ou de \fBprocessus légers\fP,
+suivant l'état du \fImode processus légers\fP. Ce total est ensuite classé\ :
+.nf
+ \- en cours d'exécution («\ running\ »)\ ;
+ \- en sommeil («\ sleeping\ »)\ ;
+ \- arrêté («\ stopped\ »)\ ;
+ \- zombie.
+.fi
+
+La deuxième ligne montre les pourcentages d'état \*(PU en fonction de
+l'intervalle depuis le dernier rafraîchissement.
+
+Par défaut, les pourcentages d'état de ces catégories individuelles sont
+affichées. Quand deux étiquettes sont montrées ci\-dessous, celles relatives
+aux versions de noyau les plus récentes sont montrées en premier.
+.nf
+ \fBus\fP, \fBuser\fP    : temps d'exécution des processus utilisateur sans politesse
+ \fBsy\fP, \fBsystem\fP  : temps d'exécution des processus du noyau
+ \fBni\fP, \fBnice\fP    : temps d'exécution des processus utilisateur avec politesse
+ \fBid\fP, \fBidle\fP    : temps passé dans le gestionnaire de veille du noyau
+ \fBwa\fP, \fBIO\-wait\fP : temps d'attente pour la fin des entrées et sorties
+ \fBhi\fP : temps passé à l'entretien d'interruptions matérielles
+ \fBsi\fP : temps passé à l'entretien d'interruptions logicielles
+ \fBst\fP : temps volé à cette machine virtuelle par l'hyperviseur
+.fi
+
+Dans les modes alternatifs d'affichage d'états CPU, au\-delà de la première
+ligne de tâches ou de processus légers, est montré un résumé abrégé
+consistant en ces éléments\ :
+.nf
+               a    b     c    d
+    %Cpu(s):  \fB75.0\fP/25.0  \fB100\fP[ ...
+
+.fi
+
+Where: a) is the `user' (us + ni) percentage; b) is the `system' (sy + hi +
+si) percentage; c) is the total; and d) is one of two visual graphs of those
+representations.  \*(XT 4b. SUMMARY AREA Commands and the `t' command for
+additional information on that special 4\-way toggle.
+
+.\" ......................................................................
+.SS "2c. Utilisation de la MÉMOIRE"
+.\" ----------------------------------------------------------------------
+Cette partie est composée de deux lignes qui expriment les valeurs en unité
+de kibioctet (Kio) à exbioctet (Eio) en fonction du facteur d'échelle forcé
+par la \*(CI «\ E\ ».
+
+Par défaut, la première ligne montre la \*(MP, classée en\ :
+.nf
+    totale (total), libre (free), utilisée (used) et tampons (buffers) ou cache.
+.fi
+
+La deuxième ligne montre surtout la \*(MV, classée en\ :
+.nf
+    totale (total), libre (free) et disponible (avail, c'est\-à\-dire la \*(MP).
+.fi
+
+Le nombre \fBavail\fP sur la seconde ligne est une estimation de la \*(MP
+disponible pour lancer de nouvelles applications sans utiliser l'espace
+d'échange. À la différence du champ \fBfree\fP, il tente de compter les blocs
+de cache de page et de mémoire immédiatement récupérables. Il est disponible
+avec les noyau\ 3.14, émulé avec les noyaux\ 2.6.17+, autrement, il est
+identique à \fBfree\fP.
+
+Dans les modes d'affichage de mémoire alternatifs, deux lignes de résumé
+abrégé sont montrées consistant en ces éléments\ :
+.nf
+               a    b          c
+    GiB Mem : \fB18.7\fP/15.738   [ ...
+    GiB Swap: \fB 0.0\fP/7.999    [ ...
+.fi
+
+Où\ : \fBa\fP est le pourcentage utilisé, \fBb\fP le total disponible et \fBc\fP un
+des deux graphiques de ces représentations.
+
+Dans le cas de la \*(MP, le pourcentage représente le \fBtotal\fP moins le
+\fBavail\fP estimé noté précédemment. Le graphique «\ Mem\ » lui\-même est divisé
+entre \fBused\fP et le reste de la mémoire qui n'est pas compté par ailleurs
+par \fBavail\fP. \*(XT \fB4b.\ Commandes de la ZONE de RÉSUMÉ\fP et la commande
+«\ m»\  pour plus de renseignements sur cette bascule quadruple particulière.
+
+Ce tableau pourrait aider à interpréter les valeurs d'échelle affichées\ :
+.nf
+    Kio = kibioctet = 1024 octets
+    Mio = mébioctet = 1024 Kio = 1 048 576 octets
+    Gio = gibioctet = 1024 Mio = 1 073 741 824 octets
+    Tio = tébioctet = 1024 Gio = 1 099 511 627 776 octets
+    Pio = pébioctet = 1024 Tio = 1 125 899 906 842 624 octets
+    Eio = exbioctet = 1024 Pio = 1 152 921 504 606 846 976 octets
+.fi
+
+.\" ----------------------------------------------------------------------
+.SH "3. CHAMPS et COLONNES"
+.\" ----------------------------------------------------------------------
+.\" ......................................................................
+.SS "3a. DESCRIPTIONS des champs"
+.\" ----------------------------------------------------------------------
+Voici ci\-dessous la liste des champs de processus (colonnes) disponibles
+dans \*(We. Ils sont montrés dans l'ordre alphabétique strict ASCII. Vous
+pouvez personnaliser leur position et s'ils doivent apparaître ou non avec
+les commandes interactives «\ f\ » ou «\ F\ » (gestion des champs).
+
+Tout champ peut être choisi comme clé de tri croissant ou décroissant, comme
+bon vous semble. Pour plus d'informations sur les clés de tri \*(Xt
+\fB4c.\ Commandes de la ZONE de TÂCHES\fP —\ \fBTRI\fP.
+
+Les champs relatifs à la \*(MP ou à la \*(MV utilisent «\ (Kio)\ » comme mode
+d'affichage sans suffixe par défaut. Ces champs peuvent cependant être mis à
+l'échelle de Kio à Pio. Ce facteur d'échelle est modifié à l'aide de la
+\*(CI «\ e\ » ou fixé au démarrage au moyen d'une option de construction.
+
+.TP  4
+ 1. \fB%CPU \*(Em utilisation du \*(PU\fP
+La part des tâches du temps \*(PU écoulé depuis le dernier rafraîchissement
+d'écran, exprimé en pourcentage du temps \*(PU total.
+
+Dans un véritable environnement SMP, si le processus possède plusieurs
+processus légers («\ multi\-thread\ ») et que \*(WE ne fonctionne \fBpas\fP en
+mode processus légers, des quantités supérieures à 100\ % pourraient être
+signalées. Le mode processus légers peut être activé avec la \*(CI «\ H\ ».
+
+Aussi pour les environnements multiprocesseurs, si le «\ mode Irix\ » est
+\*F, \*(WE fonctionnera en «\ mode Solaris\ » où l'utilisation \*(Pu d'une
+tâche sera divisée par le nombre total de \*(PU. Vous pouvez basculer entre
+les modes «\ Irix\ » et «\ Solaris\ » avec la \*(CI «\ I\ ».
+
+\*(NT En mode d'affichage arborescent («\ V\ ») avec des enfants dissimulés
+(«\ v\ »), ce champ sera aussi inclus dans le temps \*(PU de ces enfants non
+visibles. \*(XT \fB4c.\ Commandes de la ZONE de TÂCHES —\ Contenu\fP pour plus
+d'informations sur les options «\ V\ » et «\ v\ ».
+
+.TP  4
+ 2. \fB%MEM \*(Em utilisation mémoire (RES)\fP
+Pourcentage de la \*(MP résidente disponible actuellement utilisée par la
+tâche.
+
+\*(XX.
+
+.TP  4
+ 3. \fBCGNAME \*(Em nom des groupes de contrôle\fP
+Les noms des groupes de contrôle auxquels appartient un processus, ou «\ \-\ »
+si ça ne s'applique pas à ce processus.
+
+Ce sera habituellement la dernière entrée de la liste complète de groupes de
+contrôle telle qu'elle apparaît sous l'en\-tête suivant (\fBCGROUPS\fP). Et
+comme cela s'avère ici, ce champ a aussi une largeur variable.
+
+.TP  4
+ 4. \fBCGROUPS \*(Em groupes de contrôle\fP
+Les noms des groupes de contrôle auxquels appartient un processus, ou «\ \-\ »
+si ça ne s'applique pas à ce processus.
+
+Les groupes de contrôle subviennent aux besoins d'allocations de ressources
+(processeur, mémoire, bande passante du réseau,\ etc.) des groupes de
+processus définis à l'installation. Ils permettent un contrôle fin de
+l'allocation en allouant, refusant, donnant des priorités, gérant et
+supervisant ces ressources.
+
+De nombreuses hiérarchies de cgroups peuvent exister en même temps sur un
+système et chaque hiérarchie est attachée à au moins un sous\-système. Un
+sous\-système représente une unique ressource.
+
+\*(NT le champ «\ CGROUPS\ », contrairement à la plupart des colonnes, n'a pas
+de largeur fixe. La totalité de la largeur résiduelle de l'écran sera, lors
+de l'affichage, allouée à cette colonne et aux autres colonnes de taille
+variable (jusqu'à un maximum de \*(WX\ caractères). Même dans ce cas, ces
+champs de taille variable pourraient être tronqués. \*(XT \fB5c.\ DÉPLACEMENT
+dans une fenêtre\fP pour obtenir plus de renseignements sur l'accès aux
+données tronquées.
+
+.TP  4
+ 5. \fBCODE \*(Em taille de code (Kio)\fP
+La quantité de \*(MP allouée à un exécutable, aussi connue comme la taille
+du «\ text resident set\ » ou TRS.
+
+\*(XX.
+
+.TP  4
+ 6. \fBCOMMAND \*(Em nom de commande\fP ou \fBligne de commande\fP
+Afficher la ligne de commande utilisée pour lancer une tâche ou le nom du
+programme associé. Vous basculez entre la \fIligne\fP de commande et le \fInom\fP
+avec la touche «\ c\ », qui est à la fois une \*(CO et une \*(CI.
+
+Lorsque vous décidez d'afficher des lignes de commandes, les processus
+sans ligne de commande (tels les processus légers du noyau) seront
+présentés avec leur seul nom de programme entre crochets, comme dans
+cet exemple\ :
+      [kthreadd]
+
+Ce champ peut aussi être affecté par le \fImode d'affichage
+arborescent\fP. \*(XC la \*(CI «\ V\ » pour de plus amples renseignements sur ce
+mode.
+
+\*(NT le champ «\ COMMAND\ », contrairement à la plupart des colonnes, n'a pas
+de largeur fixe. La totalité de la largeur résiduelle de l'écran sera, lors
+de l'affichage, allouée à cette colonne et aux autres colonnes de taille
+variable (jusqu'à un maximum de \*(WX\ caractères). Même dans ce cas, ces
+champs de taille variable pourraient être tronqués. C'est particulièrement
+vrai pour ce champ quand les lignes de commandes sont affichées (la \*(CI
+«\ c\ »). \*(XT \fB5c.\ DÉPLACEMENT dans une fenêtre\fP pour obtenir plus de
+renseignements sur l'accès aux données tronquées.
+
+.TP  4
+ 7. \fBDATA \*(Em taille des données + pile (Kio)\fP
+La quantité de mémoire privée \fIréservée\fP par un processus. Elle est
+également appelée «\ Data Resident Set\ » ou DRS. Ce type de mémoire ne peut
+pas encore être mappée dans la \*(MP (RES) mais sera toujours incluse dans
+la quantité de  \*(MV (VIRT).
+
+\*(XX.
+
+.TP  4
+8. \fBENVIRON \*(Em variables d'environnement\fP
+Afficher toutes les variables d'environnement, s'il y en a, telles qu'elles
+sont vues par les processus respectifs. Ces variables seront affichées dans
+leur ordre natif brut, pas dans l'ordre habituel renvoyé par «\ set\ » sans
+argument.
+
+\*(NT le champ «\ ENVIRON\ », contrairement à la plupart des colonnes, n'a pas
+de largeur fixe. La totalité de la largeur résiduelle de l'écran sera, lors
+de l'affichage, allouée à cette colonne et aux autres colonnes de taille
+variable (jusqu'à un maximum de \*(WX\ caractères). Même dans ce cas, ces
+champs de taille variable pourraient être tronqués. C'est particulièrement
+vrai pour ce champ. \*(XT \fB5c.\ DÉPLACEMENT dans une fenêtre\fP pour obtenir
+plus de renseignements sur l'accès aux données tronquées.
+
+.TP  4
+ 9. \fBFlags \*(Em indicateurs de tâche\fP
+Cette colonne représente les indicateurs de tâches actuellement
+ordonnancées. Ces indicateurs sont exprimés en notation hexadécimale sans
+les zéros. Ils sont officiellement documentés dans <linux/sched.h>.
+
+.TP  4
+ 10. \fBGID \*(Em identifiant de groupe\fP
+L'identifiant de groupe \fIeffectif\fP.
+
+.TP  4
+11. \fBGROUP \*(Em nom du groupe\fP
+Le nom de groupe \fIeffectif\fP.
+
+.TP  4
+12. \fBLXC \*(Em nom de conteneur lxc\fP
+Le nom du conteneur lxc dans lequel une tâche est exécutée. Si un processus
+n'est pas exécuté dans un conteneur, un tiret («\ \-\ ») est affiché.
+
+.TP  4
+13. \fBNI \*(Em valeur de politesse\fP
+La valeur de politesse de la tâche. Une valeur négative signifie une
+priorité plus haute, à l'inverse d'une valeur positive. Un zéro signifie
+simplement que le lancement d'une tâche ne tiendra pas compte de la
+priorité.
+
+.TP  4
+14. \fBNU \*(Em dernier nœud NUMA connu\fP
+Un nombre représentant le nœud NUMA associé au dernier processeur utilisé
+(«\ P\ »). Quand \fB\-1\fP est affiché, cela signifie qu'il n'y a pas
+d'informations disponibles sur le NUMA.
+
+\*(XC les commandes interactives «\ 2\ » et «\ 3\ » pour d'autres dispositions
+de NUMA affectant la \*(SA.
+
+.TP  4
+15.\fB OOMa \*(Em facteur d'ajustement d'insuffisance de mémoire\fP
+La valeur, entre \-1000 et +1000, ajoutée au score actuel d'insuffisance de
+mémoire (OOMs) qui est ensuite utilisé pour déterminer quelle tâche tuer
+quand la mémoire est épuisée.
+
+.TP  4
+16.\fB OOMs \*(Em score d'insuffisance de mémoire\fP
+La valeur, entre 0 et +1000, utilisée pour sélectionner la ou les tâches à
+tuer quand la mémoire est épuisée. Zéro se traduit par «\ ne jamais tuer\ »
+tandis que 1000 signifie «\ toujours tuer\ ».
+
+.TP  4
+17. \fBP \*(Em dernier \*(PU utilisé (SMP)\fP
+Un nombre représentant le dernier processeur utilisé. Dans un véritable
+environnement SMP, cette valeur change fréquemment puisque le noyau utilise
+intentionnellement une affinité faible. Ainsi, l'activité propre de \*(WE
+peut casser cette faible affinité et faire en sorte qu'un nombre plus élevé
+de processus change plus souvent de \*(PU (à cause d'une demande
+supplémentaire de temps \*(PU).
+
+.TP  4
+18. \fBPGRP \*(Em identifiant de groupe de processus\fP
+Tous les processus font partie d'un seul groupe de processus qui est utilisé
+pour la distribution de signaux et par les terminaux pour arbitrer les
+requêtes d'entrées et sorties. Quand un processus est créé (forké), il
+devient membre du groupe de processus de son parent. Par convention, cette
+valeur est l'identifiant de processus (\*(Xa PID) du premier membre du
+groupe de processus, appelé le meneur de groupe de processus.
+
+.TP  4
+19. \fBPID \*(Em identifiant de processus\fP
+L'identifiant unique du processus de la tâche. Il s'adapte périodiquement,
+sans toutefois redémarrer à zéro. Du point de vue du noyau, c'est une entité
+distribuable définie par une «\ task_struct\ ».
+
+Cette valeur peut aussi être utilisée comme\ : identifiant de groupe de
+processus (\*(Xa PGRP), identifiant de session pour le meneur de session
+(\*(Xa SID), identifiant de groupe de processus légers pour le meneur de
+groupe de processus légers (\*(Xa TGID) et identifiant de groupe de
+processus contrôlant le terminal pour le meneur de groupe de processus
+(\*(Xa TPGID).
+
+.TP  4
+20. \fBPPID \*(Em PID du processus parent\fP
+L'identifiant de processus (PID) du parent de la tâche.
+
+.TP  4
+21. \fBPR \*(Em priorité\fP
+La priorité d'ordonnancement de la tâche. Si «\ rt\ » est dans ce champ, cela
+signifie que la tâche est exécutée avec une priorité d'ordonnancement
+«\ temps réel\ ».
+
+Sous Linux, la priorité temps réel est quelque peu trompeuse puisque le
+système d'exploitation lui\-même n'était généralement pas préemptible. Même
+si le noyau\ 2.6 peut être presque entièrement préemptible, ce n'est pas
+toujours le cas.
+
+.TP  4
+22. \fBRES \*(Em taille de mémoire résidente (Kio)\fP
+Un sous\-ensemble de l'espace d'adresses virtuelles (VIRT représentant la
+\*(MP non transférée qu'une tâche utilise actuellement. C'est aussi la somme
+des champs RSan, RSfd et RSsh.
+
+Il peut inclure des pages privées anonymes, des pages privées mappées vers
+des fichiers (y compris des images de programme et des bibliothèques
+partagées) plus des pages partagées anonymes. Toute cette mémoire s'appuie
+sur le \*(MS représenté à part comme SWAP.
+
+Enfin, ce champ peut aussi inclure des pages sauvées sur fichier qui,
+lorsqu'elles sont modifiées, se conduisent comme un \*(MS dédié et donc
+n'impacteront jamais SWAP.
+
+\*(XX.
+
+.TP  4
+23. \fBRSan \*(Em taille de mémoire résidente anonyme (Kio)\fP
+Un sous\-ensemble de la mémoire résidente (RES) représentant les pages
+privées non mappées vers un fichier.
+
+.TP  4
+24. \fBRSfd \*(Em taille de mémoire résidente sauvée sur fichier (Kio)\fP
+Un sous\-ensemble de la mémoire résidente (RES) représentant les pages
+partagées implicites gérant les images de programme et les bibliothèques
+partagées. Il intègre aussi des mappages explicites de fichier, partagé ou
+privé.
+
+.TP  4
+25. \fBRSlk \*(Em taille de mémoire résidente verrouillée (Kio)\fP
+Un sous\-ensemble de la mémoire résidente (RES) qui ne peut pas être
+transféré.
+
+.TP  4
+26. \fBRSsh \*(Em taille de mémoire résidente partagée (Kio)\fP
+Un sous\-ensemble de la mémoire résidente (RES) représentant les pages
+\fIshm*/mmap\fP anonymes explicitement partagées.
+
+.TP  4
+27. \fBRUID \*(Em identifiant de l'utilisateur réel\fP
+L'identifiant d'utilisateur \fIréel\fP (RUID).
+
+.TP  4
+28. \fBRUSER \*(Em nom de l'utilisateur réel\fP
+Le nom d'utilisateur \fIréel\fP.
+
+.TP  4
+29. \fBS \*(Em état du processus\fP
+L'état de la tâche peut être\ :
+    \fBD\fP = en sommeil non interruptible
+    \fBI\fP = en veille
+    \fBR\fP = en cours d'exécution
+    \fBS\fP = en sommeil
+    \fBT\fP = tracé ou arrêté
+    \fBt\fP = arrêté par le débogueur durant le traçage
+    \fBZ\fP = zombie
+
+Les tâches dites «\ en cours d'exécution\ » doivent plutôt être considérées
+comme «\ prêtes à s'exécuter\ » \*(Em\ leur task_struct est simplement
+représentée sur la file d'attente d'exécution du noyau. Même en l'absence
+d'une véritable machine SMP, vous pouvez voir de nombreuses tâches dans cet
+état en fonction de la valeur du délai et de la valeur de politesse de
+\*(WE.
+
+.TP  4
+30. \fBSHR \*(Em taille de mémoire partagée (Kio)\fP
+Un sous\-ensemble de la mémoire résidente (RES) qui peut être utilisé par
+d'autres processus. Il inclura les pages partagées anonymes et les pages
+partagées sauvées sur fichier. Il comprend aussi les pages privées mappées
+vers des fichiers représentant des images de programme et des bibliothèques
+partagées.
+
+\*(XX.
+
+.TP  4
+31. \fBSID \*(Em identifiant de session\fP
+Une session est un ensemble de groupes de processus (\*(Xa PGRP), souvent
+établi par l'interpréteur de commandes de connexion. Un processus
+nouvellement engendré rejoint la session de son créateur. Par convention,
+cette valeur est l'identifiant de processus (\*(Xa PID) du premier membre de
+la session, appelé le meneur de session, qui est généralement l'interpréteur
+de commandes de connexion.
+
+.TP  4
+32. \fBSUID \*(Em identifiant de l'utilisateur sauvegardé\fP
+L'identifiant d'utilisateur \fIsauvegardé\fP (SUID).
+
+.TP  4
+33. \fBSUPGIDS \*(Em identifiants de groupes additionnels\fP
+Les identifiants de groupes additionnels établis à la connexion ou hérités
+d'une tâche parente. Ils sont affichés en liste, séparés par des virgules.
+
+\*(NT le champ «\ SUPGIDS\ », contrairement à la plupart des colonnes, n'a pas
+de largeur fixe. La totalité de la largeur résiduelle de l'écran sera, lors
+de l'affichage, allouée à cette colonne et aux autres colonnes de taille
+variable (jusqu'à un maximum de \*(WX\ caractères). Même dans ce cas, ces
+champs de taille variable pourraient être tronqués. \*(XT \fB5c.\ DÉPLACEMENT
+dans une fenêtre\fP pour obtenir plus de renseignements sur l'accès aux
+données tronquées.
+
+.TP  4
+34. \fBSUPGRPS \*(Em noms de groupes additionnels\fP
+Les noms de groupes additionnels établis à la connexion ou hérités d'une
+tâche parente. Ils sont affichés en liste, séparés par des virgules.
+
+\*(NT le champ «\ SUPGRPS\ », contrairement à la plupart des colonnes, n'a pas
+de largeur fixe. La totalité de la largeur résiduelle de l'écran sera, lors
+de l'affichage, allouée à cette colonne et aux autres colonnes de taille
+variable (jusqu'à un maximum de \*(WX\ caractères). Même dans ce cas, ces
+champs de taille variable pourraient être tronqués. \*(XT \fB5c.\ DÉPLACEMENT
+dans une fenêtre\fP pour obtenir plus de renseignements sur l'accès aux
+données tronquées.
+
+.TP  4
+35. \fBSUSER \*(Em nom de l'utilisateur sauvegardé\fP
+Le nom d'utilisateur \fIsauvegardé\fP.
+
+.TP  4
+36. \fBSWAP \*(Em taille en espace d'échange (Kio)\fP
+La partie anciennement résidente de l'espace d'adresses d'une tâche écrite
+dans le \*(MS quand la \*(MP devient insuffisante.
+
+\*(XX.
+
+.TP  4
+37. \fBTGID \*(Em identifiant de groupe de processus légers\fP
+L'identifiant de groupe de processus légers («\ thread\ ») auquel une tâche
+appartient. C'est le PID du meneur de groupe de processus légers. Du point
+de vue du noyau, il représente les tâches qui partagent une «\ mm_struct\ ».
+
+.TP  4
+38. \fBTIME \*(Em temps \*(PU\fP
+Le temps \*(PU total utilisé par la tâche depuis son lancement. Quand le
+«\ mode Cumulatif\ » est \*O, chaque processus est affiché avec le temps \*(Pu
+que lui et ses enfants tués ont utilisé. Vous pouvez basculer en «\ mode
+Cumulatif\ » avec «\ S\ », qui est à la fois une \*(CO et une \*(CI. \*(XC
+la \*(CI «\ S\ » pour plus d'informations sur ce mode.
+
+.TP  4
+39. \fBTIME+ \*(Em temps \*(PU, en centième de seconde\fP
+Identique à «\ TIME\ », mais avec une précision supérieure grâce aux
+centièmes de seconde.
+
+.TP  4
+40. \fBTPGID \*(Em identifiant de groupe de processus contrôlant le terminal\fP
+L'identifiant de groupe de processus du processus au premier plan pour le
+terminal connecté, ou \fB\-1\fP si un processus n'est pas connecté au
+terminal. Par convention, cette valeur est l'identifiant de processus (\*(Xa
+PID) du meneur de groupe de processus (\*(Xa PGRP).
+
+.TP  4
+41 .\fBTTY \*(Em terminal de contrôle\fP
+Le nom du terminal de contrôle. Habituellement, il s'agit du périphérique
+(port série, pty,\ etc.) à partir duquel le processus a été lancé, et qu'il
+utilise pour ses entrées ou ses sorties. Au cas où un terminal n'est pas
+associé à une tâche, ce qui n'est pas obligatoire, un «\ ?\ » est affiché.
+
+.TP  4
+42. \fBUID \*(Em identifiant de l'utilisateur\fP
+L'identifiant utilisateur \fIeffectif\fP (EUID) du propriétaire de la tâche.
+
+.TP  4
+43. \fBUSED \*(Em mémoire utilisée (Kio)\fP
+Ce champ représente la \*(MP hors espace d'échange qu'une tâche utilise
+(RES) plus la portion transférée de son espace d'adresses (SWAP).
+
+\*(XX.
+
+.TP  4
+44. \fBUSER \*(Em nom de l'utilisateur\fP
+Le nom d'utilisateur \fIeffectif\fP du propriétaire de la tâche.
+
+.TP  4
+45. \fBVIRT \*(Em taille de l'image virtuelle (Kio)\fP
+La quantité totale de \*(MV utilisée par la tâche, à savoir l'ensemble des
+codes, données, bibliothèques partagées et pages qui ont été transférées sur
+l'espace d'échange («\ swap\ ») et les pages qui ont été mappées mais pas
+utilisées.
+
+\*(XX.
+
+.TP  4
+46. \fBWCHAN \*(Em fonction en sommeil\fP
+Ce champ affichera le nom de la fonction du noyau dans laquelle la tâche est
+effectivement en sommeil. Un tiret («\ \-\ ») s'affichera dans cette colonne
+en regard des tâches actives.
+
+.TP  4
+47. \fBnDRT \*(Em nombre de pages modifiées («\ Dirty Pages\ »)\fP
+Le nombre de pages modifiées depuis la dernière écriture sur le \*(AS. Les
+pages modifiées doivent être écrites sur le \*(AS avant que l'espace mémoire
+physique correspondant puisse être utilisé pour une autre page virtuelle.
+
+Ce champ est obsolète depuis Linux\ 2.6 et vaut toujours zéro.
+
+.TP  4
+48. \fBnMaj \*(Em nombre de défauts de page majeurs\fP
+Le nombre de défauts de page \fBmajeurs\fP générés par une tâche. Un défaut de
+page arrive quand un processus tente de lire ou d'écrire dans une page
+virtuelle placée hors de son espace d'adressage. Un défaut de page est
+majeur quand un accès à un \*(AS est impliqué lors de la récupération de
+cette page.
+
+.TP  4
+49. \fBnMin \*(Em nombre de défauts de page mineurs\fP
+Le nombre de défauts de page \fBmineurs\fP générés par une tâche. Un défaut de
+page arrive quand un processus tente de lire ou d'écrire dans une page
+virtuelle placée hors de son espace d'adressage. Un défaut de page mineur
+n'implique pas d'accès à un \*(AS lors de la récupération de cette page.
+
+.TP  4
+50. \fBnTH \*(Em nombre de processus légers «\ threads\ »\fP
+Le nombre de processus légers du noyau («\ thread\ ») associés à un processus.
+
+.TP  4
+51. \fBnsIPC \*(Em espace de nommage IPC\fP
+L’inœud de l’espace de nommage utilisé pour isoler les ressources de
+communication interprocessus (IPC) comme les objets IPC System\ V et les
+files de messages POSIX.
+
+.TP  4
+52. \fBnsMNT \*(Em espace de nommage MNT\fP
+L’inœud de l’espace de nommage utilisé pour isoler les points de montage de
+systèmes de fichiers en offrant ainsi des vues différentes de la hiérarchie
+des systèmes de fichiers.
+
+.TP  4
+53. \fBnsNET \*(Em espace de nommage NET\fP
+L’inœud de l’espace de nommage utilisé pour isoler les ressources comme les
+périphériques réseau, les adresses IP, le routage IP, les numéros de
+port,\ etc.
+
+.TP  4
+54. \fBnsPID \*(Em espace de nommage PID\fP
+L’inœud de l’espace de nommage utilisé pour isoler les numéros d’identifiant
+de processus leur permettant de ne pas rester uniques. Ainsi, tous ces
+espaces de nommage pourraient avoir leur propre «\ init/systemd\ » (PID nº\ 1)
+pour gérer plusieurs tâches d’initialisation et détruire les processus
+enfants orphelins.
+
+.TP  4
+55. \fBnsUSER \*(Em espace de nommage USER\fP
+L’inœud de l’espace de nommage utilisé pour isoler les numéros d’identifiant
+d’utilisateur et de groupe. Ainsi, un processus pourrait avoir un
+identifiant utilisateur normal sans droit à l’extérieur d’un espace de
+nommage utilisateur, tout en ayant un identifiant utilisateur\ \fB0\fP, avec
+tous les droits du superutilisateur, à l’intérieur de cet espace de nommage.
+
+.TP  4
+56. \fBnsUTS \*(Em espace de nommage UTS\fP
+L’inœud de l’espace de nommage utilisé pour isoler le nom d’hôte et le nom
+de domaine NIS. UTS signifie simplement «\ Système de partage de Temps
+UNIX\ ».
+
+.TP  4
+57. \fBvMj \*(Em delta de défauts de page majeurs\fP
+Le nombre de défauts de page \fBmajeurs\fP survenus depuis la dernière mise à
+jour (consultez \fBnMaj\fP).
+
+.TP  4
+58. \fBvMn \*(Em delta de défauts de page mineurs\fP
+Le nombre de défauts de page \fBmineurs\fP survenus depuis la dernière mise à
+jour (consultez \fBnMin\fP).
+
+.\" ......................................................................
+.SS "3b. GESTION des champs"
+.\" ----------------------------------------------------------------------
+Après avoir utilisé les commandes interactives «\ f\ » ou «\ F\ » (gestion des
+champs), un écran sera affiché, présentant\ :
+ 1) le nom de la \*(CW\ ;
+ 2) le champ de tri désigné\ ;
+ 3) tous les champs dans leur ordre actuel avec leur description.
+
+Les entrées marquées avec un astérisque sont les champs actuellement
+affichés, comme le permet la largeur de l'écran.
+
+.RS +4
+.IP \(bu 3
+Conformément aux instructions de l'écran, la navigation entre les champs se
+fait avec les \*(KAs \fBHaut\fP et \fBBas\fP. Les touches Orig, Fin, Pg.Préc et
+Pg.Suiv peuvent aussi servir à atteindre rapidement les premiers et derniers
+champs disponibles.
+
+.IP \(bu 3
+La \*(KA \fBDroite\fP sélectionne un champ pour le repositionnement et les
+touches \*(KA \fBGauche\fP et «\ \fBEntrée\fP\ » valident la position de ce champ.
+
+.IP \(bu 3
+La touche «\ \fBd\fP\ » et la barre d'«\ \fBEspace\fP\ » modifient l'état d'affichage
+d'un champ, et par conséquent la présence ou l'absence d'astérisque.
+
+.IP \(bu 3
+La touche «\ \fBs\fP\ » désigne un champ comme champ de tri. \*(XT
+\fB4c.\ Commandes de la ZONE de TÂCHES\fP, \fBTRI\fP pour de plus amples
+renseignements sur la sélection d'un champ de tri.
+
+.IP \(bu 3
+Les touches «\ \fBa\fP\ » et «\ \fBw\fP\ » permettent de passer en revue toutes les
+fenêtres disponibles et les touches «\ \fBq\fP\ » ou «\ \fBÉch\fP\ » permettent de
+sortir de la gestion des champs.
+.RS -4
+
+.PP
+L'écran de gestion des champs permet aussi de modifier le \*(CG en \*(FM ou
+\*(AM. Quelle que soit la cible au moment où vous saisissez «\ q\ » ou
+«\ \fBÉch\fP\ », elle deviendra active lors du retour à l'affichage
+principal. \*(XT \fB5.\ Dispositions d'AFFICHAGE ALTERNATIF\fP et la \*(CI «\ g\ »
+pour un aperçu des fenêtres «\ actives\ » et groupes de champs.
+
+.PP
+\*(NT n'importe quelle fenêtre après une navigation \fIhorizontale\fP sera
+réinitialisée si une modification de champ est réalisée à l'aide de l'écran
+gestion de champs. Cependant, la position après une navigation \fIverticale\fP
+ne sera pas modifiée. \*(XT \fB5c.\ DÉPLACEMENT dans une fenêtre\fP pour de plus
+amples renseignements sur les déplacements verticaux et horizontaux.
+
+.\" ----------------------------------------------------------------------
+.SH "4. Commandes INTERACTIVES"
+.\" ----------------------------------------------------------------------
+Ci\-dessous, un index succinct de commandes regroupées par
+catégories. Certaines commandes apparaissent plus d'une fois \*(Em\ leur
+signification ou leur portée peuvent différer selon le contexte de leur
+utilisation.
+
+.nf
+  4a.\fI Global\-Commands \fP
+        <Ent/Sp> ?, =, 0,
+        A, B, d, E, e, g, h, H, I, k, q, r, s, W, X, Y, Z
+  4b.\fI Summary\-Area\-Commands \fP
+        C, l, t, m, 1, 2, 3, 4, !
+  4c.\fI Task\-Area\-Commands \fP
+        Appearance:  b, J, j, x, y, z
+        Content:     c, f, F, o, O, S, u, U, V, v
+        Size:        #, i, n
+        Sorting:     <, >, f, F, R
+  4d.\fI Color\-Mapping \fP
+        <Ret>, a, B, b, H, M, q, S, T, w, z, 0 \- 7
+  5b.\fI Commands\-for\-Windows \fP
+        \-, _, =, +, A, a, g, G, w
+  5c.\fI Scrolling\-a\-Window \fP
+        C, Up, Dn, Left, Right, PgUp, PgDn, Home, End
+  5d.\fI Searching\-in\-a\-Window \fP
+        L, &
+.fi
+
+.\" ......................................................................
+.SS "4a. Commandes GLOBALES"
+.\" ----------------------------------------------------------------------
+Les commandes interactives globales sont \fBtoujours\fP disponibles que ce soit
+en \*(FM ou en \*(AM. Toutefois, certaines de ces commandes interactives
+\fBne sont pas disponibles\fP en «\ mode sécurisé\ ».
+
+Si vous souhaitez savoir à l'avance si \*(WE fonctionne en mode sécurisé,
+appelez simplement l'aide et consultez la deuxième ligne du résumé système.
+
+.TP  7
+\ \ <\fBEntrée\fP> ou <\fBEspace\fP>\ \ : \fIrafraîchir l'affichage\fP
+Ces commandes activent \*(WE et toute réception ultérieure rafraîchira
+l'intégralité de l'écran. Elles forcent aussi la mise à jour des
+modifications de \*(Pu ou de \*(MP branchés à chaud.
+
+Utilisez l'une ou l'autre de ces touches quand le délai est élevé et que
+vous souhaitez consulter l'état actuel.
+
+.TP  7
+\ \ \ \fB?\fP | \fBh\fP\ \ : \fIaide\fP
+Deux niveaux d'aide sont disponibles. Le premier offre un rappel de toutes
+les commandes interactives de base. Quand \*(WE est \fIsécurisé\fP, cet écran
+est plus succinct.
+
+En appuyant sur «\ h\ » ou «\ ?\ » dans l'écran d'aide, l'écran affichera
+l'aide de cette \*(CI applicable au \*(AM.
+
+.TP  7
+\ \ \ \fB=\fP\ \ :\fIExit\-Display\-Limits \fP
+Removes restrictions on what is shown.  This command will reverse any `i'
+(idle tasks), `n' (max tasks)  and `v' (hide children) commands that might
+be active.  It also provides for an exit from PID monitoring, User
+filtering, Other filtering, Locate processing and Combine Cpus mode.
+
+De plus, après navigation, la fenêtre sera réinitialisée avec cette
+commande.
+
+.TP  7
+\ \ \ \fB0\fP\ \ : basculer en \fIzéros supprimés\fP 
+Cette commande détermine si les zéros sont montrés ou supprimés pour
+beaucoup de champs de la \*(TW. Les champs comme UID, GID, NI, PR ou P ne
+sont pas affectés par cette option.
+
+.TP  7
+\ \ \ \fBA\fP\ \ : basculer en \fImode d'affichage alternatif\fP
+Cette commande bascule entre le \*(FM et le \*(AM. \*(XT \fB5.\ Dispositions
+d'AFFICHAGE ALTERNATIF\fP et la \*(CI «\ g\ » pour une meilleure compréhension
+de la \*(CW et des groupes de champs.
+
+.TP  7
+\ \ \ \fBB\fP\ \ : basculer entre \fIgras désactivé et activé\fP
+Cette commande influencera l'utilisation des capacités de mise en «\ gras\ »
+du terminal et modifie \fBà la fois\fP la \*(SA et la \*(TA de la \*(CW. Alors
+qu'elle était initialement conçue pour une utilisation avec des terminaux
+non intelligents («\ dumb terminals\ »), elle peut être appliquée en toute
+occasion.
+
+\*(NT lorsque cette option est \*O et que \*(WE fonctionne en mode
+monochrome, \fBl'entièreté de l'affichage\fP apparaîtra comme du texte
+normal. Donc, à moins que les options «\ x\ » ou «\ y\ » ne soient inversées
+pour accentuer la mise en évidence, il n'y aura pas de confirmation visuelle
+de leur activité.
+
+.TP  7
+*\ \ \fBd\fP | \fBs\fP\ \ : \fImodifier le délai\fP
+Vous invite à introduire le délai, en seconde, des mises à jour de
+l'affichage.
+
+Les fractions de seconde sont possibles, mais pas les nombres négatifs. La
+valeur\ \fB0\fP entraînera une mise à jour (quasi) permanente, responsable d'un
+affichage décevant puisque le système et le périphérique tty essayeront de
+tenir compte des demandes de \*(WE. La valeur du délai est inversement
+proportionnelle à la charge du système, alors positionnez\-la avec soin.
+
+À tout moment, vous pouvez connaître le délai effectif en appelant l'aide et
+en consultant la deuxième ligne du résumé système.
+
+.TP  7
+\ \ \ \fBE\fP\ \ :\fIEnforce\-Summary\-Memory\-Scale\fP in Summary Area
+Avec cette commande, chacune des échelles disponibles de mémoire de la \*(SA
+peut être choisie, du Kio (kibioctet, soit 1\ 024\ octets) à l’Eio (exbioctet,
+soit 1\ 152\ 921\ 504\ 606\ 846\ 976\ octets).
+
+Si un «\ +\ » apparaît entre un nombre affiché et l'étiquette suivante, cela
+signifie que \*(WE a été forcé de tronquer une portion de ce nombre. En
+augmentant le facteur d'échelle, ce genre de troncature peut être évité.
+
+.TP  7
+\ \ \ \fBe\fP\ \ :\fIEnforce\-Task\-Memory\-Scale\fP in Task Area
+With this command you can cycle through the available \*(TA memory scaling
+which ranges from KiB (kibibytes or 1,024 bytes) through PiB (pebibytes or
+1,125,899,906,842,624 bytes).
+
+Même si \*(WE essayera de respecter l'intervalle cible sélectionné, une mise
+à l'échelle supplémentaire pourrait être nécessaire afin de s'adapter aux
+valeurs présentes. Augmenter l'intervalle d'échelle permet généralement de
+voir un résultat plus homogène dans les colonnes de mémoire. Néanmoins, trop
+l'augmenter est susceptible de produire un résultat ne consistant qu'en des
+zéros qui ne peuvent être supprimés par la \*(CI «\ 0\ ».
+
+.TP  7
+\ \ \ \fBg\fP\ \ : \fIchoisir un autre groupe de fenêtres ou champs\fP
+Vous invite à introduire un numéro entre \fB1\fP et \fB4\fP pour désigner le \*(FG
+de la \*(CW. Vous trouverez assez vite vos marques avec ces quatre fenêtres,
+spécialement en expérimentant le \*(AM.
+
+.TP  7
+\ \ \ \fBH\fP\ \ : basculer en \fImode processus légers\fP
+Quand cette option est \*O, les processus légers seront affichés pour tous
+les processus de toutes les fenêtres de tâches visibles. Sinon, \*(WE
+affiche le récapitulatif de tous les processus légers de chaque processus.
+
+.TP  7
+\ \ \ \fBI\fP\ \ : basculer en \fImode Irix/Solaris\fP
+En fonctionnant en «\ mode Solaris\ » (bascule de «\ I\ » en \*F), la
+consommation \*(Pu d'une tâche sera divisée par le nombre total de
+\*(PU. Après avoir exécuté cette commande, vous serez informé du nouvel état
+de cette option.
+
+.TP  7
+*\ \ \fBk\fP\ \ : \fItuer une tâche\fP
+Vous invite à introduire le PID et ensuite le signal à envoyer.
+
+Ne pas entrer de PID ou une valeur négative sera interprété comme utiliser
+la valeur par défaut montrée dans l'invite (la première tâche affichée). Une
+valeur de PID de zéro signifie le programme \*(WE lui\-même.
+
+Le signal par défaut, comme le propose l'invite, est SIGTERM. Cependant,
+vous pouvez indiquer le nom ou le numéro de tout autre signal.
+
+Si vous souhaitez annuler la terminaison d'un processus, faites une des
+choses suivantes selon le niveau d'avancement\ :
+.nf
+    1) à l'invite du PID, entrez un numéro incorrect ;
+    2) à l'invite du signal, tapez \fB0\fP (ou n'importe quel signal incorrect) ;
+    3) à n'importe quel invite, tapez <Éch>.
+.fi
+
+.TP  7
+\ \ \ \fBq\fP\ \ : \fIquitter\fP
+
+.TP  7
+*\ \ \fBr\fP\ \ : \fIchanger la politesse d'une tâche\fP
+Vous invite à introduire le PID puis la valeur de politesse à appliquer.
+
+Ne pas entrer de PID ou une valeur négative sera interprété comme utiliser
+la valeur par défaut montrée dans l'invite (la première tâche affichée). Une
+valeur de PID de zéro signifie le programme \*(WE lui\-même.
+
+Une valeur de politesse positive provoquera une diminution de la priorité de
+la tâche. À l'inverse, une valeur négative de politesse la fera considérer
+plus favorablement par le noyau. En règle générale, les utilisateurs peuvent
+seulement augmenter la valeur de politesse sans pouvoir la diminuer.
+
+Si vous souhaitez annuler la modification de politesse d'un processus,
+faites une des choses suivantes selon le niveau de progression\ :
+.nf
+    1) à l'invite du PID, entrez un numéro incorrect ;
+    2) à l'invite de politesse, tapez <Entrée> sans rien entrer ;
+    3) à n'importe quel invite, tapez <Éch>.
+.fi
+
+.TP  7
+\ \ \ \fBW\fP\ \ : \fIécrire le fichier de configuration\fP
+Cette commande sauvegardera toutes vos options et bascule ainsi que le mode
+d'affichage actuel et le délai. En exécutant cette commande juste avant de
+quitter \*(We, vous pourrez redémarrer en conservant exactement la même
+configuration.
+
+.TP  7
+\ \ \ \fBX\fP\ \ : \fIlargeur fixe supplémentaire\fP
+Certains champs sont à largeur fixe et non adaptable. Ainsi, ils pourraient
+être tronqués, ce qui serait indiqué par un «\ +\ » en fin de chaîne.
+
+Cette \*(CI peut être utilisée pour modifier les largeurs des champs
+suivants\ :
+
+.nf
+   \fI champ  défaut     champ  défaut     champ  défaut\fP
+    GID       5       GROUP     8       WCHAN    10
+    RUID      5       RUSER     8       nsIPC    10
+    SUID      5       SUSER     8       nsMNT    10
+    UID       5       USER      8       nsNET    10
+                      TTY       8       nsPID    10
+                      USER      8       nsUSER   10
+                                        nsUTS    10
+.fi
+
+La quantité à ajouter aux largeurs par défaut précédentes vous sera
+demandée. Saisir zéro force un retour aux valeurs par défaut.
+
+Si vous saisissez un nombre négatif, \*(WE augmentera automatiquement la
+taille de colonne autant que nécessaire jusqu'à ce qu'il n'y ait plus aucune
+donnée tronquée. Vous pouvez accélérer ce processus en réduisant le délai ou
+en maintenant la barre d'<espace> enfoncée.
+
+\*(NT qu'elles soient explicitement ou automatiquement augmentées, les
+largeurs pour ces champs ne sont jamais diminuées par \*(WE. Pour les
+réduire, vous devez indiquer un nombre plus petit ou restaurer les valeurs
+par défaut.
+
+.TP  7
+\ \ \ \fBY\fP\ \ \ : \fIinspecter une autre sortie\fP
+Après l'exécution de la \*(CI «\ Y\ », un PID cible sera demandé. Taper une
+valeur ou accepter celle par défaut aura pour conséquence un écran
+séparé. Cet écran peut être utilisé pour voir plusieurs fichiers ou sorties
+de commande renvoyée dans un tube («\ pipe\ ») alors que l'affichage
+interactif normal de \*(WE est en pause.
+
+\*(NT cette \*(CI n'est entièrement réalisée que quand les entrées possibles
+ont été ajoutées par vos soins à la fin du \*(CF de \*(WE. Pour plus de
+précision sur la création de ces entrées, \*(Xt \fB6b.\ AJOUT d'entrées
+d'INSPECTION\fP.
+
+La plupart des touches utilisées pour naviguer dans la fonctionnalité
+d'inspection sont indiquées dans l'en\-tête de son prologue. Des touches
+supplémentaires sont cependant utilisables une fois sélectionnés un fichier
+ou une commande spécifiques. Elles sont familières des utilisateurs du
+visualiseur «\ less\ » et sont résumées ici pour référence.
+
+.nf
+    \fItouche   fonction\fP
+    «\ =\ »    alterner entre ligne d'état, fichier ou tube
+    «\ /\ »    trouver, équivalent à «\ L\ » pour localiser
+    «\ n\ »    trouver le suivant, équivalent à «\ &\ »
+    <Espace> descendre, équivalent à <Pg.Suiv>
+    «\ b\ »    monter, équivalent à <Pg.Préc>
+    «\ g\ »    première ligne, équivalent à <Orig>
+    «\ G\ »    dernière ligne, équivalent à <Fin>
+.fi
+
+.TP  7
+\ \ \ \fBZ\fP\ \ : \fImodifier la palette de couleurs\fP
+Cette commande affichera un écran séparé où vous pourrez modifier les
+couleurs de la \*(CW, ou de toutes les fenêtres. Pour plus de détails
+concernant cette \*(CI, \*(Xt \fB4d.\ Palette de COULEURS\fP.
+
+.IP * 3
+Les commandes précédées d'un \*(AK ne sont pas disponibles en «\ mode
+sécurisé\ », elles ne seront pas non plus présentées au premier niveau de
+l'écran d'aide.
+
+.\" ......................................................................
+.SS "4b. Commandes de la ZONE de RÉSUMÉ"
+.\" ----------------------------------------------------------------------
+Les commandes interactives de la \*(SA sont\fB toujours accessibles\fP à la
+fois en \*(FM et en \*(AM. Elles affectent les premières lignes de votre
+écran et détermineront la position des messages et des invites.
+
+Ces commandes ont toujours un impact seulement sur le \*(CG. \*(XT
+\fB5.\ Dispositions d'AFFICHAGE ALTERNATIF\fP et la \*(CI «\ G\ » pour une
+description plus précise de la \*(CW et des groupes de champs.
+
+.TP  7
+\ \ \ \fBC\fP\ \ : \fImontrer les coordonnées d'affichage\fP ou non
+Montrer un message d'information si la ligne de message n'est pas
+utilisée. \*(XT \fB5c.\ DÉPLACEMENT dans une fenêtre\fP pour de plus amples
+renseignements.
+
+.TP  7
+\ \ \ \fBl\fP\ \ : basculer entre \fIcharge moyenne et temps d'activité\fP
+Il s'agit aussi de la ligne contenant le nom du programme (éventuellement un
+alias) en \*(FM ou du nom de la \*(CW en \*(AM.
+
+.TP  7
+\ \ \ \fBt\fP\ \ \ : basculer entre \fIétats de tâche et CPU\fP
+Cette commande affecte deux ou plusieurs lignes de la \*(SA, en fonction de
+l'état des commandes de basculement «\ 1\ », «\ 2\ » ou «\ 3\ » ou si \*(WE
+s'exécute sur un vrai SMP ou non.
+
+Cette partie de la \*(SA est aussi influencée par l'état de la \*(CI «\ H\ »,
+et est répercutée dans l'étiquette total qui montre soit «\ Tasks\ » (tâches),
+soit «\ Threads\ » (processus légers).
+
+Cette commande offre de façon cyclique quatre modes\ :
+.nf
+    1. pourcentages détaillés par catégorie
+    2. % synthétique utilisateur/système et total + graphique à barres
+    3. % synthétique utilisateur/système et total + graphe de blocs
+    4. pas d'affichage des tâches et états CPU
+.fi
+
+En fonctionnant dans l'un des modes graphiques, l'affichage devient beaucoup
+plus pertinent si les CPU individuels ou les nœud NUMA sont aussi
+affichés. \*(XC la commande «\ 1\ », «\ 2\ » et «\ 3\ » ci\-dessous pour plus
+d'informations.
+
+.TP  7
+\ \ \ \fBm\fP\ \ : basculer entre \fIutilisation mémoire et fichier d'échange («\ swap\ »)\fP
+Cette commande affecte les deux lignes de la \*(SA qui concernent la mémoire
+physique et virtuelle.
+
+Cette commande offre de façon cyclique quatre modes\ :
+.nf
+    1. pourcentages détaillés par type de mémoire
+    2. % synthétique utilisateur/total disponible + graphique à barres
+    3. % synthétique utilisateur/total disponible + graphe de blocs
+    4. pas d'affichage de la mémoire
+.fi
+
+.TP  7
+\ \ \ \fB1\fP\ \ : basculer entre \fIétats CPU simple et séparé\fP
+Cette commande affecte la manière dont est présentée la zone des états de
+CPU de la commande «\ t\ ». Alors que cette option a été conçue initialement
+dans le cadre de machines SMP massivement parallèles, son utilisation n'est
+pas restreinte aux seuls environnements SMP.
+
+Quand l'étiquette «\ %Cpu(s):\ » est affichée dans la \*(SA, l'option «\ 1\ » est \*O et toute l'information du \*(Pu est rassemblée sur une seule
+ligne. Autrement, chaque \*(Pu est affiché séparément de cette manière\ : «\ %Cpu0, %Cpu1, ...\ » tant que la hauteur de l'écran le permet.
+
+.TP  7
+\ \ \ \fB2\fP\ \ : basculer entre \fInœuds NUMA et résumé de processeur\fP
+Cette commande bascule entre la commande «\ 1\ » de résumé de processus (seul)
+ou un affichage du résumé et des statistiques d'utilisation de processus
+pour chaque nœud NUMA. Ce n'est disponible que si le système prend en charge
+NUMA.
+
+.TP  7
+\ \ \ \fB3\fP\ \ : \fInœud NUMA étendu\fP
+You will be invited to enter a number representing a NUMA Node.  Thereafter,
+a node summary plus the statistics for each cpu in that node will be shown
+until the `1', `2' or `4' \*(CT is pressed.  This \*(CI is only available if
+a system has the requisite NUMA support.
+
+.TP  7
+\ \ \ \fB4\fP\ \ :\fIDisplay\-Cpus\-Two\-Abreast \fP
+This command turns the `1' toggle \*F for individual \*(Pu display but
+prints the results two abreast.  It requires a terminal with a minimum width
+of 80 columns.  If a terminal's width is decreased below the minimum while
+\*(We is running, \*(We reverts to the normal `1' toggle \*F state.
+
+To avoid truncation when displaying detailed \*(Pu statistcs, as opposed to
+the graphic representations, a minimum width of 165 columns would be
+required.
+
+.TP  7
+\ \ \ \fB!\fP\ \ :\fICombine\-Cpus\-Mode \fP
+This \*(CT is intended for massively parallel SMP environments where, even
+with the `4' \*(CT, not all processors can be displayed.  With each press of
+`!' the number of additional \*(Pu's combined is doubled thus reducing the
+total number of \*(Pu lines displayed.
+
+For example, with the first press of `!' one additional \*(Pu will be
+combined and displayed as `0\-1, 2\-3, ...' instead of the normal `%Cpu0,
+%Cpu1, %Cpu2, %Cpu3, ...'.  With a second `!' \*(CT two additional \*(Pus
+are combined and shown as `0\-2, 3\-5, ...'.  Then the third '!' press,
+combining four additional \*(Pus, shows as `0\-4, 5\-9, ...', etc.
+
+Such progression continues until individual \*(Pus are again displayed and
+impacts both the `1' and `4' toggles (one or two columns).  Use the `='
+command to exit \fBCombine Cpus\fP mode.
+
+.PP
+\*(NT si la totalité de la \*(SA est \*F pour chaque fenêtre, vous n'aurez
+juste accès qu'à\fB la ligne de message\fP. De cette manière vous maximiserez
+le nombre de lignes disponibles pour les tâches aux dépens (temporairement)
+du nom du programme en \*(FM ou du nom de la \*(CW en \*(AM.
+
+.\" ......................................................................
+.SS "4c. Commandes de la ZONE de TÂCHES"
+.\" ----------------------------------------------------------------------
+Les commandes interactives de la \*(TA sont \fBtoujours\fP disponibles en
+\*(FM.
+
+Les commandes interactives de la \*(TA ne sont \fBjamais disponibles\fP en
+\*(AM \fIquand\fP l'option de l'\*(TD de la \*(CW est positionnée sur \*F
+(\*(Xt \fB5.\ Dispositions d'AFFICHAGE ALTERNATIF\fP).
+
+.\" ..................................................
+.PP
+\fBPRÉSENTATION\fP de la \*(TW
+
+.TP  7
+\ \ \ \fBJ\fP\ \ : basculer la \fIjustification des colonnes numériques\fP
+Alterner entre la justification à droite (par défaut) et à gauche des
+données numériques. Si les données numériques remplissent complètement la
+colonne disponible, cette \*(CT pourrait n'avoir de conséquence que sur
+l'en\-tête.
+
+.TP  7
+\ \ \ \fBj\fP\ \ : basculer la \fIjustification des colonnes de lettres\fP
+Alterner entre la justification à gauche (par défaut) et à droite des
+données en lettres. Si les données en lettres remplissent complètement la
+colonne disponible, cette \*(CT pourrait n'avoir de conséquence que sur
+l'en\-tête.
+
+.PP
+.RS +2
+Les commandes suivantes seront aussi influencées par l'état de l'option
+globale «\ B\ » (gras activé).
+.RS -2
+
+.TP  7
+\ \ \ \fBb\fP\ \ : basculer \fIgras ou inverse\fP
+Cette commande affectera la manière dont les options «\ x\ » et «\ y\ »
+seront affichées. Elle peut aussi affecter la \*(SA quand un graphique à
+barres a été sélectionné pour les états \*(Pu ou l'utilisation de la mémoire
+au moyen des options «\ t\ » ou «\ m\ ».
+
+.TP  7
+\ \ \ \fBx\fP\ \ : basculer la \fIsurbrillance de colonne\fP
+Modifie la surbrillance du champ de tri effectif.
+Si vous oubliez quel est le champ de tri, cette commande fournit
+un rapide rappel visuel, à condition que le champ de tri soit affiché.
+Les raisons pour lesquelles le champ du tri peut être masqué sont\ :
+ 1) une \fIlargeur d'écran\fP insuffisante\ ;
+ 2) la \*(CI «\ f\ » est positionnée sur \*F.
+
+\*(NT à chaque fois que «\ recherche\ » ou «\ autre filtre\ » est actif dans une
+fenêtre, la surbrillance de colonne est temporairement désactivée. \*(XC les
+notes en fin des sujets \fB5d.\ RECHERCHE\fP et \fB5e.\ FILTRE\fP pour une
+explication de la raison.
+
+.TP  7
+\ \ \ \fBy\fP\ \ : basculer la \fIsurbrillance de ligne\fP
+Modifie la surbrillance de tâches «\ qui s'exécutent\ ». Pour une meilleure
+compréhension de l'état de cette tâche, \*(Xt \fB3a.\ DESCRIPTIONS de champs\fP,
+le champ\ \fBS\fP (\fBÉtat de processus\fP).
+
+L'utilisation de cette disposition fournit une meilleure compréhension de
+l'état de santé de votre système. Les seuls surcoûts consisteront en
+quelques suites de caractères d'échappement supplémentaires sur le tty.
+
+.TP  7
+\ \ \ \fBz\fP\ \ : basculer en \fIcouleur ou monochrome\fP
+Alterne sur la \*(CW le dernier schéma de couleur utilisé et l'ancienne
+formule blanc\-sur\-noir ou noir\-sur\-blanc. Cette commande touche \fBà la fois\fP
+la \*(SA et la \*(TA mais n'affectera pas l'état des options «\ x\ », «\ y\ » ou «\ b\ ».
+
+.\" ..................................................
+.PP
+\fBCONTENU\fP de la \*(TW
+
+.TP  7
+\ \ \ \fBc\fP\ \ : basculer \fIligne de commande ou nom du programme\fP
+Cette commande sera appliquée, que la colonne «\ COMMAND\ » soit
+actuellement visible ou non. Par la suite, si le champ est affiché, la
+modification deviendra visible.
+
+.TP  7
+\ \ \ \fBf\fP | \fBF\fP\ \ : \fIgestion des champs\fP
+Ces touches affichent un écran séparé où vous pouvez modifier la liste des
+champs affichés, leur ordonnancement et aussi désigner le champ de tri. Pour
+de plus amples renseignements sur ces commandes interactives, \*(Xt
+\fB3b.\ GESTION des champs\fP.
+
+.TP  7
+\ \ \ \fBo\fP | \fBO\fP\ \ : \fIautre filtre\fP
+Vous invite à introduire les critères de sélection qui déterminent alors les
+tâches qui seront montrées dans la \*(CW. Les critères peuvent être rendus
+sensibles à la casse ou non. Les tâches correspondantes peuvent être soit
+incluses par \*(WE, soit exclues.
+
+\*(XT \fB5e.\ FILTRE dans une fenêtre\fP pour plus de précisions sur ces
+commandes interactives et les autres commandes interactives liées.
+
+.TP  7
+\ \ \ \fBS\fP\ \ : basculer en \fIcumul de temps\fP 
+Lorsque l'option «\ Mode cumulatif\ » est \*O, chaque processus est
+référencé avec le temps \*(Pu que lui et ses enfants tués ont utilisé.
+
+Avec l'option \*F, les programmes qui ont été divisés en plusieurs tâches
+distinctes apparaîtront moins gourmands. Pour des programmes tels «\ init\ »
+ou un interpréteur de commandes (shell), ce comportement est approprié, mais
+pour d'autres, comme les compilateurs, ça ne l'est probablement
+pas. Expérimentez l'affichage d'une liste identique de champs triés dans
+deux fenêtres de tâches mais avec différents états «\ S\ » pour vous forger
+une opinion sur le comportement que vous préférez.
+
+Après l'exécution de cette commande, vous serez averti du nouvel état de
+cette option. Si vous souhaitez savoir à l'avance si le «\ Mode cumulatif\ »
+est activé, affichez simplement l'aide et consultez la deuxième ligne de la
+fenêtre récapitulative.
+
+.TP  7
+\ \ \ \fBu\fP | \fBU\fP\ \ : \fIutilisateur spécifique\fP
+Vous invite à introduire l'\fBUID\fP ou le \fBnom\fP d'utilisateur à
+afficher. L'option «\ \-u\ » s'applique à l'utilisateur \fBeffectif\fP tandis que
+l'option «\ \-U\ » s'applique à \fBn'importe quel\fP utilisateur (réel, effectif,
+sauvegardé ou système de fichiers).
+
+Par la suite, seuls les utilisateurs correspondants dans cette \*(TW seront
+montrés, ou éventuellement aucun processus ne sera montré. Un point
+d'exclamation («\ !\ ») précédant l'identifiant ou le nom d'utilisateur
+indique à \*(WE de n'afficher que les processus avec des utilisateurs ne
+correspondant pas à celui fourni.
+
+D'autres fenêtres de tâches peuvent être utilisées pour filtrer d'autres
+utilisateurs. Ensuite, si vous désirez surveiller à nouveau l'ensemble des
+utilisateurs dans la \*(CW, réexécutez cette commande mais appuyez
+uniquement sur la touche <Entrée> à l'invite.
+
+.TP  7
+\ \ \ \fBV\fP\ \ : basculer en \fImode d'affichage arborescent\fP
+Dans ce mode, les processus sont réordonnés en fonction de leurs parents et
+la disposition de la colonne «\ COMMAND\ » ressemble à celle d'un arbre. En
+mode d'affichage arborescent, il est toujours possible de basculer entre nom
+de programme et ligne de commande (\*(Xc la \*(CI «\ c\ ») ou entre processus
+et processus légers (\*(Xc la \*(CI «\ H\ »).
+
+\*(NT l'utilisation d'une touche qui affecte l'ordre de tri force la sortie
+du mode d'affichage arborescent dans la \*(CW. \*(XT \fB4c.\ Commandes de la
+ZONE de TÂCHES\fP —\ \fBTRI\fP pour de plus amples renseignements sur ces touches.
+
+.TP  7
+\ \ \ \fBv\fP\ \ : basculer \fIcacher ou montrer les enfants\fP
+En mode d'affichage arborescent, cette touche sert à basculer entre
+dissimuler et développer les enfants d'un parent.
+
+Cette option s'applique au premier processus (le plus haut) dans la
+\*(CW. \*(XT \fB5c.\ DÉPLACEMENT dans une fenêtre\fP pour de plus amples
+renseignements sur les déplacements verticaux.
+
+Si le processus cible n'a pas engendré d'enfant, cette touche n'a pas
+d'effet. Elle n'a pas d'effet non plus quand le mode d'affichage arborescent
+n'est pas actif.
+
+.\" ..................................................
+.PP
+\fBTAILLE\fP de la \*(TW
+
+.TP  7
+\ \ \ \fBi\fP\ \ : basculer en \fIprocessus en veille\fP 
+Affiche toutes les tâches ou seulement les tâches actives. Lorsque cette
+option est \*F, les tâches qui n'ont pas utilisé de \*(PU depuis la dernière
+mise à jour ne seront pas affichées. Cependant, à cause de la précision des
+champs %CPU et TIME+, quelques processus pourraient toujours être affichés
+même s'ils \fIsemblent\fP ne \fIpas\fP avoir utilisé de \*(PU.
+
+Appliquée au dernier \*(TD, en \*(AM, cette commande n'affecte pas la taille
+de la fenêtre, vu que l'ensemble des écrans de tâches précédents auront déjà
+été dessinés.
+
+.TP  7
+\ \ \ \fBn\fP | \fB#\fP\ \ : \fIconfigurer le maximum de tâches\fP
+Vous invite à introduire le nombre de tâches à afficher. La valeur minimale
+entre le nombre saisi et le nombre de lignes d'écran disponibles sera
+utilisée.
+
+Utilisée en \*(AM, cette commande vous donnera un contrôle précis sur la
+taille de chacun des écrans de tâches actuels visibles, à l'exception du
+tout dernier. Elle ne l'affectera pas, vu que tous les écrans de tâches
+précédents auront déjà été dessinés.
+
+\*(NT si vous souhaitez accroître la taille du dernier \*(TD visible, en
+\*(AM, réduisez simplement la taille de l'\*(TD au\-dessus de lui.
+
+.\" ..................................................
+.PP
+\fBTRI\fP de la \*(TW
+.PP
+.RS +3
+Pour des raisons de compatibilité, cette version de \*(WE gère la plupart
+des touches de tri des versions précédentes. Puisqu'il s'agit
+essentiellement d'un service pour les utilisateurs des versions précédentes
+de \*(WE, ces commandes n'apparaissent sur aucun écran d'aide.
+.nf
+   \fIcommande    champ trié                  disponible\fP
+     A         démarrage (non affiché)       \fBNon\fP
+     M         %MEM                          Oui
+     N         PID                           Oui
+     P         %CPU                          Oui
+     T         TIME+                         Oui
+.fi
+
+Avant l'utilisation d'une quelconque des clés de tri suivantes, \*(WE
+propose que vous activiez temporairement la surbrillance de colonne en
+utilisant la \*(CI «\ x\ », afin de vous conforter dans l'assurance que
+l'environnement de tri actuel correspond à vos intentions.
+
+Les commandes interactives suivantes seront \fBseulement\fP respectées lorsque
+le champ du tri effectif est \fB visible\fP.
+Les raisons pour lesquelles le champ du tri peut être masqué sont\ :
+     1) une \fIlargeur d'écran\fP insuffisante\ ;
+     2) la \*(CI «\ f\ » est positionnée sur \*F.
+
+.TP  7
+\ \ \ \fB<\fP\ \ : \fIdéplacer le champ trié à gauche\fP
+Déplace la colonne de tri vers la gauche à moins que le champ de tri
+effectif ne soit le premier de l'écran.
+
+.TP  7
+\ \ \ \fB>\fP\ \ : \fIdéplacer le champ trié à droite\fP
+Déplace la colonne de tri vers la droite à moins que le champ de tri
+effectif ne soit le dernier de l'écran.
+
+.PP
+Les commandes interactives suivantes seront toujours appliquées, que les
+champs de tri effectifs soient visibles ou non.
+
+.TP  7
+\ \ \ \fBf\fP | \fBF\fP\ \ : \fIgestion des champs\fP
+Ces touches présentent un écran séparé où vous pouvez sélectionner la
+colonne de tri, entre autres fonctions. Cela peut se révéler pratique pour
+contrôler simplement le champ de tri actuel, lorsque \*(WE s'exécute avec
+une option de surbrillance de colonne positionnée en \*F.
+
+.TP  7
+\ \ \ \fBR\fP\ \ : basculer \fIle champ de tri inverse ou normal\fP
+En utilisant cette \*(CI, vous pouvez basculer entre des tris croissants et
+décroissants.
+
+.PP
+\*(NT le tri des champs utilise des valeurs internes, et non celles
+affichées dans les colonnes. Donc, les champs TTY et WCHAN ne respecteront
+pas l'ordre ASCII.
+.RE
+
+.\" ......................................................................
+.SS "4d. Palette de COULEURS"
+.\" ----------------------------------------------------------------------
+L'utilisation de la \*(CI «\ Z\ » vous présentera un écran séparé. Cet écran
+peut être utilisé pour modifier les couleurs de la seule \*(CW ou de
+l'ensemble des quatre fenêtres avant de revenir à l'affichage principal.
+
+.P
+Les commandes interactives suivantes sont disponibles.
+.nf
+  \fB4\fP majuscules pour choisir une \fBcible\fP
+  \fB8\fP chiffres pour choisir une \fBcouleur\fP
+  bascules classiques disponibles
+   «\ B\ »       : gras désactivé ou activé
+   «\ b\ »       : tâches actives «\ gras\ » ou inverse
+   «\ z\ »       : couleur/monochrome
+  autres commandes disponibles
+   «\ a\ »/«\ w\ » : appliquer, ensuite aller au suivant ou précédent
+   <Entrée>    : appliquer puis quitter
+   «\ q\ »       : abandonner les modifications actuelles puis quitter
+.fi
+
+En utilisant «\ a\ » ou «\ w\ » pour passer en revue les fenêtres cibles,
+vous appliquerez le schéma de couleurs affiché par la fenêtre que vous êtes
+en train de quitter aux fenêtres suivantes. Vous pouvez, bien entendu,
+facilement retourner sur chacune des fenêtres et appliquer de nouveau un
+schéma de couleurs différent ou désactiver (\*F) totalement les couleurs
+avec l'option «\ z\ ».
+
+L'écran palette de couleurs peut aussi être utilisé pour modifier le \*(CG
+dans chacun des modes plein écran ou affichage alternatif. Quelle que soit
+la cible au moment où vous saisissez «\ q\ » ou <Entrée>, elle
+deviendra active lors du retour à l'affichage principal.
+
+.\" ----------------------------------------------------------------------
+.SH "5. Dispositions d'AFFICHAGE ALTERNATIF"
+.\" ----------------------------------------------------------------------
+.\" ......................................................................
+.SS "5a. Vue d'ensemble du FENÊTRAGE"
+.\" ----------------------------------------------------------------------
+.TP  3
+\fBGroupes de champs/fenêtres\fP\ :
+En \*(FM, une seule fenêtre occupe la totalité de l'écran. Cette fenêtre
+unique peut toujours être remplacée par un des quatre \fBgroupes de champs\fP
+différents (\*(Xc la \*(CI «\ g\ » réexpliquée ci\-dessous). Chacun des
+quatre groupes de champs dispose d'une \fB\*(SA\fP configurable séparément et
+de sa propre \fB\*(TA\fP également configurable.
+
+En \*(AM, ces quatre groupes de champs sous\-jacents peuvent être visualisés
+simultanément ou peuvent être rendus \*F à volonté.
+
+La \*(SA sera toujours présente, même s'il ne s'agit que d'une ligne de
+message. \fBUne\fP seule \*(SA peut être affichée à la fois. Cependant, selon
+vos directives, il peut y avoir de \fIzéro\fP à \fIquatre\fP écrans de tâches
+séparés à l'écran.
+
+.TP  3
+\fBFenêtre Active\fP\ :
+La \*(CW est la fenêtre associée à la \*(SA et la fenêtre vers laquelle les
+commandes liées à leur tâche sont toujours dirigées. Puisqu'en \*(AM vous
+pouvez rendre \*F l'\*(TD, certaines commandes peuvent être restreintes dans
+la \*(CW.
+
+Une difficulté supplémentaire apparaît au moment de la désactivation de la
+première ligne de la \*(SA. En perdant le nom de la fenêtre (la ligne de
+bascule «\ l\ »), il vous sera difficile de savoir quelle fenêtre est
+active.
+
+.\" ......................................................................
+.SS "5b. COMMANDES de Fenêtrage"
+.\" ----------------------------------------------------------------------
+.TP  7
+\ \ \ \fB\-\fP | \fB_\fP\ \ : \fImontrer ou masquer les fenêtres\fP
+La touche «\ \-\ » active et désactive l'\*(TD de la fenêtre active. \*F, la
+\*(TA affichera le minimum possible d'en\-têtes de colonnes telles que vous
+les avez déterminées avec la \*(CI «\ f\ ». Elle reflétera également toutes
+autres dispositions (options/bascules) de la \*(TA que vous avez appliquées
+révélant zéro tâche ou plus.
+
+La touche «\ _\ » a le même effet sur toutes les zones d'affichage des
+tâches. En d'autres termes, elle bascule entre l'\*(TD visible actuellement
+et toute autre zone d'affichage marquée \*F. Si les quatre zones d'affichage
+sont actuellement visibles, cette \*(CI laissera la \*(SA comme seul élément
+visible.
+
+.TP  7
+*\ \ \fB=\fP | \fB+\fP\ \ :\fIEqualize/Reset\-Window(s) \fP
+The `=' key forces the \*(CW's \*(TD to be visible.  It also reverses any
+active `i' (idle tasks), `n' (max tasks), `u/U' (user filter), `o/O' (other
+filter), `v' (hide children), `L' (locate)  and `!' (combine cpus)
+commands.  Also, if the window had been scrolled, it will be reset with this
+command.  \*(XT 5c. SCROLLING a Window for additional information regarding
+vertical and horizontal scrolling.
+
+The `+' key does the same for all windows.  The four \*(TDs will reappear,
+evenly balanced, while retaining any customizations previously applied
+beyond those noted for the `=' \*(CT.
+
+.TP  7
+*\ \ \fBA\fP\ \ : basculer en \fImode d'affichage alternatif\fP
+Cette commande passera du \*(FM en \*(AM.
+
+Lors d'une première exécution, les quatre zones d'affichage seront
+présentées. Ensuite, en basculant de mode, vous ne verrez que les zones
+d'affichage des tâches que vous souhaitez rendre visibles.
+
+.TP  7
+*\ \ \fBa\fP | \fBw\fP\ \ : \fIfenêtre suivante ou précédente\fP
+Ces commandes changeront de \*(CW, présentant tour à tour la fenêtre vers
+laquelle les commandes sont dirigées. Ces touches agissent de manière
+cyclique vous permettant d'atteindre toute \*(CW souhaitée quelle que soit
+la touche utilisée.
+
+En supposant que le nom de la fenêtre soit visible (vous n'avez pas rendu «\ l\ » \*F), à chaque fois la \*(CW perd sa mise en évidence ou ses couleurs,
+rappelant que l'\*(TD est \*F et que de nombreuses commandes seront
+restreintes.
+
+.TP  7
+*\ \ \fBg\fP\ \ : \fIchoisir une autre fenêtre ou un groupe de champs\fP
+Vous invite à introduire un nombre entre 1 et 4 désignant le \*(FG qui
+deviendra la \*(CW.
+
+En \*(FM, cette commande est indispensable pour modifier la \*(CW. En \*(AM,
+il s'agit simplement d'un moyen moins pratique que les commandes «\ a\ » et
+«\ w\ ».
+
+.TP  7
+\ \ \ \fBG\fP\ \ : \fImodifier le nom de la fenêtre ou du groupe de champs\fP
+Vous invite à renommer la \*(CW. Cela ne demande pas que le nom de la
+fenêtre soit visible (c'est\-à\-dire que l'option «\ l\ » soit \*O).
+
+.IP * 3
+Les commandes interactives précédées d'un \*(AK sont utilisables au\-delà du
+\*(AM.
+.nf
+    «\ =\ », «\ A\ », «\ g\ »  sont toujours disponibles
+    «\ a\ », «\ w\ »         agissent de même sur la palette de
+                         couleurs et la gestion de champs
+.fi
+
+.\" ......................................................................
+.SS "5c. DÉPLACEMENT dans une fenêtre"
+.\" ----------------------------------------------------------------------
+Une \*(TW est typiquement une vue partielle dans l'ensemble de tâches ou de
+processus légers qui ne montre que certains champs ou colonnes
+disponibles. Avec ces \*(KS vous pouvez déplacer cette vue verticalement ou
+horizontalement pour montrer n'importe quelle tâche ou colonne voulue.
+
+.TP  4
+\fBHaut\fP, \fBPg.Préc\fP\ \ : \fIdéplacement dans les tâches\fP
+Déplacer la vue vers le haut vers la première ligne de tâche, jusqu'à ce que
+la première tâche soit affichée en haut de la \*(CW. La \*(KA \fBHaut\fP
+déplace d'une ligne tandis que \fBPg.Préc\fP déplace d'une fenêtre entière.
+
+.TP  4
+\fBBas\fP, \fBPg.Suiv\fP\ \ : \fIdéplacement dans les tâches\fP
+Déplacer la vue vers le bas vers la dernière ligne de tâche, jusqu'à ce que
+la dernière tâche soit la seule tâche affichée en haut de la \*(CW. La \*(KA
+\fBBas\fP déplace d'une ligne tandis que \fBPg.Suiv\fP déplace d'une fenêtre
+entière.
+
+.TP  4
+\fBGauche\fP, \fBDroite\fP\ \ : \fIdéplacement dans les colonnes\fP
+Déplacer horizontalement la vue des champs affichables, une colonne à la
+fois.
+
+\*(NT en rappel, certains champs ou colonnes ne sont pas de largeur fixe,
+mais prennent toute la largeur de l'écran s'ils sont visibles. Lors d'un
+déplacement vers la gauche ou la droite, cette fonctionnalité peut produire
+des résultats initialement imprévus.
+
+De plus, certaines dispositions spéciales existent pour tous les champs de
+largeur variable positionnés en dernier champ affiché. Une fois ce champ
+atteint par la \*(KA \fBDroite\fP, qui est donc la seule colonne visible, vous
+pouvez continuer le déplacement à l'intérieur de ce champ. \*(XC la \*(CI
+«\ C\ » ci\-dessous pour de plus amples renseignements.
+
+.TP  4
+\fBOrig\fP\ \ : \fIsauter à la position d'origine\fP
+Repositionner l'affichage aux coordonnées initiales.
+
+.TP  4
+\fBFin\fP\ \ : \fIsauter à la position finale\fP
+Repositionner l'affichage de telle façon que la colonne la plus à droite
+soit le dernier champ visible et que la dernière ligne de tâche soit
+relative à la dernière tâche.
+
+\*(NT à partir de cette position il est toujours possible de se déplacer
+vers le \fBbas\fP et vers la \fBdroite\fP en utilisant les \*(KAs. C'est vrai sauf
+s'il n'y a qu'une seule colonne et une seule tâche affichée.
+
+.TP  4
+\fBC\fP\ \ : \fImontrer les coordonnées d'affichage\fP ou non
+Montrer un message d'information si la ligne de message n'est pas
+utilisée. Ce message prendra une des deux formes suivantes, s'il y a eu
+déplacement ou non dans une colonne de largeur variable.
+
+.nf
+  \fBscroll coordinates: y =\fP \fIa\fP\fB/\fP\fIb\fP \fB(tasks), x =\fP \fIc\fP\fB/\fP\fId\fP \fB(fields)\fP
+  \fBscroll coordinates: y =\fP \fIa\fP\fB/\fP\fIb\fP \fB(tasks), x =\fP \fIc\fP\fB/\fP\fId\fP \fB(fields) +\fP \fIe\fP
+.fi
+
+Les coordonnées \fIa\fP\fB/\fP\fIb\fP et \fIc\fP\fB/\fP\fId\fP montrées sont relatives au coin
+haut gauche de la \*(CW. Le «\ \fB+\ e\fP\ » supplémentaire représente le
+déplacement dans une colonne de largeur variable s'il y a eu déplacement
+horizontal. Ce type de déplacement se fait en tabulations classiques de huit
+caractères avec les \*(KAs \fBDroite\fP et \fBGauche\fP.
+
+.RS +4
+.TP  4
+\fBy =\fP \fIa\fP\fB/\fP\fIb\fP \fB(tasks)\fP
+\fIa\fP représente la tâche la plus haute visible et est contrôlée par les
+\*(KS. \fIb\fP est automatiquement mis à jour pour refléter le nombre total de
+tâches.
+
+.TP  4
+\fBx =\fP \fIc\fP\fB/\fP\fId\fP \fB(fields)\fP
+\fIc\fP représente la colonne la plus à gauche visible et est contrôlée par les
+\*(KS. \fId\fP est le nombre total de champs affichables et est établi avec la
+\*(CI «\ \fBf\fP\ ».
+.RS -4
+
+.PP
+Les commandes interactives ci\-dessus sont \fBtoujours\fP disponibles en \*(FM
+mais \fBjamais\fP en \*(AM si l'option d'\*(TD de la \*(CW est positionnée sur
+\*F.
+
+\*(NT si n'importe quel type de filtre est actif, quelques légères
+aberrations sont possibles lors du déplacement puisque toutes les tâches ne
+seront pas visibles. C'est particulièrement visible lors de l'utilisation
+des \*(KAs \fBHaut\fP et \fBBas\fP.
+
+.\" ......................................................................
+.SS "5d. RECHERCHE dans une fenêtre"
+.\" ----------------------------------------------------------------------
+Les commandes interactives suivantes permettent de trouver une ligne de
+tâche contenant une certaine valeur.
+
+.TP  4
+\fBL\fP\ \ : \fItrouver une chaîne\fP
+Une invite permettra d'entrer une chaîne de caractères, sensible à la casse,
+à trouver à partir des coordonnées actuelles de la fenêtre. Il n'y a aucune
+restriction sur le contenu de la chaîne de recherche.
+
+Les recherches ne sont pas limitées aux valeurs d'un seul champ ou d'une
+seule colonne. Toutes les valeurs affichées dans une ligne de tâche sont
+permises dans la chaîne de recherche. Les espaces, nombres, symboles et même
+les caractères spéciaux de l'affichage arborescent sont autorisés.
+
+Appuyer sur <Entrée> sans chaîne indiquée désactivera de fait la
+touche «\ &\ » jusqu'à ce qu'une nouvelle chaîne de recherche soit indiquée.
+
+.TP  4
+\fB&\fP\ \ : \fItrouver la suivante\fP
+Si une recherche est déjà en cours, \*(WE essayera de trouver l'occurrence
+suivante.
+
+.PP
+Lorsqu'une correspondance est trouvée, la fenêtre actuelle est repositionnée
+verticalement pour que la ligne de tâche contenant cette chaîne soit la
+première. Le message «\ scroll coordinates\ » peut offrir une confirmation de
+ce repositionnement vertical (\*(Xc la \*(CI «\ C\ »). Cependant, le
+positionnement horizontal, n'est pas affecté par la recherche.
+
+La disponibilité d'une chaîne correspondante peut être influencée par les
+facteurs suivants.
+.RS +3
+.TP  3
+a. Les champs affichables en regard de tous ceux disponibles,
+\*(Xt \fB3b. GESTION des champs\fP.
+.TP  3
+b. Le déplacement vertical ou horizontal de la fenêtre,
+\*(Xt \fB5c.\ DÉPLACEMENT dans une fenêtre\fP.
+.TP  3
+c. L'état de la bascule commande ou ligne de commande,
+\*(Xc la \*(CI «\ c\ ».
+.TP  3
+d. La stabilité de la colonne de tri choisie,
+par exemple, PID est un bon choix, mais pas %CPU.
+.RS -3
+
+.PP
+Si une recherche échoue, restaurer la \*(CW à la position d'origine (sans
+déplacement), se déplacer horizontalement, afficher les lignes de commande
+ou choisir un champ de tri plus stable pourraient tout de même permettre de
+trouver quelque chose avec la commande «\ &\ ».
+
+Les commandes interactives ci\-dessus sont \fBtoujours\fP disponibles en \*(FM
+mais \fBjamais\fP en \*(AM si l'option d'\*(TD de la \*(CW est positionnée sur
+\*F.
+
+\*(NT à chaque fois qu'une touche de recherche est tapée, \*(WE positionnera
+sur \*F la surbrillance de colonne pour éviter les fausses correspondances
+sur les suites de caractères d'échappement non affichables. Ce type de
+surbrillance sera réactivé lorsqu'une chaîne de recherche de la fenêtre est
+vide. \*(XC la \*(CI «\ x\ » pour de plus amples renseignements sur la
+surbrillance de colonne de tri.
+
+.\" ......................................................................
+.SS "5e. FILTRE dans une fenêtre"
+.\" ----------------------------------------------------------------------
+La fonctionnalité «\ autre filtre\ » permet d'établir des critères de
+sélection qui détermineront ensuite les tâches montrées dans la \*(CW. Ces
+filtres peuvent devenir persistants s'ils sont sauvés dans le fichier \fIrc\fP
+avec la \*(CI «\ W\ ».
+
+La mise en place d'un filtre nécessite au moins\ :
+  1) un nom de champ\ ;
+  2) un opérateur\ ;
+  3) une valeur de sélection.
+
+Ce sont les exigences d'entrée utilisateur de \fBtop\fP les plus compliquées
+donc, en cas d'erreur, le rappel de commande sera pratique. Rappelez\-vous
+des \*(KAs \fBHaut\fP et \fBBas\fP ou de leurs alias à l'invite de commande.
+
+\fBBases des filtres\fP
+.RS +3
+.TP  3
+1. chaque champ est sensible à la casse et conforme à l'en\-tête
+.TP  3
+2. les sélections peuvent n'être qu'une partie du champ affiché
+.TP  3
+3. une sélection peut être sensible à la casse ou ne pas l'être
+.TP  3
+4. l'inclusion est par défaut et l'exclusion commence par «\ !\ »
+.TP  3
+5. plusieurs critères sont possibles pour une \*(TW
+.TP  3
+6. les inclusions et exclusions peuvent être utilisées ensemble
+.TP  3
+7. les filtres d'égalité peuvent être mélangés aux relationnels
+.TP  3
+8. chaque filtre unique est maintenu pour une \*(TW
+
+.PP
+Si un champ n'est pas activé ou actuellement absent de la vue, alors les
+critères de sélection n'affecteront pas l'affichage. Ensuite, si un champ
+filtré devient visible, les critères de sélection seront appliqués.
+.RE
+
+\fBAide\-mémoire des commandes au clavier\fP
+.TP  6
+\ \ \fBo\fP\ \ : \fIautre filtre\fP (minuscule)
+Vous invite à mettre en place un filtre \fBinsensible à la casse\fP lors de la
+correspondance.
+
+.TP  6
+\ \ \fBO\fP\ \ : \fIautre filtre\fP (majuscule)
+Vous invite à mettre en place un filtre \fBsensible à la casse\fP.
+
+.TP  6
+\ \fB^O\fP\ \ : \fImontrer les filtres actifs\fP (touche Ctrl + «\ o\ »)
+Cela peut servir de rappel des filtres actifs dans la \*(CW. Un résumé sera
+montré sur la ligne de message jusqu'à ce que la touche <Entrée>
+soit tapée.
+
+.TP  6
+\ \ \fB=\fP\ \ : \fIréinitialiser les filtres\fP dans la fenêtre actuelle
+Cela nettoie tous les critères de sélection dans la \*(CW. Cela a aussi
+d'autres conséquences, veuillez donc consulter la section \fB4a.\ Commandes
+GLOBALES\fP.
+
+.TP  6
+\ \ \fB+\fP\ \ : \fIréinitialiser les filtres\fP dans toutes les fenêtres
+Cela nettoie les critères de sélection dans toutes les fenêtres, à condition
+de ne pas être en \*(AM. Comme avec la  \*(CI «\ =\ », cela a aussi d'autres
+conséquences, veuillez donc consulter la section \fB5b.\ COMMANDES de
+Fenêtrage\fP.
+
+.PP
+\fBExigences d'entrée\fP
+.RS +3
+.P
+À l'invite des critères de sélection, les données fournies doivent prendre
+une des deux formes suivantes. Trois informations sont nécessaires, une
+quatrième est facultative. Ces exemples utilisent des espaces par souci de
+clarté, mais l'entrée n'en nécessite pas.
+.nf
+        nº\ 1         \fBnº\ 2\fP  nº\ 3                   (nécessaires)
+        Nom_de_champ   ?   inclure_en_cas_de_valeur
+     \fB!\fP  Nom_de_champ   ?   \fBexclure\fP_en_cas_de_valeur
+     nº\ 4                                         (facultative)
+.fi
+
+Les éléments nº\ 1, nº\ 3 et nº\ 4 devraient être explicites. L'élément nº\ 2
+représente à la fois un \fIdélimiteur\fP nécessaire et l'\fIopérateur\fP qui doit
+être soit l'égalité («\ =\ »), soit une relation («\ <\ » ou «\ >\ »).
+
+L'opérateur d'égalité «\ =\ » ne nécessite qu'une correspondance partielle, ce
+qui permet de réduire les exigences d'entrée «\ en_cas_de_valeur\ ». Les
+opérateurs relationnels «\ <\ » ou «\ >\ » utilisent toujours des
+comparaisons de chaînes, même avec les champs numériques. Ils sont conçus
+pour fonctionner avec une \fIjustification\fP par défaut du champ et avec des
+données homogènes. Quand certaines quantités numériques de champ ont été
+sujettes à une \fImise à l'échelle\fP alors que d'autres non, ces données ne
+sont plus homogènes.
+
+En cas de mise en place d'un filtre relationnel, si vous \fBavez\fP modifié la
+\fIjustification\fP «\ numérique\ » ou «\ caractère\ » par défaut, ce filtre
+échouera probablement. Quand un filtre relationnel est appliqué à un champ
+de mémoire et que vous n'\fBavez pas\fP modifié l'\fIéchelle\fP, cela peut
+produire des résultats déconcertants. Cela arrive, par exemple, parce que
+«\ 100,0\ m\ » (Mio) apparaîtra plus grand que «\ 1,000\ g\ » (Gio) une fois
+comparés en tant que chaînes.
+
+Si les résultats filtrés semblent bizarres, simplement modifier la
+justification ou l'échelle pourrait permettre d'atteindre l'objectif
+voulu. Consultez les commandes interactives «\ j\ », «\ J\ » et «\ e\ » pour de
+plus amples renseignements.
+.RE
+
+\fBProblèmes possibles\fP
+.RS +3
+.P
+Ces filtres de \fBGROUP\fP peuvent produire exactement les mêmes résultats ou
+le deuxième pourrait ne rien afficher du tout, juste une \*(TW vide.
+.nf
+     GROUP=root        (résultats identiques seulement quand)
+     GROUP=ROOT        (invoqués à l'aide un «\ o\ » minuscule)
+.fi
+
+N'importe lequel de ces filtres \fBRES\fP pourrait émettre des avertissements
+incohérents ou des résultats déconcertants, en fonction du facteur d'échelle
+de mémoire. Les deux filtres pourraient aussi produire exactement les mêmes
+résultats.
+.nf
+     RES>9999          (résultats identiques seulement avec)
+     !RES<10000        (le facteur d'échelle de mémoire Kio)
+.fi
+
+Le filtre \fBnMin\fP illustre un problème particulier de champs adaptables. Ce
+champ particulier peut afficher quatre chiffres au maximum, au\-delà, les
+valeurs sont automatiquement mises à l'échelle en Kio ou plus. Ainsi, les
+quantités supérieures à 9999 apparaîtront sous la forme 2,6\ m, 197\ k,\ etc.
+.nf
+     nMin>9999         (toujours une \*(TW vide)
+.fi
+.RE
+
+\fBSolutions possibles\fP
+.RS +3
+.P
+Ces exemples illustrent comment un «\ autre filtre\ » peut être appliqué de
+façon créative pour obtenir la plupart des résultats voulus. Des guillemets
+simples sont parfois montrés pour délimiter les espaces qui font partie d'un
+filtre ou pour représenter une requête d'état («\ ^O\ ») correctement. Si vous
+les avez vraiment utilisés avec des valeurs conditionnelles, aucune
+correspondance ne sera trouvée.
+
+En supposant que le champ \fBnTH\fP est affiché, le premier filtre aura pour
+conséquence de ne montrer que les processus possédant plusieurs processus
+légers («\ multi\-thread\ »). Cela rappelle aussi qu'une espace finale fait
+partie de tous les champs affichés. Le deuxième filtre réalise exactement la
+même chose de façon plus concise.
+.nf
+     !nTH=' 1 '                (' juste par souci de clarté)
+     nTH>1                     (même chose plus directement)
+.fi
+
+Avec l'affichage arborescent actif et la colonne \fBCOMMAND\fP dans la vue, ce
+filtre cache effectivement les processus fils de telle sorte que seuls trois
+niveaux sont montrés.
+.nf
+     !COMMAND='       `\- '     (' juste par souci de clarté)
+.fi
+
+Les deux derniers filtres apparaissent en réponse à la touche de requête
+d'état («\ ^O\ »). En réalité, les deux filtres auraient nécessité des entrées
+séparées. L'exemple \fBPR\fP montre les deux filtres nécessaires en même temps
+pour afficher les tâches avec des priorités d'au moins\ 20, puisque certaines
+pourraient être négatives. Ensuite, en utilisant les espaces finales, la
+suite \fBnMin\fP de filtres pourrait permettre d'atteindre l'objectif raté
+«\ 9999\ » discuté précédemment.
+.nf
+     'PR>20' + '!PR=\-'         (2 pour le bon résultat)
+     '!nMin=0 ' + '!nMin=1 ' + '!nMin=2 ' + '!nMin=3 ' ...
+.fi
+.RS -3
+
+\*(NT lorsqu'«\ autre filtre\ » est actif, \*(WE positionne sur \*F la
+surbrillance de colonne pour éviter les fausses correspondances sur les
+suites de caractères d'échappement non affichables. Ce type de surbrillance
+sera réactivé lorsqu'une fenêtre n'est plus soumise au filtre. \*(XC la
+\*(CI «\ x\ » pour de plus amples renseignements sur la surbrillance de
+colonne de tri.
+.RE
+
+.\" ----------------------------------------------------------------------
+.SH "6. FICHIERS"
+.\" ----------------------------------------------------------------------
+.SS "6a. Fichier de Configuration PERSONNEL"
+.\" ----------------------------------------------------------------------
+Ce fichier est créé ou mis à jour avec la \*(CI «\ W\ ».
+
+La version ancienne de ce fichier se nomme «\ $HOME/.votre\-nom\-pour\-\*(We\ »
++ «\ rc\ » avec un point initial.
+
+Un \*(CF nouvellement créé est écrit sous la forme de «\ procps/votre\-nom\-pour\-\*(We\ » + «\ rc\ » sans un point initial. Le
+répertoire \fIprocps\fP sera subordonné soit à «\ $XDG_CONFIG_HOME\ », quand il
+est configuré en chemin absolu soit au répertoire «\ $HOME/.config\ ».
+
+Même s'il n'est pas destiné à être modifié à la main, voici sa disposition
+générale\ :
+.nf
+    global   # line  1: the program name/alias notation
+      "      # line  2: id,altscr,irixps,delay,curwin
+    per ea   # line  a: winname,fieldscur
+    window   # line  b: winflags,sortindx,maxtasks,etc
+      "      # line  c: summclr,msgsclr,headclr,taskclr
+    global   # line 15: additional miscellaneous settings
+      "      # any remaining lines are devoted to optional
+      "      # active 'other filters' discussed in section 5e above
+      "      # plus 'inspect' entries discussed in section 6b below
+.fi
+
+Si un chemin absolu valable vers le fichier \fIrc\fP ne peut pas être établi,
+les personnalisations faites pour exécuter \*(WE ne pourront pas être
+préservées.
+
+.\" ......................................................................
+.SS "6b. AJOUT d'entrées d'INSPECTION"
+.\" ----------------------------------------------------------------------
+Pour utiliser la \*(CI «\ Y\ », les entrées doivent être ajoutées à la \fBfin\fP
+du \*(CF personnel de \*(WE. Ce type d'entrées reflète simplement un fichier
+à lire, ou une commande ou un tube à exécuter, dont les résultats seront
+affichés dans une fenêtre séparée, pouvant être parcourue et permettant une
+recherche.
+
+Si vous ignorez l'emplacement ou le nom du fichier \fIrc\fP de \*(WE, utilisez
+la \*(CI «\ W\ » pour le réécrire et noter ces précisions.
+
+Les entrées d'inspection peuvent être ajoutées avec un «\ echo\ » redirigé ou
+en modifiant le \*(CF. La redirection d'un «\ echo\ » risque d'écraser le
+fichier \fIrc\fP s'il remplace (>) au lieu d'ajouter à ce fichier
+(>>). D'un autre côté, modifier le fichier avec un éditeur de texte
+risque de corrompre des lignes existantes en cas d'inattention, certaines
+contenant des données non affichables ou des caractères inhabituels.
+
+Les entrées d'inspection commençant par un caractère «\ #\ » sont ignorées,
+quelque soit leur contenu. Sinon, elles sont constituées des trois éléments
+suivants, chacun \fIdevant\fP être séparé par un caractère de tabulation
+(c'est\-à\-dire deux «\ \et\ » en tout)\ :
+
+.nf
+  .type\ :  soit «\ file\ » (fichier), soit «\ pipe\ » (tube)
+  .name\ :  sélection montrée sur l'écran d'inspection
+  .fmts\ :  chaîne représentant un chemin ou une commande
+.fi
+
+Les deux types d'entrées d'inspection ne sont \fIpas\fP
+interchangeables. Celles désignées comme «\ \fBfile\fP\ » seront accédées à
+l'aide de \fBfopen\fP et doivent référencer un seul fichier dans l'élément
+«\ .fmts\ ». Les entrées indiquant «\ \fBpipe\fP\ » utiliseront \fBpopen\fP, leur
+élément «\ .fmts\ » pourrait contenir plusieurs commandes en tube et aucune ne
+peut être interactive.
+
+Si le fichier ou le tube représentés dans «\ .fmts\ » s'occupent de l'entrée
+de PID spécifique ou accepté à l'invite, alors la chaîne de format doit
+aussi contenir l'indicateur «\ \fB%d\fP\ » comme c'est illustré par ces exemples.
+
+.nf
+  .fmts=  /proc/\fI%d\fP/numa_maps
+  .fmts=  lsof \-P \-p \fI%d\fP
+.fi
+
+Pour les entrées de type «\ \fBpipe\fP\ » uniquement, vous pourriez aussi vouloir
+rediriger la sortie d'erreur standard vers la sortie standard pour avoir un
+résultat plus complet. La chaîne de format devient donc\ :
+
+.nf
+  .fmts=  pmap \-x %d\fI 2>&1\fP
+.fi
+
+Voici des exemples des deux types d'entrées d'inspection telles qu'elles
+pourraient apparaître dans le fichier \fIrc\fP. La première entrée sera ignorée
+à cause du caractère «\ #\ » initial. Par souci de clarté, les représentations
+de pseudotabulations (^I) sont entourées d'espaces supplémentaires mais les
+véritables tabulations ne le seront pas.
+.nf
+
+  # pipe ^I Sockets ^I lsof \-n \-P \-i 2>&1
+  pipe ^I Fichiers ouverts ^I lsof \-P \-p %d 2>&1
+  file ^I Informations NUMA ^I /proc/%d/numa_maps
+  pipe ^I Jour. ^I tail \-n100 /var/log/syslog | sort \-Mr
+.fi
+
+À part pour la ligne commentée précédente, ces exemples suivants montrent ce
+qui pourrait être affiché pour obtenir des résultats similaires, en
+supposant que le nom du fichier \fIrc\fP est «\ .toprc\ ». Cependant, à cause des
+caractères de tabulation incorporés, chaque ligne devrait être précédée de
+«\ \fB/bin/echo\ \-e\fP\ », au lieu d'un simple «\ echo\ », pour activer
+l'interprétation des barres obliques inversées quelque soit l'interpréteur
+de commandes utilisé.
+
+.nf
+  "pipe\etFichiers ouverts\etlsof \-P \-p %d 2>&1" >> ~/.toprc
+  "file\etInformations NUMA\et/proc/%d/numa_maps" >> ~/.toprc
+  "pipe\etJour.\ettail \-n200 /var/log/syslog | sort \-Mr" >> ~/.toprc
+.fi
+
+Si une entrée d'inspection créée produit une sortie avec des caractères non
+affichables, ils seront affichés soit en notation ^C, soit sous forme
+hexadécimale <FF>, en fonction de leur valeur. Cela concerne aussi
+les caractères de tabulation qui seront affichés comme «\ ^I\ ». Pour une
+représentation plus réaliste, toutes les tabulations incorporées devraient
+être développées. L'exemple suivant prend ce que pourrait être une entrée de
+«\ fichier\ » mais emploie un «\ tube\ » à la place pour développer les
+tabulations incorporées.
+
+.nf
+  # La suite aurait contenu «\ \et\ »…
+  # file ^I <prénom_nom> ^I /proc/%d/status
+  # mais cela éliminera les «\ \et\ » incorporés
+  pipe ^I <prénom_nom> ^I cat /proc/%d/status | expand \-
+.fi
+
+\*(NT Certains programmes pourraient dépendre de \fISIGINT\fP pour se
+terminer. Donc si un «\ \fBpipe\fP\ » tel que le suivant est construit, il faut
+utiliser «\ Ctrl\-C\ » pour le terminer afin d'examiner le résultat. C'est le
+cas unique où un «\ ^C\ » ne termine pas également \*(WE.
+
+.nf
+  pipe ^I Trace ^I /usr/bin/strace \-p %d 2>&1
+.fi
+
+Enfin, même si les entrées de type «\ \fBpipe\fP\ » ont été présentées en tant
+que tubes et commandes, rien n'empêche d'inclure aussi des \fIscripts
+d'interpréteur\fP. Peut\-être même de nouveaux scripts conçus spécifiquement
+pour la \*(CI «\ Y\ ».
+
+Par exemple, comme le nombre d'entrées d'inspection augmente au fur et à
+mesure, la ligne «\ Options:\ » sera tronquée quand la largeur d'écran est
+dépassée. Cela ne concerne pas les opérations à part rendre certaines
+sélections invisibles. Cependant, si certains choix sont perdus du fait de
+la troncature mais que vous souhaitez voir plus d'options, une solution
+facile est suggérée ci\-dessous.
+
+.nf
+  Inspection Pause at pid ...
+  Use:  left/right then <Enter> ...
+  Options:  aide  1  2  3  4  5  6  7  8  9  10  11 ...
+.fi
+
+Les entrées dans le fichier \fIrc\fP de \*(WE auraient un nombre pour l'élément
+«\ .name\ » et l'entrée «\ aide\ » identifierait un script d'interpréteur
+expliquant la signification réelle de ces sélections numérotées. Ainsi, plus
+de choix peuvent être rendus visibles.
+
+.\" ......................................................................
+.SS "6c. Fichier de Configuration SYSTÈME"
+.\" ----------------------------------------------------------------------
+Ce \*(CF représente les options par défaut pour les utilisateurs qui n'ont
+pas sauvegardé leur propre \*(CF. Le format reflète exactement le \*(CF
+personnel et peut aussi comprendre les entrées d'«\ inspection\ » comme
+expliqué précédemment.
+
+Le créer est une processus simple.
+
+1. Configurer \*(WE de façon appropriée pour votre installation et sauver
+cette configuration avec la \*(CI «\ W\ ».
+
+2. Ajouter et tester toutes les entrées d'«\ inspection\ » souhaitées.
+
+3. Copier ce \*(CF dans le répertoire \fI/etc/\fP sous le nom de
+«\ \fBtopdefaultrc\fP\ ».
+
+.\" ......................................................................
+.SS "6d. Fichier de restriction SYSTÈME"
+.\" ----------------------------------------------------------------------
+La présence de ce fichier influencera la version de l'écran «\ d'aide\ »
+présentée à un simple utilisateur.
+
+De manière plus fondamentale, il bridera ce que les utilisateurs pourront
+faire lorsque \*(WE s'exécute. Ils ne seront pas capables d'exécuter les
+commandes suivantes\ :
+.nf
+   k         Tuer une tâche
+   r         Redéfinir la politesse d'une tâche
+   d ou s    Modifier le délai ou l'intervalle de sommeil
+.fi
+
+Ce \*(CF n'est \fB pas\fP créé par \*(WE. Au contraire, vous devrez créer ce
+fichier manuellement pour le placer dans le répertoire \fI/etc\fP sous le nom
+de «\ toprc\ ».
+
+Il ne peut comporter que 2 lignes, comme montré dans cet exemple\ :
+.nf
+   s         # ligne\ 1\ : passage en «\ mode sécurisé\ »
+   5.0       # ligne\ 2\ : «\ délai\ »\ \ intervalle en seconde
+.fi
+
+.\" ......................................................................
+.\" ----------------------------------------------------------------------
+.SH "7. Échantillons d'ASTUCES IDIOTES"
+.\" ----------------------------------------------------------------------
+Nombre de ces «\ astuces\ » fonctionnent mieux lorsque vous planifiez un
+lancement de \*(WE. Aussi, prévoyez de le lancer avec une valeur de
+politesse à \-10, en supposant que vous ayez le droit de le faire.
+
+.\" ......................................................................
+.SS "7a. Magie du Noyau"
+.\" ----------------------------------------------------------------------
+.\" sorry, just can't help it -- don't ya love the sound of this?
+.\" ( apparently AM static was a potential concern )
+Pour ces astuces idiotes, \*(WE à besoin du \*(FM.
+
+.IP \(bu 3
+L'interface utilisateur, par l'intermédiaire d'invites et de l'aide, incite
+à dessein à fixer un délai en dixième de seconde. Cependant, vous êtes libre
+de déterminer un délai quelconque. Si vous souhaitez voir le meilleur de
+l'ordonnanceur du noyau, essayez un délai de 0,09 seconde ou moins.
+
+Pour cette expérience, sous X\ Window, ouvrez un terminal (xterm) et
+maximisez\-le. Ensuite exécutez les instructions suivantes\ :
+.nf
+  \- programmez un démarrage et un délai court ainsi\ :
+      nice \-n \-10 \*(We \-d.09
+  \- désactivez la surbrillance de la colonne triée pour
+     minimiser la longueur des chemins («\ paths\ »)
+  \- activez la surbrillance inverse des lignes pour les mettre
+     en évidence
+  \- essayez plusieurs tris de colonne (TIME/MEM fonctionnent bien),
+     et des tris croissants et décroissants pour visualiser
+     les processus les plus actifs
+.fi
+
+Ce que vous verrez est un noyau vraiment très occupé à faire ce qu'il fait
+toujours pour vous, mais sans aucun programme pour l'illustrer.
+
+.IP \(bu 3
+Dans un xterm utilisant des couleurs «\ blanc\-sur\-noir\ », dans l'écran
+palette de couleurs de \*(WE, configurez le rafraîchissement en noir des
+tâches et assurez\-vous que la surbrillance des tâches est positionnée sur
+gras et pas en inverse. Ensuite positionnez le délai aux alentours de 0,3
+(.3)\ seconde.
+
+Après visualisation des processus les plus actifs, vous verrez uniquement
+les images fantômes des tâches qui s'exécutent.
+
+.IP \(bu 3
+Effacez le fichier \fIrc\fP existant, ou créez un nouveau lien
+symbolique. Lancez cette nouvelle version. Ensuite tapez «\ T\ » (une touche
+secrète, \*(Xt \fB4c.\ Commandes de la ZONE de TÂCHES\fP, \fBTri\fP) suivi de «\ W\ » et «\ q\ ». Enfin, relancez le programme avec l'option \-d0 (délai zéro).
+
+Votre écran \*(WE se rafraîchira trois fois plus rapidement qu'auparavant,
+un gain de vitesse de 300\ %. Pendant que \*(WE grimpe l'échelle de TIME,
+faites preuve d'autant de patience que vous le pouvez en spéculant si oui ou
+non \*(We atteindra un jour le \*(WE.
+
+.\" ......................................................................
+.SS "7b. Fenêtres rebondissantes"
+.\" ----------------------------------------------------------------------
+Pour ces astuces idiotes, \*(WE a besoin du \*(AM.
+
+.IP \(bu 3
+Avec trois ou quatre zones d'affichage de tâches visibles, sélectionnez une
+fenêtre autre que la dernière et positionnez l'option processus en veille
+sur \*F en utilisant la \*(CT «\ i\ ». Selon l'endroit où vous appliquez «\ i\ », parfois plusieurs zones d'affichage des tâches rebondissent et parfois
+elles évoluent en accordéon, vu que \*(WE fait de son mieux pour allouer
+l'espace.
+
+.IP \(bu 3
+Configurez différemment pour chaque fenêtre les lignes de la zone de résumé\ : une sans la mémoire («\ m\ »)\ ; une autre sans les états («\ t\ »)\ ;
+éventuellement une sans rien du tout, en laissant juste la ligne de
+message. Ensuite pressez «\ a\ » ou «\ w\ » et observez une variante des
+fenêtres rebondissantes \*(Em\ les fenêtres sautillantes.
+
+.IP \(bu 3
+Affichez l'ensemble des quatre fenêtres et pour chacune, à tour de rôle,
+positionnez l'option processus en veille à \*F en utilisant la \*(CT
+«\ i\ ». Vous venez tout juste de pénétrer dans la zone des «\ rebondissements
+extrêmes\ ».
+
+.\" ......................................................................
+.SS "7c. La Fenêtre du grand oiseau"
+.\" ----------------------------------------------------------------------
+Cette astuce idiote a aussi besoin du \*(AM.
+
+.IP \(bu 3
+Affichez l'ensemble des quatre fenêtres et assurez\-vous que Def soit la
+\*(CW. Ensuite, augmentez progressivement la taille de la fenêtre avec la
+\*(CI «\ n\ » jusqu'à ce que toutes les autres zones d'affichage des tâches
+soient «\ chassées hors du nid\ »
+
+Quand toutes sont déplacées, basculez l'option toute fenêtre visible ou
+invisible en utilisant la \*(CT «\ _\ ». Ensuite méditez ceci\ :
+.br
+   Est\-ce que \*(WE vous gruge ou vous rapporte scrupuleusement
+   une vérité qui s'impose\ ?
+
+.\" ......................................................................
+.SS "7d. Le coup de l'échange"
+.\" ----------------------------------------------------------------------
+Cette astuce idiote fonctionne mieux sans \*(AM, puisque la justification
+est active par fenêtre.
+
+.IP \(bu 3
+Démarrez \*(WE et faites de «\ COMMAND\ » la dernière colonne affichée (la
+plus à droite). Si nécessaire, utilisez la \*(CT «\ c\ » pour afficher les
+lignes de commandes et assurez\-vous que l'affichage arborescent est actif
+avec la \*(CT «\ V\ ».
+
+Utilisez ensuite les \*(KAs \fBHaut\fP et \fBBas\fP pour positionner l'affichage
+de telle sorte que des lignes de commande tronquées soient montrées (avec un
+«\ +\ » à la fin). Redimensionnez éventuellement le terminal pour obtenir une
+troncature.
+
+Enfin, utilisez la \*(CT «\ j\ » pour rendre la colonne «\ COMMAND\ »
+justifiée à droite.
+
+Utilisez maintenant la \*(KA \fBDroite\fP pour atteindre la colonne
+COMMAND. Continuez avec la \*(KA \fBDroite\fP, observez attentivement la
+direction de déplacement des lignes de commande montrées.
+
+.br
+   certaines lignes se déplacent vers la gauche, d'autres se déplacent vers la droite
+
+   finalement, toutes les lignes vont s'échanger, et se déplacer vers la droite
+
+.\" ----------------------------------------------------------------------
+.SH "8. BOGUES"
+.\" ----------------------------------------------------------------------
+Signalez les bogues à
+.UR procps@freelists.org
+.UE .
+
+ 
+.\" ----------------------------------------------------------------------
+.SH "9. VOIR AUSSI"
+.\" ----------------------------------------------------------------------
+\fBfree\fP(1), \fBps\fP(1), \fBuptime\fP(1), \fBatop\fP(1), \fBslabtop\fP(1), \fBvmstat\fP(8),
+\fBw\fP(1)

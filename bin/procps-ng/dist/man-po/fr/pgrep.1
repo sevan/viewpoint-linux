@@ -1,0 +1,222 @@
+.\"
+.\" Copyright 2000 Kjetil Torgrim Homme
+.\"           2017-2020 Craig Small
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH PGREP 1 2020\-06\-04 procps\-ng "Commandes de l'utilisateur"
+.SH NOM
+pgrep, pkill, pwait \- look up, signal, or wait for processes based on name
+and other attributes
+.SH SYNOPSIS
+\fBpgrep\fP [\fBoptions\fP] \fImotif\fP
+.br
+\fBpkill\fP [\fBoptions\fP] \fImotif\fP
+.br
+\fBpwait\fP [\fBoptions\fP] \fImotif\fP
+.SH DESCRIPTION
+\fBpgrep\fP parcourt les processus en cours d'exécution et affiche sur la
+sortie standard les identifiants des processus qui correspondent aux
+critères de sélection donnés. Tous les critères doivent correspondre. Par
+exemple\ :
+.IP
+$ pgrep \-u root sshd
+.PP
+n'affichera que les processus appelés \fBsshd\fP ET qui appartiennent à
+\fBroot\fP. En revanche,
+.IP
+$ pgrep \-u root,daemon
+.PP
+affichera les processus appartenant à \fBroot\fP OU à \fBdaemon\fP.
+.PP
+\fBpkill\fP enverra le signal indiqué (\fBSIGTERM\fP par défaut) à chaque
+processus au lieu de les afficher sur la sortie standard.
+.PP
+\fBpwait\fP will wait for each process instead of listing them on stdout.
+.SH OPTIONS
+.TP 
+\fB\-\fP\fIsignal\fP
+.TQ
+\fB\-\-signal\fP \fIsignal\fP
+Indiquer le signal à envoyer à chaque processus sélectionné. Le signal peut
+être indiqué par son numéro ou par son nom symbolique (seulement pour
+\fBpkill\fP).
+.TP 
+\fB\-c\fP, \fB\-\-count\fP
+Suppress normal output; instead print a count of matching processes.  When
+count does not match anything, e.g. returns zero, the command will return
+non\-zero value. Note that for pkill and pwait, the count is the number of
+matching processes, not the processes that were successfully signaled or
+waited for.
+.TP 
+\fB\-d\fP, \fB\-\-delimiter\fP \fIdélimiteur\fP
+Déterminer la chaîne utilisée pour délimiter les PID en sortie (un saut de
+ligne par défaut) (seulement pour \fBpgrep\fP).
+.TP 
+\fB\-e\fP, \fB\-\-echo\fP
+Display name and PID of the process being killed.  (\fBpkill\fP only.)
+.TP 
+\fB\-f\fP, \fB\-\-full\fP
+Le \fImotif\fP n'est normalement comparé qu'au nom du processus. Avec \fB\-f\fP, la
+ligne de commande complète est utilisée.
+.TP 
+\fB\-g\fP, \fB\-\-pgroup\fP \fIpgrp\fP,...
+Ne rechercher que des processus dans les groupes de processus donnés. Le
+groupe de processus 0 se traduit par le propre groupe de processus de
+\fBpgrep\fP, \fBpkill\fP ou \fBpwait\fP.
+.TP 
+\fB\-G\fP, \fB\-\-group\fP \fIgid\fP,...
+Ne rechercher que des processus dont l'identifiant de groupe réel est
+donné. Les valeurs utilisées peuvent être numériques ou symboliques.
+.TP 
+\fB\-i\fP, \fB\-\-ignore\-case\fP
+Recherche des processus insensible à la casse.
+.TP 
+\fB\-l\fP, \fB\-\-list\-name\fP
+Afficher le nom du processus avec le PID (seulement pour \fBpgrep\fP).
+.TP 
+\fB\-a\fP, \fB\-\-list\-full\fP
+Afficher la ligne de commande complète avec le PID (seulement pour
+\fBpgrep\fP).
+.TP 
+\fB\-n\fP, \fB\-\-newest\fP
+Ne sélectionner que le processus correspondant le plus récent.
+.TP 
+\fB\-o\fP, \fB\-\-oldest\fP
+Ne sélectionner que le processus correspondant le plus ancien.
+.TP 
+\fB\-O\fP, \fB\-\-older\fP \fIdélai\fP
+Select processes older than secs.
+.TP 
+\fB\-P\fP, \fB\-\-parent\fP \fIppid\fP,...
+Ne sélectionner que les processus dont le PID parent est donné.
+.TP 
+\fB\-s\fP, \fB\-\-session\fP \fIsid\fP,...
+Ne sélectionner que les processus dont l'identifiant de session est
+donné. La session 0 se traduit par le propre identifiant de session de
+\fBpgrep\fP, \fBpkill\fP ou \fBpwait\fP.
+.TP 
+\fB\-t\fP, \fB\-\-terminal\fP \fIterm\fP,...
+Ne sélectionner que les processus dont le terminal de contrôle est donné. Le
+nom du terminal doit être indiqué sans le préfixe «\ /dev/\ ».
+.TP 
+\fB\-u\fP, \fB\-\-euid\fP \fIeuid\fP,...
+Ne sélectionner que les processus dont l'UID effectif est donné. La valeur
+utilisée peut être numérique ou symbolique.
+.TP 
+\fB\-U\fP, \fB\-\-uid\fP \fIuid\fP,...
+Ne sélectionner que les processus dont l'UID réel est donné. La valeur
+utilisée peut être numérique ou symbolique.
+.TP 
+\fB\-v\fP, \fB\-\-inverse\fP
+Negates the matching.  This option is usually used in \fBpgrep\fP's or
+\fBpwait\fP's context.  In \fBpkill\fP's context the short option is disabled to
+avoid accidental usage of the option.
+.TP 
+\fB\-w\fP, \fB\-\-lightweight\fP
+Shows all thread ids instead of pids in \fBpgrep\fP's or \fBpwait\fP's context.
+In \fBpkill\fP's context this option is disabled.
+.TP 
+\fB\-x\fP, \fB\-\-exact\fP
+Only match processes whose names (or command lines if \fB\-f\fP is specified)
+\fBexactly\fP match the \fIpattern\fP.
+.TP 
+\fB\-F\fP, \fB\-\-pidfile\fP \fIfichier\fP
+Read \fIPID\fPs from \fIfile\fP.  This option is more useful for
+\fBpkill\fPor\fBpwait\fP than \fBpgrep\fP.
+.TP 
+\fB\-L\fP, \fB\-\-logpidfile\fP
+Fail if pidfile (see \fB\-F\fP) not locked.
+.TP 
+\fB\-r\fP, \fB\-\-runstates\fP \fID,R,S,Z,\fP...
+Ne sélectionner que les processus du même état.
+.TP 
+\fB\-\-ns\fP \fIPID\fP
+Sélectionner les processus qui appartiennent aux mêmes espaces de
+nommage. Doit être exécuté en tant que superutilisateur pour sélectionner
+les processus d’autres utilisateurs. Consultez \fB\-\-nslist\fP pour une manière
+de limiter les espaces de nommage à sélectionner.
+.TP 
+\fB\-\-nslist\fP \fIen\fP[\fB,\fP\fIen\fP]...
+Ne sélectionner que les espaces de nommage fournis. Les espaces de nommage
+disponibles sont\ : ipc, mnt, net, pid, user et uts.
+.TP 
+\fB\-q\fP, \fB\-\-queue \fP\fIvaleur\fP
+Use \fBsigqueue(3)\fP rather than \fBkill(2)\fP and the value argument is used to
+specify an integer to be sent with the signal. If the receiving process has
+installed a handler for this signal using the SA_SIGINFO flag to
+\fBsigaction(2)\fP , then it can obtain this data via the si_value field of the
+siginfo_t structure.
+.TP 
+\fB\-V\fP, \fB\-\-version\fP
+Afficher la version du logiciel et quitter.
+.TP 
+\fB\-h\fP, \fB\-\-help\fP
+Afficher l'aide et quitter.
+.PD
+.SH OPÉRANDES
+.TP 
+\fImotif\fP
+Indiquer une expression rationnelle étendue utilisée pour comparer avec les
+noms de processus ou les lignes de commandes.
+.SH EXEMPLES
+Exemple\ 1\ : Trouver le PID du démon \fBnamed\fP\ :
+.IP
+$ pgrep \-u root named
+.PP
+Exemple 2\ : Faire relire son fichier de configuration par \fBsyslog\fP\ :
+.IP
+$ pkill \-HUP syslogd
+.PP
+Exemple 3\ : Donner des informations détaillées sur tous les processus
+\fBxterm\fP\ :
+.IP
+$ ps \-fp $(pgrep \-d, \-x xterm)
+.PP
+Exemple 4\ : Réduire la priorité de tous les processus \fBchrome\fP\ :
+.IP
+$ renice +4 $(pgrep chrome)
+.SH "CODES DE RETOUR"
+.PD 0
+.TP 
+0
+One or more processes matched the criteria. For pkill and pwait, one or more
+processes must also have been successfully signalled or waited for.
+.TP 
+1
+Aucun processus correspondant ou aucun signalé.
+.TP 
+2
+Erreur de syntaxe dans la ligne de commande.
+.TP 
+3
+Erreur fatale, par exemple plus de mémoire disponible.
+.PD
+.SH NOTES
+Le nom du processus utilisé pour la sélection est limité aux 15\ caractères
+présents dans /proc/\fIpid\fP/stat. Utilisez l'option \fB\-f\fP pour sélectionner
+en fonction de la ligne de commande complète, /proc/\fIpid\fP/cmdline.
+.PP
+Le processus \fBpgrep\fP, \fBpkill\fP ou \fBpwait\fP qui s'exécute ne se considérera
+jamais comme correspondant aux critères.
+.SH BOGUES
+Les options \fB\-n\fP, \fB\-o\fP et \fB\-v\fP ne peuvent pas être utilisées en même
+temps. Signalez\-le si vous en avez besoin.
+.PP
+Les processus zombies sont affichés.
+
+.SH "VOIR AUSSI"
+\fBps\fP(1), \fBregex\fP(7), \fBsignal\fP(7), \fBsigqueue\fP(3), \fBkillall\fP(1),
+\fBskill\fP(1), \fBkill\fP(1), \fBkill\fP(2)
+.SH AUTEUR
+Kjetil Torgrim Homme <\fIkjetilho@ifi.uio.no\fP>
+.SH BOGUES
+Signalez les bogues à <\fIprocps@freelists.org\fP>

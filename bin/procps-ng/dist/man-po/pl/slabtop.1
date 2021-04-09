@@ -1,0 +1,97 @@
+.\" slabtop.1 - manpage for the slabtop(1) utility, part of procps-ng
+.\"
+.\" Copyright (C) 2003 Chris Rivera
+.\" Licensed under the terms of the GNU Library General Public License, v2
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH SLABTOP 1 "czerwiec 2011" procps\-ng "Polecenia użytkownika"
+.SH NAZWA
+slabtop \- wyświetlanie informacji o pamięci podręcznej płyt jądra w czasie
+rzeczywistym
+.SH SKŁADNIA
+\fBslabtop\fP [\fIopcje\fP]
+.SH OPIS
+\fBslabtop\fP wyświetla szczegółowe informacje o pamięci podręcznej płyt jądra
+w czasie rzeczywistym. Wyświetla listę pierwszych bloków posortowanych
+według jednego z kryteriów. Wyświetla także nagłówek statystyk wypełniony
+informacjami o warstwie płyt.
+.SH OPCJE
+Zwykłe wywołanie programu \fBslabtop\fP nie wymaga żadnych opcji. Zachowanie
+może być jednak dostosowane szczegółowo poprzez podanie jednej lub większej
+liczby z następujących flag:
+.TP 
+\fB\-d\fP, \fB\-\-delay\fP=\fIN\fP
+Odświeżanie ekranu co \fIn\fP sekund. Domyślnie \fBslabtop\fP odświeża ekran co 3
+sekundy. Program można zakończyć naciskając klawisz \fBq\fP.
+.TP 
+\fB\-s\fP, \fB\-\-sort\fP=\fIS\fP
+Sortowanie według \fIS\fP, gdzie \fIS\fP to jedno z kryteriów sortowania.
+.TP 
+\fB\-o\fP, \fB\-\-once\fP
+Jednorazowe wyświetlenie wyjścia i zakończenie.
+.TP 
+\fB\-V\fP, \fB\-\-version\fP
+Wyświetlenie informacji o wersji i zakończenie.
+.TP 
+\fB\-h\fP, \fB\-\-help\fP
+Wyświetlenie informacji o składni i zakończenie.
+.SH "KRYTERIA SORTOWANIA"
+Poniżej podane są poprawne kryteria sortowania dla poszczególnych pamięci
+podręcznych płyt, określające, czym mają być "pierwsze bloki" do
+wyświetlenia. Domyślnym kryterium sortowania jest liczba obiektów ("o").
+.PP
+The sort criteria can also be changed while \fBslabtop\fP is running by
+pressing the associated character.
+.TS
+l l l.
+\fBznak\fP	\fBopis\fP	\fBnagłówek\fP
+a	a	liczba aktywnych obiektów	AKTYWNE
+b	liczba obiektów na płytę	OB./PŁ.
+c	rozmiar pamięci podręcznej	ROZM.CACHE
+l	liczba płyt	PŁYTY
+v	liczba aktywnych płyt	N/A
+n	nazwa	NAZWA\:
+o	liczba obiektów	OB.
+p	liczba stron na płytę	N/A
+s	rozmiar obiektu	ROZM.OB.
+u	wykorzystanie pamięci podręcznej	UŻ.
+.TE
+.SH POLECENIA
+\fBslabtop\fP w trakcie działania przyjmuje polecenia użytkownika z
+klawiatury. Poniżej znajduje się lista obsługiwanych; w przypadku liter,
+akceptowane są obie wielkości.
+.PP
+Przyjmowany jest każdy poprawny znak kryterium sortowania \- zmienia on
+porządek; więcej w sekcji \fBKRYTERIA SORTOWANIA\fP.
+.TP 
+\fB<SPACJA>\fP
+Odświeżenie ekranu.
+.TP 
+\fBQ\fP
+Zakończenie programu.
+.SH PLIKI
+.TP 
+\fI/proc/slabinfo\fP
+informacja o płytach
+.SH "ZOBACZ TAKŻE"
+\fBfree\fP(1), \fBps\fP(1), \fBtop\fP(1), \fBvmstat\fP(8)
+.SH UWAGI
+Obecnie \fBslabtop\fP wymaga jądra 2.4 lub późniejszego (w szczególności wersji
+1.1 lub nowszej \fI/proc/slabinfo\fP). Jądro 2.2 powinno być obsługiwane w
+przyszłości.
+.PP
+The \fBslabtop\fP statistic header is tracking how many bytes of slabs are
+being used and is not a measure of physical memory.  The 'Slab' field in the
+/proc/meminfo file is tracking information about used slab physical memory.
+.SH AUTORZY
+Autorami są Chris Rivera i Robert Love.
+.PP
+\fBslabtop\fP został zainspirowany skryptem perlowym \fBvmtop\fP autorstwa Martina
+Bligha.
+.SH "ZGŁASZANIE BŁĘDÓW"
+Zgłoszenia błędów prosimy wysyłać na adres
+.UR procps@freelists.org
+.UE
