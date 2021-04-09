@@ -255,3 +255,10 @@ configure --prefix=/usr --exec-prefix= --libdir=/usr/lib64 --disable-static --di
 
 util-linux
 configure ADJTIME_PATH=/var/lib/hwclock/adjtime --disable-chfn-chsh --disable-login --disable-nologin --disable-su --disable-setpriv --disable-runuser --disable-pylibmount --disable-static --without-python runstatedir=/run --libdir=/lib64
+
+e2fsprogs
+configure --prefix=/usr --bindir=/bin --with-root-prefix="" --enable-elf-shlibs --disable-libblkid --disable-libuuid --disable-uuidd --disable-fsck --libdir=/usr/lib64
+make
+make check
+make install
+rm /usr/lib64/{libcom_err,libe2p,libext2fs,libss}.a
