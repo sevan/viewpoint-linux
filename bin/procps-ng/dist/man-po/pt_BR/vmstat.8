@@ -1,0 +1,205 @@
+.\"  This page Copyright (C) 1994 Henry Ware <al172@yfn.ysu.edu>
+.\"  Distributed under the GPL, Copyleft 1994.
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH VMSTAT 8 2020\-06\-04 procps\-ng "Administração do sistema"
+.SH NOME
+vmstat \- Relata estatísticas de memória virtual
+.SH SINOPSE
+\fBvmstat\fP [opções] [\fIatraso\fP [\fIcontagem\fP]]
+.SH DESCRIÇÃO
+\fBvmstat\fP relata informações sobre processos, memória, paginação, E/S de
+bloco, traps, discos e atividade de cpu.
+.PP
+O primeiro relatório produzido fornece as médias desde a última
+reinicialização. Relatórios adicionais fornecem informações sobre um período
+de amostragem de \fIatraso\fP de comprimento. Os relatórios de processos e de
+memória são instantâneos em ambos os casos.
+.SH OPÇÕES
+.TP 
+\fIatraso\fP
+O \fIatraso\fP entre atualizações em segundos. Se nenhum \fIatraso\fP for
+especificado, apenas um relatório é impresso com os valores médios desde a
+inicialização.
+.TP 
+\fIcontagem\fP
+Número de atualizações. Na ausência de \fIcontagem\fP, quando \fIatraso\fP é
+definido, o padrão é infinito.
+.TP 
+\fB\-a\fP, \fB\-\-active\fP
+Exibe memória ativa e inativa, com um kernel 2.5.41 ou superior.
+.TP 
+\fB\-f\fP, \fB\-\-forks\fP
+A opção \fB\-f\fP exibe o número de bifurcações (forks) desde a
+inicialização. Isso inclui as chamadas do sistema de fork, vfork e clone, e
+é equivalente ao número total de tarefas criadas. Cada processo é
+representado por uma ou mais tarefas, dependendo do uso do segmento. Esta
+exibição não se repete.
+.TP 
+\fB\-m\fP, \fB\-\-slabs\fP
+Exibe slabinfo.
+.TP 
+\fB\-n\fP, \fB\-\-one\-header\fP
+Exibe o cabeçalho apenas uma vez em vez de periodicamente.
+.TP 
+\fB\-s\fP, \fB\-\-stats\fP
+Exibe uma tabela de vários contadores de eventos e estatísticas de
+memória. Esta exibição não se repete.
+.TP 
+\fB\-d\fP, \fB\-\-disk\fP
+Relata estatísticas de disco (requer 2.5.70 ou superior).
+.TP 
+\fB\-D\fP, \fB\-\-disk\-sum\fP
+Relata algumas estatísticas de resumo sobre a atividade do disco.
+.TP 
+\fB\-p\fP, \fB\-\-partition\fP \fIdispositivo\fP
+Estatísticas detalhadas sobre partição (requer 2.5.70 ou superior).
+.TP 
+\fB\-S\fP, \fB\-\-unit\fP \fIcaractere\fP
+Muda as saídas entre 1000 (\fIk\fP), 1024 (\fIK\fP), 1000000 (\fIm\fP) ou 1048576
+(\fIM\fP) bytes. Note que isso não altera os campos de blocos (bi/bo), que são
+sempre medidos em blocos.
+.TP 
+\fB\-t\fP, \fB\-\-timestamp\fP
+Anexa o carimbo de tempo para cada linha.
+.TP 
+\fB\-w\fP, \fB\-\-wide\fP
+Modo de saída ampla (útil para sistemas com maior quantidade de memória,
+onde o modo de saída padrão sofre de quebras de coluna indesejadas). A saída
+é maior do que 80 caracteres por linha.
+.TP 
+\fB\-V\fP, \fB\-\-version\fP
+Exibe informação da versão e sai.
+.TP 
+\fB\-h\fP, \fB\-\-help\fP
+Exibe a ajuda e sai.
+.PD
+.SH "DESCRIÇÃO DE CAMPOS PARA MODO DE VM"
+.SS Procs
+.nf
+r: The number of runnable processes (running or waiting for run time).
+b: The number of processes blocked waiting for I/O to complete.
+.fi
+.PP
+.SS Memória
+These are affected by the \fB\-\-unit\fP option.
+.nf
+swpd: the amount of swap memory used.
+free: the amount of idle memory.
+buff: the amount of memory used as buffers.
+cache: the amount of memory used as cache.
+inact: the amount of inactive memory.  (\fB\-a\fP option)
+active: the amount of active memory.  (\fB\-a\fP option)
+.fi
+.PP
+.SS Swap
+These are affected by the \fB\-\-unit\fP option.
+.nf
+si: Quantidade de memória trocada do disco (/s).
+so: Quantidade de memória trocada para o disco (/s).
+.fi
+.PP
+.SS E/S
+.nf
+bi: Blocos recebidos de um dispositivo de bloco (blocos/s).
+bo: Blocos enviados para um dispositivo de bloco (blocos/s).
+.fi
+.PP
+.SS Sistema
+.nf
+in: O número de interrupções por segundo, incluindo o relógio.
+cs: o número de trocas de contexto por segundo.
+.fi
+.PP
+.SS CPU
+Esses são percentuais de tempo total de CPU.
+.nf
+us: tempo gasto executando código não kernel. (tempo do usuário, incluindo tempo de nice)
+sy: Tempo gasto executando código de kernel. (tempo do sistema)
+id: tempo gasto ocioso. Antes do Linux 2.5.41, isso inclui o tempo de espera E/S.
+wa: Tempo gasto à espera de E/S. Antes do Linux 2.5.41, incluído no modo ocioso.
+st: Tempo roubado de uma máquina virtual. Antes do Linux 2.6.11, desconhecido.
+.fi
+.PP
+.SH "DESCRIÇÃO DE CAMPOS PARA MODO DE DISCO"
+.SS Leituras
+.nf
+total: Total de leituras concluídas com sucesso
+mescl.: Leituras agrupadas (resultando em uma E/S)
+setores: Setores lidos com sucesso
+ms: Milissegundos gastos lendo
+.fi
+.PP
+.SS Escritas
+.nf
+total: Total de escritas concluídas com sucesso
+mescl.: Escritas agrupadas (resultando em uma E/S)
+setores: Setores escritos com sucesso
+ms: Milissegundos gastos escrevendo
+.fi
+.PP
+.SS E/S
+.nf
+atu: E/S em progresso
+s: segundos gastos para E/S
+.fi
+.PP
+.SH "DESCRIÇÃO DE CAMPOS PARA MODO DE PARTIÇÃO"
+.nf
+leituras: Número total de leituras emitidas para esta partição
+set. lidos: Total de setores lidos para a partição
+escritas: Número total de escritas emitidas para esta partição
+escrit. solic: Número total de solicitações de escrita feitas para partição
+.fi
+.PP
+.SH "DESCRIÇÃO DE CAMPOS PARA MODO DE SLAB"
+.nf
+cache: Nome do cache
+núm: Número de objetos atualmente ativos
+total: Número total de objetos disponíveis
+tam.: Tamanho de cada objeto
+págs.: Número de páginas com pelo menos um objeto ativo
+.fi
+.SH NOTAS
+\fBvmstat\fP does not require special permissions.
+.PP
+Esses relatórios destinam\-se a ajudar a identificar os gargalos do
+sistema. O \fBvmstat\fP do Linux não conta como um processo em execução.
+.PP
+Todos os blocos do Linux são atualmente 1024 bytes. Os kernels antigos podem
+relatar blocos como 512 bytes, 2048 bytes ou 4096 bytes.
+.PP
+Desde procps 3.1.9, vmstat permite que você escolha unidades (k, K, m, M). O
+padrão é K (1024 bytes) no modo padrão.
+.PP
+vmstat usa slabinfo 1.1
+.SH ARQUIVOS
+.ta 
+.nf
+/proc/meminfo
+/proc/stat
+/proc/*/stat
+.fi
+.SH "VEJA TAMBÉM"
+\fBfree\fP(1), \fBiostat\fP(1), \fBmpstat\fP(1), \fBps\fP(1), \fBsar\fP(1), \fBtop\fP(1)
+.PP
+.SH ERROS
+Não tabula a e/s de bloco por dispositivo ou conta o número de chamadas de
+sistema.
+.SH AUTORES
+Escrito por
+.UR al172@yfn.\:ysu.\:edu
+Henry Ware
+.UE .
+.br
+.UR ffrederick@users.\:sourceforge.\:net
+Fabian Fr\('ed\('erick
+.UE
+(diskstat, slab, partições...)
+.SH "RELATANDO ERROS"
+Por favor, envie relatórios de erros para
+.UR procps@freelists.org
+.UE

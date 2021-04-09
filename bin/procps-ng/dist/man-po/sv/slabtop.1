@@ -1,0 +1,97 @@
+.\" slabtop.1 - manpage for the slabtop(1) utility, part of procps-ng
+.\"
+.\" Copyright (C) 2003 Chris Rivera
+.\" Licensed under the terms of the GNU Library General Public License, v2
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH SLABTOP 1 "Juni 2011" procps\-ng Användarkommandon
+.SH NAMN
+slabtop — visa information om kärnans skivcache i realtid
+.SH SYNOPSIS
+\fBslabtop\fP [\fIflaggor\fP]
+.SH BESKRIVNING
+\fBslabtop\fP visar detaljerad information om kärnans skiv\-cache i realtid.
+Det visar en lista över toppskivorna sorterade efter en av de listade
+sorteringskriterierna.  Det visar också ett huvud med statistisk information
+om skivnivåer.
+.SH FLAGGOR
+Normalt anrop av \fBslabtop\fP kräver inte några flaggor.  Beteendet kan dock
+finjusteras genom att ange en eller flera av följande flaggor:
+.TP 
+\fB\-d\fP, \fB\-\-delay\fP=\fIN\fP
+Uppdatera visningen var \fIn\fP:e sekund.  Som standard uppdaterar \fBslabtop\fP
+visningen var tredje sekund.  För att avsluta programmet, tryck \fBq\fP.
+.TP 
+\fB\-s\fP, \fB\-\-sort\fP=\fIS\fP
+Sortera efter \fIS\fP, där \fIS\fP är ett av sorteringskriterierna.
+.TP 
+\fB\-o\fP, \fB\-\-once\fP
+Visa utdata en gång och avsluta sedan.
+.TP 
+\fB\-V\fP, \fB\-\-version\fP
+Visa versionsinformation och avsluta.
+.TP 
+\fB\-h\fP, \fB\-\-help\fP
+Visa användningsinformation och avsluta.
+.SH SORTERINGSKRITERIER
+Följande är giltiga sorteringskriterier som används för att sortera de
+enskilda skiv\-cacharna och därigenom avgöra vilka ”topp”\-skiv\-cacharna som
+visas skall vara.  Standardsorteringskriteriet är att sortera efter antal
+objekt (”o”).
+.PP
+Sorteringskriteriet kan även ändras medan \fBslabtop\fP kör genom att trycka
+den tillhörande bokstaven.
+.TS
+l l l.
+\fBtecken\fP	\fBbeskrivning\fP	\fBhuvud\fP
+a	antal aktiva objekt	AKTIVT
+b	objekt per skiva	OBJ/SKIVA
+c	cachestorlek	CACHESTORLEK
+l	antal skivor	SKIVOR
+v	antal aktiva skivor	saknas
+n	namn	NAMN\:
+o	antal objekt	OBJ
+p	sidor per skiva	saknas
+s	objektstorlek	OBJ\-STRL
+u	cacheanvändning	ANV
+.TE
+.SH KOMMANDON
+\fBslabtop\fP tar emot tangentbordskommandon från användaren under körning.
+Följande stödjs.  Vad gäller bokstäver tas både versaler och gemener emot.
+.PP
+Var och en av de giltiga sorteringskriterierna tas också emot, för att ändra
+sorteringsrutinen.  Se avsnittet \fBSORTERINGSKRITERIER\fP.
+.TP 
+\fB<MELLANSLAG>\fP
+Uppdatera skärmen.
+.TP 
+\fBQ\fP
+Avsluta programmet.
+.SH FILER
+.TP 
+\fI/proc/slabinfo\fP
+skivinformation
+.SH "SE ÄVEN"
+\fBfree\fP(1), \fBps\fP(1), \fBtop\fP(1), \fBvmstat\fP(8)
+.SH OBSERVERA
+För närvarande kräver \fBslabtop\fP en kärna 2.4 eller senare (specifikt,
+version 1.1 eller senare av \fI/proc/slabinfo\fP).  Kärna 2.2 bör stödjas i
+framtiden.
+.PP
+The \fBslabtop\fP statistic header is tracking how many bytes of slabs are
+being used and is not a measure of physical memory.  The 'Slab' field in the
+/proc/meminfo file is tracking information about used slab physical memory.
+.SH UPPHOVSMÄN
+Skrivet av Chris Rivera och Robert Love.
+.PP
+\fBslabtop\fP inspirerades av Martin Blighs perl\-skript \fBvmtop\fP.
+.SH "RAPPORTERA FEL"
+Skicka felrapporter till
+.UR procps@freelists.org
+.UE
+Skicka synpunkter på översättningen till
+.UR tp\-sv@listor.tp\-sv.se
+.UE

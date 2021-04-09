@@ -1,0 +1,94 @@
+.\" slabtop.1 - manpage for the slabtop(1) utility, part of procps-ng
+.\"
+.\" Copyright (C) 2003 Chris Rivera
+.\" Licensed under the terms of the GNU Library General Public License, v2
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH SLABTOP 1 "Junho de 2011" procps\-ng "Comandos de usuário"
+.SH NOME
+slabtop \- exibe informações de cache de slabs do kernel em tempo real
+.SH SINOPSE
+\fBslabtop\fP [\fIopções\fP]
+.SH DESCRIÇÃO
+\fBslabtop\fP exibe informações detalhadas do cache de slabs do kernel em tempo
+real. Ele exibe uma listagem dos caches superiores ordenados por um dos
+critérios de classificação listados. Ele também exibe um cabeçalho de
+estatísticas preenchido com informações da camada de slab.
+.SH OPÇÕES
+Invocação normal do \fBslabtop\fP não exibe quaisquer opções. O comportamento,
+porém, pode ser ajustado especificando uma ou mais das seguintes opções:
+.TP 
+\fB\-d\fP, \fB\-\-delay\fP=\fIN\fP
+Atualiza a tela a cada \fIn\fP em segundos. Por padrão, \fBslabtop\fP atualiza a
+tela a cada três segundos. Para sair do programa, pressione \fBq\fP.
+.TP 
+\fB\-s\fP, \fB\-\-sort\fP=\fIS\fP
+Ordena por \fIS\fP, sendo \fIS\fP um dos critérios de ordem.
+.TP 
+\fB\-o\fP, \fB\-\-once\fP
+Exige a saída uma vez e, então, sai.
+.TP 
+\fB\-V\fP, \fB\-\-version\fP
+Exibe informação da versão e sai.
+.TP 
+\fB\-h\fP, \fB\-\-help\fP
+Exibe informação de uso e sai.
+.SH "CRITÉRIOS DE ORDENAÇÃO"
+Os seguintes são critérios de ordenação válidos utilizados para classificar
+os caches de slabs individuais e, assim, determinar quais são os primeiros
+caches de slabs para exibir. O critério de classificação padrão é
+classificar pelo número de objetos ("o").
+.PP
+The sort criteria can also be changed while \fBslabtop\fP is running by
+pressing the associated character.
+.TS
+l l l.
+\fBcaractere\fP	\fBdescrição\fP	\fBcabeçalho\fP
+a	número de objetos ativos	ATIVOS
+b	objetos por slab	OBJ/SLAB
+c	tamanho de cache	TAMANHO DE CACHE
+l	número de slabs	SLABS
+v	número de slabs ativos	N/D
+n	nome	NOME\:
+o	número de objetos	OBJS
+p	páginas por slab	N/D
+s	tamanho do objeto	TAM OBJ
+u	utilização de cache	USO
+.TE
+.SH COMANDOS
+\fBslabtop\fP aceita comandos de teclado do usuário durante o uso. Os seguintes
+são suportados. No caso de letras, ambos os casos são aceitos.
+.PP
+Cada um dos caracteres de ordenação válidos também são aceitos, para alterar
+a rotina de ordenação. Veja a seção \fBCRITÉRIOS DE ORDENAÇÃO\fP.
+.TP 
+\fB<BARRA DE ESPAÇO>\fP
+Atualiza a tela.
+.TP 
+\fBQ\fP
+Sai do programa.
+.SH ARQUIVOS
+.TP 
+\fI/proc/slabinfo\fP
+Informações de slabs
+.SH "VEJA TAMBÉM"
+\fBfree\fP(1), \fBps\fP(1), \fBtop\fP(1), \fBvmstat\fP(8)
+.SH NOTAS
+Atualmente, \fBslabtop\fP requer um kernel 2.4 ou posterior (especificamente,
+uma \fI/proc/slabinfo\fP com versão 1.1 ou posterior). Deve haver suporte ao
+kernel 2.2 no futuro.
+.PP
+The \fBslabtop\fP statistic header is tracking how many bytes of slabs are
+being used and is not a measure of physical memory.  The 'Slab' field in the
+/proc/meminfo file is tracking information about used slab physical memory.
+.SH AUTORES
+Escrito porChris Rivera e Robert Love.
+.PP
+\fBslabtop\fP foi inspirado no script perl de Martin Bligh, \fBvmtop\fP.
+.SH "RELATANDO ERROS"
+Por favor, envie relatórios de erros para
+.UR procps@freelists.org
+.UE
