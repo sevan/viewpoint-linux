@@ -252,3 +252,6 @@ configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --disable-static 
 
 procps-ng
 configure --prefix=/usr --exec-prefix= --libdir=/usr/lib64 --disable-static --disable-kill --with-systemd
+
+utils-linux
+configure ADJTIME_PATH=/var/lib/hwclock/adjtime --disable-chfn-chsh --disable-login --disable-nologin --disable-su --disable-setpriv --disable-runuser --disable-pylibmount --disable-static --without-python runstatedir=/run --libdir=/lib64
