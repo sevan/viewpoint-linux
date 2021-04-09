@@ -63,7 +63,7 @@ Python
 configure --prefix=/osbt --enable-shared --without-ensurepip LDFLAGS="-Wl,-R/osbt/lib"
 
 util-linux
-configure ADJTIME_PATH=/var/lib/hwclock/adjtime --disable-chfn-chsh --disable-login --disable-nologin --disable-su --disable-setpriv --disable-runuser --disable-pylibmount --disable-static --without-python runstatedir=/run
+configure ADJTIME_PATH=/var/lib/hwclock/adjtime --disable-chfn-chsh --disable-login --disable-nologin --disable-su --disable-setpriv --disable-runuser --disable-pylibmount --disable-static --without-python runstatedir=/run --libdir=/lib64
 
 Exit chroot
 umount $LFS/usr/src
