@@ -243,3 +243,6 @@ cp -R /usr/src/bin/systemd/man/* man
 LANG=en_US.UTF-8 ninja
 LANG=en_US.UTF-8 ninja install
 rm /usr/bin/xsltproc
+
+expat
+configure --prefix=/usr --disable-static --libdir=/usr/lib64
