@@ -1,0 +1,10 @@
+*~
+*.diff
+*.orig
+*.patch
+*.rej
+core
+.gdb_history
+.gdbinit
+# Meson build
+/builddir

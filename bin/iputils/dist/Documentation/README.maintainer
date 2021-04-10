@@ -1,0 +1,103 @@
+# Merge with git instead of github UI
+
+If someone sends patches by email apply them on top of latest master, and
+push to upstream.  Github pull requests are best to get as extra remote
+repositories to your working clone, where commits can be rebased, tidied up,
+and so on, before pushing to upstream.
+
+See also https://github.com/iputils/iputils/issues/155
+
+# Do not steal contributions
+
+Use git commit --author 'Contributor <email>' when receiving changes that
+are not applicable as-is.  Not stealing contributions applies even if change
+has to be worked out, that is common case with commit message.
+
+Exception to this rule is a change that is a good idea, but has to be
+completely rewrote to be acceptable for the project.  In this case
+maintainer should attribute the person who gave the idea in commit message.
+
+# Use references in commit messages
+
+For example when a change fixes a distribution bug add link to the bug
+report.  Links to reference materials can also be useful when in future
+trying to understand why something was done.  It is also nice when commit id
+of the change that caused a bug is referred in commit message.  That helps
+understanding what versions are impacted by an issue.
+
+# How to make a release
+
+Go to release listings https://github.com/iputils/iputils/releases and check
+what was said in previous release message.  Draft release message - remember
+if you have nothing to say then you don't have good enough reason to publish
+release.
+
+Update CHANGES file. It should list the most notable changes and important or
+security related fixes. Create pull request with these changes to give people
+chance to review and test upcomming release. Notify distro maintainers, ask
+translators to update translations.
+
+Create release commit and tag.
+
+    tag="$(date +%Y%m%d)"
+    sed --in-place "s/version : '.*')/version : '$tag')/" meson.build
+    git add meson.build CHANGES
+    git commit --signoff --message "release: iputils-$tag"
+    git tag --sign --annotate $tag --message iputils-$tag
+
+Check that the commit and tag looks ok.
+
+    git show $tag --show-signature
+
+Assuming things are great push to github.
+
+    git push origin master:master
+    git push origin --tags
+
+Go to github https://github.com/iputils/iputils/releases and paste the
+the content of CHANGES file for upcomming release to the text box.
+Add there also credit for all contributors:
+
+	Many thanks to the people contributing to this release:
+
+	git shortlog -s -n $tag..
+
+	Also thanks to patch reviewers:
+
+	git log $tag.. | grep -Ei '(reviewed|acked)-by:' | \
+		sed 's/.*by: //' | sort | uniq -c | sort -n -r
+
+	and testers:
+
+	git log $tag.. | grep -Ei 'tested-by:' | \
+		sed 's/.*by: //' | sort | uniq -c | sort -n -r
+
+Choose the tag you just created.  Download the release files and sign them.
+
+    for file in iputils-$tag.{zip,tar.gz}; do gpg --sign --armor --detach-sign $file; done
+
+	out="sha256sum"
+	for file in iputils-$tag.{zip,tar.gz}; do $out $file >> $out; done
+	gpg --clearsign $out
+
+Upload these three .asc files to release as additional files.
+
+The release should be ready.  People tend to react to releases, so expect bug
+reports and pull requests after release.  Assuming release has fatal flaw(s)
+make another one sometime soon.
+
+# Maintainers' GPG public keys
+
+All maintainers' GPG public keys used for signing tags, releases, commits, etc.
+are stored in Documentation/project-keys.gpg. When adding new maintainer, add
+his/her key into tools/update-project-keyring.sh, run it to update keyring and
+push the result.
+
+# Branches in git
+
+The upstream repository has exactly one branch and it is `master`.  If a
+maintainer wants to use work in progress branches they need to be kept in
+personal clone.  There are two reasons to do this.  For contributors it is
+nice not to see random branches when cloning upstream repo.  Secondly when
+maintainer wants to add a contributor repo as additional remote it is easier
+to see what is going on there.
