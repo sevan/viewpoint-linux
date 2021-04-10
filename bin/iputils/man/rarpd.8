@@ -1,0 +1,103 @@
+'\" t
+.TH "RARPD" "8" "" "iputils 20210202" "iputils"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+rarpd \- answer RARP REQUESTs
+.SH "SYNOPSIS"
+.HP \w'\fBrarpd\fR\ 'u
+\fBrarpd\fR [\fB\-AadevV\fR] [\fB\-b\ \fR\fB\fIbootdir\fR\fR] {interface}
+.SH "DESCRIPTION"
+.PP
+Listens for RARP requests broadcasted by clients\&. If the MAC address of the client is found in
+/etc/ethers
+and the obtained hostname is resolvable to a valid IP address from the attached network,
+\fBrarpd\fR
+answers to the client with a RARPD reply and provides an IP address\&.
+.PP
+To allow multiple boot servers on the network
+\fBrarpd\fR
+optionally checks if a Sun\-like bootable image in the TFTP directory is present\&. It should be formatted like
+\fBHexadecimal_IP\&.ARCH\fR\&. For example: To load sparc 193\&.233\&.7\&.98,
+\fIC1E90762\&.SUN4M\fR
+is linked to an image appropriate for SUN4M in the directory
+/etc/tftpboot\&.
+.SH "WARNING"
+.PP
+This facility is deeply obsoleted by BOOTP and later DHCP protocols\&. However, some clients actually still need this to boot\&.
+.SH "OPTIONS"
+.PP
+\fB\-a\fR
+.RS 4
+Listen on all available interfaces\&. Currently it is an internal option, its function is overwritten with the
+\fIinterface\fR
+argument\&. It should not be used\&.
+.RE
+.PP
+\fB\-A\fR
+.RS 4
+Listen not only to RARP but also ARP messages\&. Some rare clients use ARP for some unknown reason\&.
+.RE
+.PP
+\fB\-v\fR
+.RS 4
+Be verbose\&.
+.RE
+.PP
+\fB\-d\fR
+.RS 4
+Debug mode\&. Do not go to background\&.
+.RE
+.PP
+\fB\-e\fR
+.RS 4
+Do not check for the presence of a boot image\&. Reply if MAC address resolves to a valid IP address using
+/etc/ethers
+database and DNS\&.
+.RE
+.PP
+\fB\-b\fR \fIbootdir\fR
+.RS 4
+TFTP boot directory\&. Default is
+/etc/tftpboot
+.RE
+.PP
+\fB\-V\fR
+.RS 4
+Print version and exit\&.
+.RE
+.SH "SEE ALSO"
+.PP
+\fBarping\fR(8),
+\fBtftpd\fR(8)\&.
+.SH "AUTHOR"
+.PP
+\fBrarpd\fR
+was written by Alexey Kuznetsov <kuznet@ms2\&.inr\&.ac\&.ru>\&.
+.SH "SECURITY"
+.PP
+\fBrarpd\fR
+requires CAP_NET_RAW capability to listen and send RARP and ARP packets\&. It also needs CAP_NET_ADMIN to assist the kernel with ARP resolution; this is not strictly required, but some (to be more exact: most) of the clients are so badly broken that they are not able to answer to ARP before they are fully booted\&. This is no surprise, taking into account that clients using RARPD in 2002 are all unsupported relic creatures of the 90\*(Aqs and even earlier\&.
+.SH "AVAILABILITY"
+.PP
+\fBrarpd\fR
+is part of the
+\fIiputils\fR
+package\&.

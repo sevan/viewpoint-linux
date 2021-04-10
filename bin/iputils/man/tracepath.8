@@ -1,0 +1,139 @@
+'\" t
+.TH "TRACEPATH" "8" "" "iputils 20210202" "iputils"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+tracepath \- traces path to a network host discovering MTU along this path
+.SH "SYNOPSIS"
+.HP \w'\fBtracepath\fR\ 'u
+\fBtracepath\fR [\fB\-4\fR] [\fB\-6\fR] [\fB\-n\fR] [\fB\-b\fR] [\fB\-l\ \fR\fB\fIpktlen\fR\fR] [\fB\-m\ \fR\fB\fImax_hops\fR\fR] [\fB\-p\ \fR\fB\fIport\fR\fR] [\fB\-V\fR] {destination}
+.SH "DESCRIPTION"
+.PP
+It traces the network path to
+\fIdestination\fR
+discovering MTU along this path\&. It uses UDP port
+\fIport\fR
+or some random port\&. It is similar to
+\fBtraceroute\fR\&. However, it does not require superuser privileges and has no fancy options\&.
+.PP
+\fBtracepath \-6\fR
+is a good replacement for
+\fBtraceroute6\fR
+and classic example of application of Linux error queues\&. The situation with IPv4 is worse, because commercial IP routers do not return enough information in ICMP error messages\&. Probably, it will change, when they are updated\&. For now it uses Van Jacobson\*(Aqs trick, sweeping a range of UDP ports to maintain trace history\&.
+.SH "OPTIONS"
+.PP
+\fB\-4\fR
+.RS 4
+Use IPv4 only\&.
+.RE
+.PP
+\fB\-6\fR
+.RS 4
+Use IPv6 only\&.
+.RE
+.PP
+\fB\-n\fR
+.RS 4
+Print primarily IP addresses numerically\&.
+.RE
+.PP
+\fB\-b\fR
+.RS 4
+Print both: Host names and IP addresses\&.
+.RE
+.PP
+\fB\-l\fR
+.RS 4
+Sets the initial packet length to
+\fIpktlen\fR
+instead of 65535 for
+\fBIPv4\fR
+or 128000 for
+\fBIPv6\fR\&.
+.RE
+.PP
+\fB\-m\fR
+.RS 4
+Set maximum hops (or maximum TTLs) to
+\fImax_hops\fR
+instead of 30\&.
+.RE
+.PP
+\fB\-p\fR
+.RS 4
+Sets the initial destination port to use\&.
+.RE
+.PP
+\fB\-V\fR
+.RS 4
+Print version and exit\&.
+.RE
+.SH "OUTPUT"
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+root@mops:~ # tracepath \-6 3ffe:2400:0:109::2
+ 1?: [LOCALHOST]                              pmtu 1500
+ 1:  dust\&.inr\&.ac\&.ru                   0\&.411ms
+ 2:  dust\&.inr\&.ac\&.ru        asymm  1   0\&.390ms pmtu 1480
+ 2:  3ffe:2400:0:109::2               463\&.514ms reached
+     Resume: pmtu 1480 hops 2 back 2
+    
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+The first column shows the TTL of the probe, followed by colon\&. Usually the value of TTL is obtained from the reply from the network, but sometimes it does not contain the necessary information and we have to guess it\&. In this case the number is followed by ?\&.
+.PP
+The second column shows the network hop which replied to the probe\&. It is either the address of the router or the word [LOCALHOST], if the probe was not sent to the network\&.
+.PP
+The rest of the line shows miscellaneous information about the path to the corresponding network hop\&. It contains the value of RTT, and additionally it can show Path MTU when it changes\&. If the path is asymmetric or the probe finishes before it reaches the prescribed hop, the difference between number of hops in forward and return direction is shown next to the keyword "async"\&. This information is not reliable, e\&.g\&. the third line shows asymmetry of 1\&. This is because the first probe with TTL of 2 was rejected at the first hop due to Path MTU Discovery\&.
+.PP
+The last line summarizes information about all the paths to the destination\&. It shows detected Path MTU, amount of hops to the destination and our guess about the number of hops from the destination to us, which can be different when the path is asymmetric\&.
+.SH "SEE ALSO"
+.PP
+\fBtraceroute\fR(8),
+\fBtraceroute6\fR(8),
+\fBping\fR(8)\&.
+.SH "AUTHOR"
+.PP
+\fBtracepath\fR
+was written by Alexey Kuznetsov <kuznet@ms2\&.inr\&.ac\&.ru>\&.
+.SH "SECURITY"
+.PP
+No security issues\&.
+.PP
+This lapidary deserves to be elaborated\&.
+\fBtracepath\fR
+is not a privileged program, unlike
+\fBtraceroute\fR,
+\fBping\fR
+and other beasts of their kind\&.
+\fBtracepath\fR
+may be executed by everyone who has enough access to the network to send UDP datagrams to the desired destination using the given port\&.
+.SH "AVAILABILITY"
+.PP
+\fBtracepath\fR
+is part of
+\fIiputils\fR
+package\&.

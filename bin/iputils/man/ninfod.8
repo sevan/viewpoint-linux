@@ -1,0 +1,111 @@
+'\" t
+.TH "NINFOD" "8" "" "iputils 20210202" "iputils"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+ninfod \- Respond to IPv6 Node Information Queries
+.SH "SYNOPSIS"
+.HP \w'\fBninfod\fR\ 'u
+\fBninfod\fR [\fB\-dhv\fR] [\fB\-p\ \fR\fB\fIpidfile\fR\fR] [\fB\-u\ \fR\fB\fIuser\fR\fR] [\fB\-v\fR]
+.SH "DESCRIPTION"
+.PP
+Responds to IPv6 Node Information Queries (RFC4620) from clients\&. Queries can be sent by various implementations of
+\fBping\fR
+command\&.
+.SH "OPTIONS"
+.PP
+\fB\-d\fR
+.RS 4
+Debug mode\&. Do not go background\&.
+.RE
+.PP
+\fB\-h\fR
+.RS 4
+Show help\&.
+.RE
+.PP
+\fB\-v\fR
+.RS 4
+Verbose mode\&.
+.RE
+.PP
+\fB\-u\fR \fIuser\fR
+.RS 4
+Run as another user\&.
+\fIuser\fR
+can either be username or user ID\&.
+.RE
+.PP
+\fB\-p\fR \fIpidfile\fR
+.RS 4
+File for process\-id storage\&.
+\fIuser\fR
+is required to be able to create the file\&.
+.RE
+.PP
+\fB\-V\fR
+.RS 4
+Print version and exit\&.
+.RE
+.SH "SEE ALSO"
+.PP
+\fBping\fR(8)\&.
+.SH "AUTHOR"
+.PP
+\fBninfod\fR
+was written by USAGI/WIDE Project\&.
+.SH "COPYING"
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+Copyright (C) 2012 YOSHIFUJI Hideaki\&.
+Copyright (C) 2002 USAGI/WIDE Project\&.
+All rights reserved\&.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+1\&. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer\&.
+2\&. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution\&.
+3\&. Neither the name of the project nor the names of its contributors
+   may be used to endorse or promote products derived from this software
+   without specific prior written permission\&.
+
+THIS SOFTWARE IS PROVIDED BY THE PROJECT AND CONTRIBUTORS \(lqAS IS\(rq AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED\&.  IN NO EVENT SHALL THE PROJECT OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGE\&.
+    
+.fi
+.if n \{\
+.RE
+.\}
