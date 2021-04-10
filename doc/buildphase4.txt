@@ -262,3 +262,9 @@ make
 make check
 make install
 rm /usr/lib64/{libcom_err,libe2p,libext2fs,libss}.a
+
+iputils
+meson -Dprefix=/usr -Dsharedstatedir=/var/lib -DBUILD_TRACEROUTE6=true  -DBUILD_MANS=false /usr/src/bin/iputils/dist
+ninja
+ninja install
+cp /usr/src/bin/iputils/man/{arping,clockdiff,ninfod,ping,rdisc,tracepath,traceroute6}.8 /usr/share/man/man8
