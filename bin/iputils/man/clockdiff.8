@@ -1,0 +1,112 @@
+'\" t
+.TH "CLOCKDIFF" "8" "" "iputils 20210202" "iputils"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+clockdiff \- measure clock difference between hosts
+.SH "SYNOPSIS"
+.HP \w'\fBclockdiff\fR\ 'u
+\fBclockdiff\fR [\fB\-o\fR] [\fB\-o1\fR] [\fB\-\-time\-format\ \fR\fB\fIctime\ iso\fR\fR] [\fB\-V\fR] {destination}
+.SH "DESCRIPTION"
+.PP
+\fBclockdiff\fR
+Measures clock difference between us and
+\fIdestination\fR
+with 1 msec resolution using ICMP TIMESTAMP [2] packets or, optionally, IP TIMESTAMP option [3] option added to ICMP ECHO\&. [1]
+.SH "OPTIONS"
+.PP
+\fB\-o\fR
+.RS 4
+Use IP TIMESTAMP with ICMP ECHO instead of ICMP TIMESTAMP messages\&. It is useful with some destinations, which do not support ICMP TIMESTAMP (f\&.e\&. Solaris <2\&.4)\&.
+.RE
+.PP
+\fB\-o1\fR
+.RS 4
+Slightly different form of
+\fB\-o\fR, namely it uses three\-term IP TIMESTAMP with prespecified hop addresses instead of four term one\&. What flavor works better depends on target host\&. Particularly,
+\fB\-o\fR
+is better for Linux\&.
+.RE
+.PP
+\fB\-T\fR, \fB\-\-time\-format \fR\fB\fIctime iso\fR\fR
+.RS 4
+Print time stamp in output either ISO\-8601 format or classical ctime format\&. The ctime format is default\&. The ISO time stamp includes timezone, and is easier to parse\&.
+.RE
+.PP
+\fB\-I\fR
+.RS 4
+Alias of
+\fB\-\-time\-format \fR\fB\fIiso\fR\fR\fB \fR
+option and argument\&.
+.RE
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+Print help and exit\&.
+.RE
+.PP
+\fB\-V\fR, \fB\-\-version\fR
+.RS 4
+Print version and exit\&.
+.RE
+.SH "WARNINGS"
+.PP
+.RS 4
+\(bu Some nodes (Cisco) use non\-standard timestamps, which is allowed by RFC, but makes timestamps mostly useless\&.
+.RE
+.PP
+.RS 4
+\(bu Some nodes generate messed timestamps (Solaris>2\&.4), when run
+\fBxntpd\fR\&. Seems, its IP stack uses a corrupted clock source, which is synchronized to time\-of\-day clock periodically and jumps randomly making timestamps mostly useless\&. Good news is that you can use NTP in this case, which is even better\&.
+.RE
+.PP
+.RS 4
+\(bu
+\fBclockdiff\fR
+shows difference in time modulo 24 days\&.
+.RE
+.SH "SEE ALSO"
+.PP
+\fBping\fR(8),
+\fBarping\fR(8),
+\fBtracepath\fR(8)\&.
+.SH "REFERENCES"
+.PP
+[1] ICMP ECHO, RFC0792, page 14\&.
+.PP
+[2] ICMP TIMESTAMP, RFC0792, page 16\&.
+.PP
+[3] IP TIMESTAMP option, RFC0791, 3\&.1, page 16\&.
+.SH "AUTHOR"
+.PP
+\fBclockdiff\fR
+was compiled by Alexey Kuznetsov <kuznet@ms2\&.inr\&.ac\&.ru>\&. It was based on code borrowed from BSD
+\fBtimed\fR
+daemon\&.
+.SH "SECURITY"
+.PP
+\fBclockdiff\fR
+requires CAP_NET_RAW capability to be executed\&. It is safe to be used as set\-uid root\&.
+.SH "AVAILABILITY"
+.PP
+\fBclockdiff\fR
+is part of
+\fIiputils\fR
+package\&.

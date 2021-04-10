@@ -1,0 +1,155 @@
+'\" t
+.TH "RDISC" "8" "" "iputils 20210202" "iputils"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+rdisc \- network router discovery daemon
+.SH "SYNOPSIS"
+.HP \w'\fBrdisc\fR\ 'u
+\fBrdisc\fR [\fB\-abdfrstvV\fR] [\fB\-p\ \fR\fB\fIpreference\fR\fR] [\fB\-T\ \fR\fB\fImax_interval\fR\fR] [send_address] [receive_address]
+.SH "DESCRIPTION"
+.PP
+\fBrdisc\fR
+implements client side of the ICMP Internet Router Discovery Protocol (IRDP)\&.
+\fBrdisc\fR
+is invoked at boot time to populate the network routing tables with default routes\&.
+.PP
+\fBrdisc\fR
+listens on the ALL_HOSTS (224\&.0\&.0\&.1) multicast address (or
+\fIreceive_address\fR
+if it is provided) for ROUTER_ADVERTISE messages from routers\&. The received messages are handled by first ignoring those listed router addresses with which the host does not share a network\&. Among the remaining addresses the ones with the highest preference are selected as default routers and a default route is entered in the kernel routing table for each one of them\&.
+.PP
+Optionally,
+\fBrdisc\fR
+can avoid waiting for routers to announce themselves by sending out a few ROUTER_SOLICITATION messages to the ALL_ROUTERS (224\&.0\&.0\&.2) multicast address (or
+\fIsend_address\fR
+if it is provided) when it is started\&.
+.PP
+A timer is associated with each router address and the address will no longer be considered for inclusion in the routing tables if the timer expires before a new
+\fBadvertise\fR
+message is received from the router\&. The address will also be excluded from consideration if the received
+\fBadvertise\fR
+message has a preference of maximum negative\&.
+.PP
+Server side of router discovery protocol is supported by Cisco IOS and by any more or less complete UNIX routing daemon, for example
+\fBgated\fR\&. If compiled with ENABLE_RDISC_SERVER,
+\fBrdisc\fR
+can act as responder\&.
+.SH "OPTIONS"
+.PP
+\fB\-a\fR
+.RS 4
+Accept all routers independently of the preference they have in their
+\fBadvertise\fR
+messages\&. Normally
+\fBrdisc\fR
+only accepts (and enters in the kernel routing tables) the router or routers with the highest preference\&.
+.RE
+.PP
+\fB\-b\fR
+.RS 4
+Opposite to
+\fB\-a\fR, i\&.e\&. install only router with the best preference value\&. This is the default behaviour\&.
+.RE
+.PP
+\fB\-d\fR
+.RS 4
+Send debugging messages to syslog\&.
+.RE
+.PP
+\fB\-f\fR
+.RS 4
+Keep
+\fBrdisc\fR
+running in the background even if no routers are found\&. Normally
+\fBrdisc\fR
+gives up if it has not received any
+\fBadvertise\fR
+message after soliciting three times\&. In this case it exits with a non\-zero exit code\&. If
+\fB\-f\fR
+is not specified in the first form then
+\fB\-s\fR
+must be specified\&.
+.RE
+.PP
+\fB\-r\fR
+.RS 4
+Responder mode, available only if compiled with ENABLE_RDISC_SERVER\&.
+.RE
+.PP
+\fB\-s\fR
+.RS 4
+Send three
+\fBsolicitation\fR
+messages initially to quickly discover the routers when the system is booted\&. When
+\fB\-s\fR
+is specified
+\fBrdisc\fR
+exits with a non\-zero exit code if it can not find any routers\&. This can be overridden with the
+\fB\-f\fR
+option\&.
+.RE
+.PP
+\fB\-p\fR \fIpreference\fR
+.RS 4
+Set preference in advertisement messages\&. Available only with \-r option\&.
+.RE
+.PP
+\fB\-T\fR \fImax_interval\fR
+.RS 4
+Set maximum advertisement interval in seconds\&. Default is 600\&. Available only with \-r option\&.
+.RE
+.PP
+\fB\-t\fR
+.RS 4
+Test mode\&. Do not go to background\&.
+.RE
+.PP
+\fB\-v\fR
+.RS 4
+Be verbose and send lots of debugging messages to syslog\&.
+.RE
+.PP
+\fB\-V\fR
+.RS 4
+Print version and exit\&.
+.RE
+.SH "HISTORY"
+.PP
+This program was developed by Sun Microsystems (see copyright notice in source file)\&. It was ported to Linux by Alexey Kuznetsov
+<kuznet@ms2\&.inr\&.ac\&.ru>\&.
+.SH "SEE ALSO"
+.PP
+\fBicmp\fR(7),
+\fBinet\fR(7),
+\fBping\fR(8)\&.
+.SH "REFERENCES"
+.PP
+RFC1256 ICMP Router Discovery Messages\&. S\&. Deering, Ed\&.\&. September 1991\&.
+.SH "SECURITY"
+.PP
+\fBrdisc\fR
+requires CAP_NET_RAW to listen and send ICMP messages and capability CAP_NET_ADMIN to update routing tables\&.
+.SH "AVAILABILITY"
+.PP
+\fBrdisc\fR
+is part of
+\fIiputils\fR
+package\&.
