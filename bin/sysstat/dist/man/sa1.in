@@ -1,0 +1,91 @@
+.\" sa1 manual page - (C) 1999-2020 Sebastien Godard (sysstat <at> orange.fr)
+.TH SA1 8 "NOVEMBER 2020" Linux "Linux User's Manual" -*- nroff -*-
+.SH NAME
+sa1 \- Collect and store binary data in the system activity daily data file.
+
+.SH SYNOPSIS
+.B @SA_LIB_DIR@/sa1 [ --boot | --rotate [ iso ] | --sleep |
+.I interval count
+.B ]
+
+.SH DESCRIPTION
+.RB "The " "sa1"
+.RB "command is a shell procedure variant of the " "sadc"
+command and handles all of the flags and parameters of that command. The
+.B sa1
+command collects and stores binary data in the current standard
+system activity daily data file.
+.PP
+The standard system activity daily data file is named
+.IR "saDD " "unless"
+.BR "sadc" "'s option " "-D " "is used, in which case its name is"
+.IR "saYYYYMMDD" ","
+.RI "where " "YYYY " "stands for the current year, " "MM " "for the current month and " "DD"
+for the current day. By default it is located in the
+.I @SA_DIR@
+directory.
+.PP
+.RI "The " "interval " "and " "count"
+parameters specify that the record should be written
+.IR "count " "times at " "interval"
+seconds. If no arguments are given to
+.B sa1
+then a single record is written.
+
+The
+.B sa1
+command is designed to be started automatically by the
+.BR "cron " "command."
+
+.SH OPTIONS
+.TP
+.B --boot
+This option tells
+.BR "sa1 " "that the " "sadc"
+command should be called without specifying the
+.IR "interval " "and " "count"
+parameters in order to insert a dummy record, marking the time when the counters
+restart from 0.
+.TP
+.B --rotate [ iso ]
+.RB "Use this option to tell " "sa1 " "to insert a record of statistics to the standard"
+.IR "saDD" " system activity daily data file of the previous day."
+This should be done shortly after midnight (on day DD+1) in order to make sure that the
+data file covers the whole day, including the last interval of time just before midnight.
+.RB "Adding the " "iso" " keyword tells " "sa1" " to use
+.IR "saYYYYMMDD" " instead of " "saDD" " as the standard system activity daily data file name."
+.TP
+.B --sleep
+.RB "This option tells " "sa1 " "that the " "sadc"
+command should insert a comment indicating that the system is entering or leaving
+sleep mode (i.e. system suspend or hibernation).
+
+.SH EXAMPLE
+To collect data (including those from disks) every 10 minutes,
+place the following entry in your root crontab file:
+
+.B 0,10,20,30,40,50 * * * * @SA_LIB_DIR@/sa1 1 1 -S DISK
+
+To rotate current system activity daily data file, ensuring it is complete,
+place the following entry in your root crontab file:
+
+.B 0 0 * * * @SA_LIB_DIR@/sa1 --rotate
+
+.SH FILES
+.I @SA_DIR@/saDD
+.br
+.I @SA_DIR@/saYYYYMMDD
+.RS
+The standard system activity daily data files and their default location.
+.IR "YYYY " "stands for the current year, " "MM " "for the current month and " "DD"
+for the current day.
+
+.SH AUTHOR
+Sebastien Godard (sysstat <at> orange.fr)
+
+.SH SEE ALSO
+.BR "sar" "(1), " "sadc" "(8), " "sa2" "(8), " "sadf" "(1), " "sysstat" "(5)"
+.PP
+.I https://github.com/sysstat/sysstat
+.br
+.I http://pagesperso-orange.fr/sebastien.godard/

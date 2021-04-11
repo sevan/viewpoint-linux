@@ -1,0 +1,496 @@
+NOTES:
+	* The interval of time is calculated using ./proc/uptime files, not the value given on the command line.
+
+=====
+00010	./sar -V >/dev/null
+00011	./iostat -V >/dev/null
+00012	./mpstat -V >/dev/null
+00013	./sadc -V >/dev/null
+00014	./sadf -V >/dev/null
+00015	./pidstat -V >/dev/null
+00016	./tapestat -V >/dev/null
+00017	./cifsiostat -V >/dev/null
+
+=====	Files creation
+-----	Create data-new.tmp [.....RC / 12345]
+00050	5 x TZ=GMT ./sadc --unix_time=XXXXXXXXX -S XALL,-A_PWR_FAN,-A_PWR_IN,-A_PWR_TEMP,-A_PWR_FREQ tests/data-new.tmp 1 1 >/dev/null
+00052	TZ=GMT ./sadc --unix_time=XXXXXXXXX tests/data-new.tmp
+00054	TZ=GMT ./sadc --unix_time=1555594749 -C "Testing sysstat!" tests/data-new.tmp
+
+-----	Create data.tmp by appending data to data-new.tmp [.....RCR.. / 12345667]
+00055	TZ=GMT ./sadc --unix_time=1555595649 [-S XALL,-A_PWR_FAN,-A_PWR_IN,-A_PWR_TEMP,-A_PWR_FREQ] tests/data.tmp
+00057	2 x TZ=GMT ./sadc --unix_time=XXXXXXXXX -S XALL tests/data.tmp 1 1 >/dev/null
+
+-----	Create data0.tmp [R / 1] with no data inside
+00060	TZ=GMT ./sadc --unix_time=1555593609 -S A_NULL,A_PCSW tests/data0.tmp >/dev/null
+
+-----	Create data0-1.tmp by appending data to data0.tmp [RR. / 167]
+00062	2 x TZ=GMT ./sadc --unix_time=xxxxxxxxx [-S A_NULL,A_PCSW] tests/data0.tmp [ 1 1 ] >/dev/null
+
+-----	Create data1.tmp [..R.. / 67112] starting at root6
+00065	4 x TZ=GMT ./sadc --unix_time=xxxxxxx tests/data1.tmp 1 1 >/dev/null
+
+-----	Create data2.tmp [..R.. / 12267] starting at root1
+00068	4 x TZ=GMT ./sadc --unix_time=xxxxxxx tests/data2.tmp 1 1 >/dev/null
+
+-----	Create datafile data-ssr.tmp [.. / 12] containing all statistics, including sensors ones
+00070	2 x TZ=GMT ./sadc --unix_time=1555593609 -S XALL tests/data-ssr.tmp 1 1 >/dev/null
+
+-----	Create data-cd.tmp [..... / 12345] spanning two consecutive days
+00072	5 x TZ=GMT ./sadc --unix-time=xxxxxxxx -S A_NULL,A_CPU,A_PCSW tests/data-cd 1 1
+
+-----	Creating datax.tmp [RC....R..CR.RR..CC. / 1112341122111112223]
+00074	n x TZ=GMT ./sadc --unix_time=xxxxxxxxxx [-S A_NULL,A_CPU,A_IRQ,A_NET_DEV,A_FS,A_PCSW] tests/datax.tmp (...)
+
+-----	Creating data-long.tmp [...... / 123456b]
+00076	6 x TZ=GMT ./sadc --unix_time=XXXXXXXXX -S A_NULL,A_DISK,A_NET_DEV,A_NET_EDEV,A_NET_FC tests/data-long.tmp 1 1 >/dev/null
+
+-----	Creating a 32-bit datafile: tests/data32.tmp [RC.. / 1112]
+00080	4 x TZ=GMT tests/32bits/sadc32 -unix_time=xxxxxxxxx -S XALL,-A_PWR_FAN,-A_PWR_IN,-A_PWR_TEMP,-A_PWR_FREQ tests/data32.tmp [...]
+
+-----	Creating 32-bit datafile data32-ssr.tmp [.. / 12] containing all statistics, including sensors ones
+00090	2 x TZ=GMT tests/32bits/sadc32 --unix_time=1555593609 -S XALL tests/data32-ssr.tmp 1 1 >/dev/null
+
+=====	sar: Reading data-new.tmp
+00130	LC_ALL=C TZ=GMT ./sar -C -u -P ALL -f tests/data-new.tmp > tests/out.sar-u.tmp
+00131	LC_ALL=C TZ=GMT ./sar -bBdFHqSvwWy -I SUM -I ALL -m CPU -n ALL -r ALL -u ALL -P ALL -f tests/data-new.tmp > tests/out.sar-all.tmp
+	[Don't take into account sensors statistics which are not read from test root directory]
+00132	LC_ALL=C TZ=GMT ./sar -A -I 2-5 -P 3 -f tests/data-new.tmp > tests/out3.sar-all.tmp
+	[Check that -A doesn't necessarily imply -I ALL -P ALL]
+
+=====	sar: Reading data.tmp
+00160	LC_ALL=C TZ=GMT ./sar -C -u -P ALL -f tests/data.tmp > tests/out2.sar-u.tmp
+00161	LC_ALL=C TZ=GMT ./sar -A -f tests/data.tmp > tests/out2.sar-all.tmp
+00170	LC_ALL=C TZ=GMT ./sar --pretty -d -f tests/data.tmp > tests/out.sar-pretty.tmp
+
+=====	sar: Playing with environment variables
+00180	LC_ALL=C TZ=GMT S_TIME_FORMAT=ISO S_COLORS= ./sar -C -u --getenv -f tests/data.tmp > tests/out.sar-ISO.tmp
+00184	LC_ALL=C TZ=GMT S_TIME_FORMAT=ISO S_COLORS=never ./sar -C -u --getenv -f tests/data.tmp > tests/out.sar-never.tmp
+00188	LC_ALL=C TZ=GMT S_TIME_FORMAT=ISO S_COLORS=auto ./sar -C -u --getenv -f tests/data.tmp > tests/out.sar-auto.tmp
+00190	LC_ALL=C TZ=GMT S_TIME_FORMAT= S_COLORS=always S_COLORS_SGR="C=33;22:H=31;1:I=32;22:M=35;1:N=34;1:R=31;22:Z=36;22" ./sar -C -u --getenv -f tests/data.tmp > tests/out.sar-always.tmp
+
+=====	sar: Playing with sa1 and sa2 shell scripts
+00200	TZ=GMT ./sa1 --boot; TZ=GMT ./sa1 --unix_time=1555593629 1 1; TZ=GMT ./sa1 --unix_time=1555593649 1 1
+00205	LC_ALL=C TZ=GMT ./sar -f tests/sa18 > tests/out.sa1.tmp
+00220	LC_ALL=C TZ=GMT ./sa2 -A && mv tests/sar${DATE} tests/out.sa2.tmp && rm -f tests/sa${DATE}
+00230	./cron/sysstat.sleep post hibernate
+00235	LC_ALL=C TZ=GMT ./sar -f tests/sa01 -C > tests/out.sa1-sleep.tmp
+00240	TZ=GMT ./sa1 --rotate --unix_time=${STEP} 1 1
+00245	LC_ALL=C TZ=GMT ./sar -f tests/sa${DATE} | grep -v SYSSTAT > tests/out.sa1-rot.tmp
+00250	TZ=GMT ./sa1 --rotate iso --unix_time=${STEP} 1 1
+00255	LC_ALL=C TZ=GMT ./sar -f tests/sa${DATE} | grep -v SYSSTAT > tests/out1.sa1-rot.tmp
+
+=====	Checking JSON output validity
+00300	./sadf -j tests/data.tmp -C -- -A | $VER_JSON >/dev/null && ./sadf -j tests/data.tmp | $VER_JSON >/dev/null && ./sadf -t -j tests/data.tmp | $VER_JSON >/dev/null
+00305	./sadf -Hj tests/data.tmp -C | $VER_JSON >/dev/null
+00310	./mpstat -A -o JSON | $VER_JSON >/dev/null
+00320	./iostat -t -p ALL -o JSON | $VER_JSON >/dev/null
+00330	./mpstat -o JSON 1 10 | $VER_JSON >/dev/null
+	[Simulate a Ctrl/C within mpstat]
+00335	./mpstat 2 3 -o JSON | $VER_JSON >/dev/null
+00336	./mpstat -A 1 3 -o JSON | $VER_JSON >/dev/null
+00340	./iostat -p ALL -o JSON 1 10 | $VER_JSON >/dev/null
+	[Simulate a Ctrl/C within iostat]
+00345	./iostat -y 1 3 -o JSON ALL -p ALL -xt | $VER_JSON >/dev/null
+00346	./iostat 1 3 -o JSON | $VER_JSON >/dev/null
+00347	./iostat -xs 1 3 -o JSON ALL -p ALL | $VER_JSON >/dev/null
+00350	./iostat -o JSON -g total /dev/sda1 sda3 -g foo 1 3 | $VER_JSON >/dev/null
+00360	./mpstat -P ALL -T 1 2 -o JSON | $VER_JSON >/dev/null
+
+=====	Checking XML output validity
+00400	export LC_ALL=C ; ./sadf -x tests/data.tmp -C -- -A | $VER_XML --schema xml/sysstat.xsd - >/dev/null && ./sadf -x tests/data.tmp | $VER_XML --schema xml/sysstat.xsd - >/dev/null && ./sadf -T -x tests/data.tmp | $VER_XML --schema xml/sysstat.xsd - >/dev/null
+00405	export LC_ALL=C ; ./sadf -Hx tests/data.tmp -C | $VER_XML --schema xml/sysstat.xsd - >/dev/null
+00410	export LC_ALL=C ; ./sadf -x tests/data.tmp -C -- -A | $VER_XML --dtdvalid xml/sysstat-*.dtd - >/dev/null && ./sadf -x tests/data.tmp | $VER_XML --dtdvalid xml/sysstat-*.dtd - >/dev/null && ./sadf -t -x tests/data.tmp | $VER_XML --dtdvalid xml/sysstat-*.dtd - >/dev/null
+00415	export LC_ALL=C ; ./sadf -Hx tests/data.tmp -C | $VER_XML --dtdvalid xml/sysstat-*.dtd - >/dev/null
+00420	export LC_ALL=C ; cat tests/data-12.0.1.xml | $VER_XML --schema xml/sysstat.xsd - >/dev/null
+00430	export LC_ALL=C ; cat tests/data-12.0.1.xml | $VER_XML --dtdvalid xml/sysstat-*.dtd - >/dev/null
+
+=====	Checking sadf output
+00500	LC_ALL=C ./sadf -p tests/data.tmp -C -- -A > tests/out.sadf-p.tmp
+00510	LC_ALL=C ./sadf -d tests/data.tmp -C -- -A > tests/out.sadf-d.tmp
+00515	LC_ALL=C ./sadf -d tests/data.tmp -- -qu > tests/out.sadf-d-qu.tmp
+00520	LC_ALL=C ./sadf -x tests/data.tmp -C -- -A > tests/out.sadf-x.tmp
+00525	LC_ALL=C ./sadf -x tests/datax.tmp -C 1 2 -- -uw -P 0-2 > tests/out1.sadf-x.tmp
+00530	LC_ALL=C ./sadf -j tests/data.tmp -C -- -A > tests/out.sadf-j.tmp
+00540	LC_ALL=C ./sadf -g tests/data.tmp -C -- -A > tests/out.sadf-g.tmp
+00542	LC_ALL=C ./sadf -O height=370 -g tests/data.tmp > tests/out3.sadf-g.tmp
+00545	LC_ALL=C ./sadf -g tests/data.tmp -- -F MOUNT > tests/out1.sadf-g.tmp
+00550	LC_ALL=C TZ=GMT ./sadf -g -O autoscale,packed,oneday,showidle,showtoc,skipempty,showinfo,bwcol tests/data.tmp -T -C -- -A > tests/out2.sadf-g.tmp
+00555	LC_ALL=C TZ=GMT S_COLORS_PALETTE="0=000000:1=1a1aff:2=1affb2:3=b21aff:4=1ab2ff:5=ff1a1a:6=ffb31a:7=b2ff1a:8=efefef:9=000000:A=1a1aff:B=1affb2:C=b21aff:D=1ab2ff:E=ff1a1a:F=ffb31a:G=cc3300:H=000000:I=000000:K=ffffff:L=000000:T=000000:W=000000:X=000000" ./sadf -g --getenv -O customcol tests/data.tmp -C > tests/out.sadf-g-cc.tmp
+00560	LC_ALL=C ./sadf -H tests/data.tmp > tests/out.sadf-H.tmp
+00570	./sadf -r -O debug tests/data.tmp -C -- -A > tests/out.sadf-r.tmp
+00580	LC_ALL=C ./sadf -d -s 13:20:20 -e 13:20:40 --iface=enp6s0 --dev=sda --fs=/dev/sda6 tests/data.tmp -- -n DEV -Fdp > tests/out.sadf-se.tmp
+00585	LC_ALL=C ./sadf -d --iface=enp6s0 tests/data-long.tmp -- -n DEV 65 > tests/out.sadf-i.tmp
+00590	LC_ALL=C ./sadf -l -O pcparchive=tests/pcpar tests/data.tmp -C -- -A
+
+=====	Checking sadf conversion
+00600	./sadf -c tests/data-9.1.6 > tests/data-9.1.6.tmp
+00602	./sadf -c tests/data-9.1.6 -O hz=250 > tests/data-9.1.6-hz.tmp
+00605	LC_ALL=C TZ=GMT ./sar -C -A -f tests/data-9.1.6.tmp > tests/out.data-9.1.6.tmp
+00608	LC_ALL=C TZ=GMT ./sar -f tests/data-9.1.6-hz.tmp > tests/out.data-9.1.6-hz.tmp
+00610	./sadf -c tests/data-10.3.1 > tests/data-10.3.1.tmp
+00615	LC_ALL=C TZ=GMT ./sar -C -A -f tests/data-10.3.1.tmp > tests/out.data-10.3.1.tmp
+00620	./sadf -c tests/data-11.6.5 > tests/data-11.6.5.tmp
+00625	LC_ALL=C TZ=GMT ./sar -C -A -f tests/data-11.6.5.tmp > tests/out.data-11.6.5.tmp
+00650	LC_ALL=C TZ=GMT ./sar -AC -f tests/data-12.0.0 > tests/out.data-12.0.0.tmp
+00655	LC_ALL=C TZ=GMT ./sadf -H tests/data-12.0.0 > tests/out.data-12.0.0-H.tmp
+00660	LC_ALL=C TZ=GMT ./sadf -H tests/data-9.1.6-hz.tmp > tests/out.sadf-H-hz.tmp
+00664	LC_ALL=C TZ=GMT ./sadf -r -O debug tests/data-9.1.6-hz.tmp > tests/out.sadf-r-hz.tmp
+00670	LC_ALL=C TZ=GMT ./sadc 1 1 tests/data-11.6.5-ow.tmp 2>&1 | grep "Invalid system activity" >/dev/null
+	[See also 01300 and 01305]
+00675	LC_ALL=C TZ=GMT ./sadc -F 1 1 tests/data-11.6.5-ow.tmp 2>&1
+00678	LC_ALL=C TZ=GMT ./sar -f tests/data-11.6.5-ow.tmp > tests/out.sar-ow.tmp
+
+=====	Reading datafile from another architecture
+00700	LC_ALL=C TZ=GMT ./sar -C -A -f tests/data-ppc-11.7.2 > tests/out.data-ppc-11.7.2.tmp
+00710	LC_ALL=C TZ=GMT ./sar -C -A -f tests/data32.tmp > tests/out.sar32-A.tmp
+	[Read 32-bit datafile tests/data32.tmp using 64-bit sar. Assuming current arch is 64 bits]
+00715	LC_ALL=C TZ=GMT tests/32bits/sar32 -C -A -f tests/data.tmp 1 2 > tests/out2.sar32-A.tmp
+	[Read 64-bit datafile tests/data.tmp using 32-bit sar]
+00720	LC_ALL=C TZ=GMT ./sar -w -f tests/data32-ssr.tmp > tests/out.sar32-ssr.tmp
+00725	LC_ALL=C TZ=GMT ./sar -A -f tests/data32-ssr.tmp >/dev/null
+
+=====	Reading datafile with non printable chrs in comment (created using hexedit)
+00740	LC_ALL=C TZ=GMT ./sar -C -f tests/data-non-printable > tests/out.sar-non-printable.tmp
+
+=====	Reading data.tmp using an old sysstat version
+00750	LC_ALL=C TZ=GMT ./tests/ini/inisar -C -A -f tests/data.tmp > tests/out.data-ini.tmp
+	[There may be some small differences in ext disks stats between initial and current version
+	outputs, because initial version doesn't take into account discard fields]
+
+=====	Reading datafile with extra structures
+00770	LC_ALL=C TZ=GMT ./sar -A -f tests/data-extra-12.1.7 > tests/out.data-extra-12.1.7.tmp
+
+=====	Reading datafiles with unknown activity type or format
+00780	LC_ALL=C TZ=GMT ./sar -P ALL -f tests/data-ukwn > tests/out.sar-data-ukwn.tmp
+00784	LC_ALL=C TZ=GMT ./sar -w -f tests/data-ukwn > tests/out2.sar-data-ukwn.tmp
+00787	LC_ALL=C ./sadf -H tests/data-ukwn > tests/out.sadf-data-ukwn.tmp
+00790	LC_ALL=C TZ=GMT ./sar -A -f tests/data-ukwn0 > tests/out.sar-data-ukwn0.tmp
+00795	LC_ALL=C ./sadf -H tests/data-ukwn0 > tests/out.sadf-data-ukwn0.tmp
+
+=====	Testing sar's options
+00800	LC_ALL=C TZ=GMT ./sar --iface=lo,enp6s0,eth0 -n DEV,EDEV -f tests/data.tmp > tests/out.sar-iface.tmp
+00810	LC_ALL=C TZ=GMT ./sar --dev=sda -dp -f tests/data.tmp > tests/out.sar-dev.tmp
+00820	LC_ALL=C TZ=GMT ./sar --fs=/dev/sda6,/dev/foo -F -f tests/data.tmp > tests/out.sar-fs.tmp
+00830	LC_ALL=C TZ=GMT ./sar --dec=0 -A -f tests/data.tmp > tests/out.sar-dec.tmp
+00840	LC_ALL=C TZ=GMT ./sar --human -A -f tests/data.tmp > tests/out.sar-human.tmp
+00850	LC_ALL=C TZ=GMT ./sar -s 13:20:20 -e 13:20:40 -f tests/data.tmp > tests/out.sar-se.tmp
+00860	LC_ALL=C TZ=GMT ./sar -i 60 -uw -P ALL -f tests/data.tmp > tests/out.sar-i.tmp
+	[WARNING: /proc/uptime files are not consistent with unix_time values used. Don't trust timestamps!]
+00870	LC_ALL=C TZ=GMT ./sar 60 -uw -P ALL -f tests/data.tmp > tests/out2.sar-i.tmp
+00880	LC_ALL=C TZ=GMT ./sar 60 2 -f tests/data.tmp > tests/out3.sar-i.tmp
+00900	LC_ALL=C TZ=GMT ./sar -dh -j UUID -f tests/data.tmp > tests/out.sar-jUUID.tmp
+00902	LC_ALL=C TZ=GMT ./sar -F MOUNT -j UUID -f tests/data.tmp > tests/out.sar-FMOUNT-jUUID.tmp
+00904	LC_ALL=C TZ=GMT ./sar -dh -j ID -f tests/data.tmp > tests/out.sar-jID.tmp
+	[Done on root4. IDs are determined at run-time using ./dev/disk/by-id contents]
+00906	LC_ALL=C TZ=GMT ./sar -dh -j SID -f tests/data.tmp > tests/out.sar-jSID.tmp
+00908	LC_ALL=C TZ=GMT ./sar -F -j UUID -f tests/data.tmp > tests/out.sar-F-jUUID.tmp
+00920	LC_ALL=C TZ=GMT ./sar -f tests/data.tmp -e 13:30 -z -n DEV -dp > tests/out.sar-z.tmp
+00930	LC_ALL=C TZ=GMT ./sar -ur 0 > tests/out.sar-0.tmp
+00940	LC_ALL=C TZ=GMT ./sar 1 2 > tests/out.sar.tmp
+00950	LC_ALL=C TZ=GMT ./sar -qu 0 > tests/out.sar-qu.tmp
+00954	LC_ALL=C TZ=GMT ./sar -q -u 0 > tests/out1.sar-qu.tmp
+00958	LC_ALL=C TZ=GMT ./sar -q IO 0 > tests/out.sar-qIO.tmp
+00960	LC_ALL=C TZ=GMT ./sar -q MEM,IO 0 > tests/out.sar-qMEMIO.tmp
+00964	LC_ALL=C TZ=GMT ./sar -q PSI 0 > tests/out.sar-qPSI.tmp
+00968	LC_ALL=C TZ=GMT ./sar -q ALL 0 > tests/out.sar-qALL.tmp
+00970	LC_ALL=C TZ=GMT ./sar -q ALL 1 1 > tests/out1.sar-qALL.tmp
+00974	LC_ALL=C TZ=GMT ./sar -q PSI 1 1 2>&1 | grep "Requested activities not available" >/dev/null
+00976	LC_ALL=C TZ=GMT ./sar -q PSI 1 1 2>&1 | grep "Inconsistent input data" >/dev/null && exit 1 || exit 0
+00980	LC_ALL=C TZ=GMT ./sar -f tests/data2.tmp -q ALL > tests/out2.sar-q.tmp
+01010	LC_ALL=C TZ=GMT ./sar -f tests/data1.tmp -q ALL > tests/out2.sar-qALL.tmp
+01020	LC_ALL=C TZ=GMT ./sadc --unix_time=1555593609 -S A_NULL,A_PSI_CPU tests/data1.tmp 1 1 2>&1 | grep "Requested activities not available"
+01030	LC_ALL=C TZ=GMT ./sar -f tests/datax.tmp 1 1 -C -uw -P 0-2 > tests/out.sar-11.tmp
+
+=====	sar/sadf: Reading data0.tmp
+01100	LC_ALL=C TZ=GMT ./sar -A -f tests/data0.tmp > tests/out0.sar-A.tmp
+01110	./sadf tests/data0.tmp -- -A > tests/out0.sadf.tmp
+01120	./sadf -x tests/data0.tmp -- -A > tests/out0.sadf-x.tmp
+01130	./sadf -j tests/data0.tmp -- -A | $VER_JSON >/dev/null
+01140	LC_ALL=C TZ=GMT ./sar -r -f tests/data0.tmp 2>&1 | grep "Requested activities not available" >/dev/null
+01145	LC_ALL=C ./sadf tests/data0.tmp 2>&1 | grep "Requested activities not available" >/dev/null
+01150	LC_ALL=C ./sadf -g tests/data0.tmp -- -A > tests/out0.sadf-g.tmp
+
+01210	LC_ALL=C TZ=GMT ./sar -A -f tests/data0-1.tmp > tests/out01.sar-A.tmp
+01220	./sadf -d tests/data0-1.tmp -- -A > tests/out01.sadf-d.tmp
+01230	./sadf -j tests/data0-1.tmp -- -A | $VER_JSON >/dev/null
+01240	LC_ALL=C ./sadf -g tests/data0-1.tmp -- -A > tests/out01.sadf-g.tmp
+01250	LC_ALL=C ./sadf -H tests/data0-1.tmp > tests/out01.sadf-H.tmp
+
+=====	Playing with standard activity datafiles
+01300	echo foo >tests/sa01 ; ./sadc 1 1 - 2>&1 | grep "Invalid system activity" >/dev/null
+01305	LC_ALL=C TZ=GMT ./sadc -F 1 1 -
+01310	LC_ALL=C TZ=GMT ./sar -f tests/sa01 > tests/out3.sar-u.tmp
+01314	LC_ALL=C TZ=GMT ./sar > tests/out31.sar-u.tmp
+01318	LC_ALL=C TZ=GMT ./sar -f tests > tests/out34.sar-u.tmp
+01320	LC_ALL=C TZ=GMT ./sadc -D -
+01330	LC_ALL=C TZ=GMT ./sar -f tests/sa19700101 > tests/out32.sar-u.tmp
+01335	LC_ALL=C TZ=GMT ./sar > tests/out33.sar-u.tmp
+01340	./sadf > tests/out3.sadf.tmp
+01350	TZ=GMT ./sadc --unix_time=1556755199 - 1 3
+	[Create sa01 and sa02 - Timestamp can be obtained with: date +%s --date='Wed May  1 23:59:59 CEST 2019']
+01352	LC_ALL=C TZ=GMT ./sar -f tests/sa01 > tests/out33.sar-u.tmp
+01355	LC_ALL=C TZ=GMT ./sar -f tests/sa02 >> tests/out33.sar-u.tmp
+01360	LC_ALL=C TZ=GMT ./sar --unix_time=1556755203 -1 > tests/out.sar-1.tmp
+	[Go to day 02 and try to read sa01]
+01370	LC_ALL=C TZ=GMT ./sar --unix_time=1556755203 -D -o 1 2 > /dev/null
+	[Create datafile sa20190502]
+01372	LC_ALL=C TZ=GMT ./sar -f tests/sa20190502 > tests/out.sar-D.tmp
+01380	LC_ALL=C TZ=GMT ./sar --unix_time=1556755203 -o tests/sa-sigint.tmp 1 10 > /dev/null
+	[Create binary datafile sa-sigint.tmp. Stop with a simulated Ctrl/C]
+01382	LC_ALL=C TZ=GMT ./sar -f tests/sa-sigint.tmp -m CPU > tests/out.sar-sigint.tmp
+
+=====	Testing error cases
+01400	LC_ALL=C TZ=GMT ./sar -f tests/data-trunc 2>&1 | grep "End of system activity file unexpected" >/dev/null
+01405	LC_ALL=C TZ=GMT ./sadf -g tests/data-trunc -- -A > tests/out.sadf-g-trunc.tmp 2>/dev/null
+	[Check that sadf -g terminates properly on truncated input file]
+01410	LC_ALL=C ./sar 0 0 2>&1 | grep "Usage:" >/dev/null
+01415	LC_ALL=C ./sar 0 2 2>&1 | grep "Usage:" >/dev/null
+01420	LC_ALL=C ./sar 2 0 2>&1 | grep "Usage:" >/dev/null
+01425	LC_ALL=C ./sar 2 2 2 2>&1 | grep "Usage:" >/dev/null
+01430	LC_ALL=C ./sar -o foo 2>&1 | grep "Usage:" >/dev/null
+01440	LC_ALL=C TZ=GMT ./sar --unix_time=123456789 2>&1 | grep "Please check" >/dev/null
+01450	LC_ALL=C TZ=GMT ./sar -f tests/data-9.1.6 2>&1 | grep "cannot read the format of this file" >/dev/null
+01460	LC_ALL=C ./sar -q FOO 2>&1 | grep "Usage:" >/dev/null
+01470	LC_ALL=C ./sadf -x -j tests/data.tmp 2>&1 | grep "Usage:" >/dev/null
+
+=====	Specific tests for sensors statistics (basic sensor output already tested using data-11.6.5 conversion)
+01500	LC_ALL=C TZ=GMT ./sadf -d tests/data-11.6.5.tmp -- -m FAN,IN,TEMP > tests/out.data-11.6.5-sadf-d.tmp
+01510	LC_ALL=C TZ=GMT ./sadf -p tests/data-11.6.5.tmp -- -m FAN,IN,TEMP > tests/out.data-11.6.5-sadf-p.tmp
+01520	LC_ALL=C TZ=GMT ./sadf -r tests/data-11.6.5.tmp -- -m FAN,IN,TEMP > tests/out.data-11.6.5-sadf-r.tmp
+01530	LC_ALL=C TZ=GMT ./sadf -g tests/data-11.6.5.tmp -- -m FAN,IN,TEMP > tests/out.data-11.6.5-sadf-g.tmp
+01540	LC_ALL=C TZ=GMT ./sadf -j tests/data-11.6.5.tmp -- -m FAN,IN,TEMP > tests/out.data-11.6.5-sadf-j.tmp
+01547	cat tests/out.data-11.6.5-sadf-j.tmp | $VER_JSON >/dev/null;
+01550	LC_ALL=C TZ=GMT ./sadf -x tests/data-11.6.5.tmp -- -m FAN,IN,TEMP > tests/out.data-11.6.5-sadf-x.tmp
+01557	cat tests/out.data-11.6.5-sadf-x.tmp | $VER_XML --schema xml/sysstat.xsd - >/dev/null;
+01559	cat tests/out.data-11.6.5-sadf-x.tmp | $VER_XML --dtdvalid xml/sysstat-*.dtd - >/dev/null;
+01575	LC_ALL=C TZ=GMT ./sar -w -f tests/data-ssr.tmp > tests/out.sar-ssr.tmp
+01577	LC_ALL=C TZ=GMT ./sar -A -f tests/data-ssr.tmp >/dev/null
+01580	LC_ALL=C TZ=GMT tests/32bits/sar32 -w -f tests/data-ssr.tmp > tests/out2.sar-ssr.tmp
+01585	LC_ALL=C TZ=GMT tests/32bits/sar32 -A -f tests/data-ssr.tmp > tests/out22.sar-ssr.tmp
+
+=====	Specific tests for A_PWR_FREQ statistics
+01600	TZ=GMT ./sadc --unix_time=1555593609 -S A_NULL,A_PWR_FREQ tests/data-wghfreq.tmp 1 3 >/dev/null
+01610	LC_ALL=C TZ=GMT ./sar -f tests/data-wghfreq.tmp -m FREQ -P ALL > tests/out.sar-m-freq.tmp
+01620	LC_ALL=C TZ=GMT ./sadf -d tests/data-wghfreq.tmp -- -m FREQ -P ALL > tests/out.data-wghfreq-sadf-d.tmp
+01630	LC_ALL=C TZ=GMT ./sadf -p tests/data-wghfreq.tmp -- -m FREQ -P ALL > tests/out.data-wghfreq-sadf-p.tmp
+01640	LC_ALL=C TZ=GMT ./sadf -r tests/data-wghfreq.tmp -- -m FREQ -P ALL > tests/out.data-wghfreq-sadf-r.tmp
+01650	LC_ALL=C TZ=GMT ./sadf -j tests/data-wghfreq.tmp -- -m FREQ -P ALL > tests/out.data-wghfreq-sadf-j.tmp
+01657	cat tests/out.data-wghfreq-sadf-j.tmp | $VER_JSON >/dev/null;
+01660	LC_ALL=C TZ=GMT ./sadf -x tests/data-wghfreq.tmp -- -m FREQ -P ALL > tests/out.data-wghfreq-sadf-x.tmp
+01667	cat tests/out.data-wghfreq-sadf-x.tmp | $VER_XML --schema xml/sysstat.xsd - >/dev/null;
+01669	cat tests/out.data-wghfreq-sadf-x.tmp | $VER_XML --dtdvalid xml/sysstat-*.dtd - >/dev/null;
+
+=====	Specific tests
+01700	LC_ALL=C TZ=GMT ./sar -P ALL -u 2 3 > tests/out.sar-cpu6off.tmp
+	[Starting at root3 where CPU#6 is already offline]
+01710	LC_ALL=C TZ=GMT ./sar -P ALL -u -n SOFT 2 3 > tests/out.sar-cpu8onoff.tmp
+	[CPU#8 - Last in list - online then offline]
+01720	LC_ALL=C TZ=GMT ./sar -P ALL -u -n SOFT 2 3 > tests/out.sar-cpu8off.tmp
+	[CPU#8 - Last in list - already offline]
+01755	LC_ALL=C TZ=GMT ./sar -uw -f tests/data-cd -s 23:59:58 -e 00:00:00 > tests/out.sar-cd.tmp
+	[Testing options -s/-e on a file contents spanning two consecutive days]
+	[Work only with very simple file contents (no LINUX RESTART or COMMENT records)]
+	[Note: "11:00:00 PM" is "23:00:00" - "12:00:00 AM" is "00:00:00"]
+01760	LC_ALL=C TZ=GMT ./sar -BbdFHSvWwy -I ALL -m CPU,FREQ,USB -n ALL -q ALL -r ALL -u ALL 1 2 > tests/out.sar-A.tmp
+01810	LC_ALL=C TZ=GMT ./sar -C -P ALL -uw -n DEV -F -I 2,3 -f tests/datax.tmp > tests/out.sar-ext-hl.tmp
+01820	LC_ALL=C TZ=GMT ./sadf -g tests/data-long.tmp -- -d --dev=sds -n DEV,EDEV --iface=wlp5s0 > tests/out.sadf-disc.tmp
+01825	LC_ALL=C TZ=GMT ./sadf -g tests/data-long.tmp -O debug -- -d --dev=sdq,sdr -n DEV,EDEV --iface=virbr0,virbr0-1 > tests/out2.sadf-disc.tmp
+
+=====	iostat tests (basic output)
+02010	LC_ALL=C TZ=GMT ./iostat 2 3 > tests/out.iostat.tmp
+02020	LC_ALL=C TZ=GMT ./iostat ALL 2 3 > tests/out.iostat-ALL.tmp
+02030	LC_ALL=C TZ=GMT ./iostat -d -p ALL 2 3 > tests/out.iostat-p-ALL.tmp
+02040	LC_ALL=C TZ=GMT ./iostat -p sda 2 3 > tests/out.iostat-p-sda.tmp
+02050	LC_ALL=C TZ=GMT ./iostat -d ALL -p ALL 2 3 > tests/out.iostat-ALL-p-ALL.tmp
+02060	LC_ALL=C TZ=GMT ./iostat > tests/out.iostat-0.tmp
+02070	LC_ALL=C TZ=GMT ./iostat sda sdc 2 3 > tests/out.iostat-list.tmp
+02080	LC_ALL=C TZ=GMT ./iostat --pretty -d ALL -p ALL 2 2 > tests/out.iostat-pretty.tmp
+
+=====	iostat extended statistics
+02110	LC_ALL=C TZ=GMT ./iostat -x 1 2 > tests/out.iostat-x.tmp
+02120	LC_ALL=C TZ=GMT ./iostat -x ALL 1 2 > tests/out.iostat-x-ALL.tmp
+02130	LC_ALL=C TZ=GMT ./iostat -x -p ALL 1 2 > tests/out.iostat-x-p-ALL.tmp
+02140	LC_ALL=C TZ=GMT ./iostat -x -p sda 1 2 > tests/out.iostat-x-p-sda.tmp
+02150	LC_ALL=C TZ=GMT ./iostat -dx ALL -p ALL 1 7 > tests/out.iostat-x-ALL-p-ALL.tmp
+02160	LC_ALL=C TZ=GMT ./iostat -x > tests/out.iostat-x-0.tmp
+02170	LC_ALL=C TZ=GMT ./iostat -dx -p sdb,sdc > tests/out.iostat-x-list.tmp
+02180	LC_ALL=C TZ=GMT ./iostat -x ALL 1 3 > tests/out.iostat-x-ALL-flush.tmp
+
+=====	iostat tests (narrow/basic output)
+02210	LC_ALL=C TZ=GMT ./iostat -s 1 2 > tests/out.iostat-s.tmp
+02220	LC_ALL=C TZ=GMT ./iostat -ds ALL 1 2 > tests/out.iostat-s-ALL.tmp
+02230	LC_ALL=C TZ=GMT ./iostat -s sdb -p ALL 1 2 > tests/out.iostat-s-list-p.tmp
+02240	LC_ALL=C TZ=GMT ./iostat -s -p > tests/out.iostat-sp-0.tmp
+02250	LC_ALL=C TZ=GMT ./iostat -s ALL -p ALL 1 2 > tests/out.iostat-s-ALL-p-ALL.tmp
+02260	LC_ALL=C TZ=GMT ./iostat -s > tests/out.iostat-s-0.tmp
+02270	LC_ALL=C TZ=GMT ./iostat -ds sda -p sdb 1 2 > tests/out.iostat-s-list.tmp
+
+=====	iostat extended statistics (narrow output)
+02310	LC_ALL=C TZ=GMT ./iostat -xs 2 3 > tests/out.iostat-xs.tmp
+02320	LC_ALL=C TZ=GMT ./iostat -dxs /dev/sdb 2 3 > tests/out.iostat-xs-sdb.tmp
+02340	LC_ALL=C TZ=GMT ./iostat -dxs -p sda 2 3 > tests/out.iostat-xs-p-sda.tmp
+02370	LC_ALL=C TZ=GMT ./iostat -xs sda1 sda3 sdc1 -p sdb,sdd > tests/out.iostat-xs-list.tmp
+02380	LC_ALL=C TZ=GMT ./iostat -xs sda3 sda1 1 3 > tests/out.iostat-xs-list-part.tmp
+
+=====	Playing with iostat
+02410	LC_ALL=C TZ=GMT ./iostat 2 > tests/out.iostat-sigint.tmp
+	[Simulate a Ctrl/C]
+02420	LC_ALL=C TZ=GMT ./iostat -d foo > tests/out.iostat-foo.tmp
+02430	LC_ALL=C TZ=GMT ./iostat -ct 1 2 > tests/out.iostat-ct.tmp
+02440	LC_ALL=C TZ=GMT ./iostat -d -g disks sda sdb -g other sdc sdd 1 2 > tests/out.iostat-g.tmp
+02450	LC_ALL=C TZ=GMT ./iostat -dH -g disks sda sdb -g other sdc sdd 1 2 > tests/out.iostat-gH.tmp
+02460	LC_ALL=C TZ=GMT ./iostat --dec=1 1 2 > tests/out.iostat-dec.tmp
+02470	LC_ALL=C TZ=GMT ./iostat -d -p ALL -j PATH > tests/out.iostat-jPATH.tmp
+02474	LC_ALL=C TZ=GMT ./iostat -d -p ALL -j ID > tests/out.iostat-jID.tmp
+02480	LC_ALL=C TZ=GMT ./iostat -d -p ALL -j LABEL > tests/out.iostat-jLABEL.tmp
+02484	LC_ALL=C TZ=GMT ./iostat -d -p ALL -j PARTUUID > tests/out.iostat-jPARTUUID.tmp
+
+=====	Testing iostat error cases
+02500	LC_ALL=C ./iostat 2 0 2>&1 | grep "Usage:" >/dev/null
+02505	LC_ALL=C ./iostat -2 1 2>&1 | grep "Usage:" >/dev/null
+02510	LC_ALL=C ./iostat 2 -1 2>&1 | grep "Usage:" >/dev/null
+02515	LC_ALL=C ./iostat -H 2>&1 | grep "Usage:" >/dev/null
+02520	LC_ALL=C ./iostat -j FOObar 2>&1 | grep "Invalid" >/dev/null
+02525	LC_ALL=C ./iostat -p ALL +f tests/root/foo  2>&1 | grep "Usage:" >/dev/null
+
+=====	Playing again with iostat
+02600	LC_ALL=C TZ=GMT ./iostat -ym 1 2 > tests/out.iostat-ym.tmp
+02610	LC_ALL=C TZ=GMT ./iostat --human > tests/out.iostat-human.tmp
+02620	LC_ALL=C TZ=GMT ./iostat -dh -p ALL > tests/out.iostat-h.tmp
+02630	LC_ALL=C TZ=GMT ./iostat -kz -p ALL 1 2 > tests/out.iostat-kz.tmp
+02640	LC_ALL=C TZ=GMT ./iostat -dN -p ALL > tests/out.iostat-N.tmp
+02650	LC_ALL=C TZ=GMT ./iostat -d -j LABEL OS SYSTEM 1 2 > tests/out.iostat-jLABEL-list.tmp
+02660	LC_ALL=C TZ=GMT ./iostat -dxs -j UUID 2578463f-6947-48c7-8b09-876a4145cfb1 1 2 > tests/out.iostat-jUUID-list.tmp
+02670	LC_ALL=C TZ=GMT ./iostat -g total sda -g foo 1 2 > tests/out.iostat-g2.tmp
+02680	LC_ALL=C TZ=GMT ./iostat -g total ALL 1 2 > tests/out.iostat-gALL.tmp
+02690	LC_ALL=C TZ=GMT ./iostat -g total -p ALL 1 2 > tests/out.iostat-gpALL.tmp
+02696	LC_ALL=C TZ=GMT ./iostat -g other sda9 sda12 -g total -p ALL 1 2 > tests/out2.iostat-gpALL.tmp
+02698	LC_ALL=C TZ=GMT ./iostat -g total -p ALL -g other sda9 sda12 1 2 > tests/out3.iostat-gpALL.tmp
+02700	LC_ALL=C TZ=GMT ./iostat -g total -p sda 1 2 > tests/out.iostat-gp.tmp
+02710	LC_ALL=C TZ=GMT ./iostat -g total -p sda -y 1 3 > tests/out.iostat-gpy.tmp
+02720	LC_ALL=C TZ=GMT ./iostat -p cciss/c0d0 1 2 > tests/out.iostat-p-cciss.tmp
+02730	LC_ALL=C TZ=GMT ./iostat cciss/c0d0p1 1 2 > tests/out.iostat-cciss.tmp
+02740	LC_ALL=C TZ=GMT ./iostat -o JSON -x -p ALL 1 2 > tests/out.iostat-x-p-ALL-JSON.tmp
+02750	LC_ALL=C TZ=GMT ./iostat -o JSON -dm -g disks sda sdb -g other sdc sdd 1 2 > tests/out.iostat-g-JSON.tmp
+
+=====	iostat: Playing with environment variables
+02800	LC_ALL=C TZ=GMT S_TIME_FORMAT=ISO S_COLORS=never POSIXLY_CORRECT= ./iostat --getenv -d 2 3 > tests/out.iostat-ev.tmp
+
+=====	iostat: Using alternate statistics location
+02900	LC_ALL=C TZ=GMT ./iostat -p ALL 2 2 > tests/out.iostat-alt-pALL.tmp
+02905	LC_ALL=C TZ=GMT ./iostat -p ALL -f tests/root/proc 2 2 > tests/out.iostat-f-alt-pALL.tmp
+02910	LC_ALL=C TZ=GMT ./iostat -p ALL +f tests/root/proc 2 2 > tests/out.iostat+f-alt-pALL.tmp
+02920	LC_ALL=C TZ=GMT ./iostat -p ALL -f tests/root/my_stats 2 2 > tests/out.iostat-f-alt-pALL-ms.tmp
+02925	LC_ALL=C TZ=GMT ./iostat -p ALL +f tests/root/my_stats 2 2 > tests/out.iostat+f-alt-pALL-ms.tmp
+02930	LC_ALL=C TZ=GMT ./iostat ALL -f tests/root/my_stats 2 2 > tests/out.iostat-f-alt-ALL-ms.tmp
+02935	LC_ALL=C TZ=GMT ./iostat ALL +f tests/root/my_stats 2 2 > tests/out.iostat+f-alt-ALL-ms.tmp
+02940	LC_ALL=C TZ=GMT ./iostat -f tests/root/my_stats dm-2 sdg -p sda > tests/out.iostat-f-alt-list-ms.tmp
+02945	LC_ALL=C TZ=GMT ./iostat +f tests/root/my_stats dm-2 sdg -p sda > tests/out.iostat+f-alt-list-ms.tmp
+02950	LC_ALL=C TZ=GMT ./iostat -f tests/root/my_stats sda1 sda13 sdc > tests/out2.iostat-f-alt-list-ms.tmp
+02955	LC_ALL=C TZ=GMT ./iostat +f tests/root/my_stats sda1 sda13 sdc > tests/out2.iostat+f-alt-list-ms.tmp
+
+=====	mpstat: Basic tests
+03000	LC_ALL=C TZ=GMT ./mpstat > tests/out.mpstat.tmp
+03010	LC_ALL=C TZ=GMT ./mpstat -A 1 2 > tests/out.mpstat-A.tmp
+03020	LC_ALL=C TZ=GMT ./mpstat -A -P 0,3-5 -N all 1 1 > tests/out.mpstat-APN.tmp
+03030	LC_ALL=C TZ=GMT ./mpstat -P 0,3-5 -N all,1 -I CPU,SCPU,SUM > tests/out.mpstat-I.tmp
+
+=====	Playing with mpstat
+03040	LC_ALL=C TZ=GMT ./mpstat -I ALL --dec=1 > tests/out.mpstat-dec.tmp
+03050	LC_ALL=C TZ=GMT ./mpstat -T -P ALL 1 2 > tests/out.mpstat-T.tmp
+03060	LC_ALL=C TZ=GMT ./mpstat -o JSON -A 1 1 > tests/out.mpstat-A-JSON.tmp
+03070	LC_ALL=C TZ=GMT ./mpstat -o JSON -T -P ALL > tests/out.mpstat-T-JSON.tmp
+
+=====	Tests mpstat error cases
+03100	LC_ALL=C ./mpstat -1 2>&1 | grep "Usage:" >/dev/null
+03105	LC_ALL=C ./mpstat 0 0 2>&1 | grep "Usage:" >/dev/null
+03110	LC_ALL=C ./mpstat 0 2 2>&1 | grep "Usage:" >/dev/null
+03115	LC_ALL=C ./mpstat 2 0 2>&1 | grep "Usage:" >/dev/null
+03120	LC_ALL=C ./mpstat 2 2 2 2>&1 | grep "Usage:" >/dev/null
+03125	LC_ALL=C ./mpstat --dec=3 2>&1 | grep "Usage:" >/dev/null
+03130	LC_ALL=C ./mpstat -N -1 2>&1 | grep "Usage:" >/dev/null
+03135	LC_ALL=C ./mpstat -P 16 2>&1 | grep "Usage:" >/dev/null
+
+=====	tapestat: Basic tests
+04000	LC_ALL=C TZ=GMT ./tapestat > tests/out.tapestat.tmp
+04010	LC_ALL=C TZ=GMT ./tapestat -m 1 2 > tests/out.tapestat-m.tmp
+04020	LC_ALL=C TZ=GMT ./tapestat --human -y 1 2 > tests/out.tapestat-y.tmp
+04030	LC_ALL=C TZ=GMT ./tapestat -z 1 2 > tests/out.tapestat-z.tmp
+04040	LC_ALL=C TZ=GMT ./tapestat -t 1 2 > tests/out.tapestat-t.tmp
+
+=====	Tests tapestat error cases
+04100	LC_ALL=C TZ=GMT ./tapestat 1 2 2>&1 | grep "No tape drives" >/dev/null
+04102	LC_ALL=C ./tapestat -1 2>&1 | grep "Usage:" >/dev/null
+04105	LC_ALL=C ./tapestat 0 0 2>&1 | grep "Usage:" >/dev/null
+04110	LC_ALL=C ./tapestat 0 2 2>&1 | grep "Usage:" >/dev/null
+04115	LC_ALL=C ./tapestat 2 0 2>&1 | grep "Usage:" >/dev/null
+04120	LC_ALL=C ./tapestat 2 2 2 2>&1 | grep "Usage:" >/dev/null
+
+=====	cifsiostat: Basic tests
+04500	LC_ALL=C TZ=GMT ./cifsiostat > tests/out.cifsiostat.tmp
+04510	LC_ALL=C TZ=GMT ./cifsiostat -k 1 3 > tests/out.cifsiostat-k.tmp
+04520	LC_ALL=C TZ=GMT ./cifsiostat -t --human 1 3 > tests/out.cifsiostat-t-human.tmp
+04530	LC_ALL=C TZ=GMT ./cifsiostat -h 2 3 > tests/out.cifsiostat-h.tmp
+04540	LC_ALL=C TZ=GMT ./cifsiostat --dec=0 1 3 > tests/out.cifsiostat-dec.tmp
+04550	LC_ALL=C TZ=GMT ./cifsiostat 1 2 > tests/out.cifsiostat-SMB2.tmp
+04560	LC_ALL=C TZ=GMT ./cifsiostat --pretty 2 3 > tests/out.cifsiostat-pretty.tmp
+
+=====	Test cifsiostat error cases
+04600	LC_ALL=C ./cifsiostat -1 2>&1 | grep "Usage:" >/dev/null
+04605	LC_ALL=C ./cifsiostat 0 0 2>&1 | grep "Usage:" >/dev/null
+04610	LC_ALL=C ./cifsiostat 0 2 2>&1 | grep "Usage:" >/dev/null
+04615	LC_ALL=C ./cifsiostat 2 0 2>&1 | grep "Usage:" >/dev/null
+04620	LC_ALL=C ./cifsiostat 2 2 2 2>&1 | grep "Usage:" >/dev/null
+
+=====	pidstat: Basic tests
+05000	LC_ALL=C TZ=GMT ./pidstat > tests/out.pidstat.tmp
+05010	LC_ALL=C TZ=GMT ./pidstat -dRrsuvw > tests/out.pidstat-A.tmp
+05020	LC_ALL=C TZ=GMT ./pidstat -t -dRrsuvw > tests/out.pidstat-At.tmp
+05030	LC_ALL=C TZ=GMT ./pidstat -dRrsuvw -p ALL > tests/out.pidstat-A-ALL.tmp
+05040	LC_ALL=C TZ=GMT ./pidstat -t -dRrsuvw -p ALL > tests/out.pidstat-At-ALL.tmp
+05050	LC_ALL=C TZ=GMT ./pidstat -T TASK -dRrsuvw > tests/out.pidstat-A-TTASK.tmp
+05060	LC_ALL=C TZ=GMT ./pidstat -T TASK -dRrsuvw 2 6 > tests/out1.pidstat-A-TTASK.tmp
+05070	LC_ALL=C TZ=GMT ./pidstat -T TASK -t -dRrsuvw 2 6 > tests/out1.pidstat-At-TTASK.tmp
+05080	LC_ALL=C TZ=GMT ./pidstat -t -dRrsuvw 2 6 > tests/out1.pidstat-At.tmp
+05090	LC_ALL=C TZ=GMT ./pidstat -T TASK -t -dRrsuvw -p ALL 2 6 > tests/out1.pidstat-At-TTASK-ALL.tmp
+05100	LC_ALL=C TZ=GMT ./pidstat -T CHILD -dRrsuvw > tests/out.pidstat-A-TCHILD.tmp
+05110	LC_ALL=C TZ=GMT ./pidstat -T CHILD -dRrsuvw 2 6 > tests/out1.pidstat-A-TCHILD.tmp
+05120	LC_ALL=C TZ=GMT ./pidstat -T CHILD -t -dRrsuvw 2 6 > tests/out1.pidstat-At-TCHILD.tmp
+05130	LC_ALL=C TZ=GMT ./pidstat -T CHILD -t -dRrsuvw -p ALL 2 6 > tests/out1.pidstat-At-TCHILD-ALL.tmp
+05140	LC_ALL=C TZ=GMT ./pidstat -T ALL -t -dRrsuvw > tests/out.pidstat-At-TALL.tmp
+05150	LC_ALL=C TZ=GMT ./pidstat -T ALL -t -dRrsuvw -p ALL 2 6 > tests/out1.pidstat-At-TALL-ALL.tmp
+05160	LC_ALL=C TZ=GMT ./pidstat -T TASK -d 1 3 > tests/out1.pidstat-d-TTASK.tmp
+05170	LC_ALL=C TZ=GMT ./pidstat -T TASK -d -p ALL > tests/out.pidstat-d-TTASK-ALL.tmp
+05180	LC_ALL=C TZ=GMT ./pidstat -uRr -p 1234 1 2 > tests/out.pidstat-p-unkwn.tmp
+05190	LC_ALL=C TZ=GMT ./pidstat -svw -p 8741,8835 1 2 > tests/out2.pidstat-p-unkwn.tmp
+05200	LC_ALL=C TZ=GMT ./pidstat -ds -p 8741,21342 1 3 > tests/out.pidstat-p.tmp
+05210	LC_ALL=C TZ=GMT ./pidstat -uws -p ALL 1 3 > tests/out1.pidstat-p.tmp
+05220	LC_ALL=C TZ=GMT ./pidstat -druws 1 3 > tests/out1.pidstat.tmp
+05230	LC_ALL=C TZ=GMT ./pidstat -Rw 2 > tests/out.pidstat-sigint.tmp
+05240	LC_ALL=C TZ=GMT ./pidstat -C foofox 2 6 > tests/out.pidstat-C.tmp
+05250	LC_ALL=C TZ=GMT ./pidstat -C fox 2 6 > tests/out1.pidstat-C.tmp
+05260	LC_ALL=C TZ=GMT ./pidstat -C shell -C Web 2 6 > tests/out2.pidstat-C.tmp
+05270	LC_ALL=C TZ=GMT ./pidstat -t -C Web 2 6 > tests/out3.pidstat-C.tmp
+05280	LC_ALL=C TZ=GMT ./pidstat -t -C "(fox|shell)" 2 6 > tests/out4.pidstat-C.tmp
+05290	LC_ALL=C TZ=GMT ./pidstat -t -G foofox 2 6 > tests/out.pidstat-G.tmp
+05300	LC_ALL=C TZ=GMT ./pidstat -G fox 2 6 > tests/out1.pidstat-G.tmp
+05310	LC_ALL=C TZ=GMT ./pidstat -t -G fox 2 6 > tests/out2.pidstat-G.tmp
+05320	LC_ALL=C TZ=GMT ./pidstat -G fox -p ALL 2 6 > tests/out3.pidstat-G.tmp
+05330	LC_ALL=C TZ=GMT ./pidstat -t -G fox -p ALL 2 6 > tests/out4.pidstat-G.tmp
+05340	LC_ALL=C TZ=GMT ./pidstat -t -G "^s" -p ALL 2 6 > tests/out5.pidstat-C.tmp
+05346	LC_ALL=C TZ=GMT ./pidstat -t -G "terminal-$" -p ALL 2 6 > tests/out6.pidstat-C.tmp
+05350	LC_ALL=C TZ=GMT ./pidstat -lt -u -p ALL 2 6 > tests/out.pidstat-l.tmp
+05360	LC_ALL=C TZ=GMT ./pidstat -l -C "browser" 2 6 > tests/out.pidstat-lC.tmp
+05370	LC_ALL=C TZ=GMT ./pidstat -lt -G "server$" -p ALL 2 6 > tests/out.pidstat-lG.tmp
+05380	LC_ALL=C TZ=GMT ./pidstat -T ALL -t -dRrsuvw --dec=1 > tests/out.pidstat-dec.tmp
+05390	LC_ALL=C TZ=GMT ./pidstat -T ALL -t -dRrsuvw -H -h 2 1 > tests/out.pidstat-Hh.tmp
+05400	LC_ALL=C TZ=GMT ./pidstat -T ALL -dRrsuvw --human -I 2 1 > tests/out.pidstat-I.tmp
+05410	LC_ALL=C TZ=GMT ./pidstat -T CHILD -u -U 2 1 > tests/out.pidstat-U.tmp
+05420	LC_ALL=C TZ=GMT ./pidstat -t -rw -u -U foo 2 1 > tests/out.pidstat-Ufoo.tmp
+05430	LC_ALL=C TZ=GMT ./pidstat -t -rw -u -U root 2 1 > tests/out.pidstat-Uroot.tmp
+05440	LC_ALL=C TZ=GMT ./pidstat -t -svwu -p 21342,1234,7900,9009 2 6 > tests/out.pidstat-plist.tmp
+05450	LC_ALL=C TZ=GMT ./pidstat 2 6 -t -e sleep 1 > tests/out.pidstat-e.tmp
+
+=====	Tests to be done at the very end
+09900	grep -i FIXME *.c *.h *.in && exit 1 || exit 0

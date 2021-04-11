@@ -1,0 +1,720 @@
+# Chinese translations for sysstat package
+# sysstat 软件包的简体中文翻译.
+# Copyright (C) 2010 THE sysstat'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the sysstat package.
+# Ji ZhengYu <zhengyuji@gmail.com>, 2016.
+# Boyuan Yang <073plan@gmail.com>, 2018, 2019, 2020.
+msgid ""
+msgstr ""
+"Project-Id-Version: sysstat 12.3.3\n"
+"Report-Msgid-Bugs-To: sysstat <at> orange.fr\n"
+"POT-Creation-Date: 2020-05-01 09:28+0200\n"
+"PO-Revision-Date: 2020-05-01 08:53-0400\n"
+"Last-Translator: Boyuan Yang <073plan@gmail.com>\n"
+"Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Bugs: Report translation errors to the Language-Team address.\n"
+"X-Generator: Poedit 2.3\n"
+
+#: cifsiostat.c:75 mpstat.c:134 iostat.c:89 tapestat.c:104 sar.c:108
+#, c-format
+msgid "Usage: %s [ options ] [ <interval> [ <count> ] ]\n"
+msgstr "用法: %s [ 选项 ] [ <时间间隔> [ <次数> ] ]\n"
+
+#: cifsiostat.c:79
+#, c-format
+msgid ""
+"Options are:\n"
+"[ --dec={ 0 | 1 | 2 } ] [ --human ] [ -h ] [ -k | -m ] [ -t ] [ -V ] [ --debuginfo ]\n"
+msgstr ""
+"选项：\n"
+"[ --dec={ 0 | 1 | 2 } ] [ --human ] [ -h ] [ -k | -m ] [ -t ] [ -V ] [ --debuginfo ]\n"
+
+#: cifsiostat.c:82
+#, c-format
+msgid ""
+"Options are:\n"
+"[ --dec={ 0 | 1 | 2 } ] [ --human ] [ -h ] [ -k | -m ] [ -t ] [ -V ]\n"
+msgstr ""
+"选项：\n"
+"[ --dec={ 0 | 1 | 2 } ] [ --human ] [ -h ] [ -k | -m ] [ -t ] [ -V ]\n"
+"\n"
+
+#: sadc.c:98
+#, c-format
+msgid "Usage: %s [ options ] [ <interval> [ <count> ] ] [ <outfile> ]\n"
+msgstr "用法: %s [ 选项 ] [ <时间间隔> [ <次数> ] ] [ <输出文件> ]\n"
+
+#: sadc.c:101
+#, c-format
+msgid ""
+"Options are:\n"
+"[ -C <comment> ] [ -D ] [ -F ] [ -f ] [ -L ] [ -V ]\n"
+"[ -S { INT | DISK | IPV6 | POWER | SNMP | XDISK | ALL | XALL } ]\n"
+msgstr ""
+"选项:\n"
+"[ -C <注释> ] [ -D ] [ -F ] [ -f ] [ -L ] [ -V ]\n"
+"[ -S { INT | DISK | IPV6 | POWER | SNMP | XDISK | ALL | XALL } ]\n"
+
+#: sadc.c:272
+#, c-format
+msgid "Cannot write data to system activity file: %s\n"
+msgstr "无法将数据写入系统运行记录文件: %s\n"
+
+#: sadc.c:733 sadc.c:796 ioconf.c:507 rd_stats.c:83 sa_common.c:1843
+#: count.c:118
+#, c-format
+msgid "Cannot open %s: %s\n"
+msgstr "无法打开 %s: %s\n"
+
+#: sadc.c:1018
+#, c-format
+msgid "Cannot append data to that file (%s)\n"
+msgstr "无法向文件 (%s) 中追加记录\n"
+
+#: sadf.c:105
+#, c-format
+msgid "Usage: %s [ options ] [ <interval> [ <count> ] ] [ <datafile> | -[0-9]+ ]\n"
+msgstr "用法: %s [ 选项 ] [ <时间间隔> [ <次数> ] ] [ <数据文件> | -[0-9]+ ]\n"
+
+#: sadf.c:108
+#, c-format
+msgid ""
+"Options are:\n"
+"[ -C ] [ -c | -d | -g | -j | -l | -p | -r | -x ] [ -H ] [ -h ] [ -T | -t | -U ] [ -V ]\n"
+"[ -O <opts> [,...] ] [ -P { <cpu> [,...] | ALL } ]\n"
+"[ --dev=<dev_list> ] [ --fs=<fs_list> ] [ --iface=<iface_list> ]\n"
+"[ -s [ <hh:mm[:ss]> ] ] [ -e [ <hh:mm[:ss]> ] ]\n"
+"[ -- <sar_options> ]\n"
+msgstr ""
+"选项：\n"
+"[ -C ] [ -c | -d | -g | -j | -l | -p | -r | -x ] [ -H ] [ -h ] [ -T | -t | -U ] [ -V ]\n"
+"[ -O <选项> [,...] ] [ -P { <cpu> [,...] | ALL } ]\n"
+"[ --dev=<设备列表> ] [ --fs=<文件系统列表> ] [ --iface=<iface_列表> ]\n"
+"[ -s [ <时:分[:秒]> ] ] [ -e [ <时:分[:秒]> ] ]\n"
+"[ -- <sar_选项> ]\n"
+
+#: sadf.c:1860
+#, c-format
+msgid "PCP support not compiled in\n"
+msgstr "编译时未启用 PCP 支持\n"
+
+#: mpstat.c:137
+#, c-format
+msgid ""
+"Options are:\n"
+"[ -A ] [ -n ] [ -u ] [ -V ]\n"
+"[ -I { SUM | CPU | SCPU | ALL } ] [ -N { <node_list> | ALL } ]\n"
+"[ --dec={ 0 | 1 | 2 } ] [ -o JSON ] [ -P { <cpu_list> | ALL } ]\n"
+msgstr ""
+"选项：\n"
+"[ -I { SUM | CPU | SCPU | ALL } ] [ -N { <node_list> | ALL } ]\n"
+"[ --dec={ 0 | 1 | 2 } ] [ -o JSON ] [ -P { <CPU_列表> | ALL } ]\n"
+"\n"
+
+#: mpstat.c:1736 pidstat.c:2288 sar.c:383
+msgid "Average:"
+msgstr "平均时间:"
+
+#: rd_stats.c:359
+#, c-format
+msgid "Cannot read %s\n"
+msgstr "无法读取 %s\n"
+
+#: sa_common.c:302
+#, c-format
+msgid "File created by sar/sadc from sysstat version %d.%d.%d"
+msgstr "文件由 sysstat 版本 %d.%d.%d 中的 sar/sadc 创建"
+
+#: sa_common.c:333
+#, c-format
+msgid "Invalid system activity file: %s\n"
+msgstr "无效的系统运行记录文件: %s\n"
+
+#: sa_common.c:341
+#, c-format
+msgid "Current sysstat version cannot read the format of this file (%#x)\n"
+msgstr "当前版本的 sysstat 无法读取此文件格式 (%#x)\n"
+
+#: sa_common.c:358 pidstat.c:207
+#, c-format
+msgid "Requested activities not available\n"
+msgstr "所需的运行记录无法获得\n"
+
+#: sa_common.c:1437
+#, c-format
+msgid "Error while reading system activity file: %s\n"
+msgstr "查看系统运行记录时出错: %s\n"
+
+#: sa_common.c:1447
+#, c-format
+msgid "End of system activity file unexpected\n"
+msgstr "系统运行记录文件的结尾有未知错误\n"
+
+#: sa_common.c:1846
+#, c-format
+msgid "Please check if data collecting is enabled\n"
+msgstr "请检查是否允许数据收集\n"
+
+#: sa_common.c:2198
+#, c-format
+msgid "Requested activities not available in file %s\n"
+msgstr "所需的运行记录在此文件 %s 中无法获得\n"
+
+#: sa_common.c:2329 iostat.c:2165
+#, c-format
+msgid "Invalid type of persistent device name\n"
+msgstr "固有设备名类型无效\n"
+
+#: pidstat.c:89
+#, c-format
+msgid "Usage: %s [ options ] [ <interval> [ <count> ] ] [ -e <program> <args> ]\n"
+msgstr "用法：%s [ 选项 ] [ <时间间隔> [ <计数> ] ] [ -e <程序> <参数> ]\n"
+
+#: pidstat.c:92
+#, c-format
+msgid ""
+"Options are:\n"
+"[ -d ] [ -H ] [ -h ] [ -I ] [ -l ] [ -R ] [ -r ] [ -s ] [ -t ] [ -U [ <username> ] ]\n"
+"[ -u ] [ -V ] [ -v ] [ -w ] [ -C <command> ] [ -G <process_name> ]\n"
+"[ -p { <pid> [,...] | SELF | ALL } ] [ -T { TASK | CHILD | ALL } ]\n"
+"[ --dec={ 0 | 1 | 2 } ] [ --human ]\n"
+msgstr ""
+"选项：\n"
+"[ -d ] [ -H ] [ -h ] [ -I ] [ -l ] [ -R ] [ -r ] [ -s ] [ -t ] [ -U [ <用户名> ] ]\n"
+"[ -u ] [ -V ] [ -v ] [ -w ] [ -C <命令> ] [ -G <进程名> ]\n"
+"[ -p { <pid> [,...] | SELF | ALL } ] [ -T { TASK | CHILD | ALL } ]\n"
+"[ --dec={ 0 | 1 | 2 } ] [ --human ]\n"
+
+#: sadf_misc.c:1220
+#, c-format
+msgid "System activity data file: %s (%#x)\n"
+msgstr "系统运行记录数据文件: %s (%#x)\n"
+
+#: sadf_misc.c:1229
+#, c-format
+msgid "Genuine sa datafile: %s (%x)\n"
+msgstr "Genuine sa 数据文件: %s (%x)\n"
+
+#: sadf_misc.c:1230
+msgid "no"
+msgstr "否"
+
+#: sadf_misc.c:1230
+msgid "yes"
+msgstr "是"
+
+#: sadf_misc.c:1233
+#, c-format
+msgid "Host: "
+msgstr "主机："
+
+#: sadf_misc.c:1243
+#, c-format
+msgid "File date: %s\n"
+msgstr "文件日期：%s\n"
+
+#: sadf_misc.c:1246
+#, c-format
+msgid "File time: "
+msgstr "文件时间："
+
+#: sadf_misc.c:1251
+#, c-format
+msgid "Timezone: %s\n"
+msgstr "时区：%s\n"
+
+#: sadf_misc.c:1254
+#, c-format
+msgid "File composition: (%d,%d,%d),(%d,%d,%d),(%d,%d,%d)\n"
+msgstr "文件组成：(%d,%d,%d),(%d,%d,%d),(%d,%d,%d)\n"
+
+#: sadf_misc.c:1259
+#, c-format
+msgid "Size of a long int: %d\n"
+msgstr "长整型数的字节大小：%d\n"
+
+#: sadf_misc.c:1261
+#, c-format
+msgid "Number of activities in file: %u\n"
+msgstr "文件中的运行记录数量：%u\n"
+
+#: sadf_misc.c:1263
+#, c-format
+msgid "Extra structures available: %c\n"
+msgstr "额外可用的结构：%c\n"
+
+#: sadf_misc.c:1266
+#, c-format
+msgid "List of activities:\n"
+msgstr "运行记录列表:\n"
+
+#: sadf_misc.c:1277
+msgid "Unknown activity"
+msgstr "未知活动"
+
+#: sadf_misc.c:1285
+#, c-format
+msgid " \t[Unknown format]"
+msgstr " \t[未知格式]"
+
+#: pr_stats.c:2616 pr_stats.c:2623 pr_stats.c:2728 pr_stats.c:2773
+msgid "Summary:"
+msgstr "总计:"
+
+#: count.c:169
+#, c-format
+msgid "Cannot handle so many processors!\n"
+msgstr "处理器太多，无法处理！\n"
+
+#: iostat.c:92
+#, c-format
+msgid ""
+"Options are:\n"
+"[ -c ] [ -d ] [ -h ] [ -k | -m ] [ -N ] [ -s ] [ -t ] [ -V ] [ -x ] [ -y ] [ -z ]\n"
+"[ { -f | +f } <directory> ] [ -j { ID | LABEL | PATH | UUID | ... } ]\n"
+"[ --dec={ 0 | 1 | 2 } ] [ --human ] [ -o JSON ]\n"
+"[ [ -H ] -g <group_name> ] [ -p [ <device> [,...] | ALL ] ]\n"
+"[ <device> [...] | ALL ] [ --debuginfo ]\n"
+msgstr ""
+"选项：\n"
+"[ -c ] [ -d ] [ -h ] [ -k | -m ] [ -N ] [ -s ] [ -t ] [ -V ] [ -x ] [ -y ] [ -z ]\n"
+"[ { -f | +f } <目录> ] [ -j { ID | LABEL | PATH | UUID | ... } ]\n"
+"[ --dec={ 0 | 1 | 2 } ] [ --human ] [ -o JSON ]\n"
+"[ [ -H ] -g <用户组名> ] [ -p [ <设备> [,...] | ALL ] ]\n"
+"[ <设备> [...] | ALL ] [ --debuginfo ]\n"
+
+#: iostat.c:99
+#, c-format
+msgid ""
+"Options are:\n"
+"[ -c ] [ -d ] [ -h ] [ -k | -m ] [ -N ] [ -s ] [ -t ] [ -V ] [ -x ] [ -y ] [ -z ]\n"
+"[ { -f | +f } <directory> ] [ -j { ID | LABEL | PATH | UUID | ... } ]\n"
+"[ --dec={ 0 | 1 | 2 } ] [ --human ] [ -o JSON ]\n"
+"[ [ -H ] -g <group_name> ] [ -p [ <device> [,...] | ALL ] ]\n"
+"[ <device> [...] | ALL ]\n"
+msgstr ""
+"选项：\n"
+"[ -c ] [ -d ] [ -h ] [ -k | -m ] [ -N ] [ -s ] [ -t ] [ -V ] [ -x ] [ -y ] [ -z ]\n"
+"[ { -f | +f } <目录> ] [ -j { ID | LABEL | PATH | UUID | ... } ]\n"
+"[ --dec={ 0 | 1 | 2 } ] [ --human ] [ -o JSON ]\n"
+"[ [ -H ] -g <用户组名> ] [ -p [ <设备> [,...] | ALL ] ]\n"
+"[ <设备> [...] | ALL ]\n"
+
+#: tapestat.c:106
+#, c-format
+msgid ""
+"Options are:\n"
+"[ --human ] [ -k | -m ] [ -t ] [ -V ] [ -y ] [ -z ]\n"
+msgstr ""
+"选项：\n"
+"[ --human ] [ -k | -m ] [ -t ] [ -V ] [ -y ] [ -z ]\n"
+
+#: tapestat.c:272
+#, c-format
+msgid "No tape drives with statistics found\n"
+msgstr "未找到带统计信息的磁带设备\n"
+
+#: common.c:79
+#, c-format
+msgid "sysstat version %s\n"
+msgstr "sysstat 版本 %s\n"
+
+#: sar.c:123
+#, c-format
+msgid ""
+"Options are:\n"
+"[ -A ] [ -B ] [ -b ] [ -C ] [ -D ] [ -d ] [ -F [ MOUNT ] ] [ -H ] [ -h ]\n"
+"[ -p ] [ -r [ ALL ] ] [ -S ] [ -t ] [ -u [ ALL ] ] [ -V ]\n"
+"[ -v ] [ -W ] [ -w ] [ -y ] [ -z ]\n"
+"[ -I { <int_list> | SUM | ALL } ] [ -P { <cpu_list> | ALL } ]\n"
+"[ -m { <keyword> [,...] | ALL } ] [ -n { <keyword> [,...] | ALL } ]\n"
+"[ -q [ <keyword> [,...] | ALL ] ]\n"
+"[ --dev=<dev_list> ] [ --fs=<fs_list> ] [ --iface=<iface_list> ]\n"
+"[ --dec={ 0 | 1 | 2 } ] [ --help ] [ --human ] [ --sadc ]\n"
+"[ -j { SID | ID | LABEL | PATH | UUID | ... } ]\n"
+"[ -f [ <filename> ] | -o [ <filename> ] | -[0-9]+ ]\n"
+"[ -i <interval> ] [ -s [ <hh:mm[:ss]> ] ] [ -e [ <hh:mm[:ss]> ] ]\n"
+msgstr ""
+"选项：\n"
+"[ -A ] [ -B ] [ -b ] [ -C ] [ -D ] [ -d ] [ -F [ MOUNT ] ] [ -H ] [ -h ]\n"
+"[ -p ] [ -r [ ALL ] ] [ -S ] [ -t ] [ -u [ ALL ] ] [ -V ]\n"
+"[ -v ] [ -W ] [ -w ] [ -y ] [ -z ]\n"
+"[ -I { <中断列表> | SUM | ALL } ] [ -P { <cpu_列表> | ALL } ]\n"
+"[ -m { <关键字> [,...] | ALL } ] [ -n { <关键字> [,...] | ALL } ]\n"
+"[ -q [ <keyword> [,...] | ALL ] ]\n"
+"[ --dev=<设备列表> ] [ --fs=<文件系统列表> ] [ --iface=<iface_列表> ]\n"
+"[ --dec={ 0 | 1 | 2 } ] [ --help ] [ --human ] [ --sadc ]\n"
+"[ -j { SID | ID | LABEL | PATH | UUID | ... } ]\n"
+"[ -f [ <文件名> ] | -o [ <文件名> ] | -[0-9]+ ]\n"
+"[ -i <时间间隔> ] [ -s [ <时:分[:秒]> ] ] [ -e [ <时:分[:秒]> ] ]\n"
+
+#: sar.c:149
+#, c-format
+msgid "Main options and reports (report name between square brackets):\n"
+msgstr "主要选项和报告（报告名以方括号分隔）：\n"
+
+#: sar.c:150
+#, c-format
+msgid "\t-B\tPaging statistics [A_PAGE]\n"
+msgstr "\t-B\t分页状况 [A_PAGE]\n"
+
+#: sar.c:151
+#, c-format
+msgid "\t-b\tI/O and transfer rate statistics [A_IO]\n"
+msgstr "\t-b\tI/O 和传输速率信息状况 [A_IO]\n"
+
+#: sar.c:152
+#, c-format
+msgid "\t-d\tBlock devices statistics [A_DISK]\n"
+msgstr "\t-d\t块设备状况 [A_DISK]\n"
+
+#: sar.c:153
+#, c-format
+msgid "\t-F [ MOUNT ]\n"
+msgstr "\t-F [ MOUNT ]\n"
+
+#: sar.c:154
+#, c-format
+msgid "\t\tFilesystems statistics [A_FS]\n"
+msgstr "\t\t文件系统统计信息 [A_FS]\n"
+
+#: sar.c:155
+#, c-format
+msgid "\t-H\tHugepages utilization statistics [A_HUGE]\n"
+msgstr "\t-H\t巨大页面利用率 [A_HUGE]\n"
+
+#: sar.c:156
+#, c-format
+msgid ""
+"\t-I { <int_list> | SUM | ALL }\n"
+"\t\tInterrupts statistics [A_IRQ]\n"
+msgstr ""
+"\t-I { <中断列表> | SUM | ALL }\n"
+"\t\t中断信息状况 [A_IRQ]\n"
+
+#: sar.c:158
+#, c-format
+msgid ""
+"\t-m { <keyword> [,...] | ALL }\n"
+"\t\tPower management statistics [A_PWR_...]\n"
+"\t\tKeywords are:\n"
+"\t\tCPU\tCPU instantaneous clock frequency\n"
+"\t\tFAN\tFans speed\n"
+"\t\tFREQ\tCPU average clock frequency\n"
+"\t\tIN\tVoltage inputs\n"
+"\t\tTEMP\tDevices temperature\n"
+"\t\tUSB\tUSB devices plugged into the system\n"
+msgstr ""
+"\t-m { <关键字> [,...] | ALL }\n"
+"\t\t电源管理统计信息 [A_PWR_...]\n"
+"\t\t关键字：\n"
+"\t\tCPU\tCPU 瞬时时钟频率\n"
+"\t\tFAN\t风扇速度\n"
+"\\t\\tFREQ\\tCPU 平均时钟频率\n"
+"\t\tIN\t输入电压\n"
+"\t\tTEMP\t设备温度\n"
+"\\t\\tUSB\\t连接的 USB 设备\n"
+
+#: sar.c:167
+#, c-format
+msgid ""
+"\t-n { <keyword> [,...] | ALL }\n"
+"\t\tNetwork statistics [A_NET_...]\n"
+"\t\tKeywords are:\n"
+"\t\tDEV\tNetwork interfaces\n"
+"\t\tEDEV\tNetwork interfaces (errors)\n"
+"\t\tNFS\tNFS client\n"
+"\t\tNFSD\tNFS server\n"
+"\t\tSOCK\tSockets\t(v4)\n"
+"\t\tIP\tIP traffic\t(v4)\n"
+"\t\tEIP\tIP traffic\t(v4) (errors)\n"
+"\t\tICMP\tICMP traffic\t(v4)\n"
+"\t\tEICMP\tICMP traffic\t(v4) (errors)\n"
+"\t\tTCP\tTCP traffic\t(v4)\n"
+"\t\tETCP\tTCP traffic\t(v4) (errors)\n"
+"\t\tUDP\tUDP traffic\t(v4)\n"
+"\t\tSOCK6\tSockets\t(v6)\n"
+"\t\tIP6\tIP traffic\t(v6)\n"
+"\t\tEIP6\tIP traffic\t(v6) (errors)\n"
+"\t\tICMP6\tICMP traffic\t(v6)\n"
+"\t\tEICMP6\tICMP traffic\t(v6) (errors)\n"
+"\t\tUDP6\tUDP traffic\t(v6)\n"
+"\t\tFC\tFibre channel HBAs\n"
+"\t\tSOFT\tSoftware-based network processing\n"
+msgstr ""
+"\t-n { <关键字> [,...] | ALL }\n"
+"\t\t网络统计信息 [A_NET_...]\n"
+"\t\t关键字：\n"
+"\t\tDEV\t网络接口\n"
+"\t\tEDEV\t网络接口（错误）\n"
+"\t\tNFS\tNFS 客户端\n"
+"\t\tNFSD\tNFS 服务端\n"
+"\t\tSOCK\tSockets\t(v4)\n"
+"\t\tIP\tIP 流\t(v4)\n"
+"\t\tEIP\tIP 流\t(v4)（错误）\n"
+"\t\tICMP\tICMP 流\t(v4)\n"
+"\t\tEICMP\tICMP 流\t(v4)（错误）\n"
+"\t\tTCP\tTCP 流\t(v4)\n"
+"\t\tETCP\tTCP 流\t(v4) (错误)\n"
+"\t\tUDP\tUDP 流\t(v4)\n"
+"\t\tSOCK6\tSockets\t(v6)\n"
+"\t\tIP6\tIP 流\t(v6)\n"
+"\t\tEIP6\tIP 流\t(v6)（错误）\n"
+"\t\tICMP6\tICMP 流\t(v6)\n"
+"\t\tEICMP6\tICMP 流\t(v6) (错误)\n"
+"\t\tUDP6\tUDP 流\t(v6)\n"
+"\t\tFC\tFibre channel HBAs\n"
+"\t\tSOFT\t基于软件的网络处理\n"
+"\n"
+
+#: sar.c:190
+#, c-format
+msgid ""
+"\t-q [ <keyword> [,...] | PSI | ALL ]\n"
+"\t\tSystem load and pressure-stall statistics\n"
+"\t\tKeywords are:\n"
+"\t\tLOAD\tQueue length and load average statistics [A_QUEUE]\n"
+"\t\tCPU\tPressure-stall CPU statistics [A_PSI_CPU]\n"
+"\t\tIO\tPressure-stall I/O statistics [A_PSI_IO]\n"
+"\t\tMEM\tPressure-stall memory statistics [A_PSI_MEM]\n"
+msgstr ""
+
+#: sar.c:197
+#, c-format
+msgid ""
+"\t-r [ ALL ]\n"
+"\t\tMemory utilization statistics [A_MEMORY]\n"
+msgstr ""
+"\t-r [ ALL ]\n"
+"\t\t内存利用率信息 [A_MEMORY]\n"
+
+#: sar.c:199
+#, c-format
+msgid "\t-S\tSwap space utilization statistics [A_MEMORY]\n"
+msgstr "\t-S\t交换空间利用率信息 [A_MEMORY]\n"
+
+#: sar.c:200
+#, c-format
+msgid ""
+"\t-u [ ALL ]\n"
+"\t\tCPU utilization statistics [A_CPU]\n"
+msgstr ""
+"\t-u [ ALL ]\n"
+"\t\tCPU 利用率信息 [A_CPU]\n"
+
+#: sar.c:202
+#, c-format
+msgid "\t-v\tKernel tables statistics [A_KTABLES]\n"
+msgstr "\t-v\t内核表统计信息 [A_KTABLES]\n"
+
+#: sar.c:203
+#, c-format
+msgid "\t-W\tSwapping statistics [A_SWAP]\n"
+msgstr "\t-W\t交换信息 [A_SWAP]\n"
+
+#: sar.c:204
+#, c-format
+msgid "\t-w\tTask creation and system switching statistics [A_PCSW]\n"
+msgstr "\t-w\t任务创建与系统切换信息 [A_PCSW]\n"
+
+#: sar.c:205
+#, c-format
+msgid "\t-y\tTTY devices statistics [A_SERIAL]\n"
+msgstr "\t-y\tTTY 设备信息 [A_SERIAL]\n"
+
+#: sar.c:219
+#, c-format
+msgid "Data collector will be sought in PATH\n"
+msgstr "将在 PATH 中查找数据收集器\n"
+
+#: sar.c:222
+#, c-format
+msgid "Data collector found: %s\n"
+msgstr "找到数据收集器: %s\n"
+
+#: sar.c:287
+#, c-format
+msgid "End of data collecting unexpected\n"
+msgstr "数据流结尾有未知错误\n"
+
+#: sar.c:292
+#, c-format
+msgid "Inconsistent input data\n"
+msgstr "所取数据前后不一致\n"
+
+#: sar.c:898
+#, c-format
+msgid "Using a wrong data collector from a different sysstat version\n"
+msgstr "正在使用来自不同版本 sysstat 的错误的数据收集器\n"
+
+#: sar.c:1543
+#, c-format
+msgid "-f and -o options are mutually exclusive\n"
+msgstr "-f 和 -o 选项不能同时使用\n"
+
+#: sar.c:1553
+#, c-format
+msgid "Not reading from a system activity file (use -f option)\n"
+msgstr "无法查看系统活动记录文件 (用 -f 选项)\n"
+
+#: sar.c:1706
+#, c-format
+msgid "Cannot find the data collector (%s)\n"
+msgstr "无法找到数据收集器 (%s)\n"
+
+#: sa_conv.c:99
+#, c-format
+msgid "Cannot convert the format of this file\n"
+msgstr "无法轮换此文件的格式\n"
+
+#: sa_conv.c:375
+#, c-format
+msgid ""
+"\n"
+"CPU activity not found in file. Aborting...\n"
+msgstr ""
+"\n"
+"未在文件中找到CPU 活动记录。退出...\n"
+
+#: sa_conv.c:398
+#, c-format
+msgid ""
+"\n"
+"Invalid data found. Aborting...\n"
+msgstr ""
+"\n"
+"发现无效数据。退出...\n"
+
+#: sa_conv.c:1871
+#, c-format
+msgid "Statistics:\n"
+msgstr "统计信息：\n"
+
+#: sa_conv.c:1972
+#, c-format
+msgid ""
+"\n"
+"File format already up-to-date\n"
+msgstr ""
+"\n"
+"文件格式已为最新\n"
+
+#: sa_conv.c:1984
+#, c-format
+msgid "HZ: Using current value: %lu\n"
+msgstr "HZ：正在使用当前值：%lu\n"
+
+#: sa_conv.c:2015
+#, c-format
+msgid "File successfully converted to sysstat format version %s\n"
+msgstr "文件已成功转换为 sysstat 格式版本 %s\n"
+
+#~ msgid "\t-q\tQueue length and load average statistics [A_QUEUE]\n"
+#~ msgstr "\t-q\t队列长度和平均负载统计信息 [A_QUEUE]\n"
+
+#~ msgid "Cannot find disk data\n"
+#~ msgstr "无法找到磁盘数据\n"
+
+#~ msgid "Cannot write system activity file header: %s\n"
+#~ msgstr "无法写系统运行记录文件开始部分: %s\n"
+
+#~ msgid ""
+#~ "Options are:\n"
+#~ "[ -h ] [ -k | -m ] [ -t ] [ -V ]\n"
+#~ msgstr ""
+#~ "选项:\n"
+#~ "[ -h ] [ -k | -m ] [ -t ] [ -V ]\n"
+
+#~ msgid "Not that many processors!\n"
+#~ msgstr "处理器实在太多！\n"
+
+#~ msgid "Main options and reports:\n"
+#~ msgstr "主选项和报告：\n"
+
+#~ msgid "\t-R\tMemory statistics\n"
+#~ msgstr "\t-R\t内存状况\n"
+
+#~ msgid "Other devices not listed here"
+#~ msgstr "未在此列出的其它设备"
+
+#~ msgid "Endian format mismatch\n"
+#~ msgstr "Endian 格式不匹配\n"
+
+#~ msgid "\t-m\tPower management statistics\n"
+#~ msgstr "\t-m\t电源管理信息状况\n"
+
+#~ msgid "-x and -p options are mutually exclusive\n"
+#~ msgstr "-x 和 -p 选项不能同时使用\n"
+
+#~ msgid ""
+#~ "\t-n { DEV | EDEV | NFS | NFSD | SOCK |\n"
+#~ "\t     IP | EIP | ICMP | EICMP | TCP | ETCP | UDP | ALL }\n"
+#~ "\t\tNetwork statistics\n"
+#~ msgstr ""
+#~ "\t-n { DEV | EDEV | NFS | NFSD | SOCK |\n"
+#~ "\t     IP | EIP | ICMP | EICMP | TCP | ETCP | UDP | ALL }\n"
+#~ "\t\t网络信息状况\n"
+
+#~ msgid "Usage:"
+#~ msgstr "用法:"
+
+#~ msgid "options..."
+#~ msgstr "选项..."
+
+#~ msgid "interval"
+#~ msgstr "间隔"
+
+#~ msgid "count"
+#~ msgstr "次数"
+
+#~ msgid "device"
+#~ msgstr "设备名"
+
+#~ msgid "cpu"
+#~ msgstr "cpu"
+
+#~ msgid "command"
+#~ msgstr "命令"
+
+#~ msgid "outfile"
+#~ msgstr "输出文件"
+
+#~ msgid "comment"
+#~ msgstr "注释"
+
+#~ msgid "datafile"
+#~ msgstr "数据文件"
+
+#~ msgid "hh:mm:ss"
+#~ msgstr "时:分:秒"
+
+#~ msgid "sar_options..."
+#~ msgstr "sar 选项..."
+
+#~ msgid "Activity flag: %#x\n"
+#~ msgstr "运行标记: %#x\n"
+
+#~ msgid "Number of CPU: %u\n"
+#~ msgstr "CPU 数量: %u\n"
+
+#~ msgid "Number of interrupts per CPU: %u\n"
+#~ msgstr "每个 CPU 的中断数目: %u\n"
+
+#~ msgid "Number of disks: %u\n"
+#~ msgstr "磁盘数量: %u\n"
+
+#~ msgid "Number of network interfaces: %u\n"
+#~ msgstr "网卡数量: %u\n"
+
+#~ msgid "int"
+#~ msgstr "整型数"
+
+#~ msgid "filename"
+#~ msgstr "文件名"
+
+#~ msgid "Not an SMP machine...\n"
+#~ msgstr "非对称多处理机器...\n"
