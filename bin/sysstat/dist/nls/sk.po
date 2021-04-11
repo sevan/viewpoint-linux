@@ -1,0 +1,635 @@
+# NLS support for the sysstat package.
+# Copyright (C) 1999 Free Software Foundation, Inc.
+# This file is distributed under the same license as the sysstat package.
+# Sébastien GODARD <sysstat [at] orange.fr>, 1999.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: sysstat 12.3.3\n"
+"Report-Msgid-Bugs-To: sysstat <at> orange.fr\n"
+"POT-Creation-Date: 2020-05-01 09:28+0200\n"
+"PO-Revision-Date: 2020-05-12 11:03+0200\n"
+"Last-Translator: Marián Čavojský <preklad@cavo.sk>\n"
+"Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
+"Language: sk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Bugs: Report translation errors to the Language-Team address.\n"
+
+#: cifsiostat.c:75 mpstat.c:134 iostat.c:89 tapestat.c:104 sar.c:108
+#, c-format
+msgid "Usage: %s [ options ] [ <interval> [ <count> ] ]\n"
+msgstr "Použitie: %s [ voľby... ] [ <interval> [ <počet> ] ]\n"
+
+#: cifsiostat.c:79
+#, c-format
+msgid ""
+"Options are:\n"
+"[ --dec={ 0 | 1 | 2 } ] [ --human ] [ -h ] [ -k | -m ] [ -t ] [ -V ] [ --debuginfo ]\n"
+msgstr ""
+"Možné voľby:\n"
+"[ --dec={ 0 | 1 | 2 } ] [ --human ] [ -h ] [ -k | -m ] [ -t ] [ -V ] [ --debuginfo ]\n"
+
+#: cifsiostat.c:82
+#, c-format
+msgid ""
+"Options are:\n"
+"[ --dec={ 0 | 1 | 2 } ] [ --human ] [ -h ] [ -k | -m ] [ -t ] [ -V ]\n"
+msgstr ""
+"Možné voľby:\n"
+"[ --dec={ 0 | 1 | 2 } ] [ --human ] [ -h ] [ -k | -m ] [ -t ] [ -V ]\n"
+
+#: sadc.c:98
+#, c-format
+msgid "Usage: %s [ options ] [ <interval> [ <count> ] ] [ <outfile> ]\n"
+msgstr "Použitie: %s [ voľby ] [ <interval> [ <počet> ] ] [ <výstupnýsúbor> ]\n"
+
+#: sadc.c:101
+#, c-format
+msgid ""
+"Options are:\n"
+"[ -C <comment> ] [ -D ] [ -F ] [ -f ] [ -L ] [ -V ]\n"
+"[ -S { INT | DISK | IPV6 | POWER | SNMP | XDISK | ALL | XALL } ]\n"
+msgstr ""
+"Voľby sú:\n"
+"[ -C <poznámka> ] [ -D ] [ -F ] [ -f ] [ -L ] [ -V ]\n"
+"[ -S { INT | DISK | IPV6 | POWER | SNMP | XDISK | ALL | XALL } ]\n"
+
+#: sadc.c:272
+#, c-format
+msgid "Cannot write data to system activity file: %s\n"
+msgstr "Nie je možné zapísať údaje do súboru aktivity systému: %s\n"
+
+#: sadc.c:733 sadc.c:796 ioconf.c:507 rd_stats.c:83 sa_common.c:1843
+#: count.c:118
+#, c-format
+msgid "Cannot open %s: %s\n"
+msgstr "Nomožno otvoriť %s: %s\n"
+
+#: sadc.c:1018
+#, c-format
+msgid "Cannot append data to that file (%s)\n"
+msgstr "Nie je možné pridať údaje do toho súboru (%s)\n"
+
+#: sadf.c:105
+#, c-format
+msgid "Usage: %s [ options ] [ <interval> [ <count> ] ] [ <datafile> | -[0-9]+ ]\n"
+msgstr "Použitie: %s [ voľby... ] [ <interval> [ <počet> ] ] [ <dátovýsúbor> | -[0-9]+ ]\n"
+
+#: sadf.c:108
+#, c-format
+msgid ""
+"Options are:\n"
+"[ -C ] [ -c | -d | -g | -j | -l | -p | -r | -x ] [ -H ] [ -h ] [ -T | -t | -U ] [ -V ]\n"
+"[ -O <opts> [,...] ] [ -P { <cpu> [,...] | ALL } ]\n"
+"[ --dev=<dev_list> ] [ --fs=<fs_list> ] [ --iface=<iface_list> ]\n"
+"[ -s [ <hh:mm[:ss]> ] ] [ -e [ <hh:mm[:ss]> ] ]\n"
+"[ -- <sar_options> ]\n"
+msgstr ""
+"Možné voľby:\n"
+"[ -C ] [ -c | -d | -g | -j | -l | -p | -r | -x ] [ -H ] [ -h ] [ -T | -t | -U ] [ -V ]\n"
+"[ -O <opts> [,...] ] [ -P { <cpu> [,...] | ALL } ]\n"
+"[ --dev=<zoznam_zariadeni> ] [ --fs=<zoznam_fs> ] [ --iface=<zoznam_rozhrani> ]\n"
+"[ -s [ <hh:mm[:ss]> ] ] [ -e [ <hh:mm[:ss]> ] ]\n"
+"[ -- <sar_voľby> ]\n"
+
+#: sadf.c:1860
+#, c-format
+msgid "PCP support not compiled in\n"
+msgstr "Podpora PCP nie je zakompilovaná\n"
+
+#: mpstat.c:137
+#, c-format
+msgid ""
+"Options are:\n"
+"[ -A ] [ -n ] [ -u ] [ -V ]\n"
+"[ -I { SUM | CPU | SCPU | ALL } ] [ -N { <node_list> | ALL } ]\n"
+"[ --dec={ 0 | 1 | 2 } ] [ -o JSON ] [ -P { <cpu_list> | ALL } ]\n"
+msgstr ""
+"Možné voľby:\n"
+"[ -A ] [ -n ] [ -u ] [ -V ]\n"
+"[ -I { SUM | CPU | SCPU | ALL } ] [ -N { <zoznam_procesorov> | ALL } ]\n"
+"[ --dec={ 0 | 1 | 2 } ] [ -o JSON ] [ -P { <zoznam_cpu> | ALL } ]\n"
+
+# sar.c:
+#: mpstat.c:1736 pidstat.c:2288 sar.c:383
+msgid "Average:"
+msgstr "Priemer:"
+
+#: rd_stats.c:359
+#, c-format
+msgid "Cannot read %s\n"
+msgstr "Nomožno čítať %s\n"
+
+#: sa_common.c:302
+#, c-format
+msgid "File created by sar/sadc from sysstat version %d.%d.%d"
+msgstr "Súbor bol vytvorený pomocou sar/sadc zo sysstat verzie %d.%d.%d"
+
+#: sa_common.c:333
+#, c-format
+msgid "Invalid system activity file: %s\n"
+msgstr "Nesprávny súbor aktivity systému: %s\n"
+
+#: sa_common.c:341
+#, c-format
+msgid "Current sysstat version cannot read the format of this file (%#x)\n"
+msgstr "Aktuálna verzia sysstat nedokáže čítať formát tohto súboru (%#x)\n"
+
+#: sa_common.c:358 pidstat.c:207
+#, c-format
+msgid "Requested activities not available\n"
+msgstr "Žiadané štatistiky nie sú dostupné\n"
+
+#: sa_common.c:1437
+#, c-format
+msgid "Error while reading system activity file: %s\n"
+msgstr "Chyba počas čítania súboru aktivity systému: %s\n"
+
+#: sa_common.c:1447
+#, c-format
+msgid "End of system activity file unexpected\n"
+msgstr "Neočakávaný koniec súboru aktivity systému\n"
+
+#: sa_common.c:1846
+#, c-format
+msgid "Please check if data collecting is enabled\n"
+msgstr "Prosím, skontrolujte, či je zapnutý zber údajov\n"
+
+#: sa_common.c:2198
+#, c-format
+msgid "Requested activities not available in file %s\n"
+msgstr "Požadované štatistiky nie sú dostupné v súbore %s\n"
+
+#: sa_common.c:2329 iostat.c:2165
+#, c-format
+msgid "Invalid type of persistent device name\n"
+msgstr "Chybný typ názvu trvalého zariadenia\n"
+
+#: pidstat.c:89
+#, c-format
+msgid "Usage: %s [ options ] [ <interval> [ <count> ] ] [ -e <program> <args> ]\n"
+msgstr "Použitie: %s [ voľby ] [ <interval> [ <počet> ] ] [ -e <program> <argumenty> ]\n"
+
+#: pidstat.c:92
+#, c-format
+msgid ""
+"Options are:\n"
+"[ -d ] [ -H ] [ -h ] [ -I ] [ -l ] [ -R ] [ -r ] [ -s ] [ -t ] [ -U [ <username> ] ]\n"
+"[ -u ] [ -V ] [ -v ] [ -w ] [ -C <command> ] [ -G <process_name> ]\n"
+"[ -p { <pid> [,...] | SELF | ALL } ] [ -T { TASK | CHILD | ALL } ]\n"
+"[ --dec={ 0 | 1 | 2 } ] [ --human ]\n"
+msgstr ""
+"Možné voľby:\n"
+"[ -d ] [ -H ][ -h ] [ -I ] [ -l ] [ -R ] [ -r ] [ -U [ <používateľské meno> ] ]\n"
+"[ -u ] [ -V ] [ -v ] [ -w ] [ -C <príkaz> ] [ -G <názov procesu> ]\n"
+"[ -s ] [ -t ] [ -p { <pid> [,...] | SELF | ALL } ] [ -T { TASK | CHILD | ALL } ]\n"
+"[ --dec={ 0 | 1 | 2 } ] [ --human ]\n"
+
+#: sadf_misc.c:1220
+#, c-format
+msgid "System activity data file: %s (%#x)\n"
+msgstr "Dátový súbor aktivity systému: %s (%#x)\n"
+
+#: sadf_misc.c:1229
+#, c-format
+msgid "Genuine sa datafile: %s (%x)\n"
+msgstr "Pravý dátový súbor aktivity systému: %s (%x)\n"
+
+#: sadf_misc.c:1230
+msgid "no"
+msgstr "nie"
+
+#: sadf_misc.c:1230
+msgid "yes"
+msgstr "áno"
+
+#: sadf_misc.c:1233
+#, c-format
+msgid "Host: "
+msgstr "Hostiteľ: "
+
+#: sadf_misc.c:1243
+#, c-format
+msgid "File date: %s\n"
+msgstr "Dátum súboru: %s\n"
+
+#: sadf_misc.c:1246
+#, c-format
+msgid "File time: "
+msgstr "Čas súboru: "
+
+#: sadf_misc.c:1251
+#, c-format
+msgid "Timezone: %s\n"
+msgstr "Časová zóna: %s\n"
+
+#: sadf_misc.c:1254
+#, c-format
+msgid "File composition: (%d,%d,%d),(%d,%d,%d),(%d,%d,%d)\n"
+msgstr "Kompozícia súboru: (%d,%d,%d),(%d,%d,%d),(%d,%d,%d)\n"
+
+#: sadf_misc.c:1259
+#, c-format
+msgid "Size of a long int: %d\n"
+msgstr "Veľkosť long int: %d\n"
+
+#: sadf_misc.c:1261
+#, c-format
+msgid "Number of activities in file: %u\n"
+msgstr "Počet aktivít v súbore: %u\n"
+
+#: sadf_misc.c:1263
+#, c-format
+msgid "Extra structures available: %c\n"
+msgstr "Extra štruktúry dostupné: %c\n"
+
+#: sadf_misc.c:1266
+#, c-format
+msgid "List of activities:\n"
+msgstr "Zoznam aktivít:\n"
+
+#: sadf_misc.c:1277
+msgid "Unknown activity"
+msgstr "Neznáma aktivíta"
+
+#: sadf_misc.c:1285
+#, c-format
+msgid " \t[Unknown format]"
+msgstr " \t[Neznámy formát]"
+
+#: pr_stats.c:2616 pr_stats.c:2623 pr_stats.c:2728 pr_stats.c:2773
+msgid "Summary:"
+msgstr "Súhrn:"
+
+#: count.c:169
+#, c-format
+msgid "Cannot handle so many processors!\n"
+msgstr "Nie je možné obslúžiť toľko procesorov!\n"
+
+#: iostat.c:92
+#, c-format
+msgid ""
+"Options are:\n"
+"[ -c ] [ -d ] [ -h ] [ -k | -m ] [ -N ] [ -s ] [ -t ] [ -V ] [ -x ] [ -y ] [ -z ]\n"
+"[ { -f | +f } <directory> ] [ -j { ID | LABEL | PATH | UUID | ... } ]\n"
+"[ --dec={ 0 | 1 | 2 } ] [ --human ] [ -o JSON ]\n"
+"[ [ -H ] -g <group_name> ] [ -p [ <device> [,...] | ALL ] ]\n"
+"[ <device> [...] | ALL ] [ --debuginfo ]\n"
+msgstr ""
+"Možné voľby:\n"
+"[ -c ] [ -d ] [ -h ] [ -k | -m ] [ -N ] [ -s ] [ -t ] [ -V ] [ -x ] [ -y ] [ -z ]\n"
+"[ { -f | +f } <adresár> ] [ -j { ID | LABEL | PATH | UUID | ... } ]\n"
+"[ --dec={ 0 | 1 | 2 } ] [ --human ] [ -o JSON ]\n"
+"[ [ -H ] -g <názov_skupiny> ] [ -p [ <zariadenie> [,...] | ALL ] ]\n"
+"[ <zariadenie> [...] | ALL ] [ --debuginfo ]\n"
+
+#: iostat.c:99
+#, c-format
+msgid ""
+"Options are:\n"
+"[ -c ] [ -d ] [ -h ] [ -k | -m ] [ -N ] [ -s ] [ -t ] [ -V ] [ -x ] [ -y ] [ -z ]\n"
+"[ { -f | +f } <directory> ] [ -j { ID | LABEL | PATH | UUID | ... } ]\n"
+"[ --dec={ 0 | 1 | 2 } ] [ --human ] [ -o JSON ]\n"
+"[ [ -H ] -g <group_name> ] [ -p [ <device> [,...] | ALL ] ]\n"
+"[ <device> [...] | ALL ]\n"
+msgstr ""
+"Možné voľby:\n"
+"[ -c ] [ -d ] [ -h ] [ -k | -m ] [ -N ] [ -s ] [ -t ] [ -V ] [ -x ] [ -y ] [ -z ]\n"
+"[ { -f | +f } <adresár> ] [ -j { ID | LABEL | PATH | UUID | ... } ]\n"
+"[ --dec={ 0 | 1 | 2 } ] [ --human ] [ -o JSON ]\n"
+"[ [ -H ] -g <názov_skupiny> ] [ -p [ <zariadenie> [,...] | ALL ] ]\n"
+"[ <zariadenie> [...] | ALL ]\n"
+
+#: tapestat.c:106
+#, c-format
+msgid ""
+"Options are:\n"
+"[ --human ] [ -k | -m ] [ -t ] [ -V ] [ -y ] [ -z ]\n"
+msgstr ""
+"Možné voľby:\n"
+"[ --human ] [ -k | -m ] [ -t ] [ -V ] [ -y ] [ -z ]\n"
+
+#: tapestat.c:272
+#, c-format
+msgid "No tape drives with statistics found\n"
+msgstr "Nenájdené žiadne páskové zariadenia so štatistikami\n"
+
+#: common.c:79
+#, c-format
+msgid "sysstat version %s\n"
+msgstr "sysstat verzia %s\n"
+
+#: sar.c:123
+#, c-format
+msgid ""
+"Options are:\n"
+"[ -A ] [ -B ] [ -b ] [ -C ] [ -D ] [ -d ] [ -F [ MOUNT ] ] [ -H ] [ -h ]\n"
+"[ -p ] [ -r [ ALL ] ] [ -S ] [ -t ] [ -u [ ALL ] ] [ -V ]\n"
+"[ -v ] [ -W ] [ -w ] [ -y ] [ -z ]\n"
+"[ -I { <int_list> | SUM | ALL } ] [ -P { <cpu_list> | ALL } ]\n"
+"[ -m { <keyword> [,...] | ALL } ] [ -n { <keyword> [,...] | ALL } ]\n"
+"[ -q [ <keyword> [,...] | ALL ] ]\n"
+"[ --dev=<dev_list> ] [ --fs=<fs_list> ] [ --iface=<iface_list> ]\n"
+"[ --dec={ 0 | 1 | 2 } ] [ --help ] [ --human ] [ --sadc ]\n"
+"[ -j { SID | ID | LABEL | PATH | UUID | ... } ]\n"
+"[ -f [ <filename> ] | -o [ <filename> ] | -[0-9]+ ]\n"
+"[ -i <interval> ] [ -s [ <hh:mm[:ss]> ] ] [ -e [ <hh:mm[:ss]> ] ]\n"
+msgstr ""
+"Možné voľby:\n"
+"[ -A ] [ -B ] [ -b ] [ -C ] [ -D ] [ -d ] [ -F [ MOUNT ] ] [ -H ] [ -h ]\n"
+"[ -p ] [ -q ] [ -r [ ALL ] ] [ -S ] [ -t ] [ -u [ ALL ] ] [ -V ]\n"
+"[ -v ] [ -W ] [ -w ] [ -y ] [ -z ]\n"
+"[ -I { <zoznam_čísel> | SUM | ALL } ] [ -P { <zoznam_cpu> | ALL } ]\n"
+"[ -m { <kľúčovéslovo> [,...] | ALL } ] [ -n { <kľúčovéslovo> [,...] | ALL } ]\n"
+"[ -q [ <kľúčovéslovo> [,...] | ALL ] ]\n"
+"[ --dev=<zoznam_zariadeni> ] [ --fs=<zoznam_fs> ] [ --iface=<zoznam_rozhrani> ]\n"
+"[ --dec={ 0 | 1 | 2 } ] [ --help ] [ --human ] [ --sadc ]\n"
+"[ -j { SID | ID | LABEL | PATH | UUID | ... } ]\n"
+"[ -f [ <súbor> ] | -o [ <súbor> ] | -[0-9]+ ]\n"
+"[ -i <interval> ] [ -s [ <hh:mm[:ss]> ] ] [ -e [ <hh:mm[:ss]> ] ]\n"
+
+#: sar.c:149
+#, c-format
+msgid "Main options and reports (report name between square brackets):\n"
+msgstr "Hlavné voľby a reporty (názov reportu v hranatých zátorkách):\n"
+
+#: sar.c:150
+#, c-format
+msgid "\t-B\tPaging statistics [A_PAGE]\n"
+msgstr "\t-B\tŠtatistika stránkovania [A_PAGE]\n"
+
+#: sar.c:151
+#, c-format
+msgid "\t-b\tI/O and transfer rate statistics [A_IO]\n"
+msgstr "\t-b\tŠtatistika V/V a prenosovej rýchlosti [A_IO]\n"
+
+#: sar.c:152
+#, c-format
+msgid "\t-d\tBlock devices statistics [A_DISK]\n"
+msgstr "\t-d\tŠtatistika blokových zariadení [A_DISK]\n"
+
+#: sar.c:153
+#, c-format
+msgid "\t-F [ MOUNT ]\n"
+msgstr "\t-F [ MOUNT ]\n"
+
+#: sar.c:154
+#, c-format
+msgid "\t\tFilesystems statistics [A_FS]\n"
+msgstr "\t\tŠtatistika súborových systémov [A_FS]\n"
+
+#: sar.c:155
+#, c-format
+msgid "\t-H\tHugepages utilization statistics [A_HUGE]\n"
+msgstr "\t-H\tŠtatiskika využitia veľkých stránok [A_HUGE]\n"
+
+#: sar.c:156
+#, c-format
+msgid ""
+"\t-I { <int_list> | SUM | ALL }\n"
+"\t\tInterrupts statistics [A_IRQ]\n"
+msgstr ""
+"\t-I { <zoznam_čísel> | SUM | ALL }\n"
+"\t\tŠtatistika prerušení [A_IRQ]\n"
+
+#: sar.c:158
+#, c-format
+msgid ""
+"\t-m { <keyword> [,...] | ALL }\n"
+"\t\tPower management statistics [A_PWR_...]\n"
+"\t\tKeywords are:\n"
+"\t\tCPU\tCPU instantaneous clock frequency\n"
+"\t\tFAN\tFans speed\n"
+"\t\tFREQ\tCPU average clock frequency\n"
+"\t\tIN\tVoltage inputs\n"
+"\t\tTEMP\tDevices temperature\n"
+"\t\tUSB\tUSB devices plugged into the system\n"
+msgstr ""
+"\t-m { <kľúčovéslovo> [,...] | ALL }\n"
+"\t\tŠtatistika správy napájania [A_PWR_...]\n"
+"\t\tKľúčové slová sú:\n"
+"\t\tCPU\tAktuálna frekvencia hodín CPU\n"
+"\t\tFAN\tRýchlosť ventilátorov\n"
+"\t\tFREQ\tPriemerná frekvencia hodín CPU\n"
+"\t\tIN\tVstupné napätia\n"
+"\t\tTEMP\tTeplota zariadení\n"
+"\t\tUSB\tUSB zariadení pripojených do systému\n"
+
+#: sar.c:167
+#, c-format
+msgid ""
+"\t-n { <keyword> [,...] | ALL }\n"
+"\t\tNetwork statistics [A_NET_...]\n"
+"\t\tKeywords are:\n"
+"\t\tDEV\tNetwork interfaces\n"
+"\t\tEDEV\tNetwork interfaces (errors)\n"
+"\t\tNFS\tNFS client\n"
+"\t\tNFSD\tNFS server\n"
+"\t\tSOCK\tSockets\t(v4)\n"
+"\t\tIP\tIP traffic\t(v4)\n"
+"\t\tEIP\tIP traffic\t(v4) (errors)\n"
+"\t\tICMP\tICMP traffic\t(v4)\n"
+"\t\tEICMP\tICMP traffic\t(v4) (errors)\n"
+"\t\tTCP\tTCP traffic\t(v4)\n"
+"\t\tETCP\tTCP traffic\t(v4) (errors)\n"
+"\t\tUDP\tUDP traffic\t(v4)\n"
+"\t\tSOCK6\tSockets\t(v6)\n"
+"\t\tIP6\tIP traffic\t(v6)\n"
+"\t\tEIP6\tIP traffic\t(v6) (errors)\n"
+"\t\tICMP6\tICMP traffic\t(v6)\n"
+"\t\tEICMP6\tICMP traffic\t(v6) (errors)\n"
+"\t\tUDP6\tUDP traffic\t(v6)\n"
+"\t\tFC\tFibre channel HBAs\n"
+"\t\tSOFT\tSoftware-based network processing\n"
+msgstr ""
+"\t-n { <kľúčovéslovo> [,...] | ALL }\n"
+"\t\tŠtatistika siete [A_NET_...]\n"
+"\t\tKľúčové slová sú:\n"
+"\t\tDEV\tSieťové rozhrania\n"
+"\t\tEDEV\tSieťové rozhrania (chyby)\n"
+"\t\tNFS\tNFS klient\n"
+"\t\tNFSD\tNFS server\n"
+"\t\tSOCK\tSokety\t(v4)\n"
+"\t\tIP\tIP prevádzka\t(v4)\n"
+"\t\tEIP\tIP prevádzka\t(v4) (chyby)\n"
+"\t\tICMP\tICMP prevádzka\t(v4)\n"
+"\t\tEICMP\tICMP prevádzka\t(v4) (chyby)\n"
+"\t\tTCP\tTCP prevádzka\t(v4)\n"
+"\t\tETCP\tTCP prevádzka\t(v4) (chyby)\n"
+"\t\tUDP\tUDP prevádzka\t(v4)\n"
+"\t\tSOCK6\tSockety\t(v6)\n"
+"\t\tIP6\tIP prevádzka\t(v6)\n"
+"\t\tEIP6\tIP prevádzka\t(v6) (chyby)\n"
+"\t\tICMP6\tICMP prevádzka\t(v6)\n"
+"\t\tEICMP6\tICMP prevádzka\t(v6) (chyby)\n"
+"\t\tUDP6\tUDP prevádzka\t(v6)\n"
+"\t\tFC\tFibre channel HBAs\n"
+"\t\tSOFT\tSieťové spracovanie na báze softvéru\n"
+
+#: sar.c:190
+#, c-format
+msgid ""
+"\t-q [ <keyword> [,...] | PSI | ALL ]\n"
+"\t\tSystem load and pressure-stall statistics\n"
+"\t\tKeywords are:\n"
+"\t\tLOAD\tQueue length and load average statistics [A_QUEUE]\n"
+"\t\tCPU\tPressure-stall CPU statistics [A_PSI_CPU]\n"
+"\t\tIO\tPressure-stall I/O statistics [A_PSI_IO]\n"
+"\t\tMEM\tPressure-stall memory statistics [A_PSI_MEM]\n"
+msgstr ""
+
+#: sar.c:197
+#, c-format
+msgid ""
+"\t-r [ ALL ]\n"
+"\t\tMemory utilization statistics [A_MEMORY]\n"
+msgstr ""
+"\t-r [ ALL ]\n"
+"\t\tŠtatistika využitia pamäte [A_MEMORY]\n"
+
+#: sar.c:199
+#, c-format
+msgid "\t-S\tSwap space utilization statistics [A_MEMORY]\n"
+msgstr "\t-S\tŠtatistika využitia odkladacieho priestoru [A_MEMORY]\n"
+
+#: sar.c:200
+#, c-format
+msgid ""
+"\t-u [ ALL ]\n"
+"\t\tCPU utilization statistics [A_CPU]\n"
+msgstr ""
+"\t-u [ ALL ]\n"
+"\t\tŠtatistika využitia CPU [A_CPU]\n"
+
+#: sar.c:202
+#, c-format
+msgid "\t-v\tKernel tables statistics [A_KTABLES]\n"
+msgstr "\t-v\tŠtatistika tabuliek jadra [A_KTABLES]\n"
+
+#: sar.c:203
+#, c-format
+msgid "\t-W\tSwapping statistics [A_SWAP]\n"
+msgstr "\t-W\tŠtatistika odkladania [A_SWAP]\n"
+
+#: sar.c:204
+#, c-format
+msgid "\t-w\tTask creation and system switching statistics [A_PCSW]\n"
+msgstr "\t-w\tŠtatistika vytvárania a prepínania úloh systémom [A_PCSW]\n"
+
+#: sar.c:205
+#, c-format
+msgid "\t-y\tTTY devices statistics [A_SERIAL]\n"
+msgstr "\t-y\tŠtatistika TTY zariadení [A_SERIAL]\n"
+
+#: sar.c:219
+#, c-format
+msgid "Data collector will be sought in PATH\n"
+msgstr "Zberač údajov bude hľadaný v PATH\n"
+
+#: sar.c:222
+#, c-format
+msgid "Data collector found: %s\n"
+msgstr "Zberač údajov bol nájdený: %s\n"
+
+#: sar.c:287
+#, c-format
+msgid "End of data collecting unexpected\n"
+msgstr "Neočakávaný koniec zberu údajov\n"
+
+#: sar.c:292
+#, c-format
+msgid "Inconsistent input data\n"
+msgstr "Nekonzistentné vstupné údaje\n"
+
+#: sar.c:898
+#, c-format
+msgid "Using a wrong data collector from a different sysstat version\n"
+msgstr "Použitie nesprávneho zberača údajov z rozdielnej verzie sysstat\n"
+
+#: sar.c:1543
+#, c-format
+msgid "-f and -o options are mutually exclusive\n"
+msgstr "voľby -f a -o sa navzájom vylučujú\n"
+
+#: sar.c:1553
+#, c-format
+msgid "Not reading from a system activity file (use -f option)\n"
+msgstr "Nečíta sa zo súboru aktivity systému (použi voľbu -f)\n"
+
+#: sar.c:1706
+#, c-format
+msgid "Cannot find the data collector (%s)\n"
+msgstr "Nemožno nájsť zberač údajov (%s)\n"
+
+#: sa_conv.c:99
+#, c-format
+msgid "Cannot convert the format of this file\n"
+msgstr "Nemožno konvertovať formát tohto súboru\n"
+
+#: sa_conv.c:375
+#, c-format
+msgid ""
+"\n"
+"CPU activity not found in file. Aborting...\n"
+msgstr ""
+"\n"
+"V súbore nebola nájdená CPU aktivita. Prerušujem...\n"
+
+#: sa_conv.c:398
+#, c-format
+msgid ""
+"\n"
+"Invalid data found. Aborting...\n"
+msgstr ""
+"\n"
+"Nájdené neplatné údaje. Prerušujem...\n"
+
+#: sa_conv.c:1871
+#, c-format
+msgid "Statistics:\n"
+msgstr "Štatistiky:\n"
+
+#: sa_conv.c:1972
+#, c-format
+msgid ""
+"\n"
+"File format already up-to-date\n"
+msgstr ""
+"\n"
+"Formát súboru je už aktuálny\n"
+
+#: sa_conv.c:1984
+#, c-format
+msgid "HZ: Using current value: %lu\n"
+msgstr "HZ: Použitá aktuálna hodnota: %lu\n"
+
+#: sa_conv.c:2015
+#, c-format
+msgid "File successfully converted to sysstat format version %s\n"
+msgstr "Súbor úspešne prekonvertovaný do formátu systat verzie %s\n"
+
+#~ msgid "\t-q\tQueue length and load average statistics [A_QUEUE]\n"
+#~ msgstr "\t-q\tŠtatistika dĺžky fronty a priemerného zaťaženia [A_QUEUE]\n"
+
+#~ msgid "Cannot find disk data\n"
+#~ msgstr "Nemožno nájsť údaje diskov\n"
+
+#~ msgid "Cannot write system activity file header: %s\n"
+#~ msgstr "Nie je možné zapísať hlavičku súboru aktivity systému: %s\n"
+
+#~ msgid "Main options and reports:\n"
+#~ msgstr "Hlavné voľby a reporty:\n"
+
+#~ msgid "Other devices not listed here"
+#~ msgstr "Ďalšie zariadenia mimo tohoto zoznamu"
+
+#~ msgid "Endian format mismatch\n"
+#~ msgstr "Nezhoda endiánu\n"
+
+#~ msgid "\t-R\tMemory statistics\n"
+#~ msgstr "\t-R\tŠtatistika pamäte\n"
+
+#~ msgid "Not that many processors!\n"
+#~ msgstr "Nie až tak veľa procesorov!\n"

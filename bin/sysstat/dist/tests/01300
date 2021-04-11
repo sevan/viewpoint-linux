@@ -1,0 +1,4 @@
+rm -f tests/sa01
+echo foo >tests/sa01
+
+LC_ALL=C TZ=GMT ./sadc 1 1 - 2>&1 | grep "Invalid system activity" >/dev/null

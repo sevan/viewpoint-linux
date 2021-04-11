@@ -1,0 +1,6 @@
+
+Sysstat manual pages are compressed by default (using xz, bzip2 or gzip program)
+when they are installed.
+Answer y if you don't want them to be compressed.
+Default answer is n here (manual pages will be compressed).
+
