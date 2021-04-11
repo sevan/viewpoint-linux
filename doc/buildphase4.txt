@@ -268,3 +268,8 @@ meson -Dprefix=/usr -Dsharedstatedir=/var/lib -DBUILD_TRACEROUTE6=true  -DBUILD_
 ninja
 ninja install
 cp /usr/src/bin/iputils/man/{arping,clockdiff,ninfod,ping,rdisc,tracepath,traceroute6}.8 /usr/share/man/man8
+
+sysstat
+configure --prefix=/usr --libdir=/usr/lib64 --disable-compress-manpg --disable-stripping
+make
+make install_all
