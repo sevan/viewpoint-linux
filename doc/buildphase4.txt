@@ -273,3 +273,8 @@ sysstat
 configure --prefix=/usr --libdir=/usr/lib64 --disable-compress-manpg --disable-stripping
 make
 make install_all
+
+tnftp
+configure --prefix=/usr
+make
+make install
