@@ -110,7 +110,7 @@ ln -s ../../libexec/gcc/$(gcc -dumpmachine)/10.2.0/liblto_plugin.so /usr/lib64/b
 TODO: test if the GDB autoload Python script needs moving as per guide.
 
 pkg-config
-configure --prefix=/osbt --with-internal-glib --disable-host-tool --with-pc-path=/usr/lib/pkgconfig
+configure --prefix=/osbt --with-internal-glib --disable-host-tool --with-pc-path=/usr/lib/pkgconfig:/usr/share/pkgconfig
 As components are built with libdir pointing to /usr/lib64, pkgconfig
 directory ends up there without the ability to control where it ends up, add a
 symlink to smooth things out.
