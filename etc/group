@@ -31,5 +31,5 @@ systemd-timesync:x:78:
 systemd-coredump:x:79:
 uuidd:x:80:
 wheel:x:97:
-nogroup:x:99:
+nobody:x:65534:
 users:x:999:
