@@ -285,3 +285,8 @@ configure --with-features=tiny --prefix=/usr CFLAGS="-fno-omit-frame-pointer -g 
 make
 make install
 ln -s vim /usr/bin/vi
+
+openssh
+configure --prefix=/usr --sysconfdir=/etc/ssh --with-mantype=man
+make
+make install-nokeys
