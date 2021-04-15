@@ -287,6 +287,6 @@ make install
 ln -s vim /usr/bin/vi
 
 openssh
-configure --prefix=/usr --sysconfdir=/etc/ssh --with-mantype=man
+configure --prefix=/usr --sysconfdir=/etc/ssh --with-mantype=man --disable-strip
 make
 make install-nokeys
