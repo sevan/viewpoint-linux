@@ -141,6 +141,15 @@ configure --prefix=/usr --bindir=/bin SHELL=/bin/bash
 bash
 configure --prefix=/usr --without-bash-malloc --with-installed-readline --libdir=/usr/lib64
 
+mksh
+CFLAGS="-fno-omit-frame-pointer" ./Build.sh -g
+From builddir
+install -o root -g bin -m 555 mksh $LFS/bin/mksh
+From distdir
+install -c -o root -g bin -m 444 dot.mkshrc $LFS/usr/share/doc/mksh/examples/
+install -c -o root -g bin -m 444 FAQ.htm $LFS/usr/share/doc/mksh/
+install -c -o root -g bin -m 444 lksh.1 mksh.1 $LFS/usr/share/man/man1/
+
 gperf
 configure --prefix=/osbt
 
