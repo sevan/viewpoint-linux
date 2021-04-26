@@ -299,3 +299,8 @@ openssh
 configure --prefix=/usr --sysconfdir=/etc/ssh --with-mantype=man --disable-strip
 make
 make install-nokeys
+
+dwarves
+Need cmake installed (prebuilt binaries available from cmake.org)
+cmake -D__LIB=lib64 -DCMAKE_INSTALL_PREFIX=/usr ..
+make install
