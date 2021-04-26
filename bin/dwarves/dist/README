@@ -1,0 +1,27 @@
+Build instructions:
+
+1. install cmake
+2. mkdir build
+3. cd build
+4. cmake -D__LIB=lib ..
+5. make install
+
+Default is to be installed on /usr/local, see rpm spec file for
+installing on other places.
+
+Known to work scenarios:
+
+Mandriva Cooker:
+
+cmake 2.4.5-1mdv2007.1
+libelfutils1-devel 0.123-1mdv2007.1
+
+Debian Unstable:
+
+cmake 2.4.5-1
+libdw-dev 0.123-2
+
+Fedora Core 6:
+
+cmake 2.4.5-2.fc6
+elfutils-devel 0.126-1.fc6
