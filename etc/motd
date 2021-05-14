@@ -1,0 +1,11 @@
+Welcome to Viewpoint Linux Distribution
+
+On first boot you'll need to perform the following to get networking
+started and ssh'd in.
+run systemd-machine-id-setup to create /etc/machine-id
+run ssh-keygen -A to create key pairs for use by sshd
+create a user to ssh in with using useradd -m someusername
+set a password using passwd someusername
+enable sshd to start automatically using systemctl enable sshd
+Reboot
+Trim /etc/motd
