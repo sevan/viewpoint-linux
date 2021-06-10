@@ -175,6 +175,7 @@ make check
 make -C libelf install
 make -C libdw install
 make -C libdwfl install
+make -C libdwelf install
 install -vm644 version.h /usr/include/elfutils
 install -vm644 config/libelf.pc /usr/lib64/pkgconfig
 install -vm644 config/libdw.pc /usr/lib64/pkgconfig
