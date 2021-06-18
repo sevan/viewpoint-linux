@@ -309,3 +309,8 @@ dwarves
 Need cmake installed (prebuilt binaries available from cmake.org)
 cmake -D__LIB=lib64 -DCMAKE_INSTALL_PREFIX=/usr ..
 make install
+
+bpftrace-tools
+cp -R bin/bpftrace-tools/dist/*.bt /usr/bin/
+mkdir /usr/share/doc/bpftrace
+cp -R bin/bpftrace-tools/dist/*.txt /usr/share/doc/bpftrace
